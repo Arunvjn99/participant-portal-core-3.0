@@ -6,7 +6,7 @@ import { VoiceTranscript } from "../../components/voice/VoiceTranscript";
 import { VoiceControls } from "../../components/voice/VoiceControls";
 import { VoiceFooter } from "../../components/voice/VoiceFooter";
 import { UIState, AgentState, TaskType, type VoiceMessage, type VoiceState } from "../../types/voice";
-import { agentController } from "../../agent/AgentController";
+import { createAgentController } from "../../agent/AgentController";
 import { enhanceAgentResponse, normalizeUserInputWithLLM, LLMResponsePolisher } from "../../agent/LLMEnhancer";
 import { useSpeechToText } from "../../hooks/useSpeechToText";
 import { useTextToSpeech } from "../../hooks/useTextToSpeech";
@@ -36,6 +36,14 @@ export const VoiceModePage = () => {
 
   // Ref for handleUserInput to avoid circular dependency
   const handleUserInputRef = useRef<((input: string) => Promise<void>) | null>(null);
+
+  // STRUCTURAL FIX: Create AgentController instance inside component (not module-scope)
+  // This breaks circular dependency and avoids "Cannot access before initialization" errors
+  const agentControllerRef = useRef<ReturnType<typeof createAgentController> | null>(null);
+  if (!agentControllerRef.current) {
+    agentControllerRef.current = createAgentController();
+  }
+  const agentController = agentControllerRef.current;
 
   // CENTRAL CONFIRMATION GUARD - Non-negotiable safety check
   const isConfirmationState = voiceState.uiState === UIState.CONFIRMATION_REQUIRED;

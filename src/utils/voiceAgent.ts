@@ -295,4 +295,10 @@ class VoiceAgent {
   }
 }
 
-export const voiceAgent = new VoiceAgent();
+/**
+ * Factory function to create VoiceAgent instance
+ * Must be called inside React component/hook to avoid module-scope initialization
+ */
+export function createVoiceAgent(): VoiceAgent {
+  return new VoiceAgent();
+}

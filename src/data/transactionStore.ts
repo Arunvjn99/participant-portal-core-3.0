@@ -79,4 +79,26 @@ class TransactionStore {
   }
 }
 
-export const transactionStore = new TransactionStore();
+/**
+ * Factory function to create TransactionStore instance
+ * Must be called inside React component/hook to avoid module-scope initialization
+ */
+export function createTransactionStore(): TransactionStore {
+  return new TransactionStore();
+}
+
+// Legacy export for backward compatibility - creates instance on first access
+// TODO: Migrate all usages to use createTransactionStore() inside components
+let _transactionStoreInstance: TransactionStore | null = null;
+export const transactionStore = new Proxy({} as TransactionStore, {
+  get(_target, prop) {
+    if (!_transactionStoreInstance) {
+      _transactionStoreInstance = new TransactionStore();
+    }
+    const value = _transactionStoreInstance[prop as keyof TransactionStore];
+    if (typeof value === 'function') {
+      return value.bind(_transactionStoreInstance);
+    }
+    return value;
+  }
+});
