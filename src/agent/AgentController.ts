@@ -848,5 +848,27 @@ export class AgentController {
   }
 }
 
-// Export singleton instance
-export const agentController = new AgentController();
+// Lazy singleton pattern to avoid "Cannot access before initialization" errors
+// in production builds with code splitting
+let _agentControllerInstance: AgentController | null = null;
+
+function getAgentControllerInstance(): AgentController {
+  if (!_agentControllerInstance) {
+    _agentControllerInstance = new AgentController();
+  }
+  return _agentControllerInstance;
+}
+
+// Export singleton with lazy initialization
+// Use Proxy to maintain same API while deferring instantiation
+export const agentController = new Proxy({} as AgentController, {
+  get(_target, prop) {
+    const instance = getAgentControllerInstance();
+    const value = instance[prop as keyof AgentController];
+    // Bind methods to instance to maintain correct 'this' context
+    if (typeof value === 'function') {
+      return value.bind(instance);
+    }
+    return value;
+  }
+});
