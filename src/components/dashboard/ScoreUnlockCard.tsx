@@ -1,20 +1,31 @@
 import { DashboardCard } from "./DashboardCard";
 import Button from "../ui/Button";
+import { PadlockIcon } from "../../assets/dashboard/icons";
 
 export const ScoreUnlockCard = () => {
   return (
     <DashboardCard>
-      <div className="score-unlock-card">
-        <div className="score-unlock-card__icon" aria-hidden="true">
-          📊
+      <div className="flex flex-col gap-4">
+        <div
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400"
+          aria-hidden="true"
+        >
+          <PadlockIcon size={28} />
         </div>
-        <h3 className="score-unlock-card__title">Unlock Your Personalized Score</h3>
-        <p className="score-unlock-card__description">
-          Get personalized insights into your retirement readiness and discover ways to improve your financial future.
+        <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+          Unlock Your Personalized Score
+        </h3>
+        <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+          Enroll in the plan to see your projected retirement income and earn badges.
         </p>
-        <div className="score-unlock-card__actions">
-          <Button>Enroll Now</Button>
-          <a href="#" className="score-unlock-card__link">
+        <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <Button className="w-fit rounded-lg bg-blue-600 px-5 py-2.5 font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-400">
+            Enroll Now
+          </Button>
+          <a
+            href="#"
+            className="inline-flex w-fit items-center rounded-lg border border-blue-600 px-5 py-2.5 text-sm font-medium text-blue-600 no-underline transition-colors hover:bg-blue-50 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-900/30 dark:focus:ring-blue-400"
+          >
             Learn more
           </a>
         </div>

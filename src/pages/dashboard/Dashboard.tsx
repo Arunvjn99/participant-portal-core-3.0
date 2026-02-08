@@ -1,76 +1,99 @@
 import { DashboardLayout } from "../../layouts/DashboardLayout";
 import { DashboardHeader } from "../../components/dashboard/DashboardHeader";
+import { thumbnails } from "../../assets/learning";
+import { advisorAvatars } from "../../assets/avatars";
 import { HeroEnrollmentCard } from "../../components/dashboard/HeroEnrollmentCard";
-import { DashboardGrid } from "../../components/dashboard/DashboardGrid";
 import DashboardSection from "../../components/dashboard/DashboardSection";
-import ResourceGrid from "../../components/dashboard/ResourceGrid";
-import ResourceCard from "../../components/dashboard/ResourceCard";
-import { ScoreUnlockCard } from "../../components/dashboard/ScoreUnlockCard";
+import { LearningResourceCard } from "../../components/dashboard/LearningResourceCard";
+import { LearningResourcesCarousel } from "../../components/dashboard/LearningResourcesCarousel";
+import { PersonalizedScoreCard } from "../../components/dashboard/PersonalizedScoreCard";
 import { AdvisorList } from "../../components/dashboard/AdvisorList";
 import { AdvisorCard } from "../../components/dashboard/AdvisorCard";
 import { ValuePropGrid } from "../../components/dashboard/ValuePropGrid";
 import { ValuePropCard } from "../../components/dashboard/ValuePropCard";
 
 export const Dashboard = () => {
-  const learningResourcesSection = (
-    <DashboardSection title="Learning Resources">
-      <ResourceGrid>
-        <ResourceCard
-          title="Understanding 401(k) Basics"
-          description="Learn the fundamentals of how 401(k) plans work, including contribution limits, employer matching, and tax advantages."
-          imageSrc="/assets/placeholder-image.jpg"
-          badge="Video"
-        />
-        <ResourceCard
-          title="Investment Strategies for Retirement"
-          description="Explore different investment approaches and asset allocation strategies to help you build a secure retirement portfolio."
-          imageSrc="/assets/placeholder-image.jpg"
-          badge="Article"
-        />
-        <ResourceCard
-          title="Maximizing Your Employer Match"
-          description="Discover how to take full advantage of your employer's matching contributions and understand vesting schedules."
-          imageSrc="/assets/placeholder-image.jpg"
-          badge="Video"
-        />
-      </ResourceGrid>
-    </DashboardSection>
-  );
-
   return (
     <DashboardLayout header={<DashboardHeader />}>
       <HeroEnrollmentCard />
-      <DashboardGrid left={learningResourcesSection} right={<ScoreUnlockCard />} />
-      <DashboardSection title="Your Advisors">
+
+      {/* Learning Resources (left) + Personalized Score (right) - Figma layout */}
+      <section className="flex flex-col gap-6 lg:flex-row lg:items-stretch">
+        {/* Section 1: Learning Resources - Figma: white rounded container, title left, carousel inside */}
+        <div className="relative min-w-0 flex-1 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800 md:p-8">
+          <h2 className="mb-5 text-left text-xl font-bold text-slate-900 dark:text-slate-100 md:text-2xl">
+            Learning Resources
+          </h2>
+          <LearningResourcesCarousel>
+            <LearningResourceCard
+              title="Understanding 401(k) Basics"
+              subtitle="Retirement Education Hub"
+              imageSrc={thumbnails.learning401k}
+              badge="Video"
+              index={0}
+            />
+            <LearningResourceCard
+              title="Investment Strategies for Retirement"
+              subtitle="Financial Planning Institute"
+              imageSrc={thumbnails.learningInvestment}
+              badge="Article"
+              index={1}
+            />
+            <LearningResourceCard
+              title="Maximizing Your Employer Match"
+              subtitle="Retirement Education Hub"
+              imageSrc={thumbnails.learningMatch}
+              badge="Video"
+              index={2}
+            />
+            <LearningResourceCard
+              title="Roth vs Traditional: Which is Right?"
+              subtitle="Financial Planning Institute"
+              imageSrc={thumbnails.learningInvestment}
+              badge="Article"
+              index={3}
+            />
+          </LearningResourcesCarousel>
+        </div>
+
+        {/* Section 2: Goal Simulator - fixed width on desktop, height matches Learning Resources */}
+        <div className="flex min-h-[320px] lg:w-[340px] lg:shrink-0">
+          <PersonalizedScoreCard />
+        </div>
+      </section>
+
+      <DashboardSection title="Want help choosing a plan? Meet our advisors.">
         <AdvisorList>
           <AdvisorCard
-            name="Sarah Johnson"
-            role="Senior Retirement Advisor"
-            description="Specialized in helping participants maximize their retirement savings and plan for financial security."
+            name="Alex Morgan"
+            role="Retirement Advisor"
+            description="Helping employees make confident retirement decisions with simple, personalized guidance."
+            avatarSrc={advisorAvatars.alex}
           />
           <AdvisorCard
-            name="Michael Chen"
-            role="Investment Strategy Advisor"
-            description="Expert in portfolio optimization and long-term investment planning for retirement goals."
+            name="Maya Patel"
+            role="Certified Planner"
+            description="Experienced CFP providing clear recommendations tailored for busy professionals."
+            avatarSrc={advisorAvatars.maya}
           />
         </AdvisorList>
       </DashboardSection>
       <DashboardSection title="Why Choose Our Plan">
         <ValuePropGrid>
           <ValuePropCard
-            icon="💰"
+            icon="dollar"
+            title="Employer Match"
+            description="Get free money. We match 100% up to 6% of your salary."
+          />
+          <ValuePropCard
+            icon="shield"
             title="Tax Advantages"
-            description="Maximize your savings with tax-deferred contributions and potential employer matching benefits."
+            description="Lower your taxable income now or enjoy tax-free withdrawals later."
           />
           <ValuePropCard
-            icon="📈"
-            title="Diverse Investment Options"
-            description="Access a wide range of investment funds to build a portfolio that matches your risk tolerance and goals."
-          />
-          <ValuePropCard
-            icon="🛡️"
-            title="Secure Retirement Future"
-            description="Plan confidently with professional guidance and tools designed to help you achieve your retirement objectives."
+            icon="chart"
+            title="Compound Growth"
+            description="Start early. Even small contributions grow significantly over time."
           />
         </ValuePropGrid>
       </DashboardSection>

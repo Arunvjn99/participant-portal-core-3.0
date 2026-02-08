@@ -2,15 +2,11 @@ import { createContext, useContext, useState, useMemo, type ReactNode } from "re
 import type {
   ContributionType,
   ContributionSource,
-  ContributionInput,
   MonthlyContribution,
-  ProjectionComparison,
-  AutoIncreaseSettings,
   ContributionAssumptions,
+  AutoIncreaseSettings,
 } from "../logic/types";
-import { calculateMonthlyContribution } from "../logic/contributionCalculator";
-import { calculateProjection } from "../logic/projectionCalculator";
-import { getProjectionDelta } from "../logic/projectionDelta";
+import { deriveContribution } from "../logic/contributionCalculator";
 
 // Normalized plan IDs - stable enum values
 export type SelectedPlanId = "traditional_401k" | "roth_401k" | "roth_ira" | null;
@@ -26,12 +22,21 @@ interface EnrollmentState {
   contributionAmount: number;
   contributionSource: ContributionSource[];
   employerMatchEnabled: boolean;
-  
-  // Auto-increase settings
-  autoIncrease: AutoIncreaseSettings;
+  employerMatchIsCustom: boolean;
   
   // Assumptions
   assumptions: ContributionAssumptions;
+  
+  // Contribution source allocation (preTax + roth + afterTax = 100)
+  sourceAllocation: { preTax: number; roth: number; afterTax: number };
+  
+  // UI: sources edit mode
+  sourcesEditMode: boolean;
+  // UI: sources view mode - percent or dollar
+  sourcesViewMode: "percent" | "dollar";
+  
+  // Auto-increase
+  autoIncrease: AutoIncreaseSettings;
   
   // Profile data (from previous steps)
   currentAge: number;
@@ -48,18 +53,20 @@ interface EnrollmentContextValue {
   setSalary: (salary: number) => void;
   setContributionType: (type: ContributionType) => void;
   setContributionAmount: (amount: number) => void;
-  setContributionSource: (sources: ContributionSource[]) => void;
+  setCurrentAge: (age: number) => void;
+  setRetirementAge: (age: number) => void;
   setEmployerMatchEnabled: (enabled: boolean) => void;
-  setAutoIncrease: (settings: AutoIncreaseSettings) => void;
+  setEmployerMatchIsCustom: (isCustom: boolean) => void;
   setAssumptions: (assumptions: ContributionAssumptions) => void;
-  
+  setSourceAllocation: (alloc: { preTax: number; roth: number; afterTax: number }) => void;
+  setSourcesEditMode: (enabled: boolean) => void;
+  setSourcesViewMode: (mode: "percent" | "dollar") => void;
+  setAutoIncrease: (settings: AutoIncreaseSettings) => void;
+
   // Derived values
   monthlyContribution: MonthlyContribution;
-  projectionData: ProjectionComparison;
-  projectionDelta: {
-    deltaAmount: number;
-    deltaPercentage: number;
-  };
+  estimatedRetirementBalance: number;
+  perPaycheck: number;
 }
 
 const EnrollmentContext = createContext<EnrollmentContextValue | undefined>(undefined);
@@ -72,6 +79,7 @@ interface EnrollmentProviderProps {
   initialAge?: number;
   initialRetirementAge?: number;
   initialBalance?: number;
+  initialSelectedPlan?: SelectedPlanId;
 }
 
 export const EnrollmentProvider = ({
@@ -82,22 +90,27 @@ export const EnrollmentProvider = ({
   initialAge = 30,
   initialRetirementAge = 65,
   initialBalance = 0,
+  initialSelectedPlan = null,
 }: EnrollmentProviderProps) => {
   const [state, setState] = useState<EnrollmentState>({
-    selectedPlan: null,
+    selectedPlan: initialSelectedPlan,
     isInitialized: true, // Mark as initialized after first render
     salary: initialSalary,
     contributionType: initialContributionType,
     contributionAmount: initialContributionAmount,
     contributionSource: ["preTax"],
     employerMatchEnabled: true,
+    employerMatchIsCustom: false,
+    sourceAllocation: { preTax: 100, roth: 0, afterTax: 0 },
+    sourcesEditMode: true,
+    sourcesViewMode: "percent",
     autoIncrease: {
       enabled: false,
       percentage: 1,
       maxPercentage: 15,
     },
     assumptions: {
-      employerMatchPercentage: 50,
+      employerMatchPercentage: 100,
       employerMatchCap: 6,
       annualReturnRate: 7,
       inflationRate: 2.5,
@@ -107,80 +120,38 @@ export const EnrollmentProvider = ({
     currentBalance: initialBalance,
   });
 
-  // Derived values using pure functions
-  const monthlyContribution = useMemo(() => {
-    const input: ContributionInput = {
-      salary: state.salary,
+  // Derived values - single source of truth per Figma spec
+  const { monthlyContribution, estimatedRetirementBalance, perPaycheck } = useMemo(() => {
+    const derived = deriveContribution({
       contributionType: state.contributionType,
-      contributionAmount: state.contributionAmount,
-      source: state.contributionSource[0], // Use first selected source
-    };
-    const assumptions = {
-      ...state.assumptions,
-      employerMatchPercentage: state.employerMatchEnabled
-        ? state.assumptions.employerMatchPercentage
-        : 0,
-    };
-    return calculateMonthlyContribution(input, assumptions);
-  }, [
-    state.salary,
-    state.contributionType,
-    state.contributionAmount,
-    state.contributionSource,
-    state.employerMatchEnabled,
-    state.assumptions,
-  ]);
-
-  const projectionData = useMemo(() => {
-    const baseInput = {
+      contributionValue: state.contributionAmount,
+      annualSalary: state.salary,
+      paychecksPerYear: 26,
+      employerMatchEnabled: state.employerMatchEnabled,
+      employerMatchCap: state.assumptions.employerMatchCap,
+      employerMatchPercentage: state.assumptions.employerMatchPercentage,
       currentAge: state.currentAge,
       retirementAge: state.retirementAge,
-      currentBalance: state.currentBalance,
-      monthlyContribution: monthlyContribution.employee,
-      employerMatch: monthlyContribution.employer,
-      annualReturnRate: state.assumptions.annualReturnRate,
-      inflationRate: state.assumptions.inflationRate,
-    };
-
-    // Calculate baseline projection (no auto-increase)
-    const baseline = calculateProjection(baseInput);
-
-    // Calculate projection with auto-increase if enabled
-    const withAutoIncrease = calculateProjection({
-      ...baseInput,
-      autoIncrease: state.autoIncrease.enabled && state.contributionType === "percentage"
-        ? {
-            enabled: true,
-            initialPercentage: state.contributionAmount,
-            increasePercentage: state.autoIncrease.percentage,
-            maxPercentage: state.autoIncrease.maxPercentage,
-            salary: state.salary,
-            contributionType: state.contributionType,
-            assumptions: state.assumptions,
-          }
-        : undefined,
     });
-
     return {
-      baseline,
-      withAutoIncrease,
+      monthlyContribution: {
+        employee: derived.monthlyContribution,
+        employer: derived.employerMatchMonthly,
+        total: derived.totalMonthlyInvestment,
+      } as MonthlyContribution,
+      estimatedRetirementBalance: derived.estimatedRetirementBalance,
+      perPaycheck: derived.perPaycheck,
     };
   }, [
-    state.currentAge,
-    state.retirementAge,
-    state.currentBalance,
-    monthlyContribution.employee,
-    monthlyContribution.employer,
-    state.assumptions,
-    state.autoIncrease,
     state.contributionType,
     state.contributionAmount,
     state.salary,
+    state.employerMatchEnabled,
+    state.assumptions.employerMatchCap,
+    state.assumptions.employerMatchPercentage,
+    state.currentAge,
+    state.retirementAge,
   ]);
-
-  const projectionDelta = useMemo(() => {
-    return getProjectionDelta(projectionData.baseline, projectionData.withAutoIncrease);
-  }, [projectionData]);
 
   const value: EnrollmentContextValue = {
     state,
@@ -188,13 +159,18 @@ export const EnrollmentProvider = ({
     setSalary: (salary) => setState((prev) => ({ ...prev, salary })),
     setContributionType: (type) => setState((prev) => ({ ...prev, contributionType: type })),
     setContributionAmount: (amount) => setState((prev) => ({ ...prev, contributionAmount: amount })),
-    setContributionSource: (sources) => setState((prev) => ({ ...prev, contributionSource: sources })),
+    setCurrentAge: (age) => setState((prev) => ({ ...prev, currentAge: age })),
+    setRetirementAge: (age) => setState((prev) => ({ ...prev, retirementAge: age })),
     setEmployerMatchEnabled: (enabled) => setState((prev) => ({ ...prev, employerMatchEnabled: enabled })),
-    setAutoIncrease: (settings) => setState((prev) => ({ ...prev, autoIncrease: settings })),
+    setEmployerMatchIsCustom: (isCustom) => setState((prev) => ({ ...prev, employerMatchIsCustom: isCustom })),
     setAssumptions: (assumptions) => setState((prev) => ({ ...prev, assumptions })),
+    setSourceAllocation: (alloc) => setState((prev) => ({ ...prev, sourceAllocation: alloc })),
+    setSourcesEditMode: (enabled) => setState((prev) => ({ ...prev, sourcesEditMode: enabled })),
+    setSourcesViewMode: (mode) => setState((prev) => ({ ...prev, sourcesViewMode: mode })),
+    setAutoIncrease: (settings) => setState((prev) => ({ ...prev, autoIncrease: settings })),
     monthlyContribution,
-    projectionData,
-    projectionDelta,
+    estimatedRetirementBalance,
+    perPaycheck,
   };
 
   return <EnrollmentContext.Provider value={value}>{children}</EnrollmentContext.Provider>;

@@ -7,9 +7,9 @@ interface DashboardGridProps {
 
 export const DashboardGrid = ({ left, right }: DashboardGridProps) => {
   return (
-    <div className="dashboard-grid">
-      <div className="dashboard-grid__left">{left}</div>
-      <div className="dashboard-grid__right">{right}</div>
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[2fr_1fr]">
+      <div className="min-w-0">{left}</div>
+      <div className="min-w-0">{right}</div>
     </div>
   );
 };

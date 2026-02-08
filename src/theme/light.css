@@ -15,4 +15,11 @@
   --card-bg: var(--color-surface-elevated);
   --card-border: rgb(17 24 39 / 0.08);
   --card-shadow: var(--shadow-lg);
+
+  --bg: var(--color-background);
+  --surface: var(--color-surface);
+  --text-primary: var(--color-text);
+  --text-secondary: var(--color-text-secondary);
+  --border: var(--color-border);
+  --accent: var(--color-primary);
 }

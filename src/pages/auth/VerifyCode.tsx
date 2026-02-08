@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { AuthLayout } from "../../layouts/AuthLayout";
+import {
+  AuthLayout,
+  AuthFormShell,
+  AuthOTPInput,
+  AuthButton,
+} from "../../components/auth";
 import { Logo } from "../../components/brand/Logo";
-import { OTPInput } from "../../components/ui/OTPInput";
-import Button from "../../components/ui/Button";
-import { branding } from "../../config/branding";
 
 export const VerifyCode = () => {
   const navigate = useNavigate();
@@ -20,51 +22,45 @@ export const VerifyCode = () => {
     navigate("/");
   };
 
-  const leftPanel = (
-    <div className="login-left">
-      <h2 className="login-left__title">Verify your identity</h2>
-      <p className="login-left__description">Enter the 6-digit code sent to your email.</p>
-    </div>
+  const headerSlot = (
+    <Logo className="h-10 w-auto" />
+  );
+
+  const bodySlot = (
+    <>
+      <AuthOTPInput onComplete={handleOTPComplete} />
+      <AuthButton onClick={handleVerify}>Verify & continue</AuthButton>
+      <div className="flex flex-col items-center gap-3">
+        <a
+          href="#"
+          className="text-sm text-blue-600 no-underline hover:underline dark:text-blue-400"
+          onClick={(e) => e.preventDefault()}
+          aria-label="Resend verification code"
+        >
+          Resend code
+        </a>
+        <a
+          href="#"
+          className="text-sm text-blue-600 no-underline hover:underline dark:text-blue-400"
+          onClick={(e) => {
+            e.preventDefault();
+            handleBackToSignIn();
+          }}
+        >
+          Back to sign in
+        </a>
+      </div>
+    </>
   );
 
   return (
-    <AuthLayout left={leftPanel}>
-      <div className="login-right">
-        <div className="login-right__brand">
-          <Logo className="login-right__logo" />
-          <span className="login-right__app-name">{branding.appName}</span>
-        </div>
-        <h1 className="login-right__title">Verification code</h1>
-        <p className="login-right__helper">We've sent a 6-digit code to your email address.</p>
-        <div className="login-right__form">
-          <div className="verify-code__otp-wrapper">
-            <OTPInput onComplete={handleOTPComplete} />
-          </div>
-          <Button onClick={handleVerify}>Verify & continue</Button>
-          <div className="verify-code__links">
-            <a
-              href="#"
-              className="login-right__forgot-link"
-              onClick={(e) => {
-                e.preventDefault();
-              }}
-              aria-label="Resend verification code"
-            >
-              Resend code
-            </a>
-            <a
-              href="#"
-              className="login-right__forgot-link"
-              onClick={(e) => {
-                e.preventDefault();
-                handleBackToSignIn();
-              }}
-            >
-              Back to sign in
-            </a>
-          </div>
-        </div>
-      </div>
+    <AuthLayout>
+      <AuthFormShell
+        headerSlot={headerSlot}
+        title="Verification code"
+        description="We've sent a 6-digit code to your email address."
+        bodySlot={bodySlot}
+      />
     </AuthLayout>
   );
 };

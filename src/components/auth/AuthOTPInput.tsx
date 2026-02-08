@@ -1,0 +1,99 @@
+import { useRef, useEffect } from "react";
+import type { KeyboardEvent, ChangeEvent } from "react";
+
+interface AuthOTPInputProps {
+  onComplete?: (value: string) => void;
+  length?: number;
+  className?: string;
+}
+
+/**
+ * Accessible OTP input. Theme-aware. Touch-friendly on mobile.
+ */
+export const AuthOTPInput = ({
+  onComplete,
+  length = 6,
+  className = "",
+}: AuthOTPInputProps) => {
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const values = useRef<string[]>(Array(length).fill(""));
+
+  useEffect(() => {
+    inputRefs.current[0]?.focus();
+  }, [length]);
+
+  const handleInput = (index: number, e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value && !/^\d$/.test(value)) {
+      e.target.value = values.current[index];
+      return;
+    }
+    values.current[index] = value;
+    if (value && index < length - 1) {
+      inputRefs.current[index + 1]?.focus();
+    }
+    const otpValue = values.current.join("");
+    if (otpValue.length === length && onComplete) {
+      onComplete(otpValue);
+    }
+  };
+
+  const handleKeyDown = (index: number, e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Backspace" && !e.currentTarget.value && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+    if (e.key === "ArrowLeft" && index > 0) {
+      e.preventDefault();
+      inputRefs.current[index - 1]?.focus();
+    }
+    if (e.key === "ArrowRight" && index < length - 1) {
+      e.preventDefault();
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData("text").slice(0, length);
+    const digits = pastedData.match(/\d/g) || [];
+    digits.forEach((digit, i) => {
+      if (i < length) {
+        values.current[i] = digit;
+        if (inputRefs.current[i]) {
+          inputRefs.current[i]!.value = digit;
+        }
+      }
+    });
+    const nextIndex = Math.min(digits.length, length - 1);
+    inputRefs.current[nextIndex]?.focus();
+    const otpValue = values.current.join("");
+    if (otpValue.length === length && onComplete) {
+      onComplete(otpValue);
+    }
+  };
+
+  return (
+    <div
+      className={`my-2 flex justify-center gap-2 ${className}`.trim()}
+      role="group"
+      aria-label={`${length}-digit verification code`}
+    >
+      {Array.from({ length }).map((_, index) => (
+        <input
+          key={index}
+          ref={(el) => {
+            inputRefs.current[index] = el;
+          }}
+          type="text"
+          inputMode="numeric"
+          maxLength={1}
+          className="h-12 min-h-[48px] w-12 min-w-[48px] rounded-lg border border-slate-200 bg-white p-0 text-center text-2xl font-semibold text-slate-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-blue-400 dark:focus:ring-blue-400/20"
+          onChange={(e) => handleInput(index, e)}
+          onKeyDown={(e) => handleKeyDown(index, e)}
+          onPaste={handlePaste}
+          aria-label={`Digit ${index + 1} of ${length}`}
+        />
+      ))}
+    </div>
+  );
+};

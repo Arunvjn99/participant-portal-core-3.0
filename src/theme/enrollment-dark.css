@@ -1,0 +1,297 @@
+/**
+ * Dark mode overrides for Plans and Contribution enrollment pages.
+ * Loaded when .dark is on document.documentElement.
+ */
+
+/* ========== Choose Plan (Plans Page) ========== */
+.dark .choose-plan__advisory {
+  background-color: rgba(14, 165, 233, 0.15);
+  border: 1px solid rgba(14, 165, 233, 0.3);
+}
+
+.dark .choose-plan__footer {
+  border-top-color: var(--color-border);
+  background-color: var(--color-background-secondary);
+  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+.dark .choose-plan__footer-save {
+  background-color: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+.dark .choose-plan__footer-save:hover:not(:disabled) {
+  background-color: var(--color-background-tertiary);
+}
+
+/* Plan selection card - standard benefit chips */
+.dark .plan-selection-card--standard .plan-selection-card__benefit-chip {
+  background-color: var(--color-background-tertiary);
+  color: var(--color-text-secondary);
+}
+
+.dark .plan-selection-card__badge-hint {
+  color: #34d399;
+}
+
+/* Profile summary & recommendation cards - use DashboardCard which has dark, but ensure nested text */
+.dark .profile-summary-card,
+.dark .recommendation-insight-card {
+  color: var(--color-text);
+}
+
+/* ========== Contribution Page ========== */
+.dark .contrib-card {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-md);
+}
+
+.dark .contrib-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.dark .contrib-card__title,
+.dark .contrib-match__title,
+.dark .contrib-sources__title {
+  color: var(--color-text);
+}
+
+.dark .contrib-card__description,
+.dark .contrib-auto-increase__helper,
+.dark .contrib-inputs__helper {
+  color: var(--color-text-secondary);
+}
+
+.dark .contrib-presets__label {
+  color: var(--color-text);
+}
+
+.dark .contrib-preset {
+  background: var(--color-background-tertiary);
+  color: var(--color-text-secondary);
+}
+
+.dark .contrib-preset:hover {
+  background: var(--color-background-secondary);
+}
+
+.dark .contrib-preset--active.contrib-preset--safe {
+  background: rgba(34, 197, 94, 0.2);
+  color: #34d399;
+}
+
+.dark .contrib-preset--active.contrib-preset--aggressive {
+  background: rgba(251, 146, 60, 0.2);
+  color: #fb923c;
+}
+
+.dark .contrib-auto-increase-inputs {
+  border-top-color: var(--color-border);
+}
+
+.dark .contrib-auto-increase__label,
+.dark .contrib-inputs__label {
+  color: var(--color-text-secondary);
+}
+
+.dark .contrib-input {
+  background: var(--color-background);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.dark .contrib-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+
+.dark .contrib-input--primary,
+.dark .contrib-input__suffix,
+.dark .contrib-input__prefix,
+.dark .contrib-input__inline-suffix {
+  color: var(--color-text);
+}
+
+.dark .contrib-slider__input {
+  background: linear-gradient(to right, #3b82f6 0%, #3b82f6 var(--slider-pct, 0%), var(--color-border) var(--slider-pct, 0%), var(--color-border) 100%);
+}
+
+.dark .contrib-slider__input::-webkit-slider-thumb {
+  background: #3b82f6;
+  border-color: var(--color-surface);
+}
+
+.dark .contrib-slider__input::-moz-range-thumb {
+  background: #3b82f6;
+  border-color: var(--color-surface);
+}
+
+.dark .contrib-slider__labels,
+.dark .contrib-slider__match {
+  color: var(--color-text-secondary);
+}
+
+.dark .contrib-slider__match {
+  color: #60a5fa;
+}
+
+.dark .contrib-pill {
+  background: var(--color-background-tertiary);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.dark .contrib-pill:hover {
+  background: var(--color-background-secondary);
+  border-color: var(--color-border);
+}
+
+.dark .contrib-pill--active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+.dark .contrib-toggle__slider {
+  background: var(--color-background-tertiary);
+}
+
+.dark .contrib-toggle__slider::before {
+  background: var(--color-text);
+}
+
+.dark .contrib-sources {
+  border-top-color: var(--color-border);
+}
+
+.dark .contrib-sources__header-right .contrib-sources__toggle-label {
+  color: var(--color-text-secondary);
+}
+
+.dark .contrib-segmented {
+  border-color: var(--color-border);
+}
+
+.dark .contrib-segmented__btn {
+  background: var(--color-background);
+  color: var(--color-text-secondary);
+}
+
+.dark .contrib-segmented__btn:hover {
+  background: var(--color-background-tertiary);
+}
+
+.dark .contrib-segmented__btn--active {
+  background: var(--color-background-tertiary);
+  color: var(--color-text);
+}
+
+.dark .contrib-sources__checkbox-label {
+  color: var(--color-text);
+}
+
+.dark .contrib-sources__min-max {
+  color: var(--color-text-tertiary);
+}
+
+.dark .contrib-sources__input {
+  background: var(--color-background);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.dark .contrib-sources__input:disabled {
+  background: var(--color-background-tertiary);
+}
+
+.dark .contrib-sources__suffix {
+  color: var(--color-text-secondary);
+}
+
+.dark .contrib-sources__error {
+  color: var(--color-error);
+}
+
+/* Paycheck impact panel - adjust for dark */
+.dark .contrib-paycheck-panel {
+  background: rgba(14, 165, 233, 0.15);
+  border: 1px solid rgba(14, 165, 233, 0.3);
+}
+
+.dark .contrib-paycheck-panel__label {
+  color: #38bdf8;
+}
+
+.dark .contrib-paycheck-panel__value {
+  color: #e0f2fe;
+}
+
+.dark .contrib-paycheck-panel__helper {
+  color: #bae6fd;
+  opacity: 0.9;
+}
+
+/* Chart */
+.dark .contrib-chart-assumptions {
+  color: var(--color-text-secondary);
+}
+
+.dark .contrib-chart-empty {
+  color: var(--color-text-secondary);
+}
+
+.dark .contrib-chart text {
+  fill: var(--color-text-secondary);
+}
+
+.dark .contrib-chart-legend {
+  color: var(--color-text);
+}
+
+.dark .contrib-chart-legend__item--baseline::before {
+  background: #60a5fa;
+}
+
+.dark .contrib-chart-legend__item--auto::before {
+  border-bottom-color: #38bdf8;
+}
+
+/* Footer */
+.dark .contrib-footer {
+  background: var(--color-background-secondary);
+  border-top-color: var(--color-border);
+  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+.dark .contrib-footer__label {
+  color: var(--color-text-secondary);
+}
+
+.dark .contrib-footer__value {
+  color: var(--color-text);
+}
+
+.dark .contrib-footer__value--total {
+  color: #60a5fa;
+}
+
+.dark .contrib-footer__btn--secondary {
+  color: var(--color-text-secondary);
+  border-color: var(--color-border);
+}
+
+.dark .contrib-footer__btn--secondary:hover:not(:disabled) {
+  background: var(--color-background-tertiary);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+.dark .contrib-footer__btn--primary {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.dark .contrib-footer__btn--primary:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}

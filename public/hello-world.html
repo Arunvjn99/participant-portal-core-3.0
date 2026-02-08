@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABC Company - Loan Application</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-blue: #3b82f6;
+            --primary-blue-hover: #2563eb;
+            --accent-green: #10b981;
+            --accent-green-hover: #059669;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        .step-indicator {
+            transition: all 0.3s ease;
+        }
+        
+        .step-indicator.active {
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+        
+        .step-indicator.completed {
+            color: var(--accent-green);
+        }
+        
+        .slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #e5e7eb;
+            outline: none;
+            transition: background 0.3s;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .retirement-chart-bar {
+            transition: width 0.5s ease;
+        }
+        
+        .drop-zone {
+            border: 2px dashed #cbd5e1;
+            transition: all 0.3s ease;
+        }
+        
+        .drop-zone.drag-over {
+            border-color: var(--primary-blue);
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+        
+        .signature-canvas {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: crosshair;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Progress Stepper -->
+    <div class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2 md:space-x-4 flex-1">
+                    <div class="step-indicator active flex items-center" data-step="1">
+                        <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-semibold mr-2">1</div>
+                        <span class="hidden sm:inline">Eligibility</span>
+                    </div>
+                    <div class="flex-1 h-1 bg-gray-200 mx-2">
+                        <div class="h-full bg-gray-200 transition-all duration-300" id="progress-bar-1"></div>
+                    </div>
+                    <div class="step-indicator flex items-center" data-step="2">
+                        <div class="w-8 h-8 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center text-sm font-semibold mr-2">2</div>
+                        <span class="hidden sm:inline">Options</span>
+                    </div>
+                    <div class="flex-1 h-1 bg-gray-200 mx-2">
+                        <div class="h-full bg-gray-200 transition-all duration-300" id="progress-bar-2"></div>
+                    </div>
+                    <div class="step-indicator flex items-center" data-step="3">
+                        <div class="w-8 h-8 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center text-sm font-semibold mr-2">3</div>
+                        <span class="hidden sm:inline">Terms</span>
+                    </div>
+                    <div class="flex-1 h-1 bg-gray-200 mx-2">
+                        <div class="h-full bg-gray-200 transition-all duration-300" id="progress-bar-3"></div>
+                    </div>
+                    <div class="step-indicator flex items-center" data-step="4">
+                        <div class="w-8 h-8 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center text-sm font-semibold mr-2">4</div>
+                        <span class="hidden sm:inline">Submit</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <!-- Loan Dashboard Section -->
+        <div id="loan-dashboard" class="section active">
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h1 class="text-3xl font-bold text-gray-900">Loan Dashboard</h1>
+                    <div class="text-sm text-gray-600">
+                        <span class="font-semibold">ABC Company</span>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 border border-blue-200">
+                        <div class="text-sm text-blue-700 font-medium mb-2">Total Account Balance</div>
+                        <div class="text-3xl font-bold text-blue-900">$125,000</div>
+                    </div>
+                    <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 border border-green-200">
+                        <div class="text-sm text-green-700 font-medium mb-2">Eligible Loan Amount</div>
+                        <div class="text-3xl font-bold text-green-900">$50,000</div>
+                    </div>
+                    <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-6 border border-gray-200">
+                        <div class="text-sm text-gray-700 font-medium mb-2">Outstanding Loans</div>
+                        <div class="text-3xl font-bold text-gray-900">$0</div>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Active Loans</h2>
+                    <div class="text-center py-8 text-gray-500">
+                        <p class="mb-4">No active loans at this time</p>
+                        <button 
+                            onclick="showSection('loan-simulator')" 
+                            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
+                        >
+                            Apply for New Loan
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Loan History</h2>
+                    <div class="text-center py-8 text-gray-500">
+                        <p>No previous loans</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loan Simulator Section -->
+        <div id="loan-simulator" class="section">
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h1 class="text-3xl font-bold text-gray-900">Loan Simulator</h1>
+                    <button 
+                        onclick="showSection('loan-dashboard')" 
+                        class="text-gray-600 hover:text-gray-900 transition-colors"
+                    >
+                        ← Back to Dashboard
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <!-- Loan Amount Slider -->
+                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                        <label class="block text-sm font-semibold text-gray-700 mb-4">
+                            Loan Amount: <span id="loan-amount-value" class="text-blue-600">$25,000</span>
+                        </label>
+                        <input 
+                            type="range" 
+                            id="loan-amount-slider" 
+                            min="1000" 
+                            max="50000" 
+                            value="25000" 
+                            step="1000"
+                            class="slider mb-4"
+                            oninput="updateCalculations()"
+                        >
+                        <div class="flex justify-between text-xs text-gray-500">
+                            <span>$1,000</span>
+                            <span>$50,000</span>
+                        </div>
+                    </div>
+
+                    <!-- Tenure Slider -->
+                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                        <label class="block text-sm font-semibold text-gray-700 mb-4">
+                            Tenure: <span id="tenure-value" class="text-blue-600">3 years</span>
+                        </label>
+                        <input 
+                            type="range" 
+                            id="tenure-slider" 
+                            min="1" 
+                            max="5" 
+                            value="3" 
+                            step="1"
+                            class="slider mb-4"
+                            oninput="updateCalculations()"
+                        >
+                        <div class="flex justify-between text-xs text-gray-500">
+                            <span>1 year</span>
+                            <span id="tenure-max">5 years</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculation Results -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-blue-50 rounded-lg p-6 border border-blue-200">
+                        <div class="text-sm text-blue-700 font-medium mb-2">Monthly Payment (EMI)</div>
+                        <div class="text-3xl font-bold text-blue-900" id="monthly-payment">$0</div>
+                    </div>
+                    <div class="bg-orange-50 rounded-lg p-6 border border-orange-200">
+                        <div class="text-sm text-orange-700 font-medium mb-2">Total Interest</div>
+                        <div class="text-3xl font-bold text-orange-900" id="total-interest">$0</div>
+                    </div>
+                    <div class="bg-red-50 rounded-lg p-6 border border-red-200">
+                        <div class="text-sm text-red-700 font-medium mb-2">Opportunity Cost</div>
+                        <div class="text-3xl font-bold text-red-900" id="opportunity-cost">$0</div>
+                    </div>
+                </div>
+
+                <!-- Retirement Impact Chart -->
+                <div class="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Retirement Impact (30 Years)</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm text-gray-600 mb-2">
+                                <span>With Loan (Lost Growth)</span>
+                                <span id="lost-growth-amount" class="font-semibold">$0</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-6">
+                                <div 
+                                    id="lost-growth-bar" 
+                                    class="retirement-chart-bar bg-red-500 h-6 rounded-full flex items-center justify-end pr-2"
+                                    style="width: 0%"
+                                >
+                                    <span class="text-xs text-white font-medium" id="lost-growth-percent">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm text-gray-600 mb-2">
+                                <span>Without Loan (Potential Growth)</span>
+                                <span id="potential-growth-amount" class="font-semibold">$0</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-6">
+                                <div 
+                                    id="potential-growth-bar" 
+                                    class="retirement-chart-bar bg-green-500 h-6 rounded-full flex items-center justify-end pr-2"
+                                    style="width: 0%"
+                                >
+                                    <span class="text-xs text-white font-medium" id="potential-growth-percent">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end">
+                    <button 
+                        onclick="showSection('application-form')" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
+                    >
+                        Continue to Application
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Application Form Section -->
+        <div id="application-form" class="section">
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h1 class="text-3xl font-bold text-gray-900">Application Form</h1>
+                    <button 
+                        onclick="showSection('loan-simulator')" 
+                        class="text-gray-600 hover:text-gray-900 transition-colors"
+                    >
+                        ← Back
+                    </button>
+                </div>
+
+                <form id="loan-application-form" class="space-y-6">
+                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            Loan Purpose
+                        </label>
+                        <select 
+                            id="loan-purpose" 
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            required
+                        >
+                            <option value="">Select a purpose</option>
+                            <option value="home-purchase">Home Purchase</option>
+                            <option value="home-improvement">Home Improvement</option>
+                            <option value="debt-consolidation">Debt Consolidation</option>
+                            <option value="education">Education</option>
+                            <option value="medical">Medical Expenses</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                        <label class="flex items-center space-x-3">
+                            <input 
+                                type="checkbox" 
+                                id="payroll-confirmation" 
+                                class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                required
+                            >
+                            <span class="text-sm font-semibold text-gray-700">
+                                I confirm that loan repayments will be deducted from my payroll
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                        <label class="flex items-center space-x-3">
+                            <input 
+                                type="checkbox" 
+                                id="primary-residence" 
+                                class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                onchange="togglePrimaryResidence()"
+                            >
+                            <span class="text-sm font-semibold text-gray-700">
+                                This loan is for my Primary Residence
+                            </span>
+                        </label>
+                        <p class="text-xs text-gray-500 mt-2">
+                            Selecting this option extends maximum tenure to 15 years and requires residence documentation
+                        </p>
+                    </div>
+
+                    <div class="flex justify-end space-x-4">
+                        <button 
+                            type="button"
+                            onclick="showSection('loan-simulator')" 
+                            class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                            type="button"
+                            onclick="proceedToDocUpload()" 
+                            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
+                        >
+                            Continue
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Document Upload Section -->
+        <div id="doc-upload" class="section">
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h1 class="text-3xl font-bold text-gray-900">Document Upload</h1>
+                    <button 
+                        onclick="showSection('application-form')" 
+                        class="text-gray-600 hover:text-gray-900 transition-colors"
+                    >
+                        ← Back
+                    </button>
+                </div>
+
+                <div id="primary-residence-upload" class="mb-6" style="display: none;">
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                        <p class="text-sm text-yellow-800">
+                            <strong>Required:</strong> Please upload proof of Primary Residence (e.g., mortgage statement, property deed, or utility bill)
+                        </p>
+                    </div>
+                </div>
+
+                <div 
+                    id="drop-zone" 
+                    class="drop-zone rounded-lg p-12 text-center cursor-pointer"
+                    ondrop="handleDrop(event)"
+                    ondragover="handleDragOver(event)"
+                    ondragleave="handleDragLeave(event)"
+                    onclick="document.getElementById('file-input').click()"
+                >
+                    <input 
+                        type="file" 
+                        id="file-input" 
+                        class="hidden" 
+                        multiple 
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        onchange="handleFileSelect(event)"
+                    >
+                    <div class="space-y-4">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <div>
+                            <p class="text-lg font-semibold text-gray-700 mb-2">
+                                Drag and drop files here, or click to browse
+                            </p>
+                            <p class="text-sm text-gray-500">
+                                Supported formats: PDF, JPG, PNG (Max 10MB per file)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="uploaded-files" class="mt-6 space-y-3"></div>
+
+                <div class="flex justify-end space-x-4 mt-6">
+                    <button 
+                        type="button"
+                        onclick="showSection('application-form')" 
+                        class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                        Back
+                    </button>
+                    <button 
+                        type="button"
+                        onclick="proceedToReview()" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
+                    >
+                        Continue to Review
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Final Review Section -->
+        <div id="final-review" class="section">
+            <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h1 class="text-3xl font-bold text-gray-900">Final Review</h1>
+                    <button 
+                        onclick="showSection('doc-upload')" 
+                        class="text-gray-600 hover:text-gray-900 transition-colors"
+                    >
+                        ← Back
+                    </button>
+                </div>
+
+                <!-- Promissory Note Preview -->
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200 mb-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Promissory Note</h2>
+                    <div class="bg-white rounded-lg p-6 border border-gray-200 max-h-96 overflow-y-auto">
+                        <div class="space-y-4 text-sm text-gray-700">
+                            <p><strong>Loan Agreement</strong></p>
+                            <p>This Promissory Note ("Note") is entered into between ABC Company and the borrower.</p>
+                            <p><strong>Loan Amount:</strong> <span id="review-loan-amount">$25,000</span></p>
+                            <p><strong>Tenure:</strong> <span id="review-tenure">3 years</span></p>
+                            <p><strong>Monthly Payment:</strong> <span id="review-monthly-payment">$0</span></p>
+                            <p><strong>Interest Rate:</strong> 5.5% APR</p>
+                            <p><strong>Purpose:</strong> <span id="review-purpose">-</span></p>
+                            <p>By signing below, I agree to repay the loan amount according to the terms specified above. Repayments will be automatically deducted from my payroll.</p>
+                            <p class="mt-4"><strong>Borrower Signature Required</strong></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Digital Signature -->
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200 mb-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Digital Signature</h2>
+                    <canvas 
+                        id="signature-canvas" 
+                        class="signature-canvas w-full bg-white"
+                        width="800"
+                        height="200"
+                    ></canvas>
+                    <div class="flex justify-between items-center mt-4">
+                        <button 
+                            onclick="clearSignature()" 
+                            class="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                        >
+                            Clear Signature
+                        </button>
+                        <p class="text-xs text-gray-500">
+                            Please sign above to proceed
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-4">
+                    <button 
+                        type="button"
+                        onclick="showSection('doc-upload')" 
+                        class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                        Back
+                    </button>
+                    <button 
+                        type="button"
+                        onclick="submitApplication()" 
+                        class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
+                    >
+                        Submit Application
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State Controller
+        let currentSection = 'loan-dashboard';
+        let uploadedFiles = [];
+        let isPrimaryResidence = false;
+        let signatureCanvas = null;
+        let signatureContext = null;
+        let isDrawing = false;
+
+        // Initialize signature canvas
+        window.addEventListener('DOMContentLoaded', () => {
+            signatureCanvas = document.getElementById('signature-canvas');
+            if (signatureCanvas) {
+                signatureContext = signatureCanvas.getContext('2d');
+                signatureContext.strokeStyle = '#111827';
+                signatureContext.lineWidth = 2;
+                signatureContext.lineCap = 'round';
+                signatureContext.lineJoin = 'round';
+
+                signatureCanvas.addEventListener('mousedown', startDrawing);
+                signatureCanvas.addEventListener('mousemove', draw);
+                signatureCanvas.addEventListener('mouseup', stopDrawing);
+                signatureCanvas.addEventListener('mouseout', stopDrawing);
+
+                signatureCanvas.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    const rect = signatureCanvas.getBoundingClientRect();
+                    signatureContext.beginPath();
+                    signatureContext.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+                    isDrawing = true;
+                });
+
+                signatureCanvas.addEventListener('touchmove', (e) => {
+                    e.preventDefault();
+                    if (isDrawing) {
+                        const touch = e.touches[0];
+                        const rect = signatureCanvas.getBoundingClientRect();
+                        signatureContext.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+                        signatureContext.stroke();
+                    }
+                });
+
+                signatureCanvas.addEventListener('touchend', stopDrawing);
+            }
+            updateCalculations();
+        });
+
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = signatureCanvas.getBoundingClientRect();
+            signatureContext.beginPath();
+            signatureContext.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            const rect = signatureCanvas.getBoundingClientRect();
+            signatureContext.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+            signatureContext.stroke();
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function clearSignature() {
+            signatureContext.clearRect(0, 0, signatureCanvas.width, signatureCanvas.height);
+        }
+
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            currentSection = sectionId;
+
+            // Update progress stepper
+            updateProgressStepper(sectionId);
+        }
+
+        function updateProgressStepper(sectionId) {
+            const stepMap = {
+                'loan-dashboard': 1,
+                'loan-simulator': 2,
+                'application-form': 2,
+                'doc-upload': 3,
+                'final-review': 4
+            };
+
+            const currentStep = stepMap[sectionId] || 1;
+
+            document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
+                const stepNum = index + 1;
+                const stepDiv = indicator.querySelector('div');
+                
+                if (stepNum < currentStep) {
+                    indicator.classList.add('completed');
+                    indicator.classList.remove('active');
+                    stepDiv.className = 'w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center text-sm font-semibold mr-2';
+                    stepDiv.textContent = '✓';
+                } else if (stepNum === currentStep) {
+                    indicator.classList.add('active');
+                    indicator.classList.remove('completed');
+                    stepDiv.className = 'w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-semibold mr-2';
+                    stepDiv.textContent = stepNum;
+                } else {
+                    indicator.classList.remove('active', 'completed');
+                    stepDiv.className = 'w-8 h-8 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center text-sm font-semibold mr-2';
+                    stepDiv.textContent = stepNum;
+                }
+            });
+
+            // Update progress bars
+            for (let i = 1; i < currentStep; i++) {
+                const bar = document.getElementById(`progress-bar-${i}`);
+                if (bar) bar.style.width = '100%';
+                if (bar) bar.style.backgroundColor = '#10b981';
+            }
+        }
+
+        function updateCalculations() {
+            const loanAmount = parseFloat(document.getElementById('loan-amount-slider').value);
+            const tenure = parseFloat(document.getElementById('tenure-slider').value);
+            const interestRate = 0.055; // 5.5% APR
+            const monthlyRate = interestRate / 12;
+            const numPayments = tenure * 12;
+
+            // Calculate EMI
+            let monthlyPayment = 0;
+            if (monthlyRate > 0) {
+                monthlyPayment = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / 
+                                (Math.pow(1 + monthlyRate, numPayments) - 1);
+            } else {
+                monthlyPayment = loanAmount / numPayments;
+            }
+
+            const totalInterest = (monthlyPayment * numPayments) - loanAmount;
+
+            // Calculate opportunity cost (assuming 7% annual return over 30 years)
+            const annualReturn = 0.07;
+            const years = 30;
+            const opportunityCost = loanAmount * Math.pow(1 + annualReturn, years) - loanAmount;
+
+            // Update display values
+            document.getElementById('loan-amount-value').textContent = `$${loanAmount.toLocaleString()}`;
+            document.getElementById('tenure-value').textContent = `${tenure} year${tenure > 1 ? 's' : ''}`;
+            document.getElementById('monthly-payment').textContent = `$${monthlyPayment.toFixed(2)}`;
+            document.getElementById('total-interest').textContent = `$${totalInterest.toFixed(2)}`;
+            document.getElementById('opportunity-cost').textContent = `$${opportunityCost.toFixed(2)}`;
+
+            // Update retirement impact chart
+            const totalGrowth = loanAmount * Math.pow(1 + annualReturn, years);
+            const lostGrowth = totalGrowth - loanAmount;
+            const maxGrowth = 500000; // Max value for chart scaling
+
+            const lostGrowthPercent = Math.min((lostGrowth / maxGrowth) * 100, 100);
+            const potentialGrowthPercent = Math.min((totalGrowth / maxGrowth) * 100, 100);
+
+            document.getElementById('lost-growth-bar').style.width = `${lostGrowthPercent}%`;
+            document.getElementById('potential-growth-bar').style.width = `${potentialGrowthPercent}%`;
+            document.getElementById('lost-growth-amount').textContent = `$${lostGrowth.toFixed(2)}`;
+            document.getElementById('potential-growth-amount').textContent = `$${totalGrowth.toFixed(2)}`;
+            document.getElementById('lost-growth-percent').textContent = `${lostGrowthPercent.toFixed(1)}%`;
+            document.getElementById('potential-growth-percent').textContent = `${potentialGrowthPercent.toFixed(1)}%`;
+
+            // Update review section if visible
+            if (document.getElementById('review-loan-amount')) {
+                document.getElementById('review-loan-amount').textContent = `$${loanAmount.toLocaleString()}`;
+                document.getElementById('review-tenure').textContent = `${tenure} year${tenure > 1 ? 's' : ''}`;
+                document.getElementById('review-monthly-payment').textContent = `$${monthlyPayment.toFixed(2)}`;
+            }
+        }
+
+        function togglePrimaryResidence() {
+            isPrimaryResidence = document.getElementById('primary-residence').checked;
+            const tenureSlider = document.getElementById('tenure-slider');
+            const tenureMax = document.getElementById('tenure-max');
+            const uploadSection = document.getElementById('primary-residence-upload');
+
+            if (isPrimaryResidence) {
+                tenureSlider.max = 15;
+                tenureMax.textContent = '15 years';
+                uploadSection.style.display = 'block';
+            } else {
+                tenureSlider.max = 5;
+                if (parseInt(tenureSlider.value) > 5) {
+                    tenureSlider.value = 5;
+                }
+                tenureMax.textContent = '5 years';
+                uploadSection.style.display = 'none';
+            }
+            updateCalculations();
+        }
+
+        function proceedToDocUpload() {
+            const form = document.getElementById('loan-application-form');
+            if (form.checkValidity()) {
+                showSection('doc-upload');
+            } else {
+                form.reportValidity();
+            }
+        }
+
+        function proceedToReview() {
+            if (isPrimaryResidence && uploadedFiles.length === 0) {
+                alert('Please upload proof of Primary Residence before proceeding.');
+                return;
+            }
+            
+            // Update review section with form data
+            const purpose = document.getElementById('loan-purpose').value;
+            const purposeText = document.getElementById('loan-purpose').options[document.getElementById('loan-purpose').selectedIndex].text;
+            if (document.getElementById('review-purpose')) {
+                document.getElementById('review-purpose').textContent = purposeText || '-';
+            }
+            
+            showSection('final-review');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('drop-zone').classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('drop-zone').classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('drop-zone').classList.remove('drag-over');
+            
+            const files = Array.from(e.dataTransfer.files);
+            handleFiles(files);
+        }
+
+        function handleFileSelect(e) {
+            const files = Array.from(e.target.files);
+            handleFiles(files);
+        }
+
+        function handleFiles(files) {
+            files.forEach(file => {
+                if (file.size > 10 * 1024 * 1024) {
+                    alert(`File ${file.name} is too large. Maximum size is 10MB.`);
+                    return;
+                }
+                
+                uploadedFiles.push(file);
+                displayUploadedFile(file);
+            });
+        }
+
+        function displayUploadedFile(file) {
+            const container = document.getElementById('uploaded-files');
+            const fileDiv = document.createElement('div');
+            fileDiv.className = 'bg-gray-50 rounded-lg p-4 border border-gray-200 flex items-center justify-between';
+            fileDiv.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <svg class="h-8 w-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <div>
+                        <p class="text-sm font-medium text-gray-900">${file.name}</p>
+                        <p class="text-xs text-gray-500">${(file.size / 1024).toFixed(2)} KB</p>
+                    </div>
+                </div>
+                <button 
+                    onclick="removeFile('${file.name}')" 
+                    class="text-red-600 hover:text-red-800 transition-colors"
+                >
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            `;
+            container.appendChild(fileDiv);
+        }
+
+        function removeFile(fileName) {
+            uploadedFiles = uploadedFiles.filter(file => file.name !== fileName);
+            const container = document.getElementById('uploaded-files');
+            container.innerHTML = '';
+            uploadedFiles.forEach(file => displayUploadedFile(file));
+        }
+
+        function submitApplication() {
+            if (!signatureContext || signatureContext.getImageData(0, 0, signatureCanvas.width, signatureCanvas.height).data.every(channel => channel === 0 || channel === 255)) {
+                alert('Please provide your digital signature before submitting.');
+                return;
+            }
+
+            // Simulate submission
+            alert('Application submitted successfully! You will receive a confirmation email shortly.');
+            showSection('loan-dashboard');
+            
+            // Reset form
+            document.getElementById('loan-application-form').reset();
+            uploadedFiles = [];
+            document.getElementById('uploaded-files').innerHTML = '';
+            clearSignature();
+            isPrimaryResidence = false;
+            document.getElementById('primary-residence').checked = false;
+            togglePrimaryResidence();
+        }
+    </script>
+</body>
+</html>

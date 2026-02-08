@@ -1,0 +1,12 @@
+<svg viewBox="0 0 400 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="220" fill="#f1f5f9"/>
+  <rect x="40" y="40" width="320" height="140" rx="8" fill="white" stroke="#e2e8f0"/>
+  <!-- Chart bars -->
+  <rect x="80" y="120" width="40" height="60" rx="4" fill="#3b82f6"/>
+  <rect x="140" y="90" width="40" height="90" rx="4" fill="#3b82f6"/>
+  <rect x="200" y="70" width="40" height="110" rx="4" fill="#3b82f6"/>
+  <rect x="260" y="50" width="40" height="130" rx="4" fill="#3b82f6"/>
+  <!-- Chart line -->
+  <path d="M60 60 L120 100 L180 80 L240 100 L300 70 L360 90" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  <text x="200" y="185" fill="#64748b" font-size="14" font-family="sans-serif" text-anchor="middle">Retirement Planning</text>
+</svg>

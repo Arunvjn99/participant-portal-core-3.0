@@ -1,16 +1,20 @@
+import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../layouts/DashboardLayout";
 import { DashboardHeader } from "../../components/dashboard/DashboardHeader";
 import { useEnrollment } from "../../enrollment/context/EnrollmentContext";
-import { EnrollmentStepper } from "../../components/enrollment/EnrollmentStepper";
+import { StepProgressIndicator } from "../../components/enrollment/StepProgressIndicator";
 import { PlanSelectionCard } from "../../components/enrollment/PlanSelectionCard";
 import { ProfileSummaryCard } from "../../components/enrollment/ProfileSummaryCard";
 import { RecommendationInsightCard } from "../../components/enrollment/RecommendationInsightCard";
 import Button from "../../components/ui/Button";
+import {
+  loadEnrollmentDraft,
+  saveEnrollmentDraft,
+} from "../../enrollment/enrollmentDraftStore";
 import type { PlanRecommendation, PlanOption } from "../../types/enrollment";
 import type { SelectedPlanId } from "../../enrollment/context/EnrollmentContext";
 
-// Map plan IDs from ChoosePlan to normalized enum values
 const normalizePlanId = (planId: string): SelectedPlanId => {
   const mapping: Record<string, SelectedPlanId> = {
     "traditional-401k": "traditional_401k",
@@ -20,7 +24,6 @@ const normalizePlanId = (planId: string): SelectedPlanId => {
   return mapping[planId] || null;
 };
 
-// Mock data - will be replaced with API call later
 const MOCK_RECOMMENDATION: PlanRecommendation = {
   recommendedPlanId: "roth-401k",
   fitScore: 85,
@@ -33,7 +36,6 @@ const MOCK_RECOMMENDATION: PlanRecommendation = {
     riskLevel: "Moderate",
   },
 };
-
 
 const MOCK_PLANS: PlanOption[] = [
   {
@@ -68,7 +70,7 @@ const MOCK_PLANS: PlanOption[] = [
 
 export const ChoosePlan = () => {
   const navigate = useNavigate();
-  const { setSelectedPlan } = useEnrollment();
+  const { state, setSelectedPlan } = useEnrollment();
   const recommendation = MOCK_RECOMMENDATION;
   const plans = MOCK_PLANS.map((plan) => {
     const isRecommended = plan.id === recommendation.recommendedPlanId;
@@ -79,78 +81,162 @@ export const ChoosePlan = () => {
     };
   });
 
-  const handlePlanSelect = (planId: string) => {
-    // Normalize and set plan in enrollment state
-    const normalizedPlanId = normalizePlanId(planId);
-    setSelectedPlan(normalizedPlanId);
-    // Navigate to contribution page
+  const selectedPlanId = state.selectedPlan;
+  const recommendedPlan = plans.find((p) => p.isRecommended);
+  const otherPlans = plans.filter((p) => !p.isRecommended);
+
+  const handlePlanSelect = useCallback(
+    (planId: string) => {
+      setSelectedPlan(normalizePlanId(planId));
+    },
+    [setSelectedPlan]
+  );
+
+  const handleContinue = useCallback(() => {
+    if (!selectedPlanId) return;
     navigate("/enrollment/contribution");
-  };
+  }, [selectedPlanId, navigate]);
+
+  const handleSaveAndExit = useCallback(() => {
+    const draft = loadEnrollmentDraft();
+    if (draft) {
+      saveEnrollmentDraft({ ...draft, selectedPlanId: selectedPlanId ?? null });
+    }
+    navigate("/dashboard");
+  }, [selectedPlanId, navigate]);
+
+  const handleCancel = useCallback(() => {
+    navigate("/dashboard");
+  }, [navigate]);
 
   const handleReadFullAnalysis = () => {
     // TODO: Handle read full analysis
-    console.log("Read full analysis");
-  };
-
-  const handleBack = () => {
-    navigate(-1);
   };
 
   return (
     <DashboardLayout header={<DashboardHeader />}>
       <div className="choose-plan">
-        {/* Enrollment Stepper */}
-        <div className="choose-plan__stepper">
-          <EnrollmentStepper currentStep={0} />
+        <div className="choose-plan__progress">
+          <StepProgressIndicator
+            currentStep={1}
+            totalSteps={4}
+            stepLabel="Plan Selection"
+            title="Choose your plan"
+            subtitle="Based on your personalised information, we've recommended a plan that fits your needs. You have other eligible plans to choose from."
+          />
         </div>
 
-        <div className="choose-plan__back">
-          <Button
-            onClick={handleBack}
-            className="choose-plan__back-button"
-            type="button"
-            aria-label="Go back"
-          >
-            <span className="choose-plan__back-icon" aria-hidden="true">←</span>
-            <span>Back</span>
-          </Button>
-        </div>
-        <div className="choose-plan__header">
-          <h1 className="choose-plan__title">Choose your plan</h1>
-          <p className="choose-plan__subtitle">
-            Based on your personalized information, we've recommended a plan that fits your needs.
-          </p>
-        </div>
         <div className="choose-plan__content">
           <div className="choose-plan__left">
             <div className="choose-plan__plans">
-              {plans.map((plan) => (
-                <PlanSelectionCard
-                  key={plan.id}
-                  planName={plan.title}
-                  description={plan.description}
-                  matchInfo={plan.matchInfo}
-                  benefits={plan.benefits.slice(0, 3)}
-                  isRecommended={plan.isRecommended}
-                  fitPercentage={plan.fitScore}
-                  onSelect={() => handlePlanSelect(plan.id)}
-                />
-              ))}
+              {recommendedPlan && (
+                <section className="choose-plan__section" aria-labelledby="best-fit-heading">
+                  <h2 id="best-fit-heading" className="choose-plan__section-title">
+                    <svg className="choose-plan__section-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                      <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+                      <path d="M9 18h6" />
+                      <path d="M10 22h4" />
+                    </svg>
+                    Best Fit for You
+                  </h2>
+                  <PlanSelectionCard
+                    planId={recommendedPlan.id}
+                    planName={recommendedPlan.title}
+                    description={recommendedPlan.description}
+                    matchInfo={recommendedPlan.matchInfo}
+                    benefits={recommendedPlan.benefits.slice(0, 3)}
+                    isRecommended
+                    fitPercentage={recommendedPlan.fitScore}
+                    isSelected={normalizePlanId(recommendedPlan.id) === selectedPlanId}
+                    onSelect={() => handlePlanSelect(recommendedPlan.id)}
+                  />
+                </section>
+              )}
+
+              {otherPlans.length > 0 && (
+                <section className="choose-plan__section" aria-labelledby="other-plans-heading">
+                  <div className="choose-plan__section-header">
+                    <h2 id="other-plans-heading" className="choose-plan__section-title">
+                      Other Eligible Plans ({otherPlans.length})
+                    </h2>
+                    <button
+                      type="button"
+                      className="choose-plan__compare-link"
+                      aria-label="Compare all plans"
+                    >
+                      Compare All Plans →
+                    </button>
+                  </div>
+                  {otherPlans.map((plan) => (
+                    <PlanSelectionCard
+                      key={plan.id}
+                      planId={plan.id}
+                      planName={plan.title}
+                      description={plan.description}
+                      matchInfo={plan.matchInfo}
+                      benefits={plan.benefits.slice(0, 3)}
+                      isRecommended={false}
+                      isSelected={normalizePlanId(plan.id) === selectedPlanId}
+                      onSelect={() => handlePlanSelect(plan.id)}
+                    />
+                  ))}
+                </section>
+              )}
+
+              <div className="choose-plan__advisory">
+                Need help deciding? Our advisors are available to discuss which plan is right for your financial goals.{" "}
+                <a href="#" className="choose-plan__advisory-link" onClick={(e) => { e.preventDefault(); }}>
+                  Schedule a consultation
+                </a>
+              </div>
             </div>
           </div>
-          <div className="choose-plan__right">
-            <RecommendationInsightCard
-              recommendation={recommendation}
-              onReadFullAnalysis={handleReadFullAnalysis}
-            />
+
+          <aside className="choose-plan__right" aria-label="Profile and recommendation">
             <ProfileSummaryCard
               age={recommendation.profileSnapshot.age}
               retirementAge={recommendation.profileSnapshot.retirementAge}
               salary={recommendation.profileSnapshot.salary}
               riskLevel={recommendation.profileSnapshot.riskLevel}
             />
-          </div>
+            <RecommendationInsightCard
+              recommendation={recommendation}
+              onReadFullAnalysis={handleReadFullAnalysis}
+            />
+          </aside>
         </div>
+
+        <footer className="choose-plan__footer" role="contentinfo">
+          <div className="choose-plan__footer-inner">
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="choose-plan__footer-cancel"
+              aria-label="Cancel and return to dashboard"
+            >
+              Cancel
+            </button>
+            <div className="choose-plan__footer-actions">
+              <Button
+                type="button"
+                onClick={handleSaveAndExit}
+                className="choose-plan__footer-save"
+                aria-label="Save and exit to dashboard"
+              >
+                Save & Exit
+              </Button>
+              <Button
+                type="button"
+                onClick={handleContinue}
+                disabled={!selectedPlanId}
+                className="choose-plan__footer-continue"
+                aria-label="Continue to contribution"
+              >
+                Continue
+              </Button>
+            </div>
+          </div>
+        </footer>
       </div>
     </DashboardLayout>
   );

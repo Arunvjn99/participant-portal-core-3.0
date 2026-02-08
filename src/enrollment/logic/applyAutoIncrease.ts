@@ -14,16 +14,9 @@ export const applyAutoIncrease = (
   years: number
 ): number[] => {
   const percentages: number[] = [];
-  let currentPercentage = initialPercentage;
-
   for (let year = 0; year < years; year++) {
-    // Apply increase
-    currentPercentage = currentPercentage * (1 + increasePercentage / 100);
-    
-    // Cap at maximum
-    currentPercentage = Math.min(currentPercentage, maxPercentage);
-    
-    percentages.push(currentPercentage);
+    const pct = Math.min(initialPercentage + year * increasePercentage, maxPercentage);
+    percentages.push(pct);
   }
 
   return percentages;

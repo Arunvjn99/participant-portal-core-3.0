@@ -23,7 +23,7 @@ export const DashboardHeader = () => {
   return (
     <div className="dashboard-header">
       <div className="dashboard-header__brand">
-        <Logo className="dashboard-header__logo" />
+        <Logo className="dashboard-header__logo" variant="icon" />
         <span className="dashboard-header__app-name">{branding.appName}</span>
       </div>
       <nav className="dashboard-header__nav" aria-label="Main navigation">

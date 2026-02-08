@@ -21,7 +21,7 @@ export const ContributionTypeToggle = ({
           className="contribution-type-toggle__radio"
           aria-label="Percentage"
         />
-        <span className="contribution-type-toggle__label">%</span>
+        <span className="contribution-type-toggle__label">Percentage</span>
       </label>
       <label className="contribution-type-toggle__option">
         <input
@@ -31,9 +31,9 @@ export const ContributionTypeToggle = ({
           checked={contributionType === "fixed"}
           onChange={() => onTypeChange("fixed")}
           className="contribution-type-toggle__radio"
-          aria-label="Dollar amount"
+          aria-label="Amount"
         />
-        <span className="contribution-type-toggle__label">$</span>
+        <span className="contribution-type-toggle__label">Amount</span>
       </label>
     </div>
   );

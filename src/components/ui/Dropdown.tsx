@@ -7,7 +7,7 @@ export interface DropdownOption {
 }
 
 interface DropdownProps {
-  label: string;
+  label?: string;
   placeholder?: string;
   value?: string;
   options: DropdownOption[];
@@ -20,7 +20,7 @@ interface DropdownProps {
 }
 
 export const Dropdown = ({
-  label,
+  label = "",
   placeholder = "Select an option",
   value,
   options,
@@ -118,9 +118,11 @@ export const Dropdown = ({
 
   return (
     <div className="dropdown-wrapper">
-      <label htmlFor={inputId} className="dropdown-label">
-        {label}
-      </label>
+      {label ? (
+        <label htmlFor={inputId} className="dropdown-label">
+          {label}
+        </label>
+      ) : null}
       <div
         ref={dropdownRef}
         className={`dropdown dropdown--${size} ${error ? "dropdown--error" : ""} ${isOpen ? "dropdown--open" : ""} ${disabled ? "dropdown--disabled" : ""}`}

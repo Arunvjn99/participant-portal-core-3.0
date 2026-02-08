@@ -14,11 +14,11 @@ import { applyAutoIncrease } from "./applyAutoIncrease";
  * according to the auto-increase settings.
  */
 export const calculateProjection = (input: ProjectionInput): ProjectionResult => {
-  const yearsToRetirement = input.retirementAge - input.currentAge;
+  const yearsToRetirement = Math.max(0, input.retirementAge - input.currentAge);
   const dataPoints: ProjectionDataPoint[] = [];
-  let currentBalance = input.currentBalance;
+  let currentBalance = Number.isFinite(input.currentBalance) ? input.currentBalance : 0;
   let totalContributions = 0;
-  const monthlyEmployerMatch = input.employerMatch || 0;
+  const monthlyEmployerMatch = Number.isFinite(input.employerMatch) ? (input.employerMatch || 0) : 0;
 
   // If auto-increase is enabled, calculate yearly contribution percentages
   let yearlyPercentages: number[] | null = null;
@@ -71,13 +71,13 @@ export const calculateProjection = (input: ProjectionInput): ProjectionResult =>
     });
   }
 
-  const totalGrowth = currentBalance - input.currentBalance - totalContributions;
+  const totalGrowth = currentBalance - (Number.isFinite(input.currentBalance) ? input.currentBalance : 0) - totalContributions;
 
   return {
     dataPoints,
-    finalBalance: currentBalance,
-    totalContributions,
-    totalGrowth,
+    finalBalance: Number.isFinite(currentBalance) ? currentBalance : 0,
+    totalContributions: Number.isFinite(totalContributions) ? totalContributions : 0,
+    totalGrowth: Number.isFinite(totalGrowth) ? totalGrowth : 0,
   };
 };
 

@@ -4,31 +4,33 @@ import type {
   ContributionAssumptions,
 } from "./types";
 
+/** Bi-weekly pay frequency: 26 paychecks per year */
+export const PAYCHECKS_PER_YEAR = 26;
+
+/** Default paychecks per year (12 = monthly pay) */
+export const DEFAULT_PAYCHECKS_PER_YEAR = 12;
+
 /**
  * Calculate monthly contribution amounts based on input
- * 
+ *
  * Contribution amounts are interpreted as:
  * - percentage → annual percentage of salary (e.g., 6% = 6% of annual salary)
- * - fixed → monthly fixed amount (e.g., $500 = $500 per month)
- * 
- * Employer match is calculated annually first, then converted to monthly.
- * This ensures correct matching based on annual contribution caps.
- * 
- * IMPORTANT: Employer match is always pre-tax, even for Roth contributions.
- * This is a requirement of 401(k) plans - employer contributions cannot be
- * designated as Roth and are always made on a pre-tax basis.
+ * - fixed → per-paycheck dollar amount (bi-weekly, 26 paychecks/year)
+ *
+ * Employer match: 100% up to N% of salary (placeholder). Match is applied to
+ * the lesser of actual contribution or cap.
  */
 export const calculateMonthlyContribution = (
   input: ContributionInput,
   assumptions: ContributionAssumptions
 ): MonthlyContribution => {
   // Calculate annual employee contribution
-  // For percentage: contributionAmount is annual percentage of salary
-  // For fixed: contributionAmount is monthly amount, multiply by 12 for annual
+  // Percentage: contributionAmount is annual % of salary
+  // Fixed: contributionAmount is per-paycheck $, multiply by 26 for annual
   const employeeAnnualContribution =
     input.contributionType === "percentage"
       ? (input.salary * input.contributionAmount) / 100
-      : input.contributionAmount * 12;
+      : input.contributionAmount * PAYCHECKS_PER_YEAR;
 
   // Calculate monthly employee contribution
   const monthlyEmployee = employeeAnnualContribution / 12;
@@ -57,6 +59,20 @@ export const calculateMonthlyContribution = (
     employer: monthlyEmployer,
     total: monthlyEmployee + monthlyEmployer,
   };
+};
+
+/**
+ * Calculate per-paycheck contribution (bi-weekly, 26 paychecks/year)
+ */
+export const calculatePerPaycheckContribution = (
+  salary: number,
+  contributionType: "percentage" | "fixed",
+  contributionAmount: number
+): number => {
+  if (contributionType === "percentage") {
+    return ((salary / PAYCHECKS_PER_YEAR) * contributionAmount) / 100;
+  }
+  return contributionAmount; // Fixed = per-paycheck amount
 };
 
 /**
@@ -90,24 +106,20 @@ export const annualAmountToPercentage = (
 
 /**
  * Validate contribution input
- * 
- * TODO: Add IRS contribution limits validation
- * - 401(k) annual contribution limits (e.g., $23,000 for 2024)
- * - Catch-up contributions for age 50+
- * - Highly compensated employee (HCE) limits
- * - These limits are not currently implemented
+ * - Percentage: 0–100 (IRR/plan limits placeholder)
+ * - Fixed: 0 to per-paycheck gross salary
+ * @param paychecksPerYear Optional; defaults to PAYCHECKS_PER_YEAR (26)
  */
 export const validateContribution = (
   input: ContributionInput,
-  currentAge?: number,
-  retirementAge?: number
+  _currentAge?: number,
+  _retirementAge?: number,
+  paychecksPerYear: number = PAYCHECKS_PER_YEAR
 ): { valid: boolean; error?: string } => {
-  // Validate salary
   if (input.salary <= 0) {
     return { valid: false, error: "Salary must be greater than 0" };
   }
 
-  // Validate contribution amount based on type
   if (input.contributionType === "percentage") {
     if (input.contributionAmount < 0 || input.contributionAmount > 100) {
       return {
@@ -119,17 +131,80 @@ export const validateContribution = (
     if (input.contributionAmount < 0) {
       return { valid: false, error: "Contribution amount must be positive" };
     }
-  }
-
-  // Validate retirement age if provided
-  if (currentAge !== undefined && retirementAge !== undefined) {
-    if (retirementAge <= currentAge) {
+    const perPaycheckSalary = input.salary / paychecksPerYear;
+    if (input.contributionAmount > perPaycheckSalary) {
       return {
         valid: false,
-        error: "Retirement age must be greater than current age",
+        error: `Amount cannot exceed per-paycheck salary (${Math.round(perPaycheckSalary)}/paycheck)`,
       };
     }
   }
 
   return { valid: true };
 };
+
+/**
+ * Contribution page derivation - single source of truth per Figma spec.
+ * All values derived from: contributionType, contributionValue, annualSalary,
+ * paychecksPerYear, employerMatchPercent, currentAge, retirementAge.
+ */
+export interface ContributionDerivationInput {
+  contributionType: "percentage" | "fixed";
+  contributionValue: number;
+  annualSalary: number;
+  paychecksPerYear?: number;
+  employerMatchCap?: number; // Max % of salary that can be matched
+  employerMatchPercentage?: number; // % of matched amount employer adds (e.g. 100 = 100%)
+  employerMatchEnabled?: boolean;
+  currentAge: number;
+  retirementAge: number;
+}
+
+export interface ContributionDerivation {
+  perPaycheck: number;
+  monthlyContribution: number;
+  employerMatchMonthly: number;
+  totalMonthlyInvestment: number;
+  estimatedRetirementBalance: number;
+}
+
+export function deriveContribution(input: ContributionDerivationInput): ContributionDerivation {
+  const paychecksPerYear = input.paychecksPerYear ?? PAYCHECKS_PER_YEAR;
+  const employerMatchEnabled = input.employerMatchEnabled ?? true;
+  const employerMatchCap = input.employerMatchCap ?? 6;
+  const employerMatchPercentage = input.employerMatchPercentage ?? 100;
+
+  let perPaycheck: number;
+  if (input.contributionType === "percentage") {
+    perPaycheck =
+      input.annualSalary > 0 && paychecksPerYear > 0
+        ? (input.annualSalary / paychecksPerYear) * (input.contributionValue / 100)
+        : 0;
+  } else {
+    perPaycheck = input.contributionValue >= 0 ? input.contributionValue : 0;
+  }
+
+  const monthlyContribution = perPaycheck * (paychecksPerYear / 12);
+
+  let employerMatchMonthly = 0;
+  if (employerMatchEnabled && input.annualSalary > 0) {
+    const maxMatchedMonthly = (input.annualSalary * employerMatchCap) / 100 / 12;
+    const matchedMonthly = Math.min(monthlyContribution, maxMatchedMonthly);
+    employerMatchMonthly = matchedMonthly * (employerMatchPercentage / 100);
+  }
+
+  const totalMonthlyInvestment = monthlyContribution + employerMatchMonthly;
+
+  const yearsToRetirement = Math.max(0, input.retirementAge - input.currentAge);
+  const estimatedRetirementBalance = totalMonthlyInvestment * 12 * yearsToRetirement;
+
+  return {
+    perPaycheck: Number.isFinite(perPaycheck) ? perPaycheck : 0,
+    monthlyContribution: Number.isFinite(monthlyContribution) ? monthlyContribution : 0,
+    employerMatchMonthly: Number.isFinite(employerMatchMonthly) ? employerMatchMonthly : 0,
+    totalMonthlyInvestment: Number.isFinite(totalMonthlyInvestment) ? totalMonthlyInvestment : 0,
+    estimatedRetirementBalance: Number.isFinite(estimatedRetirementBalance)
+      ? Math.max(0, estimatedRetirementBalance)
+      : 0,
+  };
+}

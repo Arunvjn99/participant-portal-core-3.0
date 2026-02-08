@@ -1,9 +1,11 @@
-import { branding } from "../../config/branding";
+import { AscendLogo } from "./AscendLogo";
 
 interface LogoProps {
   className?: string;
+  /** "full" = icon + Ascend (auth). "icon" = icon only (dashboard with separate app name). */
+  variant?: "full" | "icon";
 }
 
-export const Logo = ({ className }: LogoProps) => {
-  return <img src={branding.logo.src} alt={branding.logo.alt} className={className} />;
+export const Logo = ({ className, variant = "full" }: LogoProps) => {
+  return <AscendLogo className={className} variant={variant} />;
 };

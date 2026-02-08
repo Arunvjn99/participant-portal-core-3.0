@@ -1,0 +1,11 @@
+/**
+ * Selected button state - reusable styles for selected/active buttons
+ * Use with base button or tab classes
+ */
+.btn-selected {
+  color: var(--color-primary);
+  font-weight: 600;
+  background-color: rgba(var(--color-primary-rgb), 0.12);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.2);
+}

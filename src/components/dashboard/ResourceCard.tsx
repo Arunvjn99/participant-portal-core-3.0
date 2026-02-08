@@ -5,10 +5,14 @@ import type { KeyboardEvent } from "react";
 interface ResourceCardProps {
   title: string;
   description: string;
+  /** Learning thumbnail image. Uses placeholder if missing. */
   imageSrc?: string;
   badge?: string;
   onClick?: () => void;
 }
+
+const PLACEHOLDER_IMAGE =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='220' viewBox='0 0 400 220'%3E%3Crect fill='%e2e8f0' width='400' height='220'/%3E%3Ctext fill='%94a3b8' font-family='sans-serif' font-size='16' x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle'%3EThumbnail%3C/text%3E%3C/svg%3E";
 
 const ResourceCard = ({ title, description, imageSrc, badge, onClick }: ResourceCardProps) => {
   const [imageError, setImageError] = useState(false);
@@ -24,45 +28,41 @@ const ResourceCard = ({ title, description, imageSrc, badge, onClick }: Resource
     setImageError(true);
   };
 
-  const showImage = imageSrc && !imageError;
-  const showPlaceholder = !imageSrc || imageError;
+  const imgSrc = imageSrc && !imageError ? imageSrc : PLACEHOLDER_IMAGE;
 
   const cardContent = (
     <>
-      {showImage && (
-        <div className="resource-card__image-wrapper">
-          <img
-            src={imageSrc}
-            alt=""
-            className="resource-card__image"
-            onError={handleImageError}
-          />
-          {badge && (
-            <span className="resource-card__badge" aria-label={`Content type: ${badge}`}>
-              {badge}
-            </span>
-          )}
-        </div>
-      )}
-      {showPlaceholder && (
-        <div className="resource-card__image-placeholder">
-          {badge && (
-            <span className="resource-card__badge resource-card__badge--on-placeholder" aria-label={`Content type: ${badge}`}>
-              {badge}
-            </span>
-          )}
-        </div>
-      )}
-      <h3 className="resource-card__title">{title}</h3>
-      <p className="resource-card__description">{description}</p>
+      <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-slate-100 dark:bg-slate-700">
+        <img
+          src={imgSrc}
+          alt=""
+          className="h-full w-full object-cover"
+          onError={handleImageError}
+        />
+        {badge && (
+          <span
+            className="absolute right-2 top-2 rounded bg-slate-900/80 px-2 py-1 text-xs font-medium text-white dark:bg-slate-800/90"
+            aria-label={`Content type: ${badge}`}
+          >
+            {badge}
+          </span>
+        )}
+      </div>
+      <h3 className="mt-4 text-lg font-semibold text-slate-900 dark:text-slate-100">{title}</h3>
+      <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+        {description}
+      </p>
     </>
   );
+
+  const baseClasses =
+    "flex cursor-default flex-col transition-transform focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800";
 
   if (onClick) {
     return (
       <DashboardCard>
         <div
-          className="resource-card resource-card--clickable"
+          className={`${baseClasses} cursor-pointer hover:-translate-y-0.5`}
           role="button"
           tabIndex={0}
           onClick={onClick}
@@ -77,7 +77,7 @@ const ResourceCard = ({ title, description, imageSrc, badge, onClick }: Resource
 
   return (
     <DashboardCard>
-      <div className="resource-card">{cardContent}</div>
+      <div className={baseClasses}>{cardContent}</div>
     </DashboardCard>
   );
 };

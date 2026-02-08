@@ -8,14 +8,14 @@ interface DashboardSectionProps {
 
 const DashboardSection = ({ title, action, children }: DashboardSectionProps) => {
   return (
-    <section className="dashboard-section">
-      <header className="dashboard-section__header">
-        <h2 className="dashboard-section__title">{title}</h2>
-        {action && <div className="dashboard-section__action">{action}</div>}
+    <section className="flex flex-col gap-4">
+      <header className="flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 md:text-2xl">
+          {title}
+        </h2>
+        {action && <div className="shrink-0">{action}</div>}
       </header>
-      <div className="dashboard-section__content">
-        {children}
-      </div>
+      <div className="min-w-0">{children}</div>
     </section>
   );
 };

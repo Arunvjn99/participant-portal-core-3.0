@@ -1,0 +1,8 @@
+export type Step =
+  | "GREETING"
+  | "PLAN_SELECTION"
+  | "CONTRIBUTION_TYPE"
+  | "CONTRIBUTION_VALUE"
+  | "INVESTMENT_MODE"
+  | "SUMMARY"
+  | "CONFIRMATION";

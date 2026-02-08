@@ -1,0 +1,13 @@
+<svg viewBox="0 0 400 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="220" fill="#f1f5f9"/>
+  <rect x="40" y="40" width="320" height="140" rx="8" fill="white" stroke="#e2e8f0"/>
+  <!-- Document -->
+  <rect x="100" y="60" width="200" height="100" rx="4" fill="#f8fafc" stroke="#e2e8f0"/>
+  <line x1="120" y1="100" x2="280" y2="100" stroke="#cbd5e1"/>
+  <line x1="120" y1="120" x2="260" y2="120" stroke="#cbd5e1"/>
+  <line x1="120" y1="140" x2="240" y2="140" stroke="#cbd5e1"/>
+  <!-- Hand/pen -->
+  <ellipse cx="260" cy="160" rx="30" ry="35" fill="#fcd34d" opacity="0.8"/>
+  <rect x="255" y="130" width="8" height="50" rx="2" fill="#78716c" transform="rotate(-15 259 130)"/>
+  <text x="200" y="185" fill="#64748b" font-size="14" font-family="sans-serif" text-anchor="middle">Investment Planning</text>
+</svg>

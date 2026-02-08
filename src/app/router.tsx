@@ -10,6 +10,7 @@ import { Profile } from "../pages/profile/Profile";
 import { EnrollmentManagement } from "../pages/enrollment/EnrollmentManagement";
 import { PlanDetailManagement } from "../pages/enrollment/PlanDetailManagement";
 import { ChoosePlan } from "../pages/enrollment/ChoosePlan";
+import { PlansPage } from "../pages/enrollment/PlansPage";
 import { Contribution } from "../pages/enrollment/Contribution";
 import { Review } from "../pages/enrollment/Review";
 import { TransactionsHub } from "../pages/transactions/TransactionsHub";
@@ -73,6 +74,10 @@ export const router = createBrowserRouter([
       {
         path: "choose-plan",
         element: <ChoosePlan />,
+      },
+      {
+        path: "plans",
+        element: <PlansPage />,
       },
       {
         path: "contribution",
