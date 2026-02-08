@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   AuthLayout,
@@ -6,9 +7,12 @@ import {
   AuthButton,
 } from "../../components/auth";
 import { Logo } from "../../components/brand/Logo";
+import { PasswordStrength } from "../../components/ui/PasswordStrength";
 
 export const ResetPassword = () => {
   const navigate = useNavigate();
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleResetPassword = () => {
     navigate("/");
@@ -24,17 +28,24 @@ export const ResetPassword = () => {
 
   const bodySlot = (
     <>
-      <AuthPasswordInput
-        label="New password"
-        name="newPassword"
-        id="newPassword"
-        placeholder="Enter your new password"
-      />
+      <div className="flex flex-col gap-2">
+        <AuthPasswordInput
+          label="New password"
+          name="newPassword"
+          id="newPassword"
+          placeholder="Enter your new password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+        />
+        <PasswordStrength password={newPassword} />
+      </div>
       <AuthPasswordInput
         label="Confirm password"
         name="confirmPassword"
         id="confirmPassword"
         placeholder="Confirm your new password"
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
       />
       <AuthButton onClick={handleResetPassword}>Reset password</AuthButton>
       <a

@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { Login } from "../pages/auth/Login";
 import { VerifyCode } from "../pages/auth/VerifyCode";
 import { ForgotPassword } from "../pages/auth/ForgotPassword";
+import { ForgotPasswordVerify } from "../pages/auth/ForgotPasswordVerify";
 import { ResetPassword } from "../pages/auth/ResetPassword";
 import { HelpCenter } from "../pages/auth/HelpCenter";
 import { Dashboard } from "../pages/dashboard/Dashboard";
@@ -22,7 +23,7 @@ import InvestmentsPage from "../app/investments/page";
 import { EnrollmentInvestmentsGuard } from "../components/enrollment/EnrollmentInvestmentsGuard";
 import { EnrollmentInvestmentsContent } from "../components/enrollment/EnrollmentInvestmentsContent";
 import { EnrollmentReviewContent } from "../components/enrollment/EnrollmentReviewContent";
-import { VoiceModePage } from "../pages/voice/VoiceModePage";
+import { BellaVoiceRoute } from "../pages/voice/BellaVoiceRoute";
 import { RootLayout } from "../layouts/RootLayout";
 
 /**
@@ -44,6 +45,10 @@ export const router = createBrowserRouter([
       {
         path: "/forgot",
         element: <ForgotPassword />,
+      },
+      {
+        path: "/forgot/verify",
+        element: <ForgotPasswordVerify />,
       },
       {
         path: "/reset",
@@ -131,7 +136,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/voice",
-        element: <VoiceModePage />,
+        element: <BellaVoiceRoute />,
       },
     ],
   },

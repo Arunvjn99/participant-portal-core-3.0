@@ -17,7 +17,7 @@ export const PostEnrollmentTopBanner = ({
   const navigate = useNavigate();
 
   return (
-    <div className="ped-banner rounded-xl p-6 w-full min-w-0">
+    <div className="ped-banner rounded-xl w-full min-w-0 overflow-hidden">
       <div className="ped-banner__content">
         <div className="ped-banner__icon-wrap" aria-hidden>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

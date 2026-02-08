@@ -5,6 +5,7 @@ import Button from "../ui/Button";
 import { AllocationChart } from "./AllocationChart";
 import { useInvestment } from "../../context/InvestmentContext";
 import { ConfirmAllocationModal } from "./ConfirmAllocationModal";
+import { AdvisorHelpWizard } from "./AdvisorHelpWizard";
 
 type AllocationSummaryVariant = "enrollment" | "dashboard";
 
@@ -28,6 +29,7 @@ export const AllocationSummary = ({ variant = "dashboard" }: AllocationSummaryPr
     confirmAllocation,
   } = useInvestment();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showAdvisorWizard, setShowAdvisorWizard] = useState(false);
   const [autoRebalance, setAutoRebalance] = useState(false);
 
   const handleConfirmClick = () => {
@@ -169,7 +171,7 @@ export const AllocationSummary = ({ variant = "dashboard" }: AllocationSummaryPr
           <p className="advisor-help-card__text">
             Get personalized guidance from our AI advisor or connect with a human expert to optimize your portfolio.
           </p>
-          <Button type="button" className="advisor-help-card__btn">
+          <Button type="button" className="advisor-help-card__btn" onClick={() => setShowAdvisorWizard(true)}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
               <circle cx="12" cy="7" r="4" />
@@ -186,6 +188,11 @@ export const AllocationSummary = ({ variant = "dashboard" }: AllocationSummaryPr
           canConfirm={canConfirmAllocation}
         />
       )}
+      <AdvisorHelpWizard
+        open={showAdvisorWizard}
+        onClose={() => setShowAdvisorWizard(false)}
+        userName="Satish"
+      />
     </>
   );
 };

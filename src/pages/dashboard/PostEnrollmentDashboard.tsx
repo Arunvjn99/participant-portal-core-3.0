@@ -17,8 +17,8 @@ import type { EnrollmentSummary } from "../../data/enrollmentSummary";
 /**
  * Post-Enrollment Dashboard — Figma 519-4705
  *
- * Desktop (lg+): Fixed 2-column grid; left 8 cols, right 4 cols; explicit row alignment.
- * Mobile/Tablet (<1024px): Single column, DOM order unchanged.
+ * < xl: Single column, natural reading order (unchanged).
+ * ≥ xl: Two-column grid [2fr 1fr], strict row alignment per Figma.
  */
 export const PostEnrollmentDashboard = () => {
   const navigate = useNavigate();
@@ -32,147 +32,143 @@ export const PostEnrollmentDashboard = () => {
   return (
     <DashboardLayout header={<DashboardHeader />}>
       <div
-        className="grid grid-cols-1 gap-6 max-w-7xl mx-auto min-w-0 w-full lg:grid-cols-12 lg:items-start"
+        className="mx-auto max-w-[1200px] px-6"
         role="region"
         aria-label="Post-enrollment dashboard"
       >
-        {/* 1. Progress / Nudge Banner — left col, row 1 */}
-        {data.topBanner && (
-          <div className="lg:col-span-8 lg:col-start-1 lg:row-start-1">
-            <PostEnrollmentTopBanner
-              percentOnTrack={data.topBanner.percentOnTrack}
-              subText={data.topBanner.subText}
-              actionRoute={data.topBanner.actionRoute}
-            />
-          </div>
-        )}
-
-        {/* 2. Plan Overview — left col, row 2 */}
-        {data.planDetails && data.balances && (
-          <div className="lg:col-span-8 lg:col-start-1 lg:row-start-2">
-            <PlanOverviewCard
-              plan={data.planDetails}
-              balances={data.balances}
-              isWithdrawalRestricted={data.isWithdrawalRestricted}
-            />
-          </div>
-        )}
-
-        {/* 3. Goal Simulator — right col, row 1 */}
-        {data.goalProgress && (
-          <div className="lg:col-span-4 lg:col-start-9 lg:row-start-1">
-            <GoalSimulatorCard data={data.goalProgress} />
-          </div>
-        )}
-
-        {/* 4. Current Allocation — right col, row 2 */}
-        {data.investmentAllocations.length > 0 && data.allocationDescription && (
-          <article className="lg:col-span-4 lg:col-start-9 lg:row-start-2 bg-card rounded-xl border border-border p-6 min-h-fit">
-            <h2 className="text-lg font-semibold text-foreground mb-2">Current Allocation</h2>
-            <p className="text-sm text-muted-foreground mb-4">{data.allocationDescription}</p>
-            <div className="w-full max-w-[280px] mx-auto aspect-square max-h-[280px]">
-              <AllocationChart allocations={allocationForChart} centerLabel="Allocated" showValidBadge={false} />
+        <div className="grid grid-cols-1 gap-6 xl:grid xl:grid-cols-[2fr_1fr] xl:items-start xl:gap-6">
+          {/* Row 1 | Left: Retirement Hero Banner (Figma 519-4764) */}
+          {data.topBanner && (
+            <div className="min-w-0 w-full xl:col-start-1 xl:row-start-1">
+              <PostEnrollmentTopBanner
+                percentOnTrack={data.topBanner.percentOnTrack}
+                subText={data.topBanner.subText}
+                actionRoute={data.topBanner.actionRoute}
+              />
             </div>
-            <a href="/investments" className="inline-block mt-4 text-sm font-medium text-primary hover:underline">
-              Read full analysis →
-            </a>
-          </article>
-        )}
+          )}
 
-        {/* 5. Quick Actions — left col, row 3 */}
-        <section className="lg:col-span-8 lg:col-start-1 lg:row-start-3 bg-card rounded-xl border border-border p-6 min-h-fit">
-          <h2 className="text-lg font-semibold text-foreground mb-4">Quick Actions</h2>
-          <div className="flex flex-wrap gap-4">
-            <button type="button" className="ped-qa-btn" onClick={() => navigate("/enrollment/contribution")}>
-              <span className="ped-qa-icon">¢</span>
-              <span>Change Contribution</span>
-            </button>
-            <button type="button" className="ped-qa-btn" onClick={() => navigate("/transactions/transfer/start")}>
-              <span className="ped-qa-icon">↔</span>
-              <span>Transfer Funds</span>
-            </button>
-            <button type="button" className="ped-qa-btn" onClick={() => navigate("/transactions/rebalance/start")}>
-              <span className="ped-qa-icon">⟳</span>
-              <span>Rebalance</span>
-            </button>
-            <button type="button" className="ped-qa-btn" onClick={() => navigate("/transactions/rollover/start")}>
-              <span className="ped-qa-icon">↪</span>
-              <span>Start Rollover</span>
-            </button>
-            <button type="button" className="ped-qa-btn" onClick={() => navigate("/profile")}>
-              <span className="ped-qa-icon">👤</span>
-              <span>Update Profile</span>
-            </button>
-          </div>
-        </section>
+          {/* Row 2 | Left: Plan Summary Card */}
+          {data.planDetails && data.balances && (
+            <div className="min-w-0 xl:col-start-1 xl:row-start-2">
+              <PlanOverviewCard
+                plan={data.planDetails}
+                balances={data.balances}
+                isWithdrawalRestricted={data.isWithdrawalRestricted}
+              />
+            </div>
+          )}
 
-        {/* 6. Recent Transactions — left col, row 4 */}
-        {data.transactions.length > 0 && (
-          <div className="lg:col-span-8 lg:col-start-1 lg:row-start-4">
-            <RecentTransactionsCard transactions={data.transactions} />
-          </div>
-        )}
+          {/* Row 1 | Right: Goal Simulator */}
+          {data.goalProgress && (
+            <div className="min-w-0 xl:col-start-2 xl:row-start-1">
+              <GoalSimulatorCard data={data.goalProgress} />
+            </div>
+          )}
 
-        {/* 7. Rate of Return — left col, row 5 */}
-        {data.rateOfReturn && (
-          <div className="lg:col-span-8 lg:col-start-1 lg:row-start-5">
-            <RateOfReturnCard
-              confidencePct={data.rateOfReturn.confidencePct}
-              message={data.rateOfReturn.message}
-              timeRange={data.rateOfReturn.timeRange}
-            />
-          </div>
-        )}
+          {/* Row 2 | Right: Current Allocation */}
+          {data.investmentAllocations.length > 0 && data.allocationDescription && (
+            <article className="ped-current-allocation min-w-0 rounded-xl border border-border bg-card p-6 xl:col-start-2 xl:row-start-2">
+              <h2 className="mb-2 text-lg font-semibold text-foreground">Current Allocation</h2>
+              <p className="mb-4 text-sm text-muted-foreground">{data.allocationDescription}</p>
+              <div className="ped__allocation-chart-wrap">
+                <AllocationChart allocations={allocationForChart} centerLabel="Allocated" showValidBadge={false} />
+              </div>
+              <a href="/investments" className="mt-4 inline-block text-sm font-medium text-primary hover:underline">
+                Read full analysis →
+              </a>
+            </article>
+          )}
 
-        {/* 8. Your Portfolio — left col, row 6 */}
-        {data.investmentAllocations.length > 0 && (
-          <div className="lg:col-span-8 lg:col-start-1 lg:row-start-6">
-            <PortfolioTable rows={data.investmentAllocations} />
-          </div>
-        )}
+          {/* Row 3 | Left: Quick Actions */}
+          <section className="min-w-0 rounded-xl border border-border bg-card p-6 xl:col-start-1 xl:row-start-3">
+            <h2 className="mb-4 text-lg font-semibold text-foreground">Quick Actions</h2>
+            <div className="flex flex-wrap gap-4">
+              <button type="button" className="ped-qa-btn" onClick={() => navigate("/enrollment/contribution")}>
+                <span className="ped-qa-icon">¢</span>
+                <span>Change Contribution</span>
+              </button>
+              <button type="button" className="ped-qa-btn" onClick={() => navigate("/transactions/transfer/start")}>
+                <span className="ped-qa-icon">↔</span>
+                <span>Transfer Funds</span>
+              </button>
+              <button type="button" className="ped-qa-btn" onClick={() => navigate("/transactions/rebalance/start")}>
+                <span className="ped-qa-icon">⟳</span>
+                <span>Rebalance</span>
+              </button>
+              <button type="button" className="ped-qa-btn" onClick={() => navigate("/transactions/rollover/start")}>
+                <span className="ped-qa-icon">↪</span>
+                <span>Start Rollover</span>
+              </button>
+              <button type="button" className="ped-qa-btn" onClick={() => navigate("/profile")}>
+                <span className="ped-qa-icon">👤</span>
+                <span>Update Profile</span>
+              </button>
+            </div>
+          </section>
 
-        {/* 9. Contribution / Statements / Strategy — left col, row 7 */}
-        {data.planDetails && (
-          <div className="lg:col-span-8 lg:col-start-1 lg:row-start-7">
-            <BottomActionCards contributionPct={data.planDetails.contributionRate} />
-          </div>
-        )}
+          {/* Row 4 | Left: Recent Transactions */}
+          {data.transactions.length > 0 && (
+            <div className="min-w-0 xl:col-start-1 xl:row-start-4">
+              <RecentTransactionsCard transactions={data.transactions} />
+            </div>
+          )}
 
-        {/* 10. Onboarding Progress — right col, row 3 (desktop only) */}
-        {data.onboardingProgress && (
-          <div className="hidden lg:block lg:col-span-4 lg:col-start-9 lg:row-start-3">
-            <OnboardingProgressCard
-              percentComplete={data.onboardingProgress.percentComplete}
-              badgesCompleted={data.onboardingProgress.badgesCompleted}
-              badgesTotal={data.onboardingProgress.badgesTotal}
-              message={data.onboardingProgress.message}
-            />
-          </div>
-        )}
+          {/* Row 5 | Left: Rate of Return Chart */}
+          {data.rateOfReturn && (
+            <div className="min-w-0 xl:col-start-1 xl:row-start-5">
+              <RateOfReturnCard
+                confidencePct={data.rateOfReturn.confidencePct}
+                message={data.rateOfReturn.message}
+                timeRange={data.rateOfReturn.timeRange}
+              />
+            </div>
+          )}
 
-        {/* 11. Learning Resources — right col, row 4 */}
-        {data.learningResources.length > 0 && (
-          <div className="lg:col-span-4 lg:col-start-9 lg:row-start-4">
-            <LearningHub items={data.learningResources} />
-          </div>
-        )}
+          {/* Row 4 | Right: Onboarding Progress */}
+          {data.onboardingProgress && (
+            <div className="hidden min-w-0 xl:col-start-2 xl:row-start-4 xl:block">
+              <OnboardingProgressCard
+                percentComplete={data.onboardingProgress.percentComplete}
+                badgesCompleted={data.onboardingProgress.badgesCompleted}
+                badgesTotal={data.onboardingProgress.badgesTotal}
+                message={data.onboardingProgress.message}
+              />
+            </div>
+          )}
 
-        {/* 12. Advisor CTA — left col, row 8 */}
-        <section className="lg:col-span-8 lg:col-start-1 lg:row-start-8 bg-card rounded-xl border border-border p-6 flex flex-wrap items-center justify-between gap-4 min-h-fit">
-          <div>
-            <h3 className="text-lg font-semibold text-foreground">Need help deciding?</h3>
-            <p className="text-sm text-muted-foreground mt-1">
-              Our advisors are available to discuss which plan is right for your financial goals.
-            </p>
+          {/* Row 5 | Right: Learning Resources */}
+          {data.learningResources.length > 0 && (
+            <div className="min-w-0 xl:col-start-2 xl:row-start-5">
+              <LearningHub items={data.learningResources} />
+            </div>
+          )}
+
+          {/* Row 6 | Left: Portfolio Table + BottomActionCards + Advisor CTA */}
+          <div className="flex min-w-0 flex-col gap-6 xl:col-start-1 xl:row-start-6">
+            {data.investmentAllocations.length > 0 && (
+              <PortfolioTable rows={data.investmentAllocations} />
+            )}
+            {data.planDetails && (
+              <BottomActionCards contributionPct={data.planDetails.contributionRate} />
+            )}
+            <section className="flex min-h-fit flex-wrap items-center justify-between gap-4 rounded-xl border border-border bg-card p-6">
+              <div>
+                <h3 className="text-lg font-semibold text-foreground">Need help deciding?</h3>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Our advisors are available to discuss which plan is right for your financial goals.
+                </p>
+              </div>
+              <button
+                type="button"
+                className="rounded-md border border-border px-5 py-2 font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
+                onClick={() => navigate("/investments")}
+              >
+                Schedule a consultation
+              </button>
+            </section>
           </div>
-          <button
-            type="button"
-            className="px-5 py-2 rounded-md border border-border text-foreground font-medium hover:border-primary hover:text-primary transition-colors"
-            onClick={() => navigate("/investments")}
-          >
-            Schedule a consultation
-          </button>
-        </section>
+        </div>
       </div>
     </DashboardLayout>
   );

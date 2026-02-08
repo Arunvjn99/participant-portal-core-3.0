@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   AuthLayout,
@@ -9,9 +10,10 @@ import { Logo } from "../../components/brand/Logo";
 
 export const ForgotPassword = () => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
 
   const handleSendResetLink = () => {
-    navigate("/reset");
+    navigate("/forgot/verify", { state: { email: email.trim() } });
   };
 
   const handleBackToSignIn = () => {
@@ -30,6 +32,8 @@ export const ForgotPassword = () => {
         name="email"
         id="email"
         placeholder="Enter your email address"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
       />
       <AuthButton onClick={handleSendResetLink}>Send reset link</AuthButton>
       <a

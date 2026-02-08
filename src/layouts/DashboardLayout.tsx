@@ -9,7 +9,7 @@ export const DashboardLayout = ({ header, children }: DashboardLayoutProps) => {
   return (
     <div className="dashboard-layout flex min-h-screen flex-col bg-background">
       {header && (
-        <header className="dashboard-layout__header sticky top-0 z-50 shrink-0">
+        <header className="relative sticky top-0 z-50 shrink-0 h-14 sm:h-16 lg:h-[72px] border-b border-slate-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/95 dark:border-slate-700 dark:bg-slate-900/95 dark:supports-[backdrop-filter]:bg-slate-900/95 pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
           {header}
         </header>
       )}

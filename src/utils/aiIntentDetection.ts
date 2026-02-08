@@ -4,6 +4,9 @@
  */
 
 export type UserIntent =
+  | "explain_retirement_plans"
+  | "calculate_contributions"
+  | "benefits_starting_early"
   | "search_contribution"
   | "search_investment"
   | "search_beneficiary"
@@ -44,8 +47,31 @@ export interface UserContext {
 /**
  * Detect user intent from query
  */
+/** Suggestion queries from Bella search bar - same intent when typed or clicked */
+const SUGGESTION_MATCHES: { pattern: RegExp | string; intent: UserIntent }[] = [
+  {
+    pattern: /explain\s+retirement\s+plan/i,
+    intent: "explain_retirement_plans",
+  },
+  {
+    pattern: /calculate\s+contribution/i,
+    intent: "calculate_contributions",
+  },
+  {
+    pattern: /benefits?\s+of\s+starting\s+early|starting\s+early/i,
+    intent: "benefits_starting_early",
+  },
+];
+
 export const detectIntent = (query: string, context: UserContext): UserIntent => {
   const lowerQuery = query.toLowerCase();
+
+  // Match suggestion queries first - same answer when typed vs clicked
+  for (const { pattern, intent } of SUGGESTION_MATCHES) {
+    if (typeof pattern === "string" ? lowerQuery.includes(pattern) : pattern.test(query)) {
+      return intent;
+    }
+  }
 
   // Action intents
   if (
@@ -108,6 +134,51 @@ export const detectIntent = (query: string, context: UserContext): UserIntent =>
  */
 export const generateResponse = (intent: UserIntent, query: string, context: UserContext): AIResponse => {
   switch (intent) {
+    case "explain_retirement_plans":
+      return {
+        answer:
+          "Retirement plans like 401(k) and Roth 401(k) help you save for retirement with tax advantages. A 401(k) uses pre-tax money (you pay taxes when you withdraw); a Roth 401(k) uses after-tax money (qualified withdrawals are tax-free). Employer matching can boost your savings significantly.",
+        primaryAction: {
+          label: "Learn More",
+          route: "/enrollment/plans",
+        },
+        secondaryAction: {
+          label: "View Help Center",
+          route: "/help",
+        },
+        disclaimer: "This is general information, not financial advice.",
+      };
+
+    case "calculate_contributions":
+      return {
+        answer: `Based on a typical salary, contributing ${context.contributionAmount || 5}% would mean about $${Math.round(((context.contributionAmount || 5) / 100) * 75000 / 12)} per month. You can adjust your contribution percentage anytime in your enrollment settings.`,
+        primaryAction: context.isEnrolled
+          ? {
+              label: "Manage Contribution",
+              route: "/enrollment",
+            }
+          : {
+              label: "Set Contribution",
+              route: "/enrollment/contribution",
+            },
+        disclaimer: "This is an estimate. Actual amounts depend on your salary and pay frequency.",
+      };
+
+    case "benefits_starting_early":
+      return {
+        answer:
+          "Starting early means more time for compound growth. For example, $200/month at 7% from age 25 could grow to over $400,000 by 65—but starting at 35 would yield about half. Even small contributions now can make a big difference.",
+        primaryAction: {
+          label: "Set Up Contribution",
+          route: "/enrollment/contribution",
+        },
+        secondaryAction: {
+          label: "View Plans",
+          route: "/enrollment/plans",
+        },
+        disclaimer: "This is illustrative. Past performance does not guarantee future results.",
+      };
+
     case "search_contribution":
       return {
         answer: `Your current contribution is ${context.contributionAmount}% of your salary.`,
