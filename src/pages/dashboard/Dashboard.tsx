@@ -19,10 +19,10 @@ export const Dashboard = () => {
       <SaveToast />
       <HeroEnrollmentCard />
 
-      {/* Learning Resources (left) + Personalized Score (right) - Figma layout */}
-      <section className="flex flex-col gap-6 lg:flex-row lg:items-stretch">
+      {/* Learning Resources (left) + Personalized Score (right) - canonical grid like Plans */}
+      <section className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_400px] 2xl:grid-cols-[minmax(0,1fr)_420px] lg:items-start">
         {/* Section 1: Learning Resources - Figma: white rounded container, title left, carousel inside */}
-        <div className="relative min-w-0 flex-1 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800 md:p-8">
+        <div className="relative min-w-0 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800 md:p-8">
           <h2 className="mb-5 text-left text-xl font-bold text-slate-900 dark:text-slate-100 md:text-2xl">
             Learning Resources
           </h2>
@@ -40,8 +40,8 @@ export const Dashboard = () => {
           </LearningResourcesCarousel>
         </div>
 
-        {/* Section 2: Goal Simulator - fixed width on desktop, height matches Learning Resources */}
-        <div className="flex min-h-[320px] lg:w-[340px] lg:shrink-0">
+        {/* Section 2: Goal Simulator - fixed width on desktop (360/400/420) */}
+        <div className="flex min-h-[320px] min-w-0">
           <PersonalizedScoreCard />
         </div>
       </section>

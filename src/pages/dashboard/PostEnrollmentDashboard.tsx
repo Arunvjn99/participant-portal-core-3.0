@@ -17,8 +17,8 @@ import type { EnrollmentSummary } from "../../data/enrollmentSummary";
 /**
  * Post-Enrollment Dashboard — Figma 519-4705
  *
- * < xl: Single column, natural reading order (unchanged).
- * ≥ xl: Two-column grid [2fr 1fr], strict row alignment per Figma.
+ * < lg: Single column, natural reading order.
+ * ≥ lg: Two-column grid 65fr/35fr (matches Plans/Figma 519-4705), sticky right sidebar.
  */
 export const PostEnrollmentDashboard = () => {
   const navigate = useNavigate();
@@ -32,14 +32,14 @@ export const PostEnrollmentDashboard = () => {
   return (
     <DashboardLayout header={<DashboardHeader />}>
       <div
-        className="mx-auto max-w-[1200px] px-6"
+        className="w-full min-w-0"
         role="region"
         aria-label="Post-enrollment dashboard"
       >
-        <div className="grid grid-cols-1 gap-6 xl:grid xl:grid-cols-[2fr_1fr] xl:items-start xl:gap-6">
-          {/* Row 1 | Left: Retirement Hero Banner (Figma 519-4764) */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[65fr_35fr] lg:items-start lg:gap-8">
+          {/* Row 1 | Full width: Retirement Hero Banner (Figma 519-4764) — spans both columns */}
           {data.topBanner && (
-            <div className="min-w-0 w-full xl:col-start-1 xl:row-start-1">
+            <div className="min-w-0 w-full lg:col-span-2 lg:col-start-1 lg:row-start-1">
               <PostEnrollmentTopBanner
                 percentOnTrack={data.topBanner.percentOnTrack}
                 subText={data.topBanner.subText}
@@ -50,7 +50,7 @@ export const PostEnrollmentDashboard = () => {
 
           {/* Row 2 | Left: Plan Summary Card */}
           {data.planDetails && data.balances && (
-            <div className="min-w-0 xl:col-start-1 xl:row-start-2">
+            <div className="min-w-0 lg:col-start-1 lg:row-start-2">
               <PlanOverviewCard
                 plan={data.planDetails}
                 balances={data.balances}
@@ -59,29 +59,38 @@ export const PostEnrollmentDashboard = () => {
             </div>
           )}
 
-          {/* Row 1 | Right: Goal Simulator */}
-          {data.goalProgress && (
-            <div className="min-w-0 xl:col-start-2 xl:row-start-1">
-              <GoalSimulatorCard data={data.goalProgress} />
-            </div>
-          )}
-
-          {/* Row 2 | Right: Current Allocation */}
-          {data.investmentAllocations.length > 0 && data.allocationDescription && (
-            <article className="ped-current-allocation min-w-0 rounded-xl border border-border bg-card p-6 xl:col-start-2 xl:row-start-2">
-              <h2 className="mb-2 text-lg font-semibold text-foreground">Current Allocation</h2>
-              <p className="mb-4 text-sm text-muted-foreground">{data.allocationDescription}</p>
-              <div className="ped__allocation-chart-wrap">
-                <AllocationChart allocations={allocationForChart} centerLabel="Allocated" showValidBadge={false} />
+          {/* Row 2–5 | Right: Sidebar (sticky) — Goal Simulator, Current Allocation, Onboarding, Learning */}
+          <aside className="flex min-w-0 flex-col gap-6 lg:col-start-2 lg:row-start-2 lg:row-span-4 lg:sticky lg:top-6 lg:self-start">
+            {data.goalProgress && <GoalSimulatorCard data={data.goalProgress} />}
+            {data.investmentAllocations.length > 0 && data.allocationDescription && (
+              <article className="ped-current-allocation rounded-xl border border-border bg-card p-6">
+                <h2 className="mb-2 text-lg font-semibold text-foreground">Current Allocation</h2>
+                <p className="mb-4 text-sm text-muted-foreground">{data.allocationDescription}</p>
+                <div className="ped__allocation-chart-wrap">
+                  <AllocationChart allocations={allocationForChart} centerLabel="Allocated" showValidBadge={false} />
+                </div>
+                <a href="/investments" className="mt-4 inline-block text-sm font-medium text-primary hover:underline">
+                  Read full analysis →
+                </a>
+              </article>
+            )}
+            {data.onboardingProgress && (
+              <div className="hidden lg:block">
+                <OnboardingProgressCard
+                  percentComplete={data.onboardingProgress.percentComplete}
+                  badgesCompleted={data.onboardingProgress.badgesCompleted}
+                  badgesTotal={data.onboardingProgress.badgesTotal}
+                  message={data.onboardingProgress.message}
+                />
               </div>
-              <a href="/investments" className="mt-4 inline-block text-sm font-medium text-primary hover:underline">
-                Read full analysis →
-              </a>
-            </article>
-          )}
+            )}
+            {data.learningResources.length > 0 && (
+              <LearningHub items={data.learningResources} />
+            )}
+          </aside>
 
           {/* Row 3 | Left: Quick Actions */}
-          <section className="min-w-0 rounded-xl border border-border bg-card p-6 xl:col-start-1 xl:row-start-3">
+          <section className="min-w-0 rounded-xl border border-border bg-card p-6 lg:col-start-1 lg:row-start-3">
             <h2 className="mb-4 text-lg font-semibold text-foreground">Quick Actions</h2>
             <div className="flex flex-wrap gap-4">
               <button type="button" className="ped-qa-btn" onClick={() => navigate("/enrollment/contribution")}>
@@ -109,14 +118,14 @@ export const PostEnrollmentDashboard = () => {
 
           {/* Row 4 | Left: Recent Transactions */}
           {data.transactions.length > 0 && (
-            <div className="min-w-0 xl:col-start-1 xl:row-start-4">
+            <div className="min-w-0 lg:col-start-1 lg:row-start-4">
               <RecentTransactionsCard transactions={data.transactions} />
             </div>
           )}
 
           {/* Row 5 | Left: Rate of Return Chart */}
           {data.rateOfReturn && (
-            <div className="min-w-0 xl:col-start-1 xl:row-start-5">
+            <div className="min-w-0 lg:col-start-1 lg:row-start-5">
               <RateOfReturnCard
                 confidencePct={data.rateOfReturn.confidencePct}
                 message={data.rateOfReturn.message}
@@ -125,27 +134,8 @@ export const PostEnrollmentDashboard = () => {
             </div>
           )}
 
-          {/* Row 4 | Right: Onboarding Progress */}
-          {data.onboardingProgress && (
-            <div className="hidden min-w-0 xl:col-start-2 xl:row-start-4 xl:block">
-              <OnboardingProgressCard
-                percentComplete={data.onboardingProgress.percentComplete}
-                badgesCompleted={data.onboardingProgress.badgesCompleted}
-                badgesTotal={data.onboardingProgress.badgesTotal}
-                message={data.onboardingProgress.message}
-              />
-            </div>
-          )}
-
-          {/* Row 5 | Right: Learning Resources */}
-          {data.learningResources.length > 0 && (
-            <div className="min-w-0 xl:col-start-2 xl:row-start-5">
-              <LearningHub items={data.learningResources} />
-            </div>
-          )}
-
           {/* Row 6 | Left: Portfolio Table + BottomActionCards + Advisor CTA */}
-          <div className="flex min-w-0 flex-col gap-6 xl:col-start-1 xl:row-start-6">
+          <div className="flex min-w-0 flex-col gap-6 lg:col-start-1 lg:row-start-6">
             {data.investmentAllocations.length > 0 && (
               <PortfolioTable rows={data.investmentAllocations} />
             )}

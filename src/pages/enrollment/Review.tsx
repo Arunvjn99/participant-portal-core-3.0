@@ -248,8 +248,8 @@ export const Review = () => {
           {feedbackMessage}
         </div>
       )}
-      <div className="review-page review-page--with-footer">
-        <div className="enrollment-stepper-section review-page__stepper">
+      <div className="flex min-w-0 flex-col gap-6 w-full pb-[100px]">
+        <div className="enrollment-stepper-section review-page__stepper w-full">
           <EnrollmentStepper
             currentStep={3}
             title="Review Your Enrollment"
@@ -258,81 +258,82 @@ export const Review = () => {
         </div>
 
         {/* Investment Goal Simulator - full width per Figma (505-4259) */}
-        <div className="review-page__goal-simulator-card">
-          <div className="review-page__goal-simulator-main">
-            <div className="review-page__goal-simulator-progress">
-              <svg viewBox="0 0 100 100" className="review-page__goal-simulator-ring">
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 px-4 py-6 sm:gap-6 sm:px-6 dark:from-blue-600 dark:to-blue-700">
+          <div className="flex min-w-0 flex-1 flex-wrap items-center gap-4 sm:gap-6">
+            <div className="relative h-20 w-20 shrink-0 sm:h-[100px] sm:w-[100px]">
+              <svg viewBox="0 0 100 100" className="h-full w-full">
                 <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="8" />
                 <circle cx="50" cy="50" r="42" fill="none" stroke="white" strokeWidth="8" strokeLinecap="round" strokeDasharray={`${Math.min(100, fundedPct) * 2.64} 264`} transform="rotate(-90 50 50)" />
               </svg>
-              <span className="review-page__goal-simulator-value">Reached {Math.min(100, Math.round(fundedPct))}%</span>
+              <span className="absolute inset-0 flex items-center justify-center text-center text-sm font-semibold text-white">
+                Reached {Math.min(100, Math.round(fundedPct))}%
+              </span>
             </div>
-            <div className="review-page__goal-simulator-body">
-              <h3 className="review-page__goal-simulator-title">Investment Goal Simulator</h3>
-              <p className="review-page__goal-simulator-status">Based on your current selections, you are on track.</p>
-              <p className="review-page__goal-simulator-shortfall">Projected Shortfall: $0</p>
+            <div className="min-w-0 flex-1">
+              <h3 className="m-0 mb-2 text-xl font-semibold text-white">Investment Goal Simulator</h3>
+              <p className="m-0 mb-1 text-[0.9375em] text-white/95">Based on your current selections, you are on track.</p>
+              <p className="m-0 mb-4 text-sm text-white/90">Projected Shortfall: $0</p>
             </div>
           </div>
-          <div className="review-page__goal-simulator-actions">
-            <Button type="button" onClick={() => setShowAdvisorModal(true)} className="review-page__goal-simulator-optimize">
+          <div className="shrink-0">
+            <Button type="button" onClick={() => setShowAdvisorModal(true)} className="!bg-white !text-blue-600 hover:!bg-white/95 dark:!text-blue-600">
               Optimize your score
             </Button>
           </div>
         </div>
 
-        <div className="review-page__content">
-          <div className="review-page__left">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_400px] 2xl:grid-cols-[minmax(0,1fr)_420px] lg:items-start lg:gap-8">
+          <div className="flex min-w-0 flex-col gap-4">
             {/* Contributions - only sources selected in Contribution step (sourceAllocation > 0) */}
             <DashboardCard
               title="Contributions"
               action={
-                <button type="button" onClick={() => navigate("/enrollment/contribution")} className="review-page__edit-link">
+                <button type="button" onClick={() => navigate("/enrollment/contribution")} className="border-0 bg-transparent p-0 text-sm font-medium text-blue-600 cursor-pointer font-inherit hover:underline dark:text-blue-400">
                   Edit
                 </button>
               }
-              className="review-page__block review-page__block--contributions"
             >
-              <div className="review-page__contributions-grid">
-                <div className="review-page__contribution-card">
-                  <span className="review-page__contribution-source">Pre-tax</span>
-                  <button type="button" className="review-page__contribution-edit" aria-label="Edit Pre-tax" onClick={() => navigate("/enrollment/contribution")}>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-5">
+                <div className="relative flex flex-col rounded-lg border border-border bg-card p-5">
+                  <span className="mb-3 text-[0.9375em] font-normal text-slate-700 dark:text-slate-200">Pre-tax</span>
+                  <button type="button" className="absolute top-2 right-2 p-1 bg-transparent border-0 text-slate-400 cursor-pointer leading-none hover:text-blue-500 dark:hover:text-blue-400" aria-label="Edit Pre-tax" onClick={() => navigate("/enrollment/contribution")}>
                     <PencilIcon />
                   </button>
-                  <div className="review-page__contribution-value-wrap">
-                    <div className={`review-page__contribution-value ${preTax > 0 ? "review-page__contribution-value--active" : ""}`}>
+                  <div className="flex flex-1 flex-col items-center justify-center gap-0.5">
+                    <div className={`text-2xl font-bold ${preTax > 0 ? "text-foreground" : "text-slate-400 dark:text-slate-500"}`}>
                       {formatContributionPct((preTax / 100) * contributionTotal)}
                     </div>
-                    <div className="review-page__contribution-label">of paycheck</div>
+                    <div className="text-[0.8125em] font-normal text-muted-foreground">of paycheck</div>
                   </div>
                 </div>
-                <div className="review-page__contribution-card">
-                  <span className="review-page__contribution-source">Roth</span>
-                  <button type="button" className="review-page__contribution-edit" aria-label="Edit Roth" onClick={() => navigate("/enrollment/contribution")}>
+                <div className="relative flex flex-col rounded-lg border border-border bg-card p-5">
+                  <span className="mb-3 text-[0.9375em] font-normal text-slate-700 dark:text-slate-200">Roth</span>
+                  <button type="button" className="absolute top-2 right-2 p-1 bg-transparent border-0 text-slate-400 cursor-pointer leading-none hover:text-blue-500 dark:hover:text-blue-400" aria-label="Edit Roth" onClick={() => navigate("/enrollment/contribution")}>
                     <PencilIcon />
                   </button>
-                  <div className="review-page__contribution-value-wrap">
-                    <div className={`review-page__contribution-value ${roth > 0 ? "review-page__contribution-value--active" : ""}`}>
+                  <div className="flex flex-1 flex-col items-center justify-center gap-0.5">
+                    <div className={`text-2xl font-bold ${roth > 0 ? "text-foreground" : "text-slate-400 dark:text-slate-500"}`}>
                       {formatContributionPct((roth / 100) * contributionTotal)}
                     </div>
-                    <div className="review-page__contribution-label">of paycheck</div>
+                    <div className="text-[0.8125em] font-normal text-muted-foreground">of paycheck</div>
                   </div>
                 </div>
-                <div className="review-page__contribution-card">
-                  <span className="review-page__contribution-source">After-tax</span>
-                  <button type="button" className="review-page__contribution-edit" aria-label="Edit After-tax" onClick={() => navigate("/enrollment/contribution")}>
+                <div className="relative flex flex-col rounded-lg border border-border bg-card p-5 sm:col-span-2 lg:col-span-1">
+                  <span className="mb-3 text-[0.9375em] font-normal text-slate-700 dark:text-slate-200">After-tax</span>
+                  <button type="button" className="absolute top-2 right-2 p-1 bg-transparent border-0 text-slate-400 cursor-pointer leading-none hover:text-blue-500 dark:hover:text-blue-400" aria-label="Edit After-tax" onClick={() => navigate("/enrollment/contribution")}>
                     <PencilIcon />
                   </button>
-                  <div className="review-page__contribution-value-wrap">
-                    <div className={`review-page__contribution-value ${afterTax > 0 ? "review-page__contribution-value--active" : ""}`}>
+                  <div className="flex flex-1 flex-col items-center justify-center gap-0.5">
+                    <div className={`text-2xl font-bold ${afterTax > 0 ? "text-foreground" : "text-slate-400 dark:text-slate-500"}`}>
                       {formatContributionPct((afterTax / 100) * contributionTotal)}
                     </div>
-                    <div className="review-page__contribution-label">of paycheck</div>
+                    <div className="text-[0.8125em] font-normal text-muted-foreground">of paycheck</div>
                   </div>
                 </div>
               </div>
-              <button type="button" className="review-page__increase-contribution" onClick={() => navigate("/enrollment/contribution")}>
-                <span className="review-page__increase-icon">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <button type="button" className="inline-flex items-center gap-0 border-0 bg-transparent text-base font-medium text-blue-600 cursor-pointer p-1 hover:underline dark:text-blue-400" onClick={() => navigate("/enrollment/contribution")}>
+                <span className="inline-flex h-6 w-6 items-center justify-center mr-2 bg-blue-500 text-white rounded-full shrink-0">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <line x1="12" y1="5" x2="12" y2="19" />
                     <line x1="5" y1="12" x2="19" y2="12" />
                   </svg>
@@ -343,17 +344,16 @@ export const Review = () => {
 
             {/* Investment Elections - unified table, not split by source */}
             <DashboardCard
-              className="review-page__block review-page__block--investments"
               title="Investment Elections"
               action={
-                <div className="review-page__investments-header-actions">
-                  <span className="review-page__investments-tag">
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="text-xs font-medium px-3 py-1.5 rounded-full bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300">
                     {investment.activeSources.map((s) => SOURCE_NAMES[s]).join(", ")} – {fundTableRows.length} funds
                   </span>
                   <button
                     type="button"
                     onClick={() => navigate("/enrollment/investments")}
-                    className={`review-page__edit-elections-link ${!isAllocationValid ? "review-page__edit-elections-link--error" : ""}`}
+                    className={`inline-flex items-center gap-1.5 border-0 bg-transparent text-sm font-medium text-blue-600 cursor-pointer p-0 font-inherit hover:underline dark:text-blue-400 ${!isAllocationValid ? "!text-red-500 dark:!text-red-400" : ""}`}
                   >
                     {!isAllocationValid && (
                       <svg className="review-page__edit-elections-warning-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
@@ -366,48 +366,48 @@ export const Review = () => {
               }
             >
               {!isAllocationValid && (
-                <div className="review-page__allocation-error-banner" role="alert">
-                  <svg className="review-page__allocation-error-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                <div className="flex items-start gap-2 p-4 mb-4 rounded-lg bg-red-50 border border-red-200 dark:bg-red-900/20 dark:border-red-800" role="alert">
+                  <svg className="shrink-0 mt-0.5" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
                     <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
-                  <div className="review-page__allocation-error-content">
-                    <span className="review-page__allocation-error-main">Total allocation is {totalAllocation.toFixed(0)}%. Must equal 100%.</span>
-                    <span className="review-page__allocation-error-sub">Please adjust your fund percentages to proceed.</span>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-semibold text-foreground">Total allocation is {totalAllocation.toFixed(0)}%. Must equal 100%.</span>
+                    <span className="text-sm text-red-600 dark:text-red-400">Please adjust your fund percentages to proceed.</span>
                   </div>
                 </div>
               )}
-              <div className="review-page__investments-table-wrap">
-                <table className="review-page__investments-table">
+              <div className="overflow-x-auto mb-4 min-w-0">
+                <table className="w-full border-collapse text-[0.9375em]">
                   <thead>
                     <tr>
-                      <th>FUND NAME</th>
-                      <th>ASSET CLASS</th>
-                      <th>EXP RATIO</th>
-                      <th>ALLOCATION</th>
+                      <th className="text-left p-4 font-semibold text-[0.6875em] tracking-wider text-muted-foreground border-b-2 border-slate-200 dark:border-slate-700">FUND NAME</th>
+                      <th className="text-left p-4 font-semibold text-[0.6875em] tracking-wider text-muted-foreground border-b-2 border-slate-200 dark:border-slate-700">ASSET CLASS</th>
+                      <th className="text-left p-4 font-semibold text-[0.6875em] tracking-wider text-muted-foreground border-b-2 border-slate-200 dark:border-slate-700">EXP RATIO</th>
+                      <th className="text-left p-4 font-semibold text-[0.6875em] tracking-wider text-muted-foreground border-b-2 border-slate-200 dark:border-slate-700">ALLOCATION</th>
                     </tr>
                   </thead>
                   <tbody>
                     {fundTableRows.map(({ fund, percentage }) => (
                       <tr key={fund.id}>
-                        <td>
-                          <div className="review-page__fund-cell">
-                            <span className={`review-page__fund-ticker-pill ${["Large Cap", "International"].some(c => fund.assetClass.includes(c)) ? "review-page__fund-ticker-pill--blue" : ""}`}>
+                        <td className="p-4 border-b border-slate-200 dark:border-slate-700">
+                          <div className="flex flex-col gap-1">
+                            <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded font-mono w-fit ${["Large Cap", "International"].some(c => fund.assetClass.includes(c)) ? "bg-blue-500 text-white" : "bg-slate-200 text-slate-700 dark:bg-slate-600 dark:text-slate-300"}`}>
                               {fund.ticker}
                             </span>
-                            <div className="review-page__fund-info">
-                              <span className="review-page__fund-name">{fund.name}</span>
-                              <span className="review-page__fund-risk">Risk Score: {Math.min(5, Math.ceil(fund.riskLevel / 2))}/5</span>
+                            <div className="flex flex-col gap-0.5">
+                              <span className="font-semibold text-foreground text-[0.9375em]">{fund.name}</span>
+                              <span className="text-xs text-muted-foreground">Risk Score: {Math.min(5, Math.ceil(fund.riskLevel / 2))}/5</span>
                             </div>
                           </div>
                         </td>
-                        <td>{getAssetClassLabel(fund.assetClass)}</td>
-                        <td>{fund.expenseRatio.toFixed(2)}%</td>
-                        <td>
-                          <div className="review-page__allocation-cell">
-                            <div className="review-page__allocation-bar">
-                              <div className="review-page__allocation-bar-fill" style={{ width: `${percentage}%` }} />
+                        <td className="p-4 border-b border-slate-200 dark:border-slate-700 text-foreground">{getAssetClassLabel(fund.assetClass)}</td>
+                        <td className="p-4 border-b border-slate-200 dark:border-slate-700 text-foreground">{fund.expenseRatio.toFixed(2)}%</td>
+                        <td className="p-4 border-b border-slate-200 dark:border-slate-700">
+                          <div className="flex items-center gap-3">
+                            <div className="flex-1 min-w-[60px] h-2.5 rounded-full bg-slate-200 dark:bg-slate-600 overflow-hidden">
+                              <div className="h-full rounded-full bg-blue-500 dark:bg-blue-600" style={{ width: `${percentage}%` }} />
                             </div>
-                            <span className="review-page__allocation-pct">{percentage.toFixed(1)}%</span>
+                            <span className="font-semibold min-w-[3em]">{percentage.toFixed(1)}%</span>
                           </div>
                         </td>
                       </tr>
@@ -415,11 +415,11 @@ export const Review = () => {
                   </tbody>
                 </table>
               </div>
-              <div className="review-page__investments-footer">
+              <div className="flex justify-between items-center text-sm text-muted-foreground">
                 <span>Total funds selected: {fundTableRows.length}</span>
-                <span className={`review-page__investments-total ${!isAllocationValid ? "review-page__investments-total--invalid" : ""}`}>
+                <span className={`font-semibold inline-flex items-center gap-1.5 ${!isAllocationValid ? "text-red-500 dark:text-red-400" : ""}`}>
                   {!isAllocationValid && (
-                    <svg className="review-page__investments-total-warning-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                    <svg className="shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
                       <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
                   )}
@@ -429,40 +429,40 @@ export const Review = () => {
             </DashboardCard>
           </div>
 
-          {/* Right rail */}
-          <div className="review-page__right">
+          {/* Right rail - fixed sidebar width (360/400/420) canonical grid */}
+          <div className="flex min-w-0 flex-col gap-4 lg:sticky lg:top-6 lg:self-start">
             {/* Plan Details - per Figma 505-4560 */}
-            <DashboardCard className="review-page__block review-page__block--plan">
-              <div className="review-page__plan-header">
-                <h3 className="review-page__plan-title">Plan Details</h3>
-                <a href="/enrollment/choose-plan" onClick={handlePlanViewDetails} className="review-page__plan-view">View details</a>
+            <DashboardCard>
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="m-0 text-lg font-semibold text-foreground">Plan Details</h3>
+                <a href="/enrollment/choose-plan" onClick={handlePlanViewDetails} className="text-sm text-blue-600 no-underline hover:underline dark:text-blue-400">View details</a>
               </div>
-              <div className="review-page__plan-body">
-                <div className="review-page__plan-row review-page__plan-row--full">
-                  <span className="review-page__plan-label">PLAN NAME</span>
-                  <span className="review-page__plan-value">{enrollment.state.selectedPlan ? PLAN_TYPE_LABELS[enrollment.state.selectedPlan] : "401(k) Plan"}</span>
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[0.6875em] font-semibold tracking-wider text-muted-foreground">PLAN NAME</span>
+                  <span className="text-[0.9375em] font-semibold text-foreground">{enrollment.state.selectedPlan ? PLAN_TYPE_LABELS[enrollment.state.selectedPlan] : "401(k) Plan"}</span>
                 </div>
-                <div className="review-page__plan-row review-page__plan-row--cols">
-                  <div className="review-page__plan-col">
-                    <span className="review-page__plan-label">TYPE</span>
-                    <span className="review-page__plan-value">{selectedPlanName || "Traditional 401(k)"}</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[0.6875em] font-semibold tracking-wider text-muted-foreground">TYPE</span>
+                    <span className="text-[0.9375em] font-semibold text-foreground">{selectedPlanName || "Traditional 401(k)"}</span>
                   </div>
-                  <div className="review-page__plan-col review-page__plan-col--right">
-                    <span className="review-page__plan-label">MATCH</span>
-                    <span className="review-page__plan-value review-page__plan-match">{enrollment.state.assumptions.employerMatchPercentage}% Employer Match</span>
+                  <div className="flex flex-col gap-0.5 text-right">
+                    <span className="text-[0.6875em] font-semibold tracking-wider text-muted-foreground">MATCH</span>
+                    <span className="text-[0.9375em] font-semibold text-green-600 dark:text-green-400">{enrollment.state.assumptions.employerMatchPercentage}% Employer Match</span>
                   </div>
                 </div>
-                <div className="review-page__plan-separator" />
-                <div className="review-page__plan-row review-page__plan-row--profile">
-                  <span className="review-page__plan-label review-page__plan-label--normal">Risk Profile</span>
-                  <span className="review-page__plan-risk-pill">{formatRiskLevel(weightedSummary.riskLevel)}</span>
+                <div className="h-px bg-slate-200 my-2 dark:bg-slate-600" />
+                <div className="flex justify-between items-center">
+                  <span className="text-[0.9375em] font-medium text-foreground">Risk Profile</span>
+                  <span className="inline-block px-3 py-1.5 text-sm font-medium rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">{formatRiskLevel(weightedSummary.riskLevel)}</span>
                 </div>
               </div>
             </DashboardCard>
 
             {/* Allocation Summary - static, never overlaps AI Insights */}
-            <DashboardCard className="review-page__block review-page__block--allocation review-page__allocation-summary">
-              <h3 className="review-page__allocation-title">Allocation Summary</h3>
+            <DashboardCard className="static">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Allocation Summary</h3>
               <div className="review-page__allocation-chart">
                 <AllocationChart
                   allocations={investment.chartAllocations}
@@ -472,131 +472,130 @@ export const Review = () => {
                   isValid={isAllocationValid}
                 />
               </div>
-              <div className={`review-page__allocation-status ${!isAllocationValid ? "review-page__allocation-status--invalid" : ""}`}>
+              <div className={`flex items-center gap-1 text-sm my-2 ${!isAllocationValid ? "text-red-500 dark:text-red-400" : "text-slate-600 dark:text-slate-400"}`}>
                 {!isAllocationValid && (
-                  <svg className="review-page__allocation-status-warning-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                  <svg className="shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
                     <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
                 )}
                 Status: {isAllocationValid ? "Complete" : "Incomplete"}
               </div>
-              <div className="review-page__allocation-metrics">
-                <div className="review-page__allocation-metric">
-                  <span className="review-page__allocation-metric-label">Expected return</span>
-                  <span className="review-page__allocation-metric-value">{(weightedSummary.expectedReturn ?? 0).toFixed(1)}%</span>
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-sm text-muted-foreground">Expected return</span>
+                  <span className="text-[0.9375em] font-semibold text-foreground">{(weightedSummary.expectedReturn ?? 0).toFixed(1)}%</span>
                 </div>
-                <div className="review-page__allocation-metric">
-                  <span className="review-page__allocation-metric-label">Estimated fees</span>
-                  <span className="review-page__allocation-metric-value">{(weightedSummary.totalFees ?? 0).toFixed(2)}%</span>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-sm text-muted-foreground">Estimated fees</span>
+                  <span className="text-[0.9375em] font-semibold text-foreground">{(weightedSummary.totalFees ?? 0).toFixed(2)}%</span>
                 </div>
-                <div className="review-page__allocation-metric review-page__allocation-metric--risk">
-                  <span className="review-page__allocation-metric-label">Risk</span>
-                  <div className="review-page__risk-slider">
-                    <div className="review-page__risk-slider-track">
-                      <div className="review-page__risk-slider-fill" style={{ width: `${Math.min(100, (weightedSummary.riskLevel ?? 0) * 10)}%` }} />
-                    </div>
-                    <span className="review-page__risk-slider-label">{formatRiskLevel(weightedSummary.riskLevel ?? 0)}</span>
+                <div className="flex flex-col gap-2">
+                  <span className="text-sm text-muted-foreground">Risk</span>
+                  <div className="h-2.5 w-full rounded-full bg-slate-200 dark:bg-slate-600 overflow-hidden">
+                    <div className="h-full rounded-full bg-blue-500 dark:bg-blue-600 transition-all" style={{ width: `${Math.min(100, (weightedSummary.riskLevel ?? 0) * 10)}%` }} />
                   </div>
+                  <span className="text-sm text-muted-foreground">{formatRiskLevel(weightedSummary.riskLevel ?? 0)}</span>
                 </div>
               </div>
-              <label className="review-page__auto-rebalance">
-                <span className="review-page__auto-rebalance-toggle">
-                  <input type="checkbox" checked={autoRebalance} onChange={(e) => setAutoRebalance(e.target.checked)} className="review-page__auto-rebalance-input" />
-                  <span className="review-page__auto-rebalance-slider" />
+              <label className="flex items-center gap-2 text-sm my-2 cursor-pointer">
+                <span className="relative inline-block w-11 h-6">
+                  <input type="checkbox" checked={autoRebalance} onChange={(e) => setAutoRebalance(e.target.checked)} className="sr-only peer" />
+                  <span className="absolute inset-0 rounded-full bg-slate-200 dark:bg-slate-600 transition-colors peer-checked:bg-blue-500 peer-checked:dark:bg-blue-600" />
+                  <span className="absolute left-0.5 bottom-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform peer-checked:translate-x-5 dark:bg-slate-100" />
                 </span>
                 Auto Rebalance
               </label>
-              <Button type="button" disabled={!isAllocationValid} className="review-page__confirm-allocation">
+              <Button type="button" disabled={!isAllocationValid} className="w-full mt-2">
                 Confirm Allocation
               </Button>
               {!isAllocationValid && (
-                <p className="review-page__fix-hint">Fix allocation error to confirm</p>
+                <p className="text-[0.8125em] text-red-500 dark:text-red-400 mt-2 mb-0">Fix allocation error to confirm</p>
               )}
             </DashboardCard>
 
             {/* AI Insights - always visible below Allocation Summary */}
-            <DashboardCard className="review-page__block review-page__block--insights">
-              <h3 className="review-page__insights-title">
-                <span className="review-page__insights-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.912 5.813a2 2 0 001.275 1.275L21 12l-5.813 1.912a2 2 0 00-1.275 1.275L12 21l-1.912-5.813a2 2 0 00-1.275-1.275L3 12l5.813-1.912a2 2 0 001.275-1.275L12 3z"/></svg></span> AI Insights
+            <DashboardCard>
+              <h3 className="flex items-center gap-2 text-lg font-semibold text-foreground mb-4">
+                <span className="text-blue-500"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.912 5.813a2 2 0 001.275 1.275L21 12l-5.813 1.912a2 2 0 00-1.275 1.275L12 21l-1.912-5.813a2 2 0 00-1.275-1.275L3 12l5.813-1.912a2 2 0 001.275-1.275L12 3z"/></svg></span> AI Insights
               </h3>
-              <div className="review-page__insights-list">
-                <div className="review-page__insight-item">
-                  <p>Increase pre-tax by 2% to close ~40% of shortfall.</p>
-                  <Button type="button" onClick={() => handleApplySuggestion("contribution")} className="review-page__apply-suggestion-btn">Apply Suggestion</Button>
+              <div className="flex flex-col gap-4">
+                <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-700">
+                  <p className="mb-2 text-[0.9375em] text-foreground">Increase pre-tax by 2% to close ~40% of shortfall.</p>
+                  <Button type="button" onClick={() => handleApplySuggestion("contribution")} className="bg-blue-600 text-white border-0 px-4 py-2 text-sm rounded-md hover:bg-blue-700">Apply Suggestion</Button>
                 </div>
-                <div className="review-page__insight-item">
-                  <p>Consider rebalancing to a Target Retirement Fund to simplify allocations.</p>
-                  <Button type="button" onClick={() => handleApplySuggestion("investments")} className="review-page__apply-suggestion-btn">Apply Suggestion</Button>
+                <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-700">
+                  <p className="mb-2 text-[0.9375em] text-foreground">Consider rebalancing to a Target Retirement Fund to simplify allocations.</p>
+                  <Button type="button" onClick={() => handleApplySuggestion("investments")} className="bg-blue-600 text-white border-0 px-4 py-2 text-sm rounded-md hover:bg-blue-700">Apply Suggestion</Button>
                 </div>
               </div>
-              <p className="review-page__insights-footer">Insights generated from your plan data.</p>
+              <p className="text-[0.8125em] text-muted-foreground mt-4 mb-0">Insights generated from your plan data.</p>
             </DashboardCard>
           </div>
         </div>
 
         {/* Full-width sections per Figma - Legal Documents, What Happens Next */}
-        <div className="review-page__full-width">
+        <div className="flex flex-col gap-6 w-full md:gap-8">
           {/* Important Legal Documents */}
-          <DashboardCard className="review-page__block review-page__block--legal">
-            <h3 className="review-page__documents-title">
-                <svg className="review-page__documents-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <DashboardCard>
+            <h3 className="flex items-center gap-2 text-lg font-semibold text-foreground mb-2">
+              <svg className="shrink-0 text-muted-foreground" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
               Important Legal Documents
             </h3>
-            <p className="review-page__documents-sub">3 documents available - <span className="review-page__documents-required-count">2 required</span></p>
-            <p className="review-page__documents-hint">
-              <svg className="review-page__documents-hint-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <p className="text-sm text-muted-foreground mb-1">3 documents available - <span className="text-red-500 dark:text-red-400 font-medium">2 required</span></p>
+            <p className="flex items-start gap-2 text-sm text-muted-foreground mb-4">
+              <svg className="shrink-0 mt-0.5 text-slate-400 dark:text-slate-500" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
               Please acknowledge all required documents to enable enrollment.
             </p>
-            <div className="review-page__documents-list">
-              <label className="review-page__document-item">
+            <div className="flex flex-col gap-2">
+              <label className="flex items-center gap-3 p-3 border border-slate-200 dark:border-slate-700 rounded-lg cursor-pointer bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800">
                 <input type="checkbox" checked={acknowledgements.feeDisclosure} onChange={(e) => setAcknowledgements((p) => ({ ...p, feeDisclosure: e.target.checked }))} />
-                <span className="review-page__document-name">Fee Disclosure Statement</span>
-                <span className="review-page__document-required">Required</span>
-                <span className="review-page__document-arrow">→</span>
+                <span className="flex-1">Fee Disclosure Statement</span>
+                <span className="text-xs text-blue-600 dark:text-blue-400">Required</span>
+                <span className="text-slate-400 dark:text-slate-500">→</span>
               </label>
-              <label className="review-page__document-item">
+              <label className="flex items-center gap-3 p-3 border border-slate-200 dark:border-slate-700 rounded-lg cursor-pointer bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800">
                 <input type="checkbox" checked={acknowledgements.qdefault} onChange={(e) => setAcknowledgements((p) => ({ ...p, qdefault: e.target.checked }))} />
-                <span className="review-page__document-name">Qualified Default Investment Notice</span>
-                <span className="review-page__document-required">Required</span>
-                <span className="review-page__document-arrow">→</span>
+                <span className="flex-1">Qualified Default Investment Notice</span>
+                <span className="text-xs text-blue-600 dark:text-blue-400">Required</span>
+                <span className="text-slate-400 dark:text-slate-500">→</span>
               </label>
             </div>
           </DashboardCard>
 
           {/* What Happens Next */}
-          <DashboardCard title="What Happens Next" className="review-page__block review-page__block--next">
-            <div className="review-page__next-cards">
-              <div className="review-page__next-card">
-                <span className="review-page__next-icon">📅</span>
-                <div>
-                  <h4>When Contributions Start</h4>
-                  <p>Deductions will begin on the first payroll cycle following the 15th of next month.</p>
+          <DashboardCard title="What Happens Next">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="flex gap-4 p-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+                <span className="text-2xl shrink-0">📅</span>
+                <div className="min-w-0">
+                  <h4 className="m-0 mb-1 text-base font-semibold text-foreground">When Contributions Start</h4>
+                  <p className="m-0 text-sm text-muted-foreground">Deductions will begin on the first payroll cycle following the 15th of next month.</p>
                 </div>
               </div>
-              <div className="review-page__next-card">
-                <span className="review-page__next-icon">🕐</span>
-                <div>
-                  <h4>Payroll Timeline</h4>
-                  <p>Processing typically takes 1-2 pay periods to reflect on your pay stub.</p>
+              <div className="flex gap-4 p-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+                <span className="text-2xl shrink-0">🕐</span>
+                <div className="min-w-0">
+                  <h4 className="m-0 mb-1 text-base font-semibold text-foreground">Payroll Timeline</h4>
+                  <p className="m-0 text-sm text-muted-foreground">Processing typically takes 1-2 pay periods to reflect on your pay stub.</p>
                 </div>
               </div>
-              <div className="review-page__next-card">
-                <span className="review-page__next-icon">⚙</span>
-                <div>
-                  <h4>Modify Later</h4>
-                  <p>You can change your contribution rate or investment elections at any time.</p>
+              <div className="flex gap-4 p-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 sm:col-span-2 lg:col-span-1">
+                <span className="text-2xl shrink-0">⚙</span>
+                <div className="min-w-0">
+                  <h4 className="m-0 mb-1 text-base font-semibold text-foreground">Modify Later</h4>
+                  <p className="m-0 text-sm text-muted-foreground">You can change your contribution rate or investment elections at any time.</p>
                 </div>
               </div>
             </div>
           </DashboardCard>
 
           {/* Download / Email */}
-          <div className="review-page__block review-page__block--download review-page__download-actions">
-            <Button type="button" onClick={handleDownloadPDF} className="review-page__download-btn button--outline">
+          <div className="flex flex-wrap gap-4">
+            <Button type="button" onClick={handleDownloadPDF} className="inline-flex items-center gap-2 !border !border-slate-300 !bg-transparent !text-slate-700 hover:!bg-slate-100 dark:!border-slate-600 dark:!bg-transparent dark:!text-slate-300 dark:hover:!bg-slate-800">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"> <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /> <polyline points="7 10 12 15 17 10" /> <line x1="12" y1="15" x2="12" y2="3" /> </svg>
               Download PDF Summary
             </Button>
-            <Button type="button" onClick={handleEmailSummary} className="review-page__download-btn button--outline">
+            <Button type="button" onClick={handleEmailSummary} className="inline-flex items-center gap-2 !border !border-slate-300 !bg-transparent !text-slate-700 hover:!bg-slate-100 dark:!border-slate-600 dark:!bg-transparent dark:!text-slate-300 dark:hover:!bg-slate-800">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"> <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /> <polyline points="22,6 12,13 2,6" /> </svg>
               Email Summary
             </Button>
@@ -604,7 +603,7 @@ export const Review = () => {
         </div>
 
         {!canEnroll && (
-          <p className="review-page__footer-note">
+          <p className="text-sm text-muted-foreground mt-2 mb-0">
             Please complete all required sections and acknowledge all documents before enrolling.
           </p>
         )}

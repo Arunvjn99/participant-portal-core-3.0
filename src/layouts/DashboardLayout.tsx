@@ -13,8 +13,8 @@ export const DashboardLayout = ({ header, children }: DashboardLayoutProps) => {
           {header}
         </header>
       )}
-      <main className="dashboard-layout__main flex-1 px-4 py-6 pb-24 md:px-6 md:py-8 md:pb-24 lg:px-8">
-        <div className="flex flex-col gap-6">{children}</div>
+      <main className="dashboard-layout__main flex-1 py-6 pb-24 md:py-8 md:pb-24">
+        <div className="flex flex-col gap-6 mx-auto w-full max-w-[1440px] px-6 lg:px-8">{children}</div>
       </main>
     </div>
   );
