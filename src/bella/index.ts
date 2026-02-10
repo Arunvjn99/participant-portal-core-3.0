@@ -11,4 +11,4 @@
  * - Browser SpeechRecognition and speechSynthesis (Chrome, Safari, Edge)
  */
 export { default as BellaScreen } from "./BellaScreen";
-export type { BellaScreenProps } from "./BellaScreen";
+export type { BellaScreenProps, BellaLayoutVariant } from "./BellaScreen";

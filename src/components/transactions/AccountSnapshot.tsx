@@ -1,83 +1,130 @@
-import { DashboardCard } from "../dashboard/DashboardCard";
-import { transactionStore } from "../../data/transactionStore";
-import type { Transaction } from "../../types/transactions";
+import { motion, useReducedMotion } from "framer-motion";
+import { ACCOUNT_OVERVIEW } from "../../data/accountOverview";
 
-const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat("en-US", {
+const formatCurrency = (amount: number, decimals = 2) =>
+  new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
   }).format(amount);
+
+const container = {
+  hidden: { opacity: 0 },
+  visible: (reduced: boolean) => ({
+    opacity: 1,
+    transition: {
+      staggerChildren: reduced ? 0 : 0.06,
+      delayChildren: reduced ? 0 : 0.03,
+    },
+  }),
+};
+
+const item = {
+  hidden: { opacity: 0, y: 10 },
+  visible: (reduced: boolean) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: reduced ? 0 : 0.25, ease: "easeOut" },
+  }),
 };
 
 /**
- * AccountSnapshot component displays high-level financial information
- * Values are derived from transactions and mock account data
+ * Account snapshot - Total Balance, metrics grid, On Track card (Figma 613-2059)
  */
 export const AccountSnapshot = () => {
-  const transactions = transactionStore.getAllTransactions();
-
-  // Calculate account metrics from transactions
-  // In production, these would come from account API
-  const totalAccountBalance = 250000; // Mock: base account balance
-  const vestedBalance = 200000; // Mock: 80% vested
-  const eligibleLoanAmount = Math.min(50000, totalAccountBalance * 0.5); // Max 50% or $50k
-
-  // Calculate outstanding loan balance from active/completed loans
-  const activeLoans = transactions.filter(
-    (txn) => txn.type === "loan" && (txn.status === "active" || txn.status === "completed")
-  );
-  const outstandingLoanBalance = activeLoans.reduce((sum, loan) => {
-    // Mock: assume 50% of loan amount is still outstanding for completed loans
-    // In production, this would track actual repayment progress
-    if (loan.status === "active") {
-      return sum + (loan.amount || 0);
-    }
-    return sum + (loan.amount || 0) * 0.5;
-  }, 0);
-
-  // Get current monthly loan repayment from active loans
-  const activeLoan = activeLoans.find((loan) => loan.status === "active");
-  const currentMonthlyLoanRepayment = activeLoan?.repaymentInfo?.monthlyPayment || 0;
+  const reduced = !!useReducedMotion();
 
   return (
-    <DashboardCard>
-      <div className="account-snapshot">
-        <h2 className="account-snapshot__title">Your Account Overview</h2>
-        <div className="account-snapshot__grid">
-          <div className="account-snapshot__item">
-            <span className="account-snapshot__label">Total Balance</span>
-            <span className="account-snapshot__value account-snapshot__value--primary">
-              {formatCurrency(totalAccountBalance)}
-            </span>
+    <motion.section
+      className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800"
+      variants={container}
+      initial="hidden"
+      animate="visible"
+      custom={reduced}
+    >
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        {/* Total Balance - prominent left */}
+        <motion.div
+          className="lg:col-span-4"
+          variants={item}
+          custom={reduced}
+        >
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+            Total Balance
+          </p>
+          <p className="mt-1 text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+            {formatCurrency(ACCOUNT_OVERVIEW.totalBalance)}
+          </p>
+          <div className="mt-2 flex items-center gap-1.5 text-sm font-medium text-emerald-600 dark:text-emerald-400">
+            <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
+            <span>+{ACCOUNT_OVERVIEW.ytdPercent}% YTD</span>
           </div>
-          <div className="account-snapshot__item">
-            <span className="account-snapshot__label">Vested Balance</span>
-            <span className="account-snapshot__value">
-              {formatCurrency(vestedBalance)}
-            </span>
+        </motion.div>
+
+        {/* Metrics - two columns */}
+        <motion.div
+          className="grid grid-cols-2 gap-4 lg:col-span-4"
+          variants={item}
+          custom={reduced}
+        >
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+              Vested Balance
+            </p>
+            <p className="mt-0.5 text-lg font-semibold text-slate-900 dark:text-white">
+              {formatCurrency(ACCOUNT_OVERVIEW.vestedBalance, 0)}
+            </p>
           </div>
-          <div className="account-snapshot__item">
-            <span className="account-snapshot__label">Eligible Loan Amount</span>
-            <span className="account-snapshot__value">
-              {formatCurrency(eligibleLoanAmount)}
-            </span>
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+              Outstanding Loan
+            </p>
+            <p className="mt-0.5 text-lg font-semibold text-slate-900 dark:text-white">
+              {formatCurrency(ACCOUNT_OVERVIEW.outstandingLoan)}
+            </p>
           </div>
-          <div className="account-snapshot__item">
-            <span className="account-snapshot__label">Outstanding Loan Balance</span>
-            <span className="account-snapshot__value">
-              {outstandingLoanBalance > 0 ? formatCurrency(outstandingLoanBalance) : "Not applicable"}
-            </span>
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+              YTD Contribution
+            </p>
+            <p className="mt-0.5 text-lg font-semibold text-slate-900 dark:text-white">
+              {formatCurrency(ACCOUNT_OVERVIEW.ytdContribution, 0)}
+            </p>
           </div>
-          <div className="account-snapshot__item">
-            <span className="account-snapshot__label">Monthly Repayment</span>
-            <span className="account-snapshot__value">
-              {currentMonthlyLoanRepayment > 0 ? formatCurrency(currentMonthlyLoanRepayment) : "Not applicable"}
-            </span>
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+              Rate of Return
+            </p>
+            <p className="mt-0.5 text-lg font-semibold text-emerald-600 dark:text-emerald-400">
+              {ACCOUNT_OVERVIEW.rateOfReturnPercent}%
+            </p>
           </div>
-        </div>
+        </motion.div>
+
+        {/* On Track card - right */}
+        <motion.div
+          className="lg:col-span-4"
+          variants={item}
+          custom={reduced}
+        >
+          <div className="rounded-xl bg-blue-500 px-4 py-4 text-white shadow-sm dark:bg-blue-600">
+            <div className="flex items-center gap-2">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20">
+                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+              </span>
+              <span className="font-semibold">{ACCOUNT_OVERVIEW.onTrack.title}</span>
+            </div>
+            <p className="mt-2 text-sm text-white/95">
+              {ACCOUNT_OVERVIEW.onTrack.message}
+            </p>
+          </div>
+        </motion.div>
       </div>
-    </DashboardCard>
+    </motion.section>
   );
 };

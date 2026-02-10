@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getResponseForQuery, type AIResponse } from "../../utils/aiIntentDetection";
+import { BellaScreen } from "../../bella";
 
 // Optional enrollment context
 const useEnrollmentSafe = () => {
@@ -23,6 +24,7 @@ export const FloatingRetirementSearch = () => {
   const location = useLocation();
   const enrollment = useEnrollmentSafe();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showEmbeddedAssistant, setShowEmbeddedAssistant] = useState(false);
   const [query, setQuery] = useState("");
   const [response, setResponse] = useState<AIResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -60,6 +62,7 @@ export const FloatingRetirementSearch = () => {
         !target.closest(".floating-retirement-search-trigger")
       ) {
         setIsExpanded(false);
+        setShowEmbeddedAssistant(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -103,7 +106,10 @@ export const FloatingRetirementSearch = () => {
       <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[10000]">
         <button
           type="button"
-          onClick={() => setIsExpanded(!isExpanded)}
+          onClick={() => {
+            setIsExpanded(!isExpanded);
+            if (!isExpanded) setShowEmbeddedAssistant(false);
+          }}
           className="floating-retirement-search-trigger flex items-center gap-2 rounded-full px-5 py-3 bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 text-white shadow-lg animate-bella-pulse hover:scale-105 hover:animate-none active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background dark:from-teal-500 dark:via-teal-600 dark:to-teal-700"
           aria-label="Ask Core AI - Retirement Assistant"
           aria-expanded={isExpanded}
@@ -130,14 +136,28 @@ export const FloatingRetirementSearch = () => {
         />
       )}
 
-      {/* Expanded panel - floating search (Figma 522-6410) */}
+      {/* Expanded panel - search UI or embedded BellaScreen (voice/assistant flow) */}
       {isExpanded && (
         <div
           ref={panelRef}
-          className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[9999] w-[calc(100vw-2rem)] min-h-[100px] sm:w-[min(640px,calc(100vw-2rem))] sm:min-h-[107px] md:w-[min(768px,calc(100vw-2rem))] md:min-h-[120px] lg:w-[min(1024px,calc(100vw-2rem))] lg:min-h-[160px] xl:w-[1168px] xl:min-h-[183px] max-w-[calc(100vw-2rem)] rounded-2xl bg-[#1B2232] dark:bg-slate-900 border border-slate-600/80 dark:border-slate-700/80 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden"
+          className={`fixed left-1/2 -translate-x-1/2 z-[9999] max-w-[calc(100vw-2rem)] rounded-2xl bg-[#1B2232] dark:bg-slate-900 border border-slate-600/80 dark:border-slate-700/80 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col
+            ${showEmbeddedAssistant
+              ? "bottom-4 top-4 w-[calc(100vw-2rem)] sm:w-[min(640px,calc(100vw-2rem))] md:w-[min(768px,calc(100vw-2rem))] lg:w-[min(900px,calc(100vw-2rem))] h-[calc(100vh-2rem)]"
+              : "bottom-24 w-[calc(100vw-2rem)] min-h-[100px] sm:w-[min(640px,calc(100vw-2rem))] sm:min-h-[107px] md:w-[min(768px,calc(100vw-2rem))] md:min-h-[120px] lg:w-[min(1024px,calc(100vw-2rem))] lg:min-h-[160px] xl:w-[1168px] xl:min-h-[183px]"}`}
           role="dialog"
-          aria-label="Core AI - AI Assistant"
+          aria-label={showEmbeddedAssistant ? "Core AI - Voice Assistant" : "Core AI - AI Assistant"}
         >
+          {showEmbeddedAssistant ? (
+            /* Embedded BellaScreen: same flow as /voice but inside panel; onClose returns to search UI */
+            <div className="flex h-full flex-col overflow-hidden rounded-2xl">
+              <BellaScreen
+                variant="embedded"
+                initialDarkMode
+                onClose={() => setShowEmbeddedAssistant(false)}
+              />
+            </div>
+          ) : (
+            <>
           {/* Header - Figma: AI Assistant Online */}
           <div className="p-4 pb-2">
             <div className="flex items-center justify-between gap-2">
@@ -147,12 +167,9 @@ export const FloatingRetirementSearch = () => {
               </div>
               <button
                 type="button"
-                onClick={() => {
-                  navigate("/voice", { state: { from: location.pathname } });
-                  setIsExpanded(false);
-                }}
+                onClick={() => setShowEmbeddedAssistant(true)}
                 className="flex items-center gap-2 rounded-full px-4 py-2 bg-gradient-to-r from-teal-500 to-teal-600 text-white text-sm font-medium hover:from-teal-600 hover:to-teal-700 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-2 focus:ring-offset-[#1B2232]"
-                aria-label="Open Voice Mode"
+                aria-label="Open Voice Assistant in panel"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
@@ -275,6 +292,8 @@ export const FloatingRetirementSearch = () => {
               </div>
             )}
           </div>
+            </>
+          )}
         </div>
       )}
     </>

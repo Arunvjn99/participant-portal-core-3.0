@@ -93,7 +93,7 @@ export const AddInvestmentModal = ({
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm dark:bg-black/50" />
         <Dialog.Content
-          className="add-investment-modal fixed left-1/2 top-1/2 z-50 flex max-h-[90vh] w-[90vw] max-w-[560px] -translate-x-1/2 -translate-y-1/2 flex-col rounded-xl border border-border bg-background shadow-xl focus:outline-none dark:border-slate-700 dark:bg-slate-900"
+          className="add-investment-modal fixed left-1/2 top-1/2 z-50 flex min-h-[50vh] max-h-[90vh] w-[90vw] max-w-[560px] -translate-x-1/2 -translate-y-1/2 flex-col rounded-xl border border-border bg-background shadow-xl focus:outline-none dark:border-slate-700 dark:bg-slate-900"
           aria-labelledby="add-investment-title"
           aria-describedby="add-investment-description"
           onEscapeKeyDown={onClose}
@@ -174,8 +174,8 @@ export const AddInvestmentModal = ({
             )}
           </div>
 
-          {/* Sticky Footer */}
-          <footer className="sticky bottom-0 flex shrink-0 justify-end border-t border-border bg-background px-6 py-4 dark:border-slate-700 dark:bg-slate-900">
+          {/* Footer — pinned to bottom of modal */}
+          <footer className="mt-auto flex shrink-0 justify-end border-t border-border bg-background px-6 py-4 dark:border-slate-700 dark:bg-slate-900">
             <button
               type="button"
               onClick={onClose}

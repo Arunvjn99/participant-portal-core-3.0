@@ -10,6 +10,7 @@ import {
   EnrollmentReviewSummaryCard,
   ENROLLMENT_FRAMING,
 } from "./ui/EnrollmentDecisionUI";
+import { BellaScreenLayout, type BellaLayoutVariant } from "./ui/BellaScreenLayout";
 import { ManualInvestmentBlock, MANUAL_FRAMING } from "./ui/ManualInvestmentUI";
 import {
   createInitialLoanState,
@@ -87,15 +88,20 @@ interface WithdrawalDemoState {
   amount?: number;
 }
 
+export type { BellaLayoutVariant } from "./ui/BellaScreenLayout";
+
 export interface BellaScreenProps {
   /** When provided, Close button calls this instead of only resetting state (e.g. close overlay back to dashboard). */
   onClose?: () => void;
   /** When provided (e.g. from portal dashboard), agent starts with this theme so it matches the page. */
   initialDarkMode?: boolean;
+  /** fullpage: current /voice behavior (viewport scroll, fixed chrome). embedded: for constrained panel (panel scroll). Default fullpage. */
+  variant?: BellaLayoutVariant;
 }
 
 export default function BellaScreen(props?: BellaScreenProps) {
-  const { onClose, initialDarkMode } = props ?? {};
+  const { onClose, initialDarkMode, variant: variantProp } = props ?? {};
+  const variant = variantProp ?? "fullpage";
   const [listening, setListening] = useState(false);
   const [userText, setUserText] = useState("");
   const [messages, setMessages] = useState<Message[]>([
@@ -1441,9 +1447,10 @@ Focus ONLY on US retirement topics.`
   return (
     <div
       className={`
-        min-h-screen flex flex-col w-full items-center p-2 sm:p-4 md:p-6 lg:p-8
+        flex flex-col w-full items-center p-2 sm:p-4 md:p-6 lg:p-8
         transition-colors duration-300 relative isolate overflow-x-hidden justify-start antialiased
-        ${isDarkMode ? 'text-[#e5e7eb]' : 'text-slate-900'}
+        ${variant === "embedded" ? "h-full overflow-hidden" : "min-h-screen"}
+        ${isDarkMode ? "text-[#e5e7eb]" : "text-slate-900"}
       `}
       style={
         isDarkMode
@@ -1485,74 +1492,16 @@ Focus ONLY on US retirement topics.`
         className={`pointer-events-none absolute inset-0 z-0 ${isDarkMode ? 'bg-[#0b1020]/35' : 'bg-white/88'}`}
         aria-hidden="true"
       />
-      
-      {/* Enrollment Mode Indicator */}
-      {isEnrolling && enrollmentState && (
-        <div className="fixed top-2 left-2 sm:top-4 sm:left-4 md:top-6 md:left-6 z-50">
-          <div className={`
-            px-3 py-2 rounded-full backdrop-blur-md text-sm font-medium
-            ${isDarkMode 
-              ? 'bg-blue-600/80 text-white border border-blue-500/30' 
-              : 'bg-blue-600/80 text-white border border-blue-500/30'
-            }
-          `} style={{
-            backdropFilter: 'blur(10px) saturate(180%)',
-            WebkitBackdropFilter: 'blur(10px) saturate(180%)',
-          }}>
-            {getEnrollmentPhaseLabel(enrollmentState.step)}
-          </div>
-        </div>
-      )}
 
-      {/* Withdrawal Info Mode Indicator */}
-      {(withdrawalState || withdrawalDemoState || withdrawalCompleteState) && (
-        <div className="fixed top-2 left-2 sm:top-4 sm:left-4 md:top-6 md:left-6 z-50">
-          <div className={`
-            px-3 py-2 rounded-full backdrop-blur-md text-sm font-medium
-            ${isDarkMode 
-              ? 'bg-amber-600/80 text-white border border-amber-500/30' 
-              : 'bg-amber-600/80 text-white border border-amber-500/30'
-            }
-          `} style={{
-            backdropFilter: 'blur(10px) saturate(180%)',
-            WebkitBackdropFilter: 'blur(10px) saturate(180%)',
-          }}>
-            {getWithdrawalPhaseLabel((withdrawalDemoState?.step ?? withdrawalCompleteState?.step ?? withdrawalState?.step ?? 'INTENT') as string)}
-          </div>
-        </div>
-      )}
-
-      {/* Loan Application Mode Indicator */}
-      {isApplyingForLoan && loanState && (
-        <div className="fixed top-2 left-2 sm:top-4 sm:left-4 md:top-6 md:left-6 z-50">
-          <div className={`
-            px-3 py-2 rounded-full backdrop-blur-md text-sm font-medium
-            ${isDarkMode 
-              ? 'bg-green-600/80 text-white border border-green-500/30' 
-              : 'bg-green-600/80 text-white border border-green-500/30'
-            }
-          `} style={{
-            backdropFilter: 'blur(10px) saturate(180%)',
-            WebkitBackdropFilter: 'blur(10px) saturate(180%)',
-          }}>
-            💰 Loan: {(() => {
-              const step = loanState.step;
-              if (step === "ELIGIBILITY" || step === "RULES") return "About your account";
-              if (step === "AMOUNT" || step === "PURPOSE" || step === "TERM") return "Loan details";
-              if (step === "REVIEW") return "Review & submit";
-              return "In progress";
-            })()}
-          </div>
-        </div>
-      )}
-
-      {/* Top Bar - Close Button and Theme Toggle with Glass Effect */}
-      <div className="fixed top-2 right-2 sm:top-4 sm:right-4 md:top-6 md:right-6 z-50">
-        <div
-          className={`
-            flex items-center gap-1 p-1 rounded-2xl shadow-lg backdrop-blur-xl
-            ${isDarkMode ? 'bg-slate-900/60 border border-slate-700/60' : 'bg-white/70 border border-slate-200/70'}
-          `}
+      <BellaScreenLayout
+        variant={variant}
+        header={
+          <div className={variant === "fullpage" ? "fixed top-2 right-2 sm:top-4 sm:right-4 md:top-6 md:right-6 z-50" : "shrink-0 flex justify-end p-2 sm:p-3"}>
+            <div
+              className={`
+                flex items-center gap-1 p-1 rounded-2xl shadow-lg backdrop-blur-xl
+                ${isDarkMode ? "bg-slate-900/60 border border-slate-700/60" : "bg-white/70 border border-slate-200/70"}
+              `}
           style={{
             backdropFilter: 'blur(18px) saturate(140%)',
             WebkitBackdropFilter: 'blur(18px) saturate(140%)',
@@ -1633,11 +1582,136 @@ Focus ONLY on US retirement topics.`
           </svg>
           </button>
         </div>
-      </div>
-
+          </div>
+        }
+        footer={
+          <div
+            className={variant === "fullpage"
+              ? `pt-2 pb-2 sm:pb-3 md:pb-4 ${isDarkMode ? "bg-transparent border-t border-[rgba(148,163,184,0.08)]" : "bg-white/95 border-t border-slate-200"} backdrop-blur-xl shadow-[0_-10px_30px_rgba(0,0,0,0.08)] fixed bottom-0 left-0 right-0 z-20 w-full`
+              : `shrink-0 pt-2 pb-2 sm:pb-3 md:pb-4 ${isDarkMode ? "border-t border-slate-700/50 bg-slate-900/30" : "border-t border-slate-200 bg-white/95"} backdrop-blur-xl`}
+          >
+            {!userText && (
+              <div className="w-full max-w-4xl mx-auto px-2 sm:px-3 md:px-4 pb-2">
+                <div className="max-w-4xl w-full mx-auto">
+                  <p className={`text-xs sm:text-sm mb-1 sm:mb-1.5 md:mb-2 text-center ${isDarkMode ? "text-slate-300" : "text-slate-600"}`}>
+                    Try asking:
+                  </p>
+                  <div className="flex flex-wrap justify-center gap-1 xs:gap-1.5 sm:gap-2">
+                    {suggestedQuestions.map((question, index) => (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          if (question.toLowerCase().includes("vested balance")) {
+                            startVestedBalanceFlow();
+                          } else {
+                            handleUserInput(question, "chip");
+                          }
+                        }}
+                        className={`
+                          px-2.5 py-1 xs:px-3 xs:py-1.5 sm:px-3.5 sm:py-2 text-[10px] xs:text-xs sm:text-sm rounded-full
+                          ${isDarkMode ? "backdrop-blur-md" : ""}
+                          transition-all duration-200 touch-manipulation
+                          ${isDarkMode
+                            ? "bg-slate-900/40 text-slate-200 border border-slate-700/50 hover:bg-slate-900/55 hover:border-slate-600/60 active:bg-slate-900/65"
+                            : "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 active:bg-slate-100 shadow-sm"}
+                        `}
+                        style={isDarkMode ? { backdropFilter: "blur(10px) saturate(180%)", WebkitBackdropFilter: "blur(10px) saturate(180%)", minHeight: "28px" } : { minHeight: "28px" }}
+                      >
+                        {question}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+            <div className="w-full max-w-4xl mx-auto px-2 sm:px-3 md:px-4 pb-2 sm:pb-3 md:pb-4">
+              <div
+                className={`
+                  flex items-center gap-1 sm:gap-1.5 md:gap-2 rounded-2xl shadow-xl p-1.5 sm:p-2
+                  ${isDarkMode ? "bg-[rgba(15,23,42,0.9)] border border-[rgba(148,163,184,0.15)]" : "bg-white border border-slate-200 shadow-md"}
+                `}
+                style={isDarkMode ? { boxShadow: "0 10px 30px rgba(0,0,0,0.45)" } : { backdropFilter: "blur(18px) saturate(140%)", WebkitBackdropFilter: "blur(18px) saturate(140%)" }}
+              >
+                <button
+                  onClick={handleVoiceClick}
+                  disabled={typeof window === "undefined" || !getSpeechRecognition()}
+                  className={`
+                    w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center
+                    transition-all duration-200 flex-shrink-0 touch-manipulation
+                    ${listening ? "bg-red-500 hover:bg-red-600 active:bg-red-700 text-white animate-pulse ring-2 ring-red-300 ring-offset-2" : "bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white"}
+                    disabled:opacity-50 disabled:cursor-not-allowed
+                  `}
+                  aria-label={listening ? "Stop listening" : "Start voice input"}
+                  title={listening ? "Click to stop listening" : "Click to start voice input (microphone permission required)"}
+                >
+                  {listening ? (
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                    </svg>
+                  ) : (
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                    </svg>
+                  )}
+                </button>
+                <input
+                  type="text"
+                  value={userText}
+                  onChange={(e) => setUserText(e.target.value)}
+                  onKeyPress={(e) => { if (e.key === "Enter") handleSubmit(); }}
+                  placeholder="Say or type your question..."
+                  className={`flex-1 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 text-sm sm:text-base md:text-lg bg-transparent border-none outline-none ${isDarkMode ? "text-gray-100 placeholder-gray-400" : "text-gray-900 placeholder-gray-400"}`}
+                />
+                <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*,.pdf,.doc,.docx" className="hidden" aria-label="Attach file" />
+                <button
+                  onClick={handleAttachClick}
+                  className={`w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all duration-200 flex-shrink-0 touch-manipulation ${isDarkMode ? "bg-gray-700 text-gray-300 hover:bg-gray-600 active:bg-gray-500" : "bg-gray-100 text-gray-600 hover:bg-gray-200 active:bg-gray-300"}`}
+                  aria-label="Attach file or image"
+                  title="Attach file or image"
+                >
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => handleSubmit()}
+                  disabled={!userText.trim()}
+                  className="px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2.5 text-sm sm:text-base md:text-lg rounded-full bg-blue-600 text-white font-medium hover:bg-blue-700 active:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0 touch-manipulation min-w-[44px]"
+                  aria-label="Send message"
+                  title="Send message"
+                >
+                  Send
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+      >
+      {/* Mode indicators: fixed (fullpage) or relative (embedded) */}
+      {isEnrolling && enrollmentState && (
+        <div className={variant === "fullpage" ? "fixed top-2 left-2 sm:top-4 sm:left-4 md:top-6 md:left-6 z-50" : "relative z-10 shrink-0"}>
+          <div className={`px-3 py-2 rounded-full backdrop-blur-md text-sm font-medium ${isDarkMode ? "bg-blue-600/80 text-white border border-blue-500/30" : "bg-blue-600/80 text-white border border-blue-500/30"}`} style={{ backdropFilter: "blur(10px) saturate(180%)", WebkitBackdropFilter: "blur(10px) saturate(180%)" }}>
+            {getEnrollmentPhaseLabel(enrollmentState.step)}
+          </div>
+        </div>
+      )}
+      {(withdrawalState || withdrawalDemoState || withdrawalCompleteState) && (
+        <div className={variant === "fullpage" ? "fixed top-2 left-2 sm:top-4 sm:left-4 md:top-6 md:left-6 z-50" : "relative z-10 shrink-0"}>
+          <div className={`px-3 py-2 rounded-full backdrop-blur-md text-sm font-medium ${isDarkMode ? "bg-amber-600/80 text-white border border-amber-500/30" : "bg-amber-600/80 text-white border border-amber-500/30"}`} style={{ backdropFilter: "blur(10px) saturate(180%)", WebkitBackdropFilter: "blur(10px) saturate(180%)" }}>
+            {getWithdrawalPhaseLabel((withdrawalDemoState?.step ?? withdrawalCompleteState?.step ?? withdrawalState?.step ?? "INTENT") as string)}
+          </div>
+        </div>
+      )}
+      {isApplyingForLoan && loanState && (
+        <div className={variant === "fullpage" ? "fixed top-2 left-2 sm:top-4 sm:left-4 md:top-6 md:left-6 z-50" : "relative z-10 shrink-0"}>
+          <div className={`px-3 py-2 rounded-full backdrop-blur-md text-sm font-medium ${isDarkMode ? "bg-green-600/80 text-white border border-green-500/30" : "bg-green-600/80 text-white border border-green-500/30"}`} style={{ backdropFilter: "blur(10px) saturate(180%)", WebkitBackdropFilter: "blur(10px) saturate(180%)" }}>
+            💰 Loan: {(() => { const step = loanState.step; if (step === "ELIGIBILITY" || step === "RULES") return "About your account"; if (step === "AMOUNT" || step === "PURPOSE" || step === "TERM") return "Loan details"; if (step === "REVIEW") return "Review & submit"; return "In progress"; })()}
+          </div>
+        </div>
+      )}
       {/* Initial Screen - Show greeting with orb when only one message */}
       {messages.length === 1 ? (
-        <div className="flex flex-col items-center justify-center min-h-[70vh] w-full relative z-10 px-2 sm:px-4 pb-44 sm:pb-48">
+        <div className={`flex flex-col items-center justify-center w-full relative z-10 px-2 sm:px-4 pb-44 sm:pb-48 ${variant === "embedded" ? "min-h-0 py-8" : "min-h-[70vh]"}`}>
           {/* AI Visual Representation */}
           <div className="mb-4 sm:mb-6 md:mb-8 lg:mb-12 mt-8 sm:mt-12 md:mt-16 lg:mt-20">
             <div
@@ -3726,195 +3800,8 @@ Focus ONLY on US retirement topics.`
           </div>
         </div>
       )}
+      </BellaScreenLayout>
 
-      {/* Fixed footer: suggested questions + input bar - always at bottom of viewport while page scrolls */}
-      <div
-        className={`
-          fixed bottom-0 left-0 right-0 z-20 w-full pt-2 pb-2 sm:pb-3 md:pb-4
-          ${isDarkMode ? 'bg-transparent border-t border-[rgba(148,163,184,0.08)]' : 'bg-white/95 border-t border-slate-200'}
-          backdrop-blur-xl shadow-[0_-10px_30px_rgba(0,0,0,0.08)]
-        `}
-      >
-        {/* Suggested Questions - above input bar */}
-        {!userText && (
-          <div className="w-full max-w-4xl mx-auto px-2 sm:px-3 md:px-4 pb-2">
-            <div className="max-w-4xl w-full mx-auto">
-              <p className={`text-xs sm:text-sm mb-1 sm:mb-1.5 md:mb-2 text-center ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
-                Try asking:
-              </p>
-              <div className="flex flex-wrap justify-center gap-1 xs:gap-1.5 sm:gap-2">
-                {suggestedQuestions.map((question, index) => (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      if (question.toLowerCase().includes("vested balance")) {
-                        startVestedBalanceFlow();
-                      } else {
-                        handleUserInput(question, "chip");
-                      }
-                    }}
-                    className={`
-                      px-2.5 py-1 xs:px-3 xs:py-1.5 sm:px-3.5 sm:py-2 text-[10px] xs:text-xs sm:text-sm rounded-full
-                      ${isDarkMode ? 'backdrop-blur-md' : ''}
-                      transition-all duration-200 touch-manipulation
-                      ${isDarkMode
-                        ? 'bg-slate-900/40 text-slate-200 border border-slate-700/50 hover:bg-slate-900/55 hover:border-slate-600/60 active:bg-slate-900/65'
-                        : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 active:bg-slate-100 shadow-sm'
-                      }
-                    `}
-                    style={isDarkMode ? {
-                      backdropFilter: 'blur(10px) saturate(180%)',
-                      WebkitBackdropFilter: 'blur(10px) saturate(180%)',
-                      minHeight: '28px',
-                    } : { minHeight: '28px' }}
-                  >
-                    {question}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Input Area - Compact Chat Bar with Glass Effect */}
-        <div className="w-full max-w-4xl mx-auto px-2 sm:px-3 md:px-4 pb-2 sm:pb-3 md:pb-4">
-        <div className={`
-          flex items-center gap-1 sm:gap-1.5 md:gap-2 rounded-2xl shadow-xl p-1.5 sm:p-2
-          ${isDarkMode 
-            ? 'bg-[rgba(15,23,42,0.9)] border border-[rgba(148,163,184,0.15)]' 
-            : 'bg-white border border-slate-200 shadow-md'
-          }
-        `}
-        style={
-          isDarkMode
-            ? { boxShadow: '0 10px 30px rgba(0,0,0,0.45)' }
-            : {
-                backdropFilter: 'blur(18px) saturate(140%)',
-                WebkitBackdropFilter: 'blur(18px) saturate(140%)',
-              }
-        }
-        >
-          {/* Voice Input Button. Mic runs only on click; no auto-start (browsers block that). */}
-          <button
-            onClick={handleVoiceClick}
-            disabled={typeof window === 'undefined' || !getSpeechRecognition()}
-            className={`
-              w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center
-              transition-all duration-200 flex-shrink-0 touch-manipulation
-              ${
-                listening
-                  ? "bg-red-500 hover:bg-red-600 active:bg-red-700 text-white animate-pulse ring-2 ring-red-300 ring-offset-2"
-                  : "bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white"
-              }
-              disabled:opacity-50 disabled:cursor-not-allowed
-            `}
-            aria-label={listening ? "Stop listening" : "Start voice input"}
-            title={listening ? "Click to stop listening" : "Click to start voice input (microphone permission required)"}
-          >
-            {listening ? (
-              <svg
-                className="w-4 h-4 sm:w-5 sm:h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
-                />
-              </svg>
-            ) : (
-              <svg
-                className="w-4 h-4 sm:w-5 sm:h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
-                />
-              </svg>
-            )}
-          </button>
-
-          {/* Text Input */}
-          <input
-            type="text"
-            value={userText}
-            onChange={(e) => setUserText(e.target.value)}
-            onKeyPress={(e) => {
-              if (e.key === "Enter") {
-                handleSubmit();
-              }
-            }}
-            placeholder="Say or type your question..."
-            className={`
-              flex-1 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 text-sm sm:text-base md:text-lg
-              bg-transparent border-none outline-none
-              ${isDarkMode 
-                ? 'text-gray-100 placeholder-gray-400' 
-                : 'text-gray-900 placeholder-gray-400'
-              }
-            `}
-          />
-
-          {/* Hidden File Input */}
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            accept="image/*,.pdf,.doc,.docx"
-            className="hidden"
-            aria-label="Attach file"
-          />
-
-          {/* Attach File/Image Button */}
-          <button
-            onClick={handleAttachClick}
-            className={`
-              w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center
-              transition-all duration-200 flex-shrink-0 touch-manipulation
-              ${isDarkMode
-                ? 'bg-gray-700 text-gray-300 hover:bg-gray-600 active:bg-gray-500'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200 active:bg-gray-300'
-              }
-            `}
-            aria-label="Attach file or image"
-            title="Attach file or image"
-          >
-            <svg
-              className="w-4 h-4 sm:w-5 sm:h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
-              />
-            </svg>
-          </button>
-
-          {/* Send Button */}
-          <button
-            onClick={() => handleSubmit()}
-            disabled={!userText.trim()}
-            className="px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2.5 text-sm sm:text-base md:text-lg rounded-full bg-blue-600 text-white font-medium hover:bg-blue-700 active:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0 touch-manipulation min-w-[44px]"
-            aria-label="Send message"
-            title="Send message"
-          >
-            Send
-          </button>
-        </div>
-        </div>
-      </div>
     </div>
   );
 }

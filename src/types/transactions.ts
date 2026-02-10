@@ -36,4 +36,10 @@ export interface Transaction {
   };
   isIrreversible: boolean;
   legalConfirmations: string[];
+  /** Optional display name for activity list (e.g. "Loan Repayment", "Dividend Credit") */
+  displayName?: string;
+  /** Optional account label (e.g. "Traditional 401(k)") */
+  accountType?: string;
+  /** When true, amount is shown as negative in activity list */
+  amountNegative?: boolean;
 }

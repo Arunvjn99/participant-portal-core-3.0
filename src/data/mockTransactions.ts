@@ -32,6 +32,9 @@ export const MOCK_TRANSACTIONS: Record<string, Transaction> = {
     },
     isIrreversible: false,
     legalConfirmations: ["Loan agreement signed", "Terms acknowledged"],
+    displayName: "Loan Repayment",
+    accountType: "Traditional 401(k)",
+    amountNegative: true,
   },
   "txn-002": {
     id: "txn-002",
@@ -54,6 +57,9 @@ export const MOCK_TRANSACTIONS: Record<string, Transaction> = {
     },
     isIrreversible: true,
     legalConfirmations: ["Early withdrawal penalty acknowledged", "Tax implications understood"],
+    displayName: "Withdrawal",
+    accountType: "Roth 401(k)",
+    amountNegative: true,
   },
   "txn-003": {
     id: "txn-003",
@@ -71,6 +77,8 @@ export const MOCK_TRANSACTIONS: Record<string, Transaction> = {
     },
     isIrreversible: false,
     legalConfirmations: [],
+    displayName: "Start Rollover",
+    accountType: "Traditional 401(k)",
   },
   "txn-004": {
     id: "txn-004",
@@ -95,6 +103,8 @@ export const MOCK_TRANSACTIONS: Record<string, Transaction> = {
     },
     isIrreversible: true,
     legalConfirmations: ["Required minimum distribution", "Tax withholding authorized"],
+    displayName: "Dividend Credit",
+    accountType: "Roth 401(k)",
   },
 };
 

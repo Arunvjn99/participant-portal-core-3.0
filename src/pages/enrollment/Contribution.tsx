@@ -213,7 +213,7 @@ export const Contribution = () => {
 
   const sourceTotal = state.sourceAllocation.preTax + state.sourceAllocation.roth + state.sourceAllocation.afterTax;
   const sliderPct = ((Math.min(SLIDER_MAX, Math.max(SLIDER_MIN, contributionPct)) - SLIDER_MIN) / (SLIDER_MAX - SLIDER_MIN)) * 100;
-  const [sourcesExpanded, setSourcesExpanded] = useState(false);
+  const [sourcesExpanded, setSourcesExpanded] = useState(true);
   const [focusedInput, setFocusedInput] = useState<"pct" | "dollar" | null>(null);
   const monthlyAmount = annualAmount / 12;
   const inputsActive = focusedInput !== null;

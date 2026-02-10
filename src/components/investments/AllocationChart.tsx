@@ -168,14 +168,18 @@ export const AllocationChart = ({
         )}
       </div>
       {showValidBadge && (
-        <div
-          className={`allocation-chart__valid-badge ${
-            isValid ? "allocation-chart__valid-badge--valid" : "allocation-chart__valid-badge--invalid"
+        <span
+          role="status"
+          aria-live="polite"
+          className={`mt-2 inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium ${
+            isValid
+              ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300"
+              : "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300"
           }`}
         >
           {isValid ? (
             <>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="shrink-0">
                 <polyline points="20 6 9 17 4 12" />
               </svg>
               Valid Allocation
@@ -183,7 +187,7 @@ export const AllocationChart = ({
           ) : (
             "Invalid Allocation"
           )}
-        </div>
+        </span>
       )}
       <div className="allocation-chart__legend">
         {activeAllocations.map((allocation, index) => {

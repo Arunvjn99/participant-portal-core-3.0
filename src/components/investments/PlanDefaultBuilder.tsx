@@ -74,7 +74,7 @@ export const PlanDefaultBuilder = () => {
               onChange={(e) => setPlanDefaultEditEnabled(e.target.checked)}
               className="plan-default-builder__toggle-input"
             />
-            <span className="plan-default-builder__toggle-text">Allow me to edit allocation</span>
+            <span className="plan-default-builder__toggle-text">Edit allocation</span>
             <span className="plan-default-builder__toggle-desc">Enable to customize recommended allocations and add investments.</span>
           </label>
         </div>

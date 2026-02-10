@@ -43,7 +43,7 @@ export const ManualBuilder = () => {
                 <LockIcon />
               </span>
               <label className="manual-builder__edit-toggle-label">
-                <span className="manual-builder__edit-toggle-text">Allow me to edit allocation</span>
+                <span className="manual-builder__edit-toggle-text">Edit allocation</span>
                 <div className="manual-builder__edit-toggle-switch">
                   <input
                     type="checkbox"

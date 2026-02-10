@@ -100,12 +100,6 @@ export const AllocationSummary = ({ variant = "dashboard" }: AllocationSummaryPr
                 </svg>
                 Preview PDF
               </Button>
-              <Button type="button" variant="outline" className="allocation-summary__secondary-btn">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                  <path d="M15 4V2M15 16v-2M8 9h2M20 9h2M17.8 19.8L19 21M17.8 4.2L19 3M12 4v2M4 12h2M12 19v2M4.2 6.2L3 5M19.8 6.2L21 5M6.2 19.8L5 21M19.8 17.8L21 19" />
-                </svg>
-                Ask AI
-              </Button>
             </div>
           </div>
         </DashboardCard>

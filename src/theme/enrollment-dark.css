@@ -555,11 +555,6 @@
   color: #34d399;
 }
 
-.dark .allocation-chart__valid-badge--valid {
-  background-color: #22c55e;
-  color: white;
-}
-
 .dark .allocation-summary__metric-value--success {
   color: #34d399;
 }
