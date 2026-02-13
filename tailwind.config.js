@@ -16,12 +16,17 @@ export default {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-10px)" },
         },
+        "fade-in": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
       },
       animation: {
         "bella-pulse": "bella-pulse 2.5s ease-in-out infinite",
         float: "float 6s ease-in-out infinite",
         "float-delayed": "float 6s ease-in-out 3s infinite",
         "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "fade-in": "fade-in 0.3s ease-out forwards",
       },
       colors: {
         background: "var(--color-background)",

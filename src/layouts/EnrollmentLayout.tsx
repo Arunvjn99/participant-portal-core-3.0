@@ -1,10 +1,47 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
+import { DashboardLayout } from "./DashboardLayout";
+import { EnrollmentHeaderWithStepper } from "../components/enrollment/EnrollmentHeaderWithStepper";
 import { EnrollmentProvider } from "../enrollment/context/EnrollmentContext";
 import { loadEnrollmentDraft } from "../enrollment/enrollmentDraftStore";
 
+const ENROLLMENT_STEP_PATHS = [
+  "/enrollment/choose-plan",
+  "/enrollment/contribution",
+  "/enrollment/future-contributions",
+  "/enrollment/investments",
+  "/enrollment/review",
+] as const;
+
+function pathToStep(pathname: string): number {
+  const i = ENROLLMENT_STEP_PATHS.indexOf(pathname as (typeof ENROLLMENT_STEP_PATHS)[number]);
+  return i >= 0 ? i : 0;
+}
+
+function useIsEnrollmentStepPath(): boolean {
+  const { pathname } = useLocation();
+  return ENROLLMENT_STEP_PATHS.some((p) => pathname === p || pathname.startsWith(p + "/"));
+}
+
+function EnrollmentStepLayout() {
+  const location = useLocation();
+  const isStep = useIsEnrollmentStepPath();
+  const pathname = location.pathname;
+  const step = pathToStep(pathname);
+
+  if (isStep) {
+    return (
+      <DashboardLayout header={<EnrollmentHeaderWithStepper activeStep={step} />} transparentBackground>
+        <Outlet />
+      </DashboardLayout>
+    );
+  }
+  return <Outlet />;
+}
+
 /**
- * EnrollmentLayout - Wraps enrollment routes with EnrollmentProvider
- * Seeds provider with enrollment draft when available (from wizard flow)
+ * EnrollmentLayout - Wraps enrollment routes with EnrollmentProvider.
+ * For step routes (choose-plan, contribution, future-contributions, investments, review),
+ * wraps with DashboardLayout + header-attached stepper. Seeds draft when available.
  */
 export const EnrollmentLayout = () => {
   const draft = loadEnrollmentDraft();
@@ -22,7 +59,7 @@ export const EnrollmentLayout = () => {
       initialInvestmentProfile={draft?.investmentProfile}
       initialInvestmentProfileCompleted={draft?.investmentProfileCompleted}
     >
-      <Outlet />
+      <EnrollmentStepLayout />
     </EnrollmentProvider>
   );
 };

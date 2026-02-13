@@ -18,4 +18,8 @@ export interface PlanOption {
   benefits: string[];
   isRecommended?: boolean;
   fitScore?: number;
+  /** When false, plan is locked (e.g. profile criteria). Default true. */
+  isEligible?: boolean;
+  /** Shown when isEligible is false. */
+  ineligibilityReason?: string;
 }

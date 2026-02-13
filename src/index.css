@@ -1397,15 +1397,16 @@ button {
   }
 }
 
-/* Choose Plan Page Styles - aligned with enrollment layout (max-w from DashboardLayout) */
+/* Choose Plan Page Styles - aligned with enrollment layout (max-w from DashboardLayout).
+   Background is applied to the full-page wrapper in EnrollmentLayout, not here. */
 .choose-plan {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-6);
   width: 100%;
   min-height: 0;
-  /* Reserve space for fixed footer - prevents overlap */
-  padding-bottom: 88px;
+  /* Reserve space for fixed enrollment footer so last plan card is never covered when scrolled to bottom */
+  padding-bottom: 120px;
 }
 
 /* Enrollment stepper section - common width across all pages */
