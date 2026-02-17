@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import type { LoanFlowData, LoanPlanConfig, LoanUserContext, LoanPurposeReason, PayrollFrequency } from "../../../types/loan";
 import { calculateLoan } from "../../../utils/loanCalculator";
 import { LoanStepLayout, LoanSummaryCard, LoanAmountSlider } from "../index";
+import { DashboardCard } from "../../../dashboard/DashboardCard";
 import { DEFAULT_LOAN_PLAN_CONFIG } from "../../../config/loanPlanConfig";
 
 interface LoanBasicsStepProps {
@@ -77,9 +78,8 @@ export function LoanBasicsStep({ data, onDataChange, planConfig, userContext }: 
         ) : undefined
       }
     >
-      <div className="space-y-6">
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">Loan amount</h2>
+      <div className="space-y-6" style={{ gap: "var(--spacing-6)" }}>
+        <DashboardCard title="Loan amount">
           <LoanAmountSlider
             value={basics.loanAmount}
             min={config.minLoanAmount}
@@ -93,21 +93,20 @@ export function LoanBasicsStep({ data, onDataChange, planConfig, userContext }: 
             label="Loan amount"
             formatValue={formatCurrency}
           />
-        </div>
+        </DashboardCard>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">Repayment term</h2>
-          <div className="flex flex-wrap gap-2">
+        <DashboardCard title="Repayment term">
+          <div className="flex flex-wrap gap-2" style={{ gap: "var(--spacing-2)" }}>
             {[1, 2, 3, 4, 5].map((y) => (
               <button
                 key={y}
                 type="button"
                 onClick={() => onDataChange({ basics: { ...basics, tenureYears: y } })}
-                className={`rounded-lg px-4 py-2 text-sm font-medium ${
-                  basics.tenureYears === y
-                    ? "bg-blue-600 text-white dark:bg-blue-500"
-                    : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
-                }`}
+                className="rounded-xl px-4 py-2 text-sm font-medium transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                style={{
+                  background: basics.tenureYears === y ? "var(--enroll-brand)" : "var(--enroll-soft-bg)",
+                  color: basics.tenureYears === y ? "white" : "var(--enroll-text-secondary)",
+                }}
                 aria-pressed={basics.tenureYears === y}
                 aria-label={`${y} year${y === 1 ? "" : "s"}`}
               >
@@ -115,10 +114,10 @@ export function LoanBasicsStep({ data, onDataChange, planConfig, userContext }: 
               </button>
             ))}
           </div>
-        </div>
+        </DashboardCard>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-          <label htmlFor="loan-first-payment" className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+        <DashboardCard title="First payment date">
+          <label htmlFor="loan-first-payment" className="mb-2 block text-sm font-medium" style={{ color: "var(--enroll-text-secondary)" }}>
             First payment date
           </label>
           <input
@@ -127,24 +126,28 @@ export function LoanBasicsStep({ data, onDataChange, planConfig, userContext }: 
             value={basics.firstPaymentDate}
             min={minDateStr}
             onChange={(e) => onDataChange({ basics: { ...basics, firstPaymentDate: e.target.value } })}
-            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+            className="w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--enroll-brand)]"
+            style={{
+              borderColor: "var(--enroll-card-border)",
+              background: "var(--enroll-card-bg)",
+              color: "var(--enroll-text-primary)",
+            }}
             aria-label="First payment date"
           />
-        </div>
+        </DashboardCard>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-          <h2 className="mb-2 text-lg font-semibold text-slate-900 dark:text-slate-100">Payment frequency</h2>
-          <div className="flex flex-wrap gap-2">
+        <DashboardCard title="Payment frequency">
+          <div className="flex flex-wrap gap-2" style={{ gap: "var(--spacing-2)" }}>
             {PAYROLL_OPTIONS.filter((o) => config.allowedPayrollFrequencies.includes(o.value)).map((o) => (
               <button
                 key={o.value}
                 type="button"
                 onClick={() => onDataChange({ basics: { ...basics, payrollFrequency: o.value } })}
-                className={`rounded-lg px-4 py-2 text-sm font-medium ${
-                  basics.payrollFrequency === o.value
-                    ? "bg-blue-600 text-white dark:bg-blue-500"
-                    : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
-                }`}
+                className="rounded-xl px-4 py-2 text-sm font-medium transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                style={{
+                  background: basics.payrollFrequency === o.value ? "var(--enroll-brand)" : "var(--enroll-soft-bg)",
+                  color: basics.payrollFrequency === o.value ? "white" : "var(--enroll-text-secondary)",
+                }}
                 aria-pressed={basics.payrollFrequency === o.value}
                 aria-label={o.label}
               >
@@ -152,21 +155,20 @@ export function LoanBasicsStep({ data, onDataChange, planConfig, userContext }: 
               </button>
             ))}
           </div>
-        </div>
+        </DashboardCard>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-          <h2 className="mb-2 text-lg font-semibold text-slate-900 dark:text-slate-100">Loan purpose (optional)</h2>
-          <div className="flex flex-wrap gap-2">
+        <DashboardCard title="Loan purpose (optional)">
+          <div className="flex flex-wrap gap-2" style={{ gap: "var(--spacing-2)" }}>
             {PURPOSE_OPTIONS.map((p) => (
               <button
                 key={p}
                 type="button"
                 onClick={() => onDataChange({ basics: { ...basics, loanPurpose: p } })}
-                className={`rounded-lg px-4 py-2 text-sm font-medium ${
-                  basics.loanPurpose === p
-                    ? "bg-blue-600 text-white dark:bg-blue-500"
-                    : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
-                }`}
+                className="rounded-xl px-4 py-2 text-sm font-medium transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                style={{
+                  background: basics.loanPurpose === p ? "var(--enroll-brand)" : "var(--enroll-soft-bg)",
+                  color: basics.loanPurpose === p ? "white" : "var(--enroll-text-secondary)",
+                }}
                 aria-pressed={basics.loanPurpose === p}
                 aria-label={p}
               >
@@ -174,7 +176,7 @@ export function LoanBasicsStep({ data, onDataChange, planConfig, userContext }: 
               </button>
             ))}
           </div>
-        </div>
+        </DashboardCard>
       </div>
     </LoanStepLayout>
   );

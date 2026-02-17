@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../layouts/DashboardLayout";
 import { DashboardHeader } from "../dashboard/DashboardHeader";
-import { TransactionFlowStepper } from "./TransactionFlowStepper";
+import { EnrollmentStepper } from "../enrollment/EnrollmentStepper";
+import { DashboardCard } from "../dashboard/DashboardCard";
 import { transactionStore } from "../../data/transactionStore";
 import type { TransactionType, Transaction } from "../../types/transactions";
 
@@ -70,7 +71,7 @@ export const TransactionApplication = ({
   if (!transaction) {
     return (
       <DashboardLayout header={<DashboardHeader />}>
-        <div className="transaction-application">
+        <div className="mx-auto max-w-7xl px-4 py-8" style={{ color: "var(--enroll-text-primary)" }}>
           <p>Transaction not found.</p>
         </div>
       </DashboardLayout>
@@ -140,100 +141,166 @@ export const TransactionApplication = ({
     setStepData((prev: any) => ({ ...prev, ...data }));
   };
 
-  // Build step labels for the stepper
   const stepLabels = steps.map((step) => step.label);
+  const isLoan = transactionType === "loan";
 
   return (
     <DashboardLayout header={<DashboardHeader />}>
-      <div className="transaction-application">
-        <div className="transaction-application__header">
-          <button
-            type="button"
-            onClick={() => navigate("/transactions")}
-            className="transaction-application__back-button"
-            aria-label="Back to transactions"
-          >
-            ← Back to Transactions
-          </button>
-          <h1 className="transaction-application__title">
-            {getTransactionTypeLabel(transactionType)} Application
-          </h1>
-        </div>
-
-        <div className="transaction-application__stepper">
-          <TransactionFlowStepper 
-            transactionType={transactionType} 
-            currentStep={currentStep}
-            stepLabels={stepLabels}
-          />
-        </div>
-
-        <div className="transaction-application__content">
-          {readOnly && (
-            <div className="transaction-application__read-only-banner">
-              <span className="transaction-application__read-only-label">
-                {transaction.status === "completed" ? "View Only" : "Read Only"}
-              </span>
-              {transaction.status === "active" && (
-                <span className="transaction-application__read-only-note">
-                  This transaction is being processed. You can view details but cannot make changes.
-                </span>
-              )}
-              {transaction.status === "completed" && (
-                <span className="transaction-application__read-only-note">
-                  This transaction has been completed. You can view details and documents.
-                </span>
-              )}
+      <div
+        className="flex min-h-screen flex-col"
+        style={{ background: "var(--enroll-bg)" }}
+      >
+        {/* Page header — enrollment spacing */}
+        <div
+          className="border-b px-4 py-4 md:px-6"
+          style={{
+            borderColor: "var(--enroll-card-border)",
+            background: "var(--enroll-card-bg)",
+            boxShadow: "var(--enroll-elevation-1)",
+          }}
+        >
+          <div className="mx-auto max-w-7xl">
+            <button
+              type="button"
+              onClick={() => navigate("/transactions")}
+              className="mb-2 text-sm font-medium hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+              style={{ color: "var(--enroll-brand)" }}
+              aria-label="Back to transactions"
+            >
+              ← Back to Transactions
+            </button>
+            <h1
+              className="text-xl font-semibold md:text-2xl"
+              style={{ color: "var(--enroll-text-primary)" }}
+            >
+              {getTransactionTypeLabel(transactionType)} Application
+            </h1>
+            <div className="mt-4">
+              <EnrollmentStepper
+                currentStep={currentStep}
+                totalSteps={totalSteps}
+                stepLabels={stepLabels}
+              />
             </div>
-          )}
-          <CurrentStepComponent
-            currentStep={currentStep}
-            totalSteps={totalSteps}
-            transaction={transaction}
-            initialData={stepData}
-            onDataChange={handleDataChange}
-            readOnly={readOnly}
-          />
+          </div>
         </div>
 
-        <div className="transaction-application__footer">
-          <button
-            type="button"
-            onClick={handleBack}
-            disabled={currentStep === 0}
-            className="transaction-application__button transaction-application__button--back"
+        {/* Main content — grid for loan (8+4), single column otherwise */}
+        <div className="flex-1 px-4 py-6 md:px-6 md:py-8" style={{ gap: "var(--spacing-8)" }}>
+          <div
+            className={`mx-auto max-w-7xl ${isLoan ? "grid gap-8 lg:grid-cols-12 lg:gap-8" : "flex flex-col gap-8"}`}
           >
-            Back
-          </button>
-          <div className="transaction-application__footer-actions">
-            {!readOnly && (
-              <button
-                type="button"
-                onClick={handleSaveAndExit}
-                className="transaction-application__button transaction-application__button--save"
-              >
-                Save & Exit
-              </button>
-            )}
-            {readOnly ? (
-              <button
-                type="button"
-                onClick={() => navigate("/transactions")}
-                className="transaction-application__button transaction-application__button--next"
-              >
-                Back to Transactions
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={handleNext}
-                className="transaction-application__button transaction-application__button--next"
-              >
-                {isLastStep ? "Submit" : "Next"}
-              </button>
+            <div className={isLoan ? "lg:col-span-8" : "flex flex-col gap-6"}>
+              {readOnly && (
+                <div
+                  className="mb-4 rounded-2xl border p-4"
+                  style={{
+                    borderColor: "var(--enroll-card-border)",
+                    background: "var(--enroll-soft-bg)",
+                    color: "var(--enroll-text-primary)",
+                  }}
+                >
+                  <span className="font-semibold">
+                    {transaction.status === "completed" ? "View Only" : "Read Only"}
+                  </span>
+                  {transaction.status === "active" && (
+                    <p className="mt-1 text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
+                      This transaction is being processed. You can view details but cannot make changes.
+                    </p>
+                  )}
+                  {transaction.status === "completed" && (
+                    <p className="mt-1 text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
+                      This transaction has been completed. You can view details and documents.
+                    </p>
+                  )}
+                </div>
+              )}
+              <CurrentStepComponent
+                currentStep={currentStep}
+                totalSteps={totalSteps}
+                transaction={transaction}
+                initialData={stepData}
+                onDataChange={handleDataChange}
+                readOnly={readOnly}
+              />
+            </div>
+
+            {isLoan && (
+              <aside className="lg:col-span-4">
+                <DashboardCard title="Loan summary">
+                  <p className="text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
+                    Your loan details and projected payments will appear here as you complete each step.
+                  </p>
+                </DashboardCard>
+              </aside>
             )}
           </div>
         </div>
+
+        {/* Sticky footer — enrollment CTA layout */}
+        <footer
+          className="sticky bottom-0 border-t px-4 py-4 md:px-6"
+          style={{
+            borderColor: "var(--enroll-card-border)",
+            background: "var(--enroll-card-bg)",
+            boxShadow: "var(--enroll-elevation-1)",
+          }}
+        >
+          <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
+            <button
+              type="button"
+              onClick={handleBack}
+              disabled={currentStep === 0}
+              className="rounded-xl border px-6 py-3 text-sm font-medium transition-opacity hover:opacity-90 disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+              style={{
+                borderColor: "var(--enroll-card-border)",
+                background: "var(--enroll-card-bg)",
+                color: "var(--enroll-text-primary)",
+              }}
+              aria-label="Previous step"
+            >
+              Back
+            </button>
+            <div className="flex gap-3">
+              {!readOnly && (
+                <button
+                  type="button"
+                  onClick={handleSaveAndExit}
+                  className="rounded-xl border px-6 py-3 text-sm font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                  style={{
+                    borderColor: "var(--enroll-card-border)",
+                    background: "var(--enroll-card-bg)",
+                    color: "var(--enroll-text-primary)",
+                  }}
+                  aria-label="Save and exit"
+                >
+                  Save & Exit
+                </button>
+              )}
+              {readOnly ? (
+                <button
+                  type="button"
+                  onClick={() => navigate("/transactions")}
+                  className="rounded-xl px-6 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                  style={{ background: "var(--enroll-brand)" }}
+                  aria-label="Back to transactions"
+                >
+                  Back to Transactions
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleNext}
+                  className="rounded-xl px-6 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                  style={{ background: "var(--enroll-brand)" }}
+                  aria-label={isLastStep ? "Submit" : "Next step"}
+                >
+                  {isLastStep ? "Submit" : "Next"}
+                </button>
+              )}
+            </div>
+          </div>
+        </footer>
       </div>
     </DashboardLayout>
   );

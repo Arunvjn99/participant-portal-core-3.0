@@ -18,7 +18,10 @@ export function LoanStepLayout({ children, sidebar, className = "" }: LoanStepLa
   const reduced = useReducedMotion();
 
   return (
-    <div className={`grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px] lg:gap-8 ${className}`}>
+    <div
+      className={`grid grid-cols-1 lg:grid-cols-[1fr_320px] ${className}`}
+      style={{ gap: "var(--spacing-8)" }}
+    >
       <motion.main
         className="min-w-0"
         initial={reduced ? false : { opacity: 0, x: -8 }}

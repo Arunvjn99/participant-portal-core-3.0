@@ -1,7 +1,6 @@
 export { LoanStepLayout } from "./LoanStepLayout";
 export { LoanSummaryCard } from "./LoanSummaryCard";
 export type { LoanSummaryRow } from "./LoanSummaryCard";
-export { LoanProgressStepper, LOAN_STEP_LABELS } from "./LoanProgressStepper";
 export { LoanAmountSlider } from "./LoanAmountSlider";
 export { AmortizationTable } from "./AmortizationTable";
 export { InvestmentBreakdownTable } from "./InvestmentBreakdownTable";

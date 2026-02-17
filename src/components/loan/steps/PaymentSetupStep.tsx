@@ -1,5 +1,6 @@
 import type { LoanFlowData, LoanPlanConfig } from "../../../types/loan";
 import { LoanStepLayout, LoanSummaryCard, BankDetailsForm } from "../index";
+import { DashboardCard } from "../../../dashboard/DashboardCard";
 import { DEFAULT_LOAN_PLAN_CONFIG } from "../../../config/loanPlanConfig";
 
 interface PaymentSetupStepProps {
@@ -35,13 +36,12 @@ export function PaymentSetupStep({ data, onDataChange, planConfig }: PaymentSetu
 
   return (
     <LoanStepLayout sidebar={summaryRows.length > 0 ? <LoanSummaryCard title="Loan summary" rows={summaryRows} /> : undefined}>
-      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-        <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">Payment setup (ACH)</h2>
-        <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
+      <DashboardCard title="Payment setup (ACH)">
+        <p className="mb-4 text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
           Loan payments will be deducted from your bank account via ACH.
         </p>
         <BankDetailsForm value={payment} onChange={handleChange} />
-      </div>
+      </DashboardCard>
     </LoanStepLayout>
   );
 }

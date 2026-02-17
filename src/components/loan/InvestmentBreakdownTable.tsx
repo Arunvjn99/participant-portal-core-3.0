@@ -25,14 +25,27 @@ export function InvestmentBreakdownTable({
   const reduced = useReducedMotion();
 
   return (
-    <div className={`overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800 ${className}`}>
+    <div
+      className={`overflow-hidden rounded-2xl border ${className}`}
+      style={{
+        borderColor: "var(--enroll-card-border)",
+        background: "var(--enroll-card-bg)",
+        boxShadow: "var(--enroll-elevation-1)",
+      }}
+    >
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm" role="table" aria-label="Investment breakdown">
           <thead>
-            <tr className="border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800/80">
-              <th className="px-4 py-3 font-medium text-slate-700 dark:text-slate-300">Fund</th>
-              <th className="px-4 py-3 font-medium text-slate-700 dark:text-slate-300 text-right">Amount</th>
-              <th className="px-4 py-3 font-medium text-slate-700 dark:text-slate-300 text-right">%</th>
+            <tr
+              className="border-b px-4 py-3 font-medium"
+              style={{
+                borderColor: "var(--enroll-card-border)",
+                background: "var(--enroll-soft-bg)",
+              }}
+            >
+              <th style={{ color: "var(--enroll-text-secondary)" }}>Fund</th>
+              <th className="text-right" style={{ color: "var(--enroll-text-secondary)" }}>Amount</th>
+              <th className="text-right" style={{ color: "var(--enroll-text-secondary)" }}>%</th>
             </tr>
           </thead>
           <tbody>
@@ -42,18 +55,25 @@ export function InvestmentBreakdownTable({
                 initial={reduced ? false : { opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05, duration: 0.2 }}
-                className="border-b border-slate-100 dark:border-slate-700"
+                className="border-b px-4 py-2"
+                style={{ borderColor: "var(--enroll-card-border)" }}
               >
-                <td className="px-4 py-2 text-slate-900 dark:text-slate-100">{row.fundName}</td>
-                <td className="px-4 py-2 tabular-nums text-right text-slate-700 dark:text-slate-300">{formatCurrency(row.amount)}</td>
-                <td className="px-4 py-2 tabular-nums text-right text-slate-600 dark:text-slate-400">{row.percentage.toFixed(1)}%</td>
+                <td style={{ color: "var(--enroll-text-primary)" }}>{row.fundName}</td>
+                <td className="tabular-nums text-right" style={{ color: "var(--enroll-text-secondary)" }}>{formatCurrency(row.amount)}</td>
+                <td className="tabular-nums text-right" style={{ color: "var(--enroll-text-muted)" }}>{row.percentage.toFixed(1)}%</td>
               </motion.tr>
             ))}
           </tbody>
           <tfoot>
-            <tr className="border-t-2 border-slate-200 bg-slate-50 font-medium dark:border-slate-700 dark:bg-slate-800/80">
-              <td className="px-4 py-3 text-slate-900 dark:text-slate-100">{totalLabel}</td>
-              <td className="px-4 py-3 text-right tabular-nums text-slate-900 dark:text-slate-100" colSpan={2}>
+            <tr
+              className="border-t-2 px-4 py-3 font-medium"
+              style={{
+                borderColor: "var(--enroll-card-border)",
+                background: "var(--enroll-soft-bg)",
+              }}
+            >
+              <td style={{ color: "var(--enroll-text-primary)" }}>{totalLabel}</td>
+              <td className="text-right tabular-nums" style={{ color: "var(--enroll-text-primary)" }} colSpan={2}>
                 {formatCurrency(totalAmount)}
               </td>
             </tr>

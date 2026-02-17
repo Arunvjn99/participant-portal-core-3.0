@@ -28,16 +28,30 @@ export function AmortizationTable({
   const hasMore = rows.length > initialVisible;
 
   return (
-    <div className={`overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800 ${className}`}>
+    <div
+      className={`overflow-hidden rounded-2xl border ${className}`}
+      style={{
+        borderColor: "var(--enroll-card-border)",
+        background: "var(--enroll-card-bg)",
+        boxShadow: "var(--enroll-elevation-1)",
+      }}
+    >
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm" role="table" aria-label="Amortization schedule">
           <thead>
-            <tr className="border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800/80">
-              <th className="px-4 py-3 font-medium text-slate-700 dark:text-slate-300">#</th>
-              <th className="px-4 py-3 font-medium text-slate-700 dark:text-slate-300">Payment</th>
-              <th className="px-4 py-3 font-medium text-slate-700 dark:text-slate-300">Principal</th>
-              <th className="px-4 py-3 font-medium text-slate-700 dark:text-slate-300">Interest</th>
-              <th className="px-4 py-3 font-medium text-slate-700 dark:text-slate-300">Balance</th>
+            <tr
+              className="border-b px-4 py-3 font-medium"
+              style={{
+                borderColor: "var(--enroll-card-border)",
+                background: "var(--enroll-soft-bg)",
+                color: "var(--enroll-text-secondary)",
+              }}
+            >
+              <th>#</th>
+              <th>Payment</th>
+              <th>Principal</th>
+              <th>Interest</th>
+              <th>Balance</th>
             </tr>
           </thead>
           <tbody>
@@ -47,24 +61,29 @@ export function AmortizationTable({
                 initial={reduced ? false : { opacity: 0, x: -4 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.02, duration: 0.2 }}
-                className="border-b border-slate-100 dark:border-slate-700"
+                className="border-b px-4 py-2"
+                style={{ borderColor: "var(--enroll-card-border)" }}
               >
-                <td className="px-4 py-2 tabular-nums text-slate-600 dark:text-slate-400">{row.paymentNumber}</td>
-                <td className="px-4 py-2 tabular-nums text-slate-900 dark:text-slate-100">{formatCurrency(row.payment)}</td>
-                <td className="px-4 py-2 tabular-nums text-slate-700 dark:text-slate-300">{formatCurrency(row.principal)}</td>
-                <td className="px-4 py-2 tabular-nums text-slate-700 dark:text-slate-300">{formatCurrency(row.interest)}</td>
-                <td className="px-4 py-2 tabular-nums font-medium text-slate-900 dark:text-slate-100">{formatCurrency(row.balance)}</td>
+                <td className="tabular-nums" style={{ color: "var(--enroll-text-muted)" }}>{row.paymentNumber}</td>
+                <td className="tabular-nums" style={{ color: "var(--enroll-text-primary)" }}>{formatCurrency(row.payment)}</td>
+                <td className="tabular-nums" style={{ color: "var(--enroll-text-secondary)" }}>{formatCurrency(row.principal)}</td>
+                <td className="tabular-nums" style={{ color: "var(--enroll-text-secondary)" }}>{formatCurrency(row.interest)}</td>
+                <td className="tabular-nums font-medium" style={{ color: "var(--enroll-text-primary)" }}>{formatCurrency(row.balance)}</td>
               </motion.tr>
             ))}
           </tbody>
         </table>
       </div>
       {hasMore && (
-        <div className="border-t border-slate-200 p-2 dark:border-slate-700">
+        <div
+          className="border-t p-2"
+          style={{ borderColor: "var(--enroll-card-border)" }}
+        >
           <button
             type="button"
             onClick={() => setExpanded(!expanded)}
-            className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-400"
+            className="text-sm font-medium hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+            style={{ color: "var(--enroll-brand)" }}
             aria-expanded={expanded}
           >
             {expanded ? "Show less" : `Show more (${rows.length - initialVisible} rows)`}

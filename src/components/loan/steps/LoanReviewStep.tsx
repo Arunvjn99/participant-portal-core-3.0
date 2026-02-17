@@ -86,7 +86,12 @@ export function LoanReviewStep({
 
         {calc && (
           <motion.section
-            className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-2xl border p-6"
+            style={{
+              borderColor: "var(--enroll-card-border)",
+              background: "var(--enroll-card-bg)",
+              boxShadow: "var(--enroll-elevation-1)",
+            }}
             initial={reduced ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.2 }}
@@ -94,7 +99,8 @@ export function LoanReviewStep({
             <button
               type="button"
               onClick={() => setAmortOpen(!amortOpen)}
-              className="flex w-full items-center justify-between text-left text-lg font-semibold text-slate-900 dark:text-slate-100"
+              className="flex w-full items-center justify-between text-left text-lg font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+              style={{ color: "var(--enroll-text-primary)" }}
               aria-expanded={amortOpen}
             >
               Amortization schedule

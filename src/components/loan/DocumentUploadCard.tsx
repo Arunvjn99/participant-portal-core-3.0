@@ -58,11 +58,11 @@ export function DocumentUploadCard({
 
   return (
     <motion.div
-      className={`rounded-xl border-2 border-dashed p-6 transition-colors ${
-        dragOver && !disabled
-          ? "border-blue-500 bg-blue-50/50 dark:bg-slate-700"
-          : "border-slate-200 bg-slate-50/50 dark:border-slate-700 dark:bg-slate-800/50"
-      } ${disabled ? "opacity-60" : ""}`}
+      className={`rounded-2xl border-2 border-dashed p-6 transition-colors ${disabled ? "opacity-60" : ""}`}
+      style={{
+        borderColor: dragOver && !disabled ? "var(--enroll-brand)" : "var(--enroll-card-border)",
+        background: dragOver && !disabled ? "rgb(var(--enroll-brand-rgb) / 0.08)" : "var(--enroll-soft-bg)",
+      }}
       onDrop={handleDrop}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
@@ -70,11 +70,14 @@ export function DocumentUploadCard({
       animate={{ opacity: 1 }}
       transition={{ duration: 0.2 }}
     >
-      <p className="mb-2 text-sm font-medium text-slate-700 dark:text-slate-300">
+      <p className="mb-2 text-sm font-medium" style={{ color: "var(--enroll-text-secondary)" }}>
         {documentType}
-        {required && <span className="text-red-600 dark:text-red-400"> *</span>}
+        {required && <span style={{ color: "var(--color-danger)" }}> *</span>}
       </p>
-      <label className="flex cursor-pointer flex-col items-center gap-2 rounded-lg py-4 text-slate-600 dark:text-slate-400">
+      <label
+        className="flex cursor-pointer flex-col items-center gap-2 rounded-xl py-4"
+        style={{ color: "var(--enroll-text-muted)" }}
+      >
         <input
           type="file"
           accept={accept}
@@ -87,7 +90,7 @@ export function DocumentUploadCard({
         <span className="text-center text-sm">Drag and drop or click to upload</span>
       </label>
       {accepted.length > 0 && (
-        <ul className="mt-3 space-y-1 text-sm text-slate-600 dark:text-slate-400" aria-label="Uploaded files">
+        <ul className="mt-3 space-y-1 text-sm" style={{ color: "var(--enroll-text-muted)" }} aria-label="Uploaded files">
           {accepted.map((f) => (
             <li key={f.id}>{f.name}</li>
           ))}

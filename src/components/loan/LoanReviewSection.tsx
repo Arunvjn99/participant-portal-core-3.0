@@ -24,28 +24,38 @@ export function LoanReviewSection({
 
   return (
     <motion.section
-      className={`rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800 ${className}`}
+      className={`rounded-2xl border p-6 ${className}`}
+      style={{
+        borderColor: "var(--enroll-card-border)",
+        background: "var(--enroll-card-bg)",
+        boxShadow: "var(--enroll-elevation-1)",
+      }}
       initial={reduced ? false : { opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
       aria-labelledby={`review-section-${title.replace(/\s/g, "-")}`}
     >
-      <div className="mb-4 flex items-center justify-between gap-4">
-        <h3 id={`review-section-${title.replace(/\s/g, "-")}`} className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+      <div className="mb-4 flex items-center justify-between gap-4" style={{ marginBottom: "var(--spacing-4)" }}>
+        <h3
+          id={`review-section-${title.replace(/\s/g, "-")}`}
+          className="text-lg font-semibold"
+          style={{ color: "var(--enroll-text-primary)" }}
+        >
           {title}
         </h3>
         {onEdit && (
           <button
             type="button"
             onClick={onEdit}
-            className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-400"
+            className="text-sm font-medium hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+            style={{ color: "var(--enroll-brand)" }}
             aria-label={`Edit ${title}`}
           >
             Edit
           </button>
         )}
       </div>
-      <div className="text-sm text-slate-700 dark:text-slate-300">{children}</div>
+      <div className="text-sm" style={{ color: "var(--enroll-text-secondary)" }}>{children}</div>
     </motion.section>
   );
 }

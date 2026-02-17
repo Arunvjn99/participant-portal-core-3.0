@@ -28,13 +28,18 @@ export function LoanAmountSlider({
   const reduced = useReducedMotion();
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2" style={{ gap: "var(--spacing-2)" }}>
       <div className="flex justify-between">
-        <label htmlFor="loan-amount-slider" className="text-sm font-medium text-slate-700 dark:text-slate-300">
+        <label
+          htmlFor="loan-amount-slider"
+          className="text-sm font-medium"
+          style={{ color: "var(--enroll-text-secondary)" }}
+        >
           {label}
         </label>
         <motion.span
-          className="font-semibold tabular-nums text-slate-900 dark:text-slate-100"
+          className="font-semibold tabular-nums"
+          style={{ color: "var(--enroll-text-primary)" }}
           key={value}
           initial={reduced ? false : { scale: 1.05 }}
           animate={{ scale: 1 }}
@@ -52,7 +57,10 @@ export function LoanAmountSlider({
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
         disabled={disabled}
-        className="h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200 dark:bg-slate-700 disabled:opacity-50 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-600 [&::-webkit-slider-thumb]:dark:bg-blue-500"
+        className="h-2 w-full cursor-pointer appearance-none rounded-full disabled:opacity-50 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[var(--enroll-brand)]"
+        style={{
+          background: "var(--inv-slider-track)",
+        }}
         aria-label={label}
         aria-valuemin={min}
         aria-valuemax={max}

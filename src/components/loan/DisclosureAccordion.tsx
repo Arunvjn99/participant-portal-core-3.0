@@ -26,12 +26,18 @@ export function DisclosureAccordion({ items, className = "" }: DisclosureAccordi
         return (
           <div
             key={item.id}
-            className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800"
+            className="overflow-hidden rounded-2xl border"
+            style={{
+              borderColor: "var(--enroll-card-border)",
+              background: "var(--enroll-card-bg)",
+              boxShadow: "var(--enroll-elevation-1)",
+            }}
           >
             <button
               type="button"
               onClick={() => setOpenId(isOpen ? null : item.id)}
-              className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium text-slate-900 dark:text-slate-100"
+              className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+              style={{ color: "var(--enroll-text-primary)" }}
               aria-expanded={isOpen}
               aria-controls={`accordion-content-${item.id}`}
               id={`accordion-heading-${item.id}`}
@@ -55,9 +61,13 @@ export function DisclosureAccordion({ items, className = "" }: DisclosureAccordi
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.25, ease: "easeOut" }}
-                  className="border-t border-slate-200 dark:border-slate-700"
+                  className="border-t px-4 py-3 text-sm"
+                  style={{
+                    borderColor: "var(--enroll-card-border)",
+                    color: "var(--enroll-text-secondary)",
+                  }}
                 >
-                  <div className="px-4 py-3 text-sm text-slate-600 dark:text-slate-400">{item.content}</div>
+                  {item.content}
                 </motion.div>
               )}
             </AnimatePresence>

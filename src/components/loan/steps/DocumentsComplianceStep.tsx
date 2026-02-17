@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import type { LoanFlowData, LoanPlanConfig, LoanDocumentMeta } from "../../../types/loan";
 import { LoanStepLayout, LoanSummaryCard, DocumentUploadCard, DisclosureAccordion } from "../index";
+import { DashboardCard } from "../../../dashboard/DashboardCard";
 import { DEFAULT_LOAN_PLAN_CONFIG } from "../../../config/loanPlanConfig";
 
 interface DocumentsComplianceStepProps {
@@ -57,10 +58,9 @@ export function DocumentsComplianceStep({
 
   return (
     <LoanStepLayout sidebar={summaryRows.length > 0 ? <LoanSummaryCard title="Summary" rows={summaryRows} /> : undefined}>
-      <div className="space-y-6">
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">Documents</h2>
-          <div className="space-y-4">
+      <div className="space-y-6" style={{ gap: "var(--spacing-6)" }}>
+        <DashboardCard title="Documents">
+          <div className="space-y-4" style={{ gap: "var(--spacing-4)" }}>
             <DocumentUploadCard
               documentType="Loan agreement"
               required
@@ -92,10 +92,9 @@ export function DocumentsComplianceStep({
               />
             )}
           </div>
-        </div>
+        </DashboardCard>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">Compliance acknowledgments</h2>
+        <DashboardCard title="Compliance acknowledgments">
           <DisclosureAccordion
             items={[
               {
@@ -111,8 +110,8 @@ export function DocumentsComplianceStep({
               },
             ]}
           />
-          <div className="mt-4 space-y-3">
-            <label className="flex items-center gap-2">
+          <div className="mt-4 space-y-3" style={{ marginTop: "var(--spacing-4)", gap: "var(--spacing-3)" }}>
+            <label className="flex cursor-pointer items-center gap-2">
               <input
                 type="checkbox"
                 checked={documents.acknowledgments.terms ?? false}
@@ -124,11 +123,13 @@ export function DocumentsComplianceStep({
                     },
                   })
                 }
+                className="rounded border-[var(--enroll-card-border)] focus:ring-2 focus:ring-[var(--enroll-brand)]"
+                style={{ accentColor: "var(--enroll-brand)" }}
                 aria-label="I agree to the loan terms and conditions"
               />
-              <span className="text-sm text-slate-700 dark:text-slate-300">I agree to the loan terms and conditions.</span>
+              <span className="text-sm" style={{ color: "var(--enroll-text-secondary)" }}>I agree to the loan terms and conditions.</span>
             </label>
-            <label className="flex items-center gap-2">
+            <label className="flex cursor-pointer items-center gap-2">
               <input
                 type="checkbox"
                 checked={documents.acknowledgments.disclosure ?? false}
@@ -140,12 +141,14 @@ export function DocumentsComplianceStep({
                     },
                   })
                 }
+                className="rounded border-[var(--enroll-card-border)] focus:ring-2 focus:ring-[var(--enroll-brand)]"
+                style={{ accentColor: "var(--enroll-brand)" }}
                 aria-label="I acknowledge the disclosure"
               />
-              <span className="text-sm text-slate-700 dark:text-slate-300">I acknowledge the disclosure.</span>
+              <span className="text-sm" style={{ color: "var(--enroll-text-secondary)" }}>I acknowledge the disclosure.</span>
             </label>
           </div>
-        </div>
+        </DashboardCard>
       </div>
     </LoanStepLayout>
   );

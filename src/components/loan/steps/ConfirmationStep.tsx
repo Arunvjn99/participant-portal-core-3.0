@@ -28,20 +28,27 @@ export function ConfirmationStep({ data, planConfig, onDownloadPDF }: Confirmati
 
   return (
     <motion.div
-      className="mx-auto max-w-lg rounded-xl border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-700 dark:bg-slate-800"
+      className="mx-auto max-w-lg rounded-2xl border p-8"
+      style={{
+        borderColor: "var(--enroll-card-border)",
+        background: "var(--enroll-card-bg)",
+        boxShadow: "var(--enroll-elevation-1)",
+      }}
       initial={reduced ? false : { opacity: 0, scale: 0.98 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
     >
       <motion.div
-        className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/40"
+        className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full"
+        style={{ background: "rgb(var(--enroll-accent-rgb) / 0.15)" }}
         initial={reduced ? false : { scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
         aria-hidden
       >
         <motion.svg
-          className="h-8 w-8 text-green-600 dark:text-green-400"
+          className="h-8 w-8"
+          style={{ color: "var(--enroll-accent)" }}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -53,46 +60,40 @@ export function ConfirmationStep({ data, planConfig, onDownloadPDF }: Confirmati
         </motion.svg>
       </motion.div>
 
-      <h2 className="mb-2 text-center text-xl font-semibold text-slate-900 dark:text-slate-100">
+      <h2 className="mb-2 text-center text-xl font-semibold" style={{ color: "var(--enroll-text-primary)" }}>
         Loan request submitted
       </h2>
-      <p className="mb-6 text-center text-sm text-slate-600 dark:text-slate-400">
+      <p className="mb-6 text-center text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
         You will receive a confirmation email with next steps.
       </p>
 
-      <dl className="space-y-3 text-sm">
-        <div className="flex justify-between">
-          <dt className="text-slate-600 dark:text-slate-400">Loan amount</dt>
-          <dd className="font-medium text-slate-900 dark:text-slate-100">{formatCurrency(basics.loanAmount)}</dd>
-        </div>
-        <div className="flex justify-between">
-          <dt className="text-slate-600 dark:text-slate-400">Net disbursement</dt>
-          <dd className="font-medium text-slate-900 dark:text-slate-100">{formatCurrency(calc.netDisbursement)}</dd>
-        </div>
-        <div className="flex justify-between">
-          <dt className="text-slate-600 dark:text-slate-400">First payment date</dt>
-          <dd className="font-medium text-slate-900 dark:text-slate-100">{basics.firstPaymentDate}</dd>
-        </div>
-        <div className="flex justify-between">
-          <dt className="text-slate-600 dark:text-slate-400">Payment frequency</dt>
-          <dd className="font-medium text-slate-900 dark:text-slate-100">{basics.payrollFrequency}</dd>
-        </div>
-        <div className="flex justify-between">
-          <dt className="text-slate-600 dark:text-slate-400">Term</dt>
-          <dd className="font-medium text-slate-900 dark:text-slate-100">{basics.tenureYears} years</dd>
-        </div>
-        <div className="flex justify-between">
-          <dt className="text-slate-600 dark:text-slate-400">Payoff date</dt>
-          <dd className="font-medium text-slate-900 dark:text-slate-100">{calc.payoffDate}</dd>
-        </div>
+      <dl className="space-y-3 text-sm" style={{ gap: "var(--spacing-3)" }}>
+        {[
+          { label: "Loan amount", value: formatCurrency(basics.loanAmount) },
+          { label: "Net disbursement", value: formatCurrency(calc.netDisbursement) },
+          { label: "First payment date", value: basics.firstPaymentDate },
+          { label: "Payment frequency", value: basics.payrollFrequency },
+          { label: "Term", value: `${basics.tenureYears} years` },
+          { label: "Payoff date", value: calc.payoffDate },
+        ].map(({ label, value }) => (
+          <div key={label} className="flex justify-between">
+            <dt style={{ color: "var(--enroll-text-secondary)" }}>{label}</dt>
+            <dd className="font-medium" style={{ color: "var(--enroll-text-primary)" }}>{value}</dd>
+          </div>
+        ))}
       </dl>
 
       {onDownloadPDF && (
-        <div className="mt-6 flex justify-center">
+        <div className="mt-6 flex justify-center" style={{ marginTop: "var(--spacing-6)" }}>
           <button
             type="button"
             onClick={onDownloadPDF}
-            className="rounded-lg bg-slate-200 px-4 py-2 text-sm font-medium text-slate-900 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600"
+            className="rounded-xl border px-6 py-3 text-sm font-medium transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+            style={{
+              borderColor: "var(--enroll-card-border)",
+              background: "var(--enroll-card-bg)",
+              color: "var(--enroll-text-primary)",
+            }}
             aria-label="Download PDF confirmation"
           >
             Download PDF

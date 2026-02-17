@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import type { LoanFlowData, LoanPlanConfig, LoanFundAllocation } from "../../../types/loan";
 import { LoanStepLayout, LoanSummaryCard, InvestmentBreakdownTable } from "../index";
+import { DashboardCard } from "../../../dashboard/DashboardCard";
 import { DEFAULT_LOAN_PLAN_CONFIG } from "../../../config/loanPlanConfig";
 import { MOCK_FUNDS } from "../../../data/mockFunds";
 
@@ -90,21 +91,20 @@ export function InvestmentBreakdownStep({ data, onDataChange }: InvestmentBreakd
 
   return (
     <LoanStepLayout sidebar={summaryRows.length > 0 ? <LoanSummaryCard title="Summary" rows={summaryRows} /> : undefined}>
-      <div className="space-y-6">
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">Investment source</h2>
-          <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
+      <div className="space-y-6" style={{ gap: "var(--spacing-6)" }}>
+        <DashboardCard title="Investment source">
+          <p className="mb-4 text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
             Default is pro-rata liquidation across your current funds. You can keep pro-rata or switch to custom allocation.
           </p>
-          <div className="flex gap-2">
+          <div className="flex gap-2" style={{ gap: "var(--spacing-2)" }}>
             <button
               type="button"
               onClick={handleSetProRata}
-              className={`rounded-lg px-4 py-2 text-sm font-medium ${
-                investment.allocationMode === "proRata"
-                  ? "bg-blue-600 text-white dark:bg-blue-500"
-                  : "bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300"
-              }`}
+              className="rounded-xl px-4 py-2 text-sm font-medium transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+              style={{
+                background: investment.allocationMode === "proRata" ? "var(--enroll-brand)" : "var(--enroll-soft-bg)",
+                color: investment.allocationMode === "proRata" ? "white" : "var(--enroll-text-secondary)",
+              }}
               aria-pressed={investment.allocationMode === "proRata"}
             >
               Pro-rata
@@ -121,22 +121,21 @@ export function InvestmentBreakdownStep({ data, onDataChange }: InvestmentBreakd
                   },
                 })
               }
-              className={`rounded-lg px-4 py-2 text-sm font-medium ${
-                investment.allocationMode === "custom"
-                  ? "bg-blue-600 text-white dark:bg-blue-500"
-                  : "bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300"
-              }`}
+              className="rounded-xl px-4 py-2 text-sm font-medium transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+              style={{
+                background: investment.allocationMode === "custom" ? "var(--enroll-brand)" : "var(--enroll-soft-bg)",
+                color: investment.allocationMode === "custom" ? "white" : "var(--enroll-text-secondary)",
+              }}
               aria-pressed={investment.allocationMode === "custom"}
             >
               Custom
             </button>
           </div>
-        </div>
+        </DashboardCard>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">Allocation</h2>
+        <DashboardCard title="Allocation">
           <InvestmentBreakdownTable allocations={allocations} totalAmount={totalAllocated} />
-        </div>
+        </DashboardCard>
       </div>
     </LoanStepLayout>
   );
