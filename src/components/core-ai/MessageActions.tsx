@@ -41,8 +41,8 @@ export function MessageActions({ messageId, text, isSpeaking, onPlay }: MessageA
         onClick={handleCopy}
         className={`p-1.5 rounded-md transition-colors ${
           copied
-            ? "text-emerald-400"
-            : "text-slate-500 hover:text-slate-300 hover:bg-slate-700/50"
+            ? "text-emerald-500 dark:text-emerald-400"
+            : "text-slate-500 hover:text-slate-700 hover:bg-slate-200 dark:text-slate-500 dark:hover:text-slate-300 dark:hover:bg-slate-700/50"
         }`}
         aria-label={copied ? "Copied" : "Copy message"}
         title={copied ? "Copied!" : "Copy"}
@@ -65,8 +65,8 @@ export function MessageActions({ messageId, text, isSpeaking, onPlay }: MessageA
         onClick={() => setFeedback(feedback === "up" ? null : "up")}
         className={`p-1.5 rounded-md transition-colors ${
           feedback === "up"
-            ? "text-emerald-400"
-            : "text-slate-500 hover:text-slate-300 hover:bg-slate-700/50"
+            ? "text-emerald-500 dark:text-emerald-400"
+            : "text-slate-500 hover:text-slate-700 hover:bg-slate-200 dark:text-slate-500 dark:hover:text-slate-300 dark:hover:bg-slate-700/50"
         }`}
         aria-label="Helpful"
         title="Helpful"
@@ -84,7 +84,7 @@ export function MessageActions({ messageId, text, isSpeaking, onPlay }: MessageA
         className={`p-1.5 rounded-md transition-colors ${
           feedback === "down"
             ? "text-red-400"
-            : "text-slate-500 hover:text-slate-300 hover:bg-slate-700/50"
+            : "text-slate-500 hover:text-slate-700 hover:bg-slate-200 dark:text-slate-500 dark:hover:text-slate-300 dark:hover:bg-slate-700/50"
         }`}
         aria-label="Not helpful"
         title="Not helpful"
@@ -101,8 +101,8 @@ export function MessageActions({ messageId, text, isSpeaking, onPlay }: MessageA
         onClick={() => onPlay(messageId)}
         className={`p-1.5 rounded-md transition-colors ${
           isSpeaking
-            ? "text-teal-400 bg-teal-400/10"
-            : "text-slate-500 hover:text-slate-300 hover:bg-slate-700/50"
+            ? "text-teal-600 bg-teal-400/15 dark:text-teal-400 dark:bg-teal-400/10"
+            : "text-slate-500 hover:text-slate-700 hover:bg-slate-200 dark:text-slate-500 dark:hover:text-slate-300 dark:hover:bg-slate-700/50"
         }`}
         aria-label={isSpeaking ? "Stop audio" : "Play audio"}
         title={isSpeaking ? "Stop" : "Play"}

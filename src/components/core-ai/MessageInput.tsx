@@ -62,9 +62,9 @@ export function MessageInput({
   return (
     <form
       onSubmit={handleSubmit}
-      className="shrink-0 border-t border-slate-700/60 px-4 py-3 sm:px-5"
+      className="shrink-0 border-t border-slate-200 px-4 py-3 sm:px-5 dark:border-slate-700/60"
     >
-      <div className="flex items-center gap-2 rounded-full bg-slate-800 border border-slate-700/50 pl-2 pr-1 focus-within:border-teal-500/50 transition-colors">
+      <div className="flex items-center gap-2 rounded-full bg-slate-100 border border-slate-300 pl-2 pr-1 focus-within:border-teal-500/70 transition-colors dark:bg-slate-800 dark:border-slate-700/50 dark:focus-within:border-teal-500/50">
         {/* Mic button — inside input */}
         <button
           type="button"
@@ -75,7 +75,7 @@ export function MessageInput({
               ? "bg-red-500 text-white shadow-lg shadow-red-500/25"
               : isProcessing
                 ? "bg-amber-500/80 text-white"
-                : "text-slate-400 hover:text-teal-400 hover:bg-slate-700"
+                : "text-slate-500 hover:text-teal-600 hover:bg-slate-200 dark:text-slate-400 dark:hover:text-teal-400 dark:hover:bg-slate-700"
           }`}
           aria-label={
             isListening
@@ -141,7 +141,7 @@ export function MessageInput({
           onChange={(e) => setValue(e.target.value)}
           placeholder={placeholder}
           disabled={disabled || micBusy}
-          className="flex-1 bg-transparent py-2.5 text-sm text-white placeholder-slate-500 outline-none min-w-0 disabled:opacity-50"
+          className="flex-1 bg-transparent py-2.5 text-sm text-slate-900 placeholder-slate-500 outline-none min-w-0 disabled:opacity-50 dark:text-white dark:placeholder-slate-500"
           aria-label={t("coreAi.ariaMessageInput")}
         />
 
@@ -149,7 +149,7 @@ export function MessageInput({
         <button
           type="submit"
           disabled={!value.trim() || disabled || micBusy}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-teal-600 text-white transition-all hover:bg-teal-500 disabled:opacity-30 disabled:cursor-not-allowed"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-teal-600 text-white transition-all hover:bg-teal-500 disabled:opacity-30 disabled:cursor-not-allowed dark:bg-teal-600 dark:hover:bg-teal-500"
           aria-label={t("coreAi.ariaSend")}
           title={t("coreAi.titleSend")}
         >

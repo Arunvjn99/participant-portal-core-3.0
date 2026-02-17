@@ -50,13 +50,13 @@ export function MessageList({ messages, speakingId, isLoading, onPlay, onAction,
       {/* Loading indicator */}
       {isLoading && (
         <div className="flex justify-start">
-          <div className="flex items-center gap-2 rounded-2xl rounded-tl-md bg-slate-800/70 border border-slate-700/50 px-4 py-3">
+          <div className="flex items-center gap-2 rounded-2xl rounded-tl-md bg-slate-100 border border-slate-300 px-4 py-3 dark:bg-slate-800/70 dark:border-slate-700/50">
             <div className="flex gap-1">
-              <span className="h-2 w-2 rounded-full bg-slate-500 animate-bounce [animation-delay:0ms]" />
-              <span className="h-2 w-2 rounded-full bg-slate-500 animate-bounce [animation-delay:150ms]" />
-              <span className="h-2 w-2 rounded-full bg-slate-500 animate-bounce [animation-delay:300ms]" />
+              <span className="h-2 w-2 rounded-full bg-slate-400 animate-bounce [animation-delay:0ms] dark:bg-slate-500" />
+              <span className="h-2 w-2 rounded-full bg-slate-400 animate-bounce [animation-delay:150ms] dark:bg-slate-500" />
+              <span className="h-2 w-2 rounded-full bg-slate-400 animate-bounce [animation-delay:300ms] dark:bg-slate-500" />
             </div>
-            <span className="text-xs text-slate-400">Thinking...</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400">Thinking...</span>
           </div>
         </div>
       )}

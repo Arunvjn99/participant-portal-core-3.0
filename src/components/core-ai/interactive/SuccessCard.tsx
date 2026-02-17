@@ -27,18 +27,18 @@ export function SuccessCard({ title, description, timeline, actionLabel, onActio
       initial={reduced ? false : { opacity: 0, scale: 0.97, y: 12 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-      className="rounded-xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-slate-800/80 shadow-lg overflow-hidden"
+      className="rounded-xl border border-emerald-400/40 bg-gradient-to-br from-emerald-50 to-slate-100 shadow-lg overflow-hidden dark:border-emerald-500/30 dark:from-emerald-500/10 dark:to-slate-800/80"
     >
       {/* Header */}
       <div className="px-4 py-4 flex items-start gap-3">
-        <div className="shrink-0 flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/20 border border-emerald-500/30">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-400">
+        <div className="shrink-0 flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 border border-emerald-400/40 dark:bg-emerald-500/20 dark:border-emerald-500/30">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-600 dark:text-emerald-400">
             <polyline points="20 6 9 17 4 12" />
           </svg>
         </div>
         <div className="min-w-0">
-          <h4 className="text-sm font-semibold text-emerald-300">{title}</h4>
-          {description && <p className="text-[11px] text-slate-400 mt-0.5">{description}</p>}
+          <h4 className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">{title}</h4>
+          {description && <p className="text-[11px] text-slate-500 mt-0.5 dark:text-slate-400">{description}</p>}
         </div>
       </div>
 
@@ -58,11 +58,11 @@ export function SuccessCard({ title, description, timeline, actionLabel, onActio
                 <div className="relative mt-1">
                   <span className="block h-2 w-2 rounded-full bg-emerald-500/60" />
                   {i < timeline.length - 1 && (
-                    <span className="absolute top-2 left-1/2 -translate-x-1/2 w-px h-4 bg-slate-700" />
+                    <span className="absolute top-2 left-1/2 -translate-x-1/2 w-px h-4 bg-slate-300 dark:bg-slate-700" />
                   )}
                 </div>
                 <div className="min-w-0">
-                  <p className="text-xs text-slate-200">{step.label}</p>
+                  <p className="text-xs text-slate-700 dark:text-slate-200">{step.label}</p>
                   {step.detail && <p className="text-[10px] text-slate-500">{step.detail}</p>}
                 </div>
               </motion.div>

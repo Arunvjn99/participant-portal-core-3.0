@@ -274,13 +274,13 @@ export function CoreAssistantModal({ isOpen, onClose }: CoreAssistantModalProps)
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 40, scale: 0.97 }}
             transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-            className="relative z-10 flex flex-col overflow-hidden rounded-t-2xl sm:rounded-2xl bg-[#0f172a] text-white shadow-2xl w-full sm:w-[min(640px,calc(100vw-2rem))] md:w-[min(720px,calc(100vw-2rem))] h-[calc(100dvh-1rem)] sm:h-[min(620px,calc(100dvh-3rem))]"
+            className="relative z-10 flex flex-col overflow-hidden rounded-t-2xl sm:rounded-2xl bg-white text-slate-900 shadow-2xl dark:bg-[#0f172a] dark:text-white w-full sm:w-[min(640px,calc(100vw-2rem))] md:w-[min(720px,calc(100vw-2rem))] h-[calc(100dvh-1rem)] sm:h-[min(620px,calc(100dvh-3rem))]"
             role="dialog"
             aria-modal="true"
             aria-label={t("coreAi.modalAria")}
           >
             {/* ── Header ── */}
-            <div className="shrink-0 flex items-center justify-between gap-3 border-b border-slate-700/60 px-5 py-3">
+            <div className="shrink-0 flex items-center justify-between gap-3 border-b border-slate-200 px-5 py-3 dark:border-slate-700/60">
               <div className="flex items-center gap-3 min-w-0">
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-teal-500 to-teal-700 shadow-lg shadow-teal-600/20">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -290,10 +290,10 @@ export function CoreAssistantModal({ isOpen, onClose }: CoreAssistantModalProps)
                   </svg>
                 </div>
                 <div className="min-w-0">
-                  <h2 className="text-sm font-semibold text-white truncate">{t("coreAi.headerTitle")}</h2>
+                  <h2 className="text-sm font-semibold text-slate-900 truncate dark:text-white">{t("coreAi.headerTitle")}</h2>
                   <div className="flex items-center gap-1.5">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" aria-hidden />
-                    <span className="text-[11px] text-slate-400">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400" aria-hidden />
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">
                       {flowStateRef.current
                         ? t("coreAi.statusFlow", { type: flowStateRef.current.type.charAt(0).toUpperCase() + flowStateRef.current.type.slice(1) })
                         : t("coreAi.statusOnline")}
@@ -306,7 +306,7 @@ export function CoreAssistantModal({ isOpen, onClose }: CoreAssistantModalProps)
               <button
                 type="button"
                 onClick={onClose}
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-700 hover:text-white"
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-white"
                 aria-label={t("coreAi.closeAria")}
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -336,8 +336,8 @@ export function CoreAssistantModal({ isOpen, onClose }: CoreAssistantModalProps)
             />
 
             {/* ── Footer ── */}
-            <div className="shrink-0 border-t border-slate-700/60 px-5 py-2">
-              <p className="text-[10px] text-slate-500 text-center">
+            <div className="shrink-0 border-t border-slate-200 px-5 py-2 dark:border-slate-700/60">
+              <p className="text-[10px] text-slate-500 text-center dark:text-slate-500">
                 {t("coreAi.disclaimer")}
               </p>
             </div>
