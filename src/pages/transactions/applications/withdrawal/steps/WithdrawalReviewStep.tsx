@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { CheckCircle2 } from "lucide-react";
 import { TransactionStepCard } from "../../../../../components/transactions/TransactionStepCard";
 import { RetirementImpact } from "../../../../../components/transactions/RetirementImpact";
@@ -8,6 +9,7 @@ const formatCurrency = (n: number) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format(n);
 
 export const WithdrawalReviewStep = ({ transaction, initialData, onDataChange, readOnly }: TransactionStepProps) => {
+  const { t } = useTranslation();
   const isReadOnly = readOnly || transaction.status !== "draft";
   const amount = initialData?.amount ?? 1000;
   const federalRate = initialData?.federalTaxRate ?? 20;
@@ -26,35 +28,35 @@ export const WithdrawalReviewStep = ({ transaction, initialData, onDataChange, r
   const impactLevel = amount <= 5000 ? "low" : amount <= 15000 ? "medium" : "high";
   const impactRationale =
     impactLevel === "low"
-      ? "This withdrawal has limited impact on your projected balance. Consider resuming or increasing contributions when possible."
+      ? t("transactions.withdrawal.impactLow")
       : impactLevel === "medium"
-        ? "This amount reduces your invested balance. Tax and penalty may apply; review withholding and consider timing."
-        : "This is a significant withdrawal. Ensure you understand tax, penalty, and long-term impact on retirement goals.";
+        ? t("transactions.withdrawal.impactMedium")
+        : t("transactions.withdrawal.impactHigh");
 
   const timelineSteps = [
-    { label: "Request received", detail: "We’ll verify eligibility and process your hardship withdrawal." },
-    { label: "Tax withholding", detail: `Federal (${federalRate}%) and state (${stateRate}%) withholding will be applied per your election.` },
-    { label: "Disbursement", detail: "Net amount will be sent via your chosen method (typically 5–10 business days)." },
+    { label: t("transactions.withdrawal.timelineRequestReceived"), detail: t("transactions.withdrawal.timelineRequestReceivedDetail") },
+    { label: t("transactions.withdrawal.timelineTaxWithholding"), detail: t("transactions.withdrawal.timelineTaxWithholdingDetail", { federal: federalRate, state: stateRate }) },
+    { label: t("transactions.withdrawal.timelineDisbursement"), detail: t("transactions.withdrawal.timelineDisbursementDetail") },
   ];
 
   return (
-    <TransactionStepCard title={isReadOnly ? "Review & Confirm" : "Review & Submit"}>
+    <TransactionStepCard title={isReadOnly ? t("transactions.loan.reviewConfirm") : t("transactions.loan.reviewSubmit")}>
       <div className="space-y-6">
         <dl className="space-y-0">
           <div className="flex justify-between py-2 border-b" style={{ borderColor: "var(--enroll-card-border)" }}>
-            <dt style={{ color: "var(--enroll-text-secondary)" }}>Gross amount</dt>
+            <dt style={{ color: "var(--enroll-text-secondary)" }}>{t("transactions.withdrawal.grossAmount")}</dt>
             <dd className="font-semibold" style={{ color: "var(--enroll-text-primary)" }}>{formatCurrency(amount)}</dd>
           </div>
           <div className="flex justify-between py-2 border-b" style={{ borderColor: "var(--enroll-card-border)" }}>
-            <dt style={{ color: "var(--enroll-text-secondary)" }}>Federal withholding ({federalRate}%)</dt>
+            <dt style={{ color: "var(--enroll-text-secondary)" }}>{t("transactions.withdrawal.federalWithholding", { rate: federalRate })}</dt>
             <dd className="font-semibold" style={{ color: "var(--enroll-text-primary)" }}>-{formatCurrency(federalWithhold)}</dd>
           </div>
           <div className="flex justify-between py-2 border-b" style={{ borderColor: "var(--enroll-card-border)" }}>
-            <dt style={{ color: "var(--enroll-text-secondary)" }}>State withholding ({stateRate}%)</dt>
+            <dt style={{ color: "var(--enroll-text-secondary)" }}>{t("transactions.withdrawal.stateWithholding", { rate: stateRate })}</dt>
             <dd className="font-semibold" style={{ color: "var(--enroll-text-primary)" }}>-{formatCurrency(stateWithhold)}</dd>
           </div>
           <div className="flex justify-between py-2">
-            <dt style={{ color: "var(--enroll-text-secondary)" }}>Net amount</dt>
+            <dt style={{ color: "var(--enroll-text-secondary)" }}>{t("transactions.withdrawal.netAmount")}</dt>
             <dd className="font-semibold" style={{ color: "var(--enroll-text-primary)" }}>{formatCurrency(netAmount)}</dd>
           </div>
         </dl>
@@ -62,7 +64,7 @@ export const WithdrawalReviewStep = ({ transaction, initialData, onDataChange, r
         <RetirementImpact level={impactLevel} rationale={impactRationale} />
 
         <div>
-          <p className="text-sm font-semibold mb-3" style={{ color: "var(--enroll-text-primary)" }}>What happens next</p>
+          <p className="text-sm font-semibold mb-3" style={{ color: "var(--enroll-text-primary)" }}>{t("transactions.loan.whatHappensNext")}</p>
           <ul className="space-y-3">
             {timelineSteps.map((step, i) => (
               <li key={i} className="flex gap-3">
@@ -87,7 +89,7 @@ export const WithdrawalReviewStep = ({ transaction, initialData, onDataChange, r
             style={{ background: "var(--color-warning-light)", borderColor: "var(--color-warning)" }}
           >
             <p className="text-sm" style={{ color: "var(--enroll-text-primary)" }}>
-              Hardship withdrawals may be subject to income tax and a 10% early withdrawal penalty if under 59½.
+              {t("transactions.withdrawal.taxPenaltyWarning")}
             </p>
           </div>
         )}
@@ -103,13 +105,15 @@ export const WithdrawalReviewStep = ({ transaction, initialData, onDataChange, r
             />
             <span className="text-sm flex items-center gap-2" style={{ color: "var(--enroll-text-secondary)" }}>
               <CheckCircle2 className="h-4 w-4 shrink-0" style={{ color: "var(--color-success)" }} />
-              I understand the tax implications and penalties that may apply.
+              {t("transactions.withdrawal.understandTaxPenalties")}
             </span>
           </label>
         )}
         {isReadOnly && (
           <p className="text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
-            This transaction has been {transaction.status === "completed" ? "completed" : "submitted for processing"}.
+            {t("transactions.loan.submittedOrCompleted", {
+              status: transaction.status === "completed" ? t("transactions.placeholder.statusCompleted") : t("transactions.placeholder.statusSubmitted"),
+            })}
           </p>
         )}
       </div>

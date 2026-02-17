@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { DashboardLayout } from "../../layouts/DashboardLayout";
 import { DashboardHeader } from "../dashboard/DashboardHeader";
 import { EnrollmentStepper } from "../enrollment/EnrollmentStepper";
@@ -59,6 +60,7 @@ export const TransactionApplication = ({
   onSuccessNavigate,
   readOnly: propReadOnly,
 }: TransactionApplicationProps) => {
+  const { t } = useTranslation();
   const { transactionId } = useParams<{ transactionId: string }>();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
@@ -78,7 +80,7 @@ export const TransactionApplication = ({
     return (
       <DashboardLayout header={<DashboardHeader />}>
         <div className="transaction-application">
-          <p>Transaction not found.</p>
+          <p>{t("transactions.transactionNotFound")}</p>
         </div>
       </DashboardLayout>
     );
@@ -161,16 +163,16 @@ export const TransactionApplication = ({
     setStepData((prev: any) => ({ ...prev, ...data }));
   };
 
-  // Build step labels for the stepper
-  const stepLabels = steps.map((step) => step.label);
+  // Build step labels for the stepper (translate keys)
+  const stepLabels = steps.map((step) => t(step.label));
 
-  const title = getTransactionTypeLabel(transactionType);
-  const subtitle = `Step ${currentStep + 1} of ${totalSteps}`;
+  const title = getTransactionTypeLabel(transactionType, t);
+  const subtitle = t("transactions.stepOf", { current: currentStep + 1, total: totalSteps });
 
   return (
     <DashboardLayout header={<DashboardHeader />} transparentBackground>
       <TransactionFlowLayout
-        title={`${title} Application`}
+        title={`${title} ${t("transactions.application")}`}
         subtitle={subtitle}
         onBack={() => navigate("/transactions")}
       >
@@ -192,16 +194,16 @@ export const TransactionApplication = ({
               }}
             >
               <span className="font-semibold" style={{ color: "var(--color-text)" }}>
-                {transaction.status === "completed" ? "View Only" : "Read Only"}
+                {transaction.status === "completed" ? t("transactions.viewOnly") : t("transactions.readOnly")}
               </span>
               {transaction.status === "active" && (
                 <p className="mt-1 text-sm" style={{ color: "var(--color-text-secondary)" }}>
-                  This transaction is being processed. You can view details but cannot make changes.
+                  {t("transactions.processedMessage")}
                 </p>
               )}
               {transaction.status === "completed" && (
                 <p className="mt-1 text-sm" style={{ color: "var(--color-text-secondary)" }}>
-                  This transaction has been completed. You can view details and documents.
+                  {t("transactions.completedMessage")}
                 </p>
               )}
             </div>
@@ -232,21 +234,21 @@ export const TransactionApplication = ({
   );
 };
 
-const getTransactionTypeLabel = (type: TransactionType): string => {
+const getTransactionTypeLabel = (type: TransactionType, t: (key: string) => string): string => {
   switch (type) {
     case "loan":
-      return "401(k) Loan";
+      return t("transactions.loanApplication");
     case "withdrawal":
-      return "Hardship Withdrawal";
+      return t("transactions.withdrawalApplication");
     case "distribution":
-      return "Distribution";
+      return t("transactions.distributionApplication");
     case "rollover":
-      return "Rollover";
+      return t("transactions.rolloverApplication");
     case "transfer":
-      return "Transfer Investments";
+      return t("transactions.transferApplication");
     case "rebalance":
-      return "Rebalance Portfolio";
+      return t("transactions.rebalanceApplication");
     default:
-      return "Transaction";
+      return t("transactions.application");
   }
 };

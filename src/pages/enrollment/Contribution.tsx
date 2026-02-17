@@ -1,5 +1,6 @@
 import { useMemo, useCallback, useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEnrollment } from "../../enrollment/context/EnrollmentContext";
 import { loadEnrollmentDraft, saveEnrollmentDraft } from "../../enrollment/enrollmentDraftStore";
@@ -21,8 +22,8 @@ const SLIDER_MIN = 1;
 const SLIDER_MAX = 25;
 
 const PRESETS = [
-  { id: "safe", label: "Safe: 8%", percentage: 8 },
-  { id: "aggressive", label: "Aggressive: 15%", percentage: 15 },
+  { id: "safe", labelKey: "enrollment.presetSafe", percentage: 8 },
+  { id: "aggressive", labelKey: "enrollment.presetAggressive", percentage: 15 },
 ] as const;
 
 const SOURCE_OPTIONS = [
@@ -44,6 +45,7 @@ const cardStyle: React.CSSProperties = {
    ═══════════════════════════════════════════════════════════════ */
 
 export const Contribution = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const {
     state,
@@ -180,7 +182,7 @@ export const Contribution = () => {
   const [focusedInput, setFocusedInput] = useState<"pct" | "dollar" | null>(null);
   const monthlyAmount = annualAmount / 12;
   const inputsActive = focusedInput !== null;
-  const summaryText = `Monthly contribution: ${formatCurrency(derived.monthlyContribution ?? monthlyAmount)}`;
+  const summaryText = t("enrollment.monthlyContributionSummary", { amount: formatCurrency(derived.monthlyContribution ?? monthlyAmount) });
   const isMaxMatch = contributionPct >= state.assumptions.employerMatchCap && state.assumptions.employerMatchCap > 0;
   const employerMatchPerPaycheck = derived.employerMatchMonthly / 2;
   const totalPerPaycheck = perPaycheck + employerMatchPerPaycheck;
@@ -194,8 +196,8 @@ export const Contribution = () => {
 
   return (
     <EnrollmentPageContent
-      title="Design your savings strategy"
-      subtitle="Small increases today can create life-changing impact tomorrow."
+      title={t("enrollment.designSavingsTitle")}
+      subtitle={t("enrollment.designSavingsSubtitle")}
       badge={
         <ContributionHero
           matchCap={state.assumptions.employerMatchCap}
@@ -221,10 +223,10 @@ export const Contribution = () => {
                 className="text-lg font-bold mb-4"
                 style={{ color: "var(--enroll-text-primary)" }}
               >
-                How much do you want to contribute?
+                {t("enrollment.howMuchContribute")}
               </h2>
               <div className="flex flex-wrap items-center gap-3">
-                <span className="text-sm font-medium" style={{ color: "var(--enroll-text-muted)" }}>Quick presets:</span>
+                <span className="text-sm font-medium" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.quickPresets")}</span>
                 {PRESETS.map((p) => (
                   <button
                     key={p.id}
@@ -243,7 +245,7 @@ export const Contribution = () => {
                         : "var(--enroll-card-border)"}`,
                     }}
                   >
-                    {p.label}
+                    {t(p.labelKey)}
                   </button>
                 ))}
               </div>
@@ -255,7 +257,7 @@ export const Contribution = () => {
                 <span>1%</span>
                 {state.assumptions.employerMatchCap > 0 && (
                   <span className="font-semibold" style={{ color: "var(--enroll-brand)" }}>
-                    {state.assumptions.employerMatchCap}% match zone
+                    {t("enrollment.matchZone", { percent: state.assumptions.employerMatchCap })}
                   </span>
                 )}
                 <span>25%</span>
@@ -629,7 +631,7 @@ export const Contribution = () => {
 
       <EnrollmentFooter
         step={1}
-        primaryLabel="Continue to Auto Increase"
+        primaryLabel={t("enrollment.continueToAutoIncrease")}
         primaryDisabled={!canContinue}
         onPrimary={handleNext}
         summaryText={summaryText}

@@ -1,16 +1,18 @@
 import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { TransactionStepCard } from "../../../../../components/transactions/TransactionStepCard";
 import type { TransactionStepProps } from "../../../../../components/transactions/TransactionApplication";
 
 export const WithdrawalTaxStep = ({ initialData, onDataChange, readOnly }: TransactionStepProps) => {
+  const { t } = useTranslation();
   const federalRate = initialData?.federalTaxRate ?? 20;
   const stateRate = initialData?.stateTaxRate ?? 5;
 
   if (readOnly) {
     return (
-      <TransactionStepCard title="Tax Information">
+      <TransactionStepCard title={t("transactions.withdrawal.taxInformation")}>
         <p className="text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
-          Federal {federalRate}% · State {stateRate}%
+          {t("transactions.withdrawal.taxReadOnly", { federal: federalRate, state: stateRate })}
         </p>
       </TransactionStepCard>
     );
@@ -33,14 +35,14 @@ export const WithdrawalTaxStep = ({ initialData, onDataChange, readOnly }: Trans
   );
 
   return (
-    <TransactionStepCard title="Tax Information">
+    <TransactionStepCard title={t("transactions.withdrawal.taxInformation")}>
       <div className="space-y-6">
         <p className="text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
-          Federal withholding is typically 20% for early distributions. You may elect a different rate.
+          {t("transactions.withdrawal.federalWithholdingNote")}
         </p>
         <div>
           <label className="block text-sm font-medium mb-2" style={{ color: "var(--enroll-text-primary)" }}>
-            Federal withholding %
+            {t("transactions.withdrawal.federalWithholdingPct")}
           </label>
           <input
             type="number"
@@ -59,7 +61,7 @@ export const WithdrawalTaxStep = ({ initialData, onDataChange, readOnly }: Trans
         </div>
         <div>
           <label className="block text-sm font-medium mb-2" style={{ color: "var(--enroll-text-primary)" }}>
-            State withholding %
+            {t("transactions.withdrawal.stateWithholdingPct")}
           </label>
           <input
             type="number"

@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { SectionHeader } from "../../../components/dashboard/shared/SectionHeader";
 import { StatusBadge } from "../../../components/dashboard/shared/StatusBadge";
@@ -15,12 +16,13 @@ const formatCurrency = (n: number) =>
  * Loan action widget for Transactions sidebar. Tokens only.
  */
 export const LoanWidget = memo(function LoanWidget() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const eligibleAmount = 50000;
 
   return (
     <section className="space-y-3">
-      <SectionHeader title="Loan" subtitle="Borrow against your balance" />
+      <SectionHeader title={t("transactions.widgets.loanTitle")} subtitle={t("transactions.widgets.loanSubtitle")} />
       <button
         type="button"
         onClick={() => navigate("/transactions/loan/start")}
@@ -42,13 +44,13 @@ export const LoanWidget = memo(function LoanWidget() {
           </span>
           <div className="min-w-0 flex-1">
             <p className="text-sm font-semibold" style={{ color: "var(--enroll-text-primary)" }}>
-              Take Loan
+              {t("transactions.widgets.takeLoan")}
             </p>
             <p className="text-xs" style={{ color: "var(--enroll-text-secondary)" }}>
-              Eligible up to {formatCurrency(eligibleAmount)}
+              {t("transactions.widgets.eligibleUpTo", { amount: formatCurrency(eligibleAmount) })}
             </p>
           </div>
-          <StatusBadge label="Eligible" variant="success" />
+          <StatusBadge label={t("transactions.eligible")} variant="success" />
         </div>
       </button>
     </section>

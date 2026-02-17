@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { Check, X, TrendingUp, ShieldCheck, Unlock, Activity, Lock, User, Briefcase, Calendar, MapPin, PiggyBank, Clock } from "lucide-react";
 import type { PlanOption } from "../../types/enrollment";
 
@@ -35,13 +36,15 @@ const softBgStyle: React.CSSProperties = {
 };
 
 export function PlanDetailsPanel({ plan, user, rationale }: PlanDetailsPanelProps) {
+  const { t } = useTranslation();
+
   if (!plan) {
     return (
       <div
         className="animate-fade-in flex flex-col items-center justify-center min-h-[320px] p-8 text-center"
         style={{ ...cardStyle, opacity: 0.7 }}
       >
-        <p className="text-sm" style={{ color: "var(--enroll-text-muted)" }}>Select a plan to see details.</p>
+        <p className="text-sm" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.selectPlanToSeeDetails")}</p>
       </div>
     );
   }
@@ -59,9 +62,9 @@ export function PlanDetailsPanel({ plan, user, rationale }: PlanDetailsPanelProp
           >
             <Lock size={24} />
           </div>
-          <h3 className="text-sm font-bold mb-2" style={{ color: "var(--enroll-text-primary)" }}>Plan Unavailable</h3>
+          <h3 className="text-sm font-bold mb-2" style={{ color: "var(--enroll-text-primary)" }}>{t("enrollment.planUnavailable")}</h3>
           <p className="text-xs leading-relaxed max-w-[200px]" style={{ color: "var(--enroll-text-muted)" }}>
-            {plan.ineligibilityReason ?? "This plan is not available for your current profile."}
+            {plan.ineligibilityReason ?? t("enrollment.planNotAvailableDefault")}
           </p>
         </div>
       </div>
@@ -78,12 +81,12 @@ export function PlanDetailsPanel({ plan, user, rationale }: PlanDetailsPanelProp
           className="text-[10px] font-bold uppercase tracking-widest mb-3"
           style={{ color: "var(--enroll-text-muted)" }}
         >
-          Plan Overview
+          {t("enrollment.planOverview")}
         </h4>
         <p className="text-lg font-medium leading-snug mb-2" style={{ color: "var(--enroll-text-primary)" }}>
           {plan.isRecommended
-            ? "Best for tax-free growth over time."
-            : "A solid option for your retirement savings."}
+            ? t("enrollment.bestForTaxFree")
+            : t("enrollment.solidOption")}
         </p>
         {rationale && (
           <p className="text-sm leading-relaxed mb-4" style={{ color: "var(--enroll-text-secondary)" }}>
@@ -101,7 +104,7 @@ export function PlanDetailsPanel({ plan, user, rationale }: PlanDetailsPanelProp
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Activity size={14} style={{ color: "var(--enroll-brand)" }} />
-                <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--enroll-brand)" }}>Match Score</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--enroll-brand)" }}>{t("enrollment.matchScore")}</span>
               </div>
               <span className="text-xl font-bold" style={{ color: "var(--enroll-brand)" }}>{confidenceScore}%</span>
             </div>
@@ -116,8 +119,8 @@ export function PlanDetailsPanel({ plan, user, rationale }: PlanDetailsPanelProp
             </div>
             <p className="text-[11px] leading-relaxed" style={{ color: "var(--enroll-text-secondary)" }}>
               {plan.isRecommended
-                ? "Excellent for growing your money tax-free."
-                : "Better for keeping more money in your paycheck today."}
+                ? t("enrollment.excellentTaxFree")
+                : t("enrollment.betterPaycheck")}
             </p>
           </div>
         </div>
@@ -129,29 +132,29 @@ export function PlanDetailsPanel({ plan, user, rationale }: PlanDetailsPanelProp
           className="text-[10px] font-bold uppercase tracking-widest mb-3 flex items-center gap-2"
           style={{ color: "var(--enroll-text-muted)" }}
         >
-          <User size={12} /> Your Details
+          <User size={12} /> {t("enrollment.yourDetails")}
         </h4>
         <div className="grid grid-cols-3 gap-3">
-          <DetailCell icon={<User size={10} />} label="Age" value={String(user.age)} />
-          <DetailCell icon={<Calendar size={10} />} label="Retiring At" value={String(user.retirementAge)} />
-          <DetailCell icon={<Briefcase size={10} />} label="Salary" value={typeof user.salary === "number" ? formatCurrency(user.salary) : String(user.salary)} />
+          <DetailCell icon={<User size={10} />} label={t("enrollment.age")} value={String(user.age)} />
+          <DetailCell icon={<Calendar size={10} />} label={t("enrollment.retiringAt")} value={String(user.retirementAge)} />
+          <DetailCell icon={<Briefcase size={10} />} label={t("enrollment.salary")} value={typeof user.salary === "number" ? formatCurrency(user.salary) : String(user.salary)} />
           {user.yearsToRetire != null && user.yearsToRetire >= 0 && (
-            <DetailCell icon={<Clock size={10} />} label="Years to Retire" value={String(user.yearsToRetire)} colSpan />
+            <DetailCell icon={<Clock size={10} />} label={t("enrollment.yearsToRetire")} value={String(user.yearsToRetire)} colSpan />
           )}
           {user.retirementLocation && (
-            <DetailCell icon={<MapPin size={10} />} label="Retirement Location" value={user.retirementLocation} colSpan />
+            <DetailCell icon={<MapPin size={10} />} label={t("enrollment.retirementLocation")} value={user.retirementLocation} colSpan />
           )}
           {user.otherSavings != null && user.otherSavings > 0 && (
-            <DetailCell icon={<PiggyBank size={10} />} label="Other Savings" value={formatCurrency(user.otherSavings)} colSpan />
+            <DetailCell icon={<PiggyBank size={10} />} label={t("enrollment.otherSavings")} value={formatCurrency(user.otherSavings)} colSpan />
           )}
         </div>
       </div>
 
       {/* Metrics */}
       <div className="p-6 space-y-5" style={cardStyle}>
-        <MetricRow icon={<TrendingUp size={14} />} label="Growth" value={confidenceScore > 90 ? "Maximum" : "Stable"} score={confidenceScore} />
-        <MetricRow icon={<ShieldCheck size={14} />} label="Tax Benefits" value={confidenceScore > 90 ? "Tax-Free" : "Pay Later"} score={confidenceScore} />
-        <MetricRow icon={<Unlock size={14} />} label="Access to Money" value="Flexible" score={Math.min(100, (plan.benefits?.length ?? 0) * 25)} />
+        <MetricRow icon={<TrendingUp size={14} />} label={t("enrollment.growth")} value={confidenceScore > 90 ? t("enrollment.maximum") : t("enrollment.stable")} score={confidenceScore} />
+        <MetricRow icon={<ShieldCheck size={14} />} label={t("enrollment.taxBenefits")} value={confidenceScore > 90 ? t("enrollment.taxFree") : t("enrollment.payLater")} score={confidenceScore} />
+        <MetricRow icon={<Unlock size={14} />} label={t("enrollment.accessToMoney")} value={t("enrollment.flexible")} score={Math.min(100, (plan.benefits?.length ?? 0) * 25)} />
       </div>
 
       {/* Pros / Cons */}
@@ -161,7 +164,7 @@ export function PlanDetailsPanel({ plan, user, rationale }: PlanDetailsPanelProp
             className="text-[10px] font-bold uppercase tracking-widest flex items-center gap-2"
             style={{ color: "var(--enroll-text-primary)" }}
           >
-            <span className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--enroll-accent)" }} aria-hidden /> Pros
+            <span className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--enroll-accent)" }} aria-hidden /> {t("enrollment.pros")}
           </h5>
           <ul className="space-y-2.5">
             {(plan.benefits ?? []).map((value, i) => (
@@ -178,12 +181,12 @@ export function PlanDetailsPanel({ plan, user, rationale }: PlanDetailsPanelProp
             className="text-[10px] font-bold uppercase tracking-widest flex items-center gap-2"
             style={{ color: "var(--enroll-text-primary)" }}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-500" aria-hidden /> Cons
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500" aria-hidden /> {t("enrollment.cons")}
           </h5>
           <ul className="space-y-2.5">
             <li className="flex gap-2.5 text-xs" style={{ color: "var(--enroll-text-muted)" }}>
               <X size={14} className="shrink-0" style={{ color: "var(--enroll-text-muted)" }} />
-              <span>{plan.id === "roth-401k" || plan.isRecommended ? "You don't get a tax break today" : "You pay taxes when you take money out"}</span>
+              <span>{plan.id === "roth-401k" || plan.isRecommended ? t("enrollment.conNoTaxBreakToday") : t("enrollment.conPayTaxesWithdraw")}</span>
             </li>
           </ul>
         </div>

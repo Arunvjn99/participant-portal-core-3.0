@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { SectionHeader } from "../../../components/dashboard/shared/SectionHeader";
 import { StatusBadge } from "../../../components/dashboard/shared/StatusBadge";
@@ -15,12 +16,13 @@ const formatCurrency = (n: number) =>
  * Rollover action widget for Transactions sidebar. Tokens only.
  */
 export const RolloverWidget = memo(function RolloverWidget() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const eligibleAmount = 129500;
 
   return (
     <section className="space-y-3">
-      <SectionHeader title="Rollover" subtitle="Move from previous plan" />
+      <SectionHeader title={t("transactions.widgets.rolloverTitle")} subtitle={t("transactions.widgets.rolloverSubtitle")} />
       <button
         type="button"
         onClick={() => navigate("/transactions/rollover/start")}
@@ -42,13 +44,13 @@ export const RolloverWidget = memo(function RolloverWidget() {
           </span>
           <div className="min-w-0 flex-1">
             <p className="text-sm font-semibold" style={{ color: "var(--enroll-text-primary)" }}>
-              Start Rollover
+              {t("transactions.widgets.startRollover")}
             </p>
             <p className="text-xs" style={{ color: "var(--enroll-text-secondary)" }}>
-              {formatCurrency(eligibleAmount)} eligible
+              {t("transactions.widgets.eligibleAmount", { amount: formatCurrency(eligibleAmount) })}
             </p>
           </div>
-          <StatusBadge label="Eligible" variant="success" />
+          <StatusBadge label={t("transactions.eligible")} variant="success" />
         </div>
       </button>
     </section>

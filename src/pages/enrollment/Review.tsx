@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { AllocationChart } from "../../components/investments/AllocationChart";
 import { useEnrollment } from "../../enrollment/context/EnrollmentContext";
@@ -16,30 +17,30 @@ import type { ContributionSource, IncrementCycle } from "../../enrollment/logic/
    CONSTANTS
    ═══════════════════════════════════════════════════════ */
 
-const PLAN_NAMES: Record<SelectedPlanId, string> = {
-  traditional_401k: "Traditional 401(k)",
-  roth_401k: "Roth 401(k)",
-  roth_ira: "Roth IRA",
+const PLAN_NAME_KEYS: Record<SelectedPlanId, string> = {
+  traditional_401k: "enrollment.traditional401k",
+  roth_401k: "enrollment.roth401k",
+  roth_ira: "enrollment.rothIra",
   null: "",
 };
 
-const PLAN_TYPE_LABELS: Record<SelectedPlanId, string> = {
-  traditional_401k: "401(k) Plan",
-  roth_401k: "401(k) Plan",
-  roth_ira: "Roth IRA",
-  null: "",
+const PLAN_TYPE_KEYS: Record<SelectedPlanId, string> = {
+  traditional_401k: "enrollment.plan401k",
+  roth_401k: "enrollment.plan401k",
+  roth_ira: "enrollment.rothIra",
+  null: "enrollment.plan401k",
 };
 
-const SOURCE_NAMES: Record<ContributionSource, string> = {
-  preTax: "Pre-tax",
-  roth: "Roth",
-  afterTax: "After-tax",
+const SOURCE_KEYS: Record<ContributionSource, string> = {
+  preTax: "enrollment.preTax",
+  roth: "enrollment.roth",
+  afterTax: "enrollment.afterTax",
 };
 
-const INCREMENT_CYCLE_LABELS: Record<IncrementCycle, string> = {
-  calendar_year: "Calendar Year",
-  plan_enroll_date: "Plan Enroll Date",
-  plan_year: "Plan Year",
+const INCREMENT_CYCLE_KEYS: Record<IncrementCycle, string> = {
+  calendar_year: "enrollment.calendarYear",
+  plan_enroll_date: "enrollment.planEnrollDate",
+  plan_year: "enrollment.planYear",
 };
 
 /* ── Shared card style ── */
@@ -96,17 +97,25 @@ function getRiskColor(r: number): string {
   return "var(--color-danger, #ef4444)";
 }
 
-function formatRiskLevel(r: number): string {
+function formatRiskLevel(r: number): "Conservative" | "Moderate" | "Moderate-Aggressive" | "Aggressive" {
   if (r < 3) return "Conservative";
   if (r < 5) return "Moderate";
   if (r < 7) return "Moderate-Aggressive";
   return "Aggressive";
 }
 
+const RISK_LABEL_KEYS: Record<ReturnType<typeof formatRiskLevel>, string> = {
+  Conservative: "enrollment.riskConservative",
+  Moderate: "enrollment.riskModerate",
+  "Moderate-Aggressive": "enrollment.riskModerateAggressive",
+  Aggressive: "enrollment.riskAggressive",
+};
+
 /* ═══════════════════════════════════════════════════════
    REVIEW PAGE
    ═══════════════════════════════════════════════════════ */
 export const Review = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const enrollment = useEnrollment();
   const investment = useInvestment();
@@ -141,7 +150,7 @@ export const Review = () => {
   if (!prerequisites.hasContribution) return <Navigate to="/enrollment/contribution" replace />;
 
   /* ── Data ── */
-  const selectedPlanName = enrollment.state.selectedPlan ? PLAN_NAMES[enrollment.state.selectedPlan] : "";
+  const selectedPlanName = enrollment.state.selectedPlan ? t(PLAN_NAME_KEYS[enrollment.state.selectedPlan]) : "";
   const { preTax = 0, roth = 0, afterTax = 0 } = enrollment.state.sourceAllocation ?? {};
   const contributionTotal = enrollment.state.contributionAmount ?? 0;
 
@@ -208,7 +217,7 @@ export const Review = () => {
     a.download = `enrollment-summary-${new Date().toISOString().slice(0, 10)}.txt`;
     a.click();
     URL.revokeObjectURL(url);
-    showFeedback("Summary downloaded.");
+    showFeedback(t("enrollment.summaryDownloaded"));
   }, [buildEnrollmentSummary, showFeedback]);
 
   const handleEmailSummary = useCallback(() => {
@@ -216,12 +225,12 @@ export const Review = () => {
     const subject = encodeURIComponent("My Retirement Enrollment Summary");
     const body = encodeURIComponent(summary);
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
-    showFeedback("Opening email client...");
+    showFeedback(t("enrollment.openingEmail"));
   }, [buildEnrollmentSummary, showFeedback]);
 
   const handleApplySuggestion = useCallback(
     (suggestion: "contribution" | "investments") => {
-      showFeedback(suggestion === "contribution" ? "Go to Contributions to apply this change." : "Go to Investment Elections to apply this change.");
+      showFeedback(suggestion === "contribution" ? t("enrollment.goToContributions") : t("enrollment.goToInvestments"));
       setTimeout(() => navigate(suggestion === "contribution" ? "/enrollment/contribution" : "/enrollment/investments"), 800);
     },
     [navigate, showFeedback]
@@ -233,18 +242,18 @@ export const Review = () => {
       icon: (
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20V10" /><path d="M18 20V4" /><path d="M6 20v-4" /></svg>
       ),
-      title: "Increase pre-tax contribution",
-      description: "Adding 2% more to your pre-tax contribution could close approximately 40% of any projected shortfall.",
-      impact: "+$42,000 projected by retirement",
+      title: t("enrollment.insightIncreasePreTax"),
+      description: t("enrollment.insightIncreasePreTaxDesc"),
+      impact: t("enrollment.insightPreTaxImpact"),
       action: () => handleApplySuggestion("contribution"),
     },
     {
       icon: (
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M16 8l-4 4-4-4" /></svg>
       ),
-      title: "Simplify with a Target Date Fund",
-      description: "A single Target Retirement Fund automatically adjusts risk as you approach retirement age.",
-      impact: "Auto-rebalanced portfolio",
+      title: t("enrollment.insightTargetDate"),
+      description: t("enrollment.insightTargetDateDesc"),
+      impact: t("enrollment.insightTargetDateImpact"),
       action: () => handleApplySuggestion("investments"),
     },
   ];
@@ -274,15 +283,15 @@ export const Review = () => {
       </AnimatePresence>
 
       <EnrollmentPageContent
-        title="You're building something powerful."
-        subtitle="Here's what your future could look like based on today's decisions."
+        title={t("enrollment.reviewTitle")}
+        subtitle={t("enrollment.reviewSubtitle")}
         badge={
           <span
             className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-full"
             style={{ background: "rgb(var(--enroll-brand-rgb) / 0.08)", color: "var(--enroll-brand)" }}
           >
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
-            Final Review
+            {t("enrollment.finalReview")}
           </span>
         }
       >
@@ -300,7 +309,7 @@ export const Review = () => {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div className="flex-1">
               <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: "var(--enroll-text-muted)" }}>
-                Projected Retirement Balance
+                {t("enrollment.projectedRetirementBalance")}
               </p>
               <AnimatedCurrencyDisplay value={projectedValue} />
               <div className="flex flex-wrap items-center gap-3 mt-3">
@@ -308,23 +317,23 @@ export const Review = () => {
                   className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-semibold rounded-full"
                   style={{ background: "rgb(var(--enroll-brand-rgb) / 0.06)", color: "var(--enroll-brand)" }}
                 >
-                  {yearsToRetirement} years to retirement
+                  {t("enrollment.yearsToRetirement", { years: yearsToRetirement })}
                 </span>
                 <span
                   className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-semibold rounded-full"
                   style={{ background: "rgb(var(--enroll-accent-rgb) / 0.06)", color: "var(--enroll-accent)" }}
                 >
-                  {annualReturn}% annual return assumed
+                  {t("enrollment.annualReturnAssumed", { percent: annualReturn })}
                 </span>
                 <span
                   className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-semibold rounded-full"
                   style={{ background: "var(--enroll-soft-bg)", color: "var(--enroll-text-muted)" }}
                 >
-                  {contributionTotal}% contribution rate
+                  {t("enrollment.contributionRate", { percent: contributionTotal })}
                 </span>
               </div>
               <p className="text-sm mt-3" style={{ color: "var(--enroll-text-secondary)" }}>
-                Based on your current selections, you're on a strong path. Small adjustments today can have outsized impact over {yearsToRetirement} years of compounding growth.
+                {t("enrollment.strongPath", { years: yearsToRetirement })}
               </p>
             </div>
 
@@ -347,7 +356,7 @@ export const Review = () => {
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <span className="text-lg font-bold" style={{ color: "var(--enroll-text-primary)" }}>{Math.round(contributionTotal)}%</span>
-                  <span className="text-[9px] font-medium" style={{ color: "var(--enroll-text-muted)" }}>of pay</span>
+                  <span className="text-[9px] font-medium" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.ofPay")}</span>
                 </div>
               </div>
               <button
@@ -356,7 +365,7 @@ export const Review = () => {
                 className="text-[11px] font-semibold px-3 py-1.5 rounded-full border-none cursor-pointer transition-colors"
                 style={{ background: "rgb(var(--enroll-brand-rgb) / 0.08)", color: "var(--enroll-brand)" }}
               >
-                Optimize with AI
+                {t("enrollment.optimizeWithAI")}
               </button>
             </div>
           </div>
@@ -376,7 +385,7 @@ export const Review = () => {
               className="p-6"
               style={cardStyle}
             >
-              <SectionHeader title="Plan & Contributions" editLabel="Edit" onEdit={() => navigate("/enrollment/contribution")} />
+              <SectionHeader title={t("enrollment.planAndContributions")} editLabel={t("enrollment.edit")} onEdit={() => navigate("/enrollment/contribution")} />
 
               {/* Plan row */}
               <div
@@ -384,39 +393,39 @@ export const Review = () => {
                 style={{ background: "var(--enroll-soft-bg)", border: "1px solid var(--enroll-card-border)" }}
               >
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>Plan</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.plan")}</p>
                   <p className="text-sm font-semibold mt-0.5" style={{ color: "var(--enroll-text-primary)" }}>
-                    {enrollment.state.selectedPlan ? PLAN_TYPE_LABELS[enrollment.state.selectedPlan] : "401(k) Plan"} — {selectedPlanName || "Traditional 401(k)"}
+                    {enrollment.state.selectedPlan ? t(PLAN_TYPE_KEYS[enrollment.state.selectedPlan]) : t("enrollment.plan401k")} — {selectedPlanName || t("enrollment.traditional401k")}
                   </p>
                 </div>
                 <span
                   className="text-xs font-semibold px-2.5 py-1 rounded-full"
                   style={{ background: "rgb(var(--enroll-accent-rgb) / 0.08)", color: "var(--enroll-accent)" }}
                 >
-                  {enrollment.state.assumptions.employerMatchPercentage}% match
+                  {t("enrollment.matchPercent", { percent: enrollment.state.assumptions.employerMatchPercentage })}
                 </span>
               </div>
 
               {/* Source breakdown */}
               <div className="grid grid-cols-3 gap-3">
                 {[
-                  { label: "Pre-tax", value: preTax },
-                  { label: "Roth", value: roth },
-                  { label: "After-tax", value: afterTax },
-                ].map(({ label, value }) => (
+                  { labelKey: "enrollment.preTax", value: preTax },
+                  { labelKey: "enrollment.roth", value: roth },
+                  { labelKey: "enrollment.afterTax", value: afterTax },
+                ].map(({ labelKey, value }) => (
                   <div
-                    key={label}
+                    key={labelKey}
                     className="rounded-xl p-3 text-center"
                     style={{ background: "var(--enroll-soft-bg)", border: "1px solid var(--enroll-card-border)" }}
                   >
-                    <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>{label}</p>
+                    <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>{t(labelKey)}</p>
                     <p
                       className="text-lg font-bold mt-1"
                       style={{ color: value > 0 ? "var(--enroll-text-primary)" : "var(--enroll-text-muted)" }}
                     >
                       {formatContributionPct((value / 100) * contributionTotal)}
                     </p>
-                    <p className="text-[10px]" style={{ color: "var(--enroll-text-muted)" }}>of paycheck</p>
+                    <p className="text-[10px]" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.ofPaycheck")}</p>
                   </div>
                 ))}
               </div>
@@ -430,44 +439,44 @@ export const Review = () => {
               className="p-6"
               style={cardStyle}
             >
-              <SectionHeader title="Auto Increase" editLabel="Edit" onEdit={() => navigate("/enrollment/future-contributions")} />
+              <SectionHeader title={t("enrollment.autoIncrease")} editLabel={t("enrollment.edit")} onEdit={() => navigate("/enrollment/future-contributions")} />
               {(() => {
                 const ai = enrollment.state.autoIncrease;
                 const hasAny = (ai.preTaxIncrease ?? 0) > 0 || (ai.rothIncrease ?? 0) > 0 || (ai.afterTaxIncrease ?? 0) > 0;
                 if (!hasAny) {
                   return (
                     <p className="text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
-                      Automatic annual increase is not configured.
+                      {t("enrollment.autoIncreaseNotConfigured")}
                     </p>
                   );
                 }
                 return (
                   <>
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>Cycle:</span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.cycle")}</span>
                       <span
                         className="text-xs font-semibold px-2.5 py-1 rounded-full"
                         style={{ background: "rgb(var(--enroll-brand-rgb) / 0.06)", color: "var(--enroll-brand)" }}
                       >
-                        {INCREMENT_CYCLE_LABELS[ai.incrementCycle]}
+                        {t(INCREMENT_CYCLE_KEYS[ai.incrementCycle])}
                       </span>
                     </div>
                     <div className="grid grid-cols-3 gap-3">
                       {[
-                        { label: "Pre-tax", value: ai.preTaxIncrease ?? 0 },
-                        { label: "Roth", value: ai.rothIncrease ?? 0 },
-                        { label: "After-tax", value: ai.afterTaxIncrease ?? 0 },
-                      ].map(({ label, value }) => (
+                        { labelKey: "enrollment.preTax", value: ai.preTaxIncrease ?? 0 },
+                        { labelKey: "enrollment.roth", value: ai.rothIncrease ?? 0 },
+                        { labelKey: "enrollment.afterTax", value: ai.afterTaxIncrease ?? 0 },
+                      ].map(({ labelKey, value }) => (
                         <div
-                          key={label}
+                          key={labelKey}
                           className="rounded-xl p-3 text-center"
                           style={{ background: "var(--enroll-soft-bg)", border: "1px solid var(--enroll-card-border)" }}
                         >
-                          <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>{label}</p>
+                          <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>{t(labelKey)}</p>
                           <p className="text-lg font-bold mt-1" style={{ color: value > 0 ? "var(--enroll-accent)" : "var(--enroll-text-muted)" }}>
                             {value > 0 ? `${value}%` : "—"}
                           </p>
-                          <p className="text-[10px]" style={{ color: "var(--enroll-text-muted)" }}>per year</p>
+                          <p className="text-[10px]" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.perYear")}</p>
                         </div>
                       ))}
                     </div>
@@ -485,8 +494,8 @@ export const Review = () => {
               style={cardStyle}
             >
               <SectionHeader
-                title="Investment Elections"
-                editLabel={!isAllocationValid ? "Fix Allocation" : "Edit"}
+                title={t("enrollment.investmentElections")}
+                editLabel={!isAllocationValid ? t("enrollment.fixAllocation") : t("enrollment.edit")}
                 onEdit={() => navigate("/enrollment/investments")}
                 warning={!isAllocationValid}
               />
@@ -501,7 +510,7 @@ export const Review = () => {
                     <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
                   <span className="text-xs font-semibold" style={{ color: "var(--color-danger)" }}>
-                    Total allocation is {totalAllocation.toFixed(0)}%. Must equal 100%.
+                    {t("enrollment.allocationMustEqual", { percent: totalAllocation.toFixed(0) })}
                   </span>
                 </div>
               )}
@@ -552,12 +561,12 @@ export const Review = () => {
 
               {/* Total */}
               <div className="flex items-center justify-between mt-3 pt-3" style={{ borderTop: "1px solid var(--enroll-card-border)" }}>
-                <span className="text-xs" style={{ color: "var(--enroll-text-muted)" }}>{fundTableRows.length} funds selected</span>
+                <span className="text-xs" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.fundsSelected", { count: fundTableRows.length })}</span>
                 <span
                   className="text-sm font-bold"
                   style={{ color: isAllocationValid ? "var(--enroll-accent)" : "var(--color-danger)" }}
                 >
-                  Total: {totalAllocation.toFixed(1)}%
+                  {t("enrollment.total", { percent: totalAllocation.toFixed(1) })}
                 </span>
               </div>
             </motion.div>
@@ -572,16 +581,16 @@ export const Review = () => {
             >
               <div className="flex items-center gap-2 mb-3">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--enroll-text-muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" /></svg>
-                <p className="text-sm font-bold" style={{ color: "var(--enroll-text-primary)" }}>Terms and Conditions</p>
+                <p className="text-sm font-bold" style={{ color: "var(--enroll-text-primary)" }}>{t("enrollment.termsAndConditions")}</p>
               </div>
               <p className="text-xs mb-3" style={{ color: "var(--enroll-text-muted)" }}>
-                Please accept the terms to enable enrollment.
+                {t("enrollment.acceptTerms")}
               </p>
               <div className="space-y-2">
                 {[
-                  { key: "feeDisclosure" as const, label: "Fee Disclosure Statement" },
-                  { key: "qdefault" as const, label: "Qualified Default Investment Notice" },
-                ].map(({ key, label }) => (
+                  { key: "feeDisclosure" as const, labelKey: "enrollment.feeDisclosureStatement" },
+                  { key: "qdefault" as const, labelKey: "enrollment.qualifiedDefaultNotice" },
+                ].map(({ key, labelKey }) => (
                   <label
                     key={key}
                     className="flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors"
@@ -607,7 +616,7 @@ export const Review = () => {
                       onChange={(e) => setAcknowledgements((p) => ({ ...p, [key]: e.target.checked }))}
                       className="sr-only"
                     />
-                    <span className="text-sm font-medium" style={{ color: "var(--enroll-text-primary)" }}>{label}</span>
+                    <span className="text-sm font-medium" style={{ color: "var(--enroll-text-primary)" }}>{t(labelKey)}</span>
                   </label>
                 ))}
               </div>
@@ -621,22 +630,22 @@ export const Review = () => {
               className="p-6"
               style={cardStyle}
             >
-              <p className="text-sm font-bold mb-4" style={{ color: "var(--enroll-text-primary)" }}>What Happens Next</p>
+              <p className="text-sm font-bold mb-4" style={{ color: "var(--enroll-text-primary)" }}>{t("enrollment.whatHappensNext")}</p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {[
-                  { icon: "📅", title: "Contributions Start", desc: "Deductions begin on the first payroll cycle following the 15th of next month." },
-                  { icon: "🕐", title: "Processing Time", desc: "Takes 1–2 pay periods to reflect on your pay stub." },
-                  { icon: "⚙", title: "Modify Anytime", desc: "Change your contribution rate or investment elections at any time." },
-                ].map(({ icon, title, desc }) => (
+                  { icon: "📅", titleKey: "enrollment.contributionsStart", descKey: "enrollment.contributionsStartDesc" },
+                  { icon: "🕐", titleKey: "enrollment.processingTime", descKey: "enrollment.processingTimeDesc" },
+                  { icon: "⚙", titleKey: "enrollment.modifyAnytime", descKey: "enrollment.modifyAnytimeDesc" },
+                ].map(({ icon, titleKey, descKey }) => (
                   <div
-                    key={title}
+                    key={titleKey}
                     className="flex gap-3 p-3 rounded-xl"
                     style={{ background: "var(--enroll-soft-bg)", border: "1px solid var(--enroll-card-border)" }}
                   >
                     <span className="text-lg shrink-0">{icon}</span>
                     <div>
-                      <p className="text-xs font-bold" style={{ color: "var(--enroll-text-primary)" }}>{title}</p>
-                      <p className="text-[11px] mt-0.5" style={{ color: "var(--enroll-text-muted)" }}>{desc}</p>
+                      <p className="text-xs font-bold" style={{ color: "var(--enroll-text-primary)" }}>{t(titleKey)}</p>
+                      <p className="text-[11px] mt-0.5" style={{ color: "var(--enroll-text-muted)" }}>{t(descKey)}</p>
                     </div>
                   </div>
                 ))}
@@ -647,25 +656,25 @@ export const Review = () => {
             <div className="flex flex-wrap gap-3">
               {[
                 {
-                  label: "Download Summary",
+                  labelKey: "enrollment.downloadSummary",
                   onClick: handleDownloadPDF,
                   icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>,
                 },
                 {
-                  label: "Email Summary",
+                  labelKey: "enrollment.emailSummary",
                   onClick: handleEmailSummary,
                   icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg>,
                 },
-              ].map(({ label, onClick, icon }) => (
+              ].map(({ labelKey, onClick, icon }) => (
                 <button
-                  key={label}
+                  key={labelKey}
                   type="button"
                   onClick={onClick}
                   className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-xl border-none cursor-pointer transition-colors"
                   style={{ background: "var(--enroll-soft-bg)", color: "var(--enroll-text-secondary)", border: "1px solid var(--enroll-card-border)" }}
                 >
                   {icon}
-                  {label}
+                  {t(labelKey)}
                 </button>
               ))}
             </div>
@@ -683,11 +692,11 @@ export const Review = () => {
               {/* Allocation Summary */}
               <div className="p-6" style={cardStyle}>
                 <p className="text-[10px] font-bold uppercase tracking-widest mb-4" style={{ color: "var(--enroll-text-muted)" }}>
-                  Allocation Summary
+                  {t("enrollment.allocationSummary")}
                 </p>
                 <AllocationChart
                   allocations={investment.chartAllocations}
-                  centerLabel="Total"
+                  centerLabel={t("enrollment.totalLabel")}
                   centerValue={totalAllocation.toFixed(0)}
                   showValidBadge={false}
                   isValid={isAllocationValid}
@@ -696,9 +705,9 @@ export const Review = () => {
                 {/* Risk spectrum */}
                 <div className="mt-5 space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs" style={{ color: "var(--enroll-text-muted)" }}>Risk Profile</span>
+                    <span className="text-xs" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.riskProfile")}</span>
                     <span className="text-xs font-bold" style={{ color: getRiskColor(weightedSummary.riskLevel ?? 0) }}>
-                      {formatRiskLevel(weightedSummary.riskLevel ?? 0)}
+                      {t(RISK_LABEL_KEYS[formatRiskLevel(weightedSummary.riskLevel ?? 0)])}
                     </span>
                   </div>
                   <div className="h-2 w-full rounded-full overflow-hidden" style={{ background: "var(--enroll-card-border)" }}>
@@ -712,19 +721,19 @@ export const Review = () => {
                   </div>
                   <p className="text-[11px] leading-relaxed" style={{ color: "var(--enroll-text-muted)" }}>
                     {(weightedSummary.riskLevel ?? 0) < 5
-                      ? "Your portfolio favors stability with measured growth potential."
-                      : "Your portfolio is positioned for higher growth with greater market exposure."}
+                      ? t("enrollment.portfolioStability")
+                      : t("enrollment.portfolioGrowth")}
                   </p>
                 </div>
 
                 {/* Metrics */}
                 <div className="grid grid-cols-2 gap-3 mt-4">
                   <div className="rounded-xl p-3" style={{ background: "var(--enroll-soft-bg)" }}>
-                    <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>Return</p>
+                    <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.return")}</p>
                     <p className="text-base font-bold mt-0.5" style={{ color: "var(--enroll-brand)" }}>{(weightedSummary.expectedReturn ?? 0).toFixed(1)}%</p>
                   </div>
                   <div className="rounded-xl p-3" style={{ background: "var(--enroll-soft-bg)" }}>
-                    <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>Fees</p>
+                    <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.fees")}</p>
                     <p className="text-base font-bold mt-0.5" style={{ color: "var(--enroll-text-primary)" }}>{(weightedSummary.totalFees ?? 0).toFixed(2)}%</p>
                   </div>
                 </div>
@@ -739,7 +748,7 @@ export const Review = () => {
                   >
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.912 5.813a2 2 0 001.275 1.275L21 12l-5.813 1.912a2 2 0 00-1.275 1.275L12 21l-1.912-5.813a2 2 0 00-1.275-1.275L3 12l5.813-1.912a2 2 0 001.275-1.275L12 3z" /></svg>
                   </div>
-                  <p className="text-xs font-bold" style={{ color: "var(--enroll-text-primary)" }}>AI Insights</p>
+                  <p className="text-xs font-bold" style={{ color: "var(--enroll-text-primary)" }}>{t("enrollment.aiInsights")}</p>
                 </div>
 
                 <div className="space-y-2">
@@ -786,7 +795,7 @@ export const Review = () => {
                                   className="w-full text-xs font-semibold py-2 rounded-lg border-none cursor-pointer transition-colors"
                                   style={{ background: "var(--enroll-brand)", color: "white" }}
                                 >
-                                  Apply Suggestion
+                                  {t("enrollment.applySuggestion")}
                                 </button>
                               </div>
                             </motion.div>
@@ -796,7 +805,7 @@ export const Review = () => {
                     );
                   })}
                 </div>
-                <p className="text-[10px] mt-3" style={{ color: "var(--enroll-text-muted)" }}>Insights generated from your plan data.</p>
+                <p className="text-[10px] mt-3" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.insightsFromPlanData")}</p>
               </div>
 
               {/* Activation CTA */}
@@ -823,12 +832,12 @@ export const Review = () => {
                     boxShadow: canEnroll ? "0 4px 12px rgb(var(--enroll-brand-rgb) / 0.25)" : "none",
                   }}
                 >
-                  Activate My Plan
+                  {t("enrollment.activateMyPlan")}
                 </button>
                 <p className="text-[11px] text-center mt-2.5 leading-relaxed" style={{ color: "var(--enroll-text-muted)" }}>
                   {canEnroll
-                    ? "Your contributions will begin with your next paycheck."
-                    : "Complete all sections and accept terms to activate."}
+                    ? t("enrollment.contributionsBeginNextPaycheck")
+                    : t("enrollment.completeAllSections")}
                 </p>
               </motion.div>
             </div>
@@ -837,10 +846,10 @@ export const Review = () => {
 
         <EnrollmentFooter
           step={4}
-          primaryLabel="Activate My Plan"
+          primaryLabel={t("enrollment.activateMyPlan")}
           primaryDisabled={!canEnroll}
           onPrimary={() => { if (canEnroll) setShowSuccessModal(true); }}
-          summaryText={!isAllocationValid ? "Allocation must total 100%" : "Ready to submit"}
+          summaryText={!isAllocationValid ? t("enrollment.allocationMustTotal") : t("enrollment.readyToSubmit")}
           summaryError={!isAllocationValid}
           getDraftSnapshot={() => ({ investment: investment.getInvestmentSnapshot() })}
         />

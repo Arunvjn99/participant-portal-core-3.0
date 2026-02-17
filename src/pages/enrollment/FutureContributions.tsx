@@ -1,5 +1,6 @@
 import { useMemo, useState, useCallback, useEffect, useRef } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEnrollment } from "../../enrollment/context/EnrollmentContext";
 import { EnrollmentFooter } from "../../components/enrollment/EnrollmentFooter";
@@ -60,6 +61,7 @@ const formatCurrency = (n: number) =>
    MAIN PAGE COMPONENT
    ═══════════════════════════════════════════════════════════ */
 export const FutureContributions = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { state, setAutoIncrease, setContributionAmount } = useEnrollment();
   const [increaseViewMode, setIncreaseViewMode] = useState<"percent" | "dollar">("percent");
@@ -193,8 +195,8 @@ export const FutureContributions = () => {
   return (
     <>
       <EnrollmentPageContent
-        title="Let your savings grow automatically."
-        subtitle="Small increases each year can create significant long-term impact."
+        title={t("enrollment.futureContributionsTitle")}
+        subtitle={t("enrollment.futureContributionsSubtitle")}
         badge={
           ai.enabled ? (
             <motion.span
@@ -204,7 +206,7 @@ export const FutureContributions = () => {
               style={{ background: "rgb(var(--enroll-accent-rgb) / 0.08)", color: "var(--enroll-accent)" }}
             >
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
-              Auto-Increase Active
+              {t("enrollment.autoIncreaseActive")}
             </motion.span>
           ) : null
         }
@@ -222,10 +224,10 @@ export const FutureContributions = () => {
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <h3 className="text-base font-bold" style={{ color: "var(--enroll-text-primary)" }}>
-                    Enable Auto-Increase
+                    {t("enrollment.enableAutoIncrease")}
                   </h3>
                   <p className="text-sm mt-1" style={{ color: "var(--enroll-text-secondary)" }}>
-                    Your contribution will increase slightly once per year. You can change this anytime.
+                    {t("enrollment.enableAutoIncreaseDesc")}
                   </p>
                 </div>
                 <button
@@ -269,10 +271,10 @@ export const FutureContributions = () => {
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z" /><line x1="9" y1="21" x2="15" y2="21" /></svg>
                       </div>
                       <p className="text-sm leading-relaxed" style={{ color: "var(--enroll-text-secondary)" }}>
-                        With a {ai.percentage}% annual increase, you could accumulate{" "}
+                        {t("enrollment.withAnnualIncrease", { percent: ai.percentage })}{" "}
                         <strong style={{ color: "var(--enroll-accent)" }}>{deltaPct > 0 ? `${Math.round(deltaPct)}%` : "—"} more</strong>{" "}
-                        by age {retirementAge}. That's an additional{" "}
-                        <strong style={{ color: "var(--enroll-accent)" }}>{formatCurrency(delta)}</strong> toward your retirement.
+                        {t("enrollment.moreByAge", { age: retirementAge })}{" "}
+                        <strong style={{ color: "var(--enroll-accent)" }}>{formatCurrency(delta)}</strong> {t("enrollment.additionalTowardRetirement")}
                       </p>
                     </div>
                   </motion.div>
@@ -283,14 +285,14 @@ export const FutureContributions = () => {
             {/* Contribution inputs */}
             <div className="p-6" style={cardStyle}>
               <p className="text-[10px] font-bold uppercase tracking-widest mb-3" style={{ color: "var(--enroll-text-muted)" }}>
-                Current Contribution
+                {t("enrollment.currentContribution")}
               </p>
               <div className="grid grid-cols-2 gap-3">
                 <div
                   className="rounded-xl p-3"
                   style={{ background: "var(--enroll-soft-bg)", border: "1px solid var(--enroll-card-border)" }}
                 >
-                  <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>Percentage</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.percentage")}</p>
                   <div className="flex items-baseline gap-1 mt-1">
                     <input
                       type="number"
@@ -309,7 +311,7 @@ export const FutureContributions = () => {
                   className="rounded-xl p-3"
                   style={{ background: "var(--enroll-soft-bg)", border: "1px solid var(--enroll-card-border)" }}
                 >
-                  <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>Per Paycheck</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.perPaycheck")}</p>
                   <div className="flex items-baseline gap-1 mt-1">
                     <span className="text-sm font-semibold" style={{ color: "var(--enroll-text-muted)" }}>$</span>
                     <input
@@ -340,12 +342,13 @@ export const FutureContributions = () => {
                   {/* Increment cycle */}
                   <div>
                     <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: "var(--enroll-text-muted)" }}>
-                      Increment Cycle
+                      {t("enrollment.incrementCycle")}
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {(["calendar_year", "plan_enroll_date", "plan_year"] as IncrementCycle[]).map((cycle) => {
                         const isActive = ai.incrementCycle === cycle;
-                        const label = cycle === "calendar_year" ? "Calendar Year" : cycle === "plan_enroll_date" ? "Plan Enroll Date" : "Plan Year";
+                        const labelKey = cycle === "calendar_year" ? "enrollment.calendarYear" : cycle === "plan_enroll_date" ? "enrollment.planEnrollDate" : "enrollment.planYear";
+                        const label = t(labelKey);
                         return (
                           <button
                             key={cycle}
@@ -369,7 +372,7 @@ export const FutureContributions = () => {
                   <div>
                     <div className="flex items-center justify-between mb-3">
                       <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "var(--enroll-text-muted)" }}>
-                        Annual Increase per Source
+                        {t("enrollment.annualIncreasePerSource")}
                       </p>
                       <div
                         className="inline-flex rounded-lg overflow-hidden"
@@ -394,10 +397,11 @@ export const FutureContributions = () => {
 
                     <div className="space-y-2">
                       {[
-                        { key: "preTax" as const, label: "Pre-tax", value: ai.preTaxIncrease ?? 0 },
-                        { key: "roth" as const, label: "Roth", value: ai.rothIncrease ?? 0 },
-                        { key: "afterTax" as const, label: "After-tax", value: ai.afterTaxIncrease ?? 0 },
-                      ].map(({ key, label, value }) => {
+                        { key: "preTax" as const, labelKey: "enrollment.preTax", value: ai.preTaxIncrease ?? 0 },
+                        { key: "roth" as const, labelKey: "enrollment.roth", value: ai.rothIncrease ?? 0 },
+                        { key: "afterTax" as const, labelKey: "enrollment.afterTax", value: ai.afterTaxIncrease ?? 0 },
+                      ].map(({ key, labelKey, value }) => {
+                        const label = t(labelKey);
                         const dollarPerPaycheck =
                           increaseViewMode === "dollar" && salary > 0 && value > 0
                             ? (salary * (value / 100)) / PAYCHECKS_PER_YEAR
@@ -466,7 +470,7 @@ export const FutureContributions = () => {
               {/* Before vs After projection */}
               <div className="p-6" style={cardStyle}>
                 <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: "var(--enroll-text-muted)" }}>
-                  Projected at Age {retirementAge}
+                  {t("enrollment.projectedAtAge", { age: retirementAge })}
                 </p>
 
                 <div className="flex items-end gap-2 mb-1">
@@ -483,7 +487,7 @@ export const FutureContributions = () => {
                       style={{ background: "rgb(var(--enroll-accent-rgb) / 0.08)", color: "var(--enroll-accent)" }}
                     >
                       <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M12 19V5M5 12l7-7 7 7" /></svg>
-                      +{formatCurrency(delta)} more with auto-increase
+                      {t("enrollment.moreWithAutoIncrease", { amount: formatCurrency(delta) })}
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -500,43 +504,43 @@ export const FutureContributions = () => {
                 <div className="flex items-center gap-4 mt-3">
                   <span className="flex items-center gap-1.5 text-[11px]" style={{ color: "var(--enroll-text-muted)" }}>
                     <span className="w-2.5 h-0.5 rounded-full" style={{ background: "var(--enroll-brand)" }} />
-                    Without
+                    {t("enrollment.without")}
                   </span>
                   <span className="flex items-center gap-1.5 text-[11px]" style={{ color: "var(--enroll-text-muted)" }}>
                     <span className="w-2.5 h-0.5 rounded-full" style={{ background: "var(--enroll-accent)" }} />
-                    With auto-increase
+                    {t("enrollment.withAutoIncrease")}
                   </span>
                 </div>
 
                 <p className="text-[10px] mt-2" style={{ color: "var(--enroll-text-muted)" }}>
-                  Assumes {state.assumptions.annualReturnRate}% annual return. Actual results may vary.
+                  {t("enrollment.assumesReturn", { rate: state.assumptions.annualReturnRate })}
                 </p>
               </div>
 
               {/* Paycheck impact */}
               <div className="p-5" style={cardStyle}>
                 <p className="text-[10px] font-bold uppercase tracking-widest mb-3" style={{ color: "var(--enroll-text-muted)" }}>
-                  Paycheck Impact
+                  {t("enrollment.paycheckImpact")}
                 </p>
                 <div className="grid grid-cols-2 gap-3">
                   <div
                     className="rounded-xl p-3 text-center"
                     style={{ background: "rgb(var(--enroll-brand-rgb) / 0.06)", border: "1px solid rgb(var(--enroll-brand-rgb) / 0.12)" }}
                   >
-                    <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>Rate</p>
+                    <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.rate")}</p>
                     <p className="text-lg font-bold mt-0.5" style={{ color: "var(--enroll-brand)" }}>{Math.round(contributionPct)}%</p>
                   </div>
                   <div
                     className="rounded-xl p-3 text-center"
                     style={{ background: "rgb(var(--enroll-brand-rgb) / 0.06)", border: "1px solid rgb(var(--enroll-brand-rgb) / 0.12)" }}
                   >
-                    <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>Per Check</p>
+                    <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.perCheck")}</p>
                     <p className="text-lg font-bold mt-0.5" style={{ color: "var(--enroll-brand)" }}>{formatCurrency(perPaycheck)}</p>
                   </div>
                 </div>
                 <p className="flex items-center gap-1.5 text-[10px] mt-3" style={{ color: "var(--enroll-text-muted)" }}>
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" /></svg>
-                  Based on {formatCurrency(salary)} annual salary.
+                  {t("enrollment.basedOnSalary", { amount: formatCurrency(salary) })}
                 </p>
               </div>
             </div>
@@ -545,9 +549,9 @@ export const FutureContributions = () => {
 
         <EnrollmentFooter
           step={2}
-          primaryLabel="Continue to Investment Election"
+          primaryLabel={t("enrollment.continueToInvestmentElection")}
           onPrimary={handleContinue}
-          summaryText={`Projected balance at age ${retirementAge}: ${formatCurrency(autoEnd)}`}
+          summaryText={t("enrollment.summaryProjected", { age: retirementAge, amount: formatCurrency(autoEnd) })}
         />
       </EnrollmentPageContent>
 
@@ -591,10 +595,11 @@ function ProjectionChart({
   baseline: ProjectionDataPoint[];
   withAutoIncrease: ProjectionDataPoint[] | null;
 }) {
+  const { t } = useTranslation();
   const [tooltip, setTooltip] = useState<{ index: number; x: number; y: number } | null>(null);
 
   if (baseline.length === 0) {
-    return <div className="text-xs text-center py-8" style={{ color: "var(--enroll-text-muted)" }}>No projection data</div>;
+    return <div className="text-xs text-center py-8" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.noProjectionData")}</div>;
   }
 
   const maxBalance = Math.max(

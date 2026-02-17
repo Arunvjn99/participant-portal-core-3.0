@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ChevronDown, ChevronUp, CheckCircle2 } from "lucide-react";
 import { TransactionStepCard } from "../../../../../components/transactions/TransactionStepCard";
 import { RetirementImpact } from "../../../../../components/transactions/RetirementImpact";
@@ -13,6 +14,7 @@ const formatCurrency = (n: number) =>
 const INITIAL_AMORT_ROWS = 12;
 
 export const ReviewStep = ({ transaction, initialData, onDataChange, readOnly }: TransactionStepProps) => {
+  const { t } = useTranslation();
   const isReadOnly = readOnly || transaction.status !== "draft";
   const amount = initialData?.amount ?? DEFAULT_LOAN_PLAN_CONFIG.minLoanAmount;
   const tenureYears = initialData?.tenureYears ?? DEFAULT_LOAN_PLAN_CONFIG.termYearsMax;
@@ -46,37 +48,37 @@ export const ReviewStep = ({ transaction, initialData, onDataChange, readOnly }:
   const impactLevel = amount <= 10000 ? "low" : amount <= 25000 ? "medium" : "high";
   const impactRationale =
     impactLevel === "low"
-      ? "This loan amount has minimal impact on your projected retirement balance. Repayments will replenish your account over the term."
+      ? t("transactions.loan.impactLow")
       : impactLevel === "medium"
-        ? "This loan reduces invested balance during the term. Repayments will restore growth; consider keeping tenure as short as comfortable."
-        : "This loan uses a significant portion of your balance. Shorter tenure will help restore growth sooner.";
+        ? t("transactions.loan.impactMedium")
+        : t("transactions.loan.impactHigh");
 
   const timelineSteps = [
-    { label: "Application received", detail: "We’ll review your request and verify disbursement details." },
-    { label: "Disbursement", detail: paymentMethod === "EFT" ? "Funds sent to your bank (typically 2–3 business days)." : "Check mailed to your address on file (7–10 business days)." },
-    { label: "Repayment begins", detail: "First payment will be deducted per your selected frequency after disbursement." },
+    { label: t("transactions.loan.timelineReceived"), detail: t("transactions.loan.timelineReceivedDetail") },
+    { label: t("transactions.loan.timelineDisbursement"), detail: paymentMethod === "EFT" ? t("transactions.loan.timelineDisbursementEft") : t("transactions.loan.timelineDisbursementCheck") },
+    { label: t("transactions.loan.timelineRepayment"), detail: t("transactions.loan.timelineRepaymentDetail") },
   ];
 
   return (
     <div className="space-y-6">
-      <TransactionStepCard title={isReadOnly ? "Review & Confirm" : "Review & Submit"}>
+      <TransactionStepCard title={isReadOnly ? t("transactions.loan.reviewConfirm") : t("transactions.loan.reviewSubmit")}>
         <div className="space-y-6">
           {/* Loan summary */}
           <dl className="space-y-0">
             <div className="flex justify-between py-2 border-b" style={{ borderColor: "var(--enroll-card-border)" }}>
-              <dt style={{ color: "var(--enroll-text-secondary)" }}>Principal</dt>
+              <dt style={{ color: "var(--enroll-text-secondary)" }}>{t("transactions.loan.principal")}</dt>
               <dd className="font-semibold" style={{ color: "var(--enroll-text-primary)" }}>{formatCurrency(amount)}</dd>
             </div>
             <div className="flex justify-between py-2 border-b" style={{ borderColor: "var(--enroll-card-border)" }}>
-              <dt style={{ color: "var(--enroll-text-secondary)" }}>Origination fee</dt>
+              <dt style={{ color: "var(--enroll-text-secondary)" }}>{t("transactions.loan.originationFee")}</dt>
               <dd className="font-semibold" style={{ color: "var(--enroll-text-primary)" }}>{formatCurrency(amount * DEFAULT_LOAN_PLAN_CONFIG.originationFeePct)}</dd>
             </div>
             <div className="flex justify-between py-2 border-b" style={{ borderColor: "var(--enroll-card-border)" }}>
-              <dt style={{ color: "var(--enroll-text-secondary)" }}>Net disbursement</dt>
+              <dt style={{ color: "var(--enroll-text-secondary)" }}>{t("transactions.loan.netDisbursement")}</dt>
               <dd className="font-semibold" style={{ color: "var(--enroll-text-primary)" }}>{formatCurrency(calc.netDisbursement)}</dd>
             </div>
             <div className="flex justify-between py-2 border-b" style={{ borderColor: "var(--enroll-card-border)" }}>
-              <dt style={{ color: "var(--enroll-text-secondary)" }}>Payment ({frequency})</dt>
+              <dt style={{ color: "var(--enroll-text-secondary)" }}>{t("transactions.loan.payment")} ({frequency})</dt>
               <dd className="font-semibold" style={{ color: "var(--enroll-text-primary)" }}>{formatCurrency(calc.paymentPerPeriod)}</dd>
             </div>
             <div className="flex justify-between py-2">
@@ -87,7 +89,7 @@ export const ReviewStep = ({ transaction, initialData, onDataChange, readOnly }:
 
           {/* Full amortization table */}
           <div>
-            <p className="text-sm font-semibold mb-2" style={{ color: "var(--enroll-text-primary)" }}>Amortization schedule</p>
+            <p className="text-sm font-semibold mb-2" style={{ color: "var(--enroll-text-primary)" }}>{t("transactions.loan.amortizationSchedule")}</p>
             <div
               className="overflow-hidden rounded-[var(--radius-lg)] border"
               style={{
@@ -129,9 +131,9 @@ export const ReviewStep = ({ transaction, initialData, onDataChange, readOnly }:
                     aria-expanded={amortExpanded}
                   >
                     {amortExpanded ? (
-                      <>Show less <ChevronUp className="h-4 w-4 inline" /></>
+                      <>{t("transactions.loan.showLess")} <ChevronUp className="h-4 w-4 inline" /></>
                     ) : (
-                      <>Show more ({calc.amortizationSchedule.length - INITIAL_AMORT_ROWS} rows) <ChevronDown className="h-4 w-4 inline" /></>
+                      <>{t("transactions.loan.showMoreRows", { count: calc.amortizationSchedule.length - INITIAL_AMORT_ROWS })} <ChevronDown className="h-4 w-4 inline" /></>
                     )}
                   </button>
                 </div>
@@ -144,7 +146,7 @@ export const ReviewStep = ({ transaction, initialData, onDataChange, readOnly }:
 
           {/* What happens next */}
           <div>
-            <p className="text-sm font-semibold mb-3" style={{ color: "var(--enroll-text-primary)" }}>What happens next</p>
+            <p className="text-sm font-semibold mb-3" style={{ color: "var(--enroll-text-primary)" }}>{t("transactions.loan.whatHappensNext")}</p>
             <ul className="space-y-3">
               {timelineSteps.map((step, i) => (
                 <li key={i} className="flex gap-3">
@@ -172,7 +174,7 @@ export const ReviewStep = ({ transaction, initialData, onDataChange, readOnly }:
               }}
             >
               <p className="text-sm font-medium" style={{ color: "var(--enroll-text-primary)" }}>
-                Loan repayments are made with after-tax dollars. Interest is not tax-deductible.
+                {t("transactions.loan.taxNote")}
               </p>
             </div>
           )}
@@ -188,14 +190,14 @@ export const ReviewStep = ({ transaction, initialData, onDataChange, readOnly }:
               />
               <span className="text-sm flex items-center gap-2" style={{ color: "var(--enroll-text-secondary)" }}>
                 <CheckCircle2 className="h-4 w-4 shrink-0" style={{ color: "var(--color-success)" }} />
-                I confirm that I have reviewed all details and understand the terms of this loan.
+                {t("transactions.loan.confirmReviewDetails")}
               </span>
             </label>
           )}
 
           {isReadOnly && (
             <p className="text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
-              This transaction has been {transaction.status === "completed" ? "completed" : "submitted for processing"}.
+              {t("transactions.loan.submittedOrCompleted", { status: transaction.status === "completed" ? "completed" : "submitted for processing" })}
             </p>
           )}
         </div>

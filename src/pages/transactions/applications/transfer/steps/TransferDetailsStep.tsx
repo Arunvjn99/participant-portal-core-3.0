@@ -1,15 +1,17 @@
 import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { TransactionStepCard } from "../../../../../components/transactions/TransactionStepCard";
 import type { TransactionStepProps } from "../../../../../components/transactions/TransactionApplication";
 
 const INTENTS = [
-  { value: "Rebalance", label: "Rebalance to target" },
-  { value: "ReduceRisk", label: "Reduce risk" },
-  { value: "Growth", label: "Increase growth" },
-  { value: "Manual", label: "Manual allocation" },
+  { value: "Rebalance", labelKey: "transactions.transfer.intentRebalance" },
+  { value: "ReduceRisk", labelKey: "transactions.transfer.intentReduceRisk" },
+  { value: "Growth", labelKey: "transactions.transfer.intentGrowth" },
+  { value: "Manual", labelKey: "transactions.transfer.intentManual" },
 ] as const;
 
 export const TransferDetailsStep = ({ initialData, onDataChange }: TransactionStepProps) => {
+  const { t } = useTranslation();
   const intent = initialData?.intent ?? "Rebalance";
 
   const handleIntentChange = useCallback(
@@ -18,10 +20,10 @@ export const TransferDetailsStep = ({ initialData, onDataChange }: TransactionSt
   );
 
   return (
-    <TransactionStepCard title="Transfer Details">
+    <TransactionStepCard title={t("transactions.transfer.transferDetails")}>
       <div className="space-y-6">
         <p className="text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
-          Choose your reallocation intent. This helps us suggest an appropriate allocation.
+          {t("transactions.transfer.chooseIntent")}
         </p>
         <div className="space-y-2">
           {INTENTS.map((opt) => (
@@ -41,7 +43,7 @@ export const TransferDetailsStep = ({ initialData, onDataChange }: TransactionSt
                 onChange={() => handleIntentChange(opt.value)}
                 style={{ accentColor: "var(--enroll-brand)" }}
               />
-              <span className="font-medium" style={{ color: "var(--enroll-text-primary)" }}>{opt.label}</span>
+              <span className="font-medium" style={{ color: "var(--enroll-text-primary)" }}>{t(opt.labelKey)}</span>
             </label>
           ))}
         </div>

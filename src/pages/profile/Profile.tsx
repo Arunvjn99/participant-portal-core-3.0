@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { DashboardLayout } from "../../layouts/DashboardLayout";
 import { DashboardHeader } from "../../components/dashboard/DashboardHeader";
 import { DashboardCard } from "../../components/dashboard/DashboardCard";
@@ -22,20 +23,26 @@ export type ProfileSection =
   | "security-verification"
   | "documents-consents";
 
-interface ProfileSectionConfig {
-  id: ProfileSection;
-  label: string;
-}
+const PROFILE_SECTION_KEYS: Record<ProfileSection, string> = {
+  "personal-details": "profile.personalDetails",
+  "contact-information": "profile.contactInformation",
+  "employment-information": "profile.employmentInformation",
+  "employment-classification": "profile.employmentClassification",
+  "beneficiaries": "profile.beneficiaries",
+  "bank-details": "profile.bankDetails",
+  "security-verification": "profile.securityVerification",
+  "documents-consents": "profile.documentsConsents",
+};
 
-const PROFILE_SECTIONS: ProfileSectionConfig[] = [
-  { id: "personal-details", label: "Personal Details" },
-  { id: "contact-information", label: "Contact Information" },
-  { id: "employment-information", label: "Employment Information" },
-  { id: "employment-classification", label: "Employment Classification" },
-  { id: "beneficiaries", label: "Beneficiaries" },
-  { id: "bank-details", label: "Bank & Payment Details" },
-  { id: "security-verification", label: "Security & Verification" },
-  { id: "documents-consents", label: "Documents & Consents" },
+const PROFILE_SECTIONS: ProfileSection[] = [
+  "personal-details",
+  "contact-information",
+  "employment-information",
+  "employment-classification",
+  "beneficiaries",
+  "bank-details",
+  "security-verification",
+  "documents-consents",
 ];
 
 /**
@@ -43,16 +50,14 @@ const PROFILE_SECTIONS: ProfileSectionConfig[] = [
  * Supports view and controlled edit modes per section
  */
 export const Profile = () => {
+  const { t } = useTranslation();
   const [activeSection, setActiveSection] = useState<ProfileSection>("personal-details");
   const [profileData, setProfileData] = useState<ProfileData>(MOCK_PROFILE);
   const [editingSections, setEditingSections] = useState<Set<ProfileSection>>(new Set());
 
   const handleSectionChange = (section: ProfileSection) => {
-    // Cancel any active edits when switching sections
     if (editingSections.size > 0) {
-      const confirmCancel = window.confirm(
-        "You have unsaved changes. Are you sure you want to switch sections?"
-      );
+      const confirmCancel = window.confirm(t("profile.confirmSwitchSection"));
       if (!confirmCancel) return;
       setEditingSections(new Set());
     }
@@ -170,9 +175,9 @@ export const Profile = () => {
     <DashboardLayout header={<DashboardHeader />}>
       <div className="profile-page">
         <div className="profile-page__header">
-          <h1 className="profile-page__title">Profile</h1>
+          <h1 className="profile-page__title">{t("profile.pageTitle")}</h1>
           <p className="profile-page__description">
-            Manage your personal information, employment details, and account settings.
+            {t("profile.pageDescription")}
           </p>
         </div>
 
@@ -182,19 +187,19 @@ export const Profile = () => {
             <DashboardCard>
               <nav className="profile-navigation" aria-label="Profile sections">
                 <ul className="profile-navigation__list">
-                  {PROFILE_SECTIONS.map((section) => (
-                    <li key={section.id}>
+                  {PROFILE_SECTIONS.map((sectionId) => (
+                    <li key={sectionId}>
                       <button
                         type="button"
-                        onClick={() => handleSectionChange(section.id)}
+                        onClick={() => handleSectionChange(sectionId)}
                         className={`profile-navigation__item ${
-                          activeSection === section.id ? "profile-navigation__item--active" : ""
-                        } ${editingSections.has(section.id) ? "profile-navigation__item--editing" : ""}`}
-                        aria-current={activeSection === section.id ? "page" : undefined}
+                          activeSection === sectionId ? "profile-navigation__item--active" : ""
+                        } ${editingSections.has(sectionId) ? "profile-navigation__item--editing" : ""}`}
+                        aria-current={activeSection === sectionId ? "page" : undefined}
                       >
-                        <span className="profile-navigation__label">{section.label}</span>
-                        {editingSections.has(section.id) && (
-                          <span className="profile-navigation__indicator" aria-label="Editing">
+                        <span className="profile-navigation__label">{t(PROFILE_SECTION_KEYS[sectionId])}</span>
+                        {editingSections.has(sectionId) && (
+                          <span className="profile-navigation__indicator" aria-hidden>
                             •
                           </span>
                         )}

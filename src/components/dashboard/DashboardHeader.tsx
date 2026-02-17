@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { branding } from "../../config/branding";
 import LanguageSwitcher from "@/components/common/LanguageSwitcher";
 import ThemeToggle from "@/components/ui/ThemeToggle";
@@ -10,15 +11,15 @@ import { SCENARIO_LABELS } from "@/mock/personas";
 
 /**
  * Build nav links dynamically — "Dashboard" points to /demo when a demo
- * persona is active, otherwise to /dashboard.
+ * persona is active, otherwise to /dashboard. labelKey is the i18n key.
  */
 function getNavLinks(isDemoMode: boolean) {
   return [
-    { to: isDemoMode ? "/demo" : "/dashboard", label: "Dashboard" },
-    { to: "/enrollment", label: "Enrollment" },
-    { to: "/profile", label: "Profile" },
-    { to: "/transactions", label: "Transactions" },
-    { to: "#", label: "Account Statements" },
+    { to: isDemoMode ? "/demo" : "/dashboard", labelKey: "nav.dashboard" as const },
+    { to: "/enrollment", labelKey: "nav.enrollment" as const },
+    { to: "/profile", labelKey: "nav.profile" as const },
+    { to: "/transactions", labelKey: "nav.transactions" as const },
+    { to: "#", labelKey: "nav.accountStatements" as const },
   ] as const;
 }
 
@@ -68,6 +69,7 @@ const ICON_BTN =
 /* ──────────────────────────── Component ──────────────────────────────── */
 
 export const DashboardHeader = () => {
+  const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -140,11 +142,11 @@ export const DashboardHeader = () => {
           className="hidden lg:flex items-center gap-1"
           aria-label="Main navigation"
         >
-          {NAV_LINKS.map(({ to, label }) => {
+          {NAV_LINKS.map(({ to, labelKey }) => {
             const active = isActive(to);
             return (
               <Link
-                key={label}
+                key={labelKey}
                 to={to}
                 className={`relative px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors ${
                   active
@@ -152,7 +154,7 @@ export const DashboardHeader = () => {
                     : "text-slate-500 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800"
                 }`}
               >
-                {label}
+                {t(labelKey)}
                 {active && (
                   <span
                     className="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 w-8 rounded-full bg-[#0b5fff]"
@@ -219,7 +221,7 @@ export const DashboardHeader = () => {
                   role="menuitem"
                   onClick={() => setUserMenuOpen(false)}
                 >
-                  Profile
+                  {t("nav.profile")}
                 </Link>
                 <button
                   type="button"
@@ -227,7 +229,7 @@ export const DashboardHeader = () => {
                   role="menuitem"
                   onClick={handleLogout}
                 >
-                  Log out
+                  {t("nav.logOut")}
                 </button>
               </div>
             )}
@@ -255,10 +257,10 @@ export const DashboardHeader = () => {
       >
         <nav className="px-4 sm:px-6 py-3">
           <ul className="flex flex-col gap-0.5">
-            {NAV_LINKS.map(({ to, label }) => {
+            {NAV_LINKS.map(({ to, labelKey }) => {
               const active = isActive(to);
               return (
-                <li key={label}>
+                <li key={labelKey}>
                   <Link
                     to={to}
                     className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
@@ -268,7 +270,7 @@ export const DashboardHeader = () => {
                     }`}
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    {label}
+                    {t(labelKey)}
                   </Link>
                 </li>
               );
@@ -279,7 +281,7 @@ export const DashboardHeader = () => {
                 className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-slate-600 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800"
                 onClick={handleLogout}
               >
-                Log out
+                {t("nav.logOut")}
               </button>
             </li>
           </ul>

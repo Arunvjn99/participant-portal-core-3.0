@@ -1,8 +1,10 @@
 import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { TransactionStepCard } from "../../../../../components/transactions/TransactionStepCard";
 import type { TransactionStepProps } from "../../../../../components/transactions/TransactionApplication";
 
 export const TransferReviewStep = ({ transaction, initialData, onDataChange, readOnly }: TransactionStepProps) => {
+  const { t } = useTranslation();
   const isReadOnly = readOnly || transaction.status !== "draft";
   const intent = initialData?.intent ?? "Rebalance";
   const confirmationAccepted = initialData?.confirmationAccepted ?? false;
@@ -13,16 +15,16 @@ export const TransferReviewStep = ({ transaction, initialData, onDataChange, rea
   );
 
   return (
-    <TransactionStepCard title={isReadOnly ? "Review & Confirm" : "Review & Submit"}>
+    <TransactionStepCard title={isReadOnly ? t("transactions.loan.reviewConfirm") : t("transactions.loan.reviewSubmit")}>
       <div className="space-y-6">
         <dl className="space-y-3">
           <div className="flex justify-between py-2 border-b" style={{ borderColor: "var(--enroll-card-border)" }}>
-            <dt style={{ color: "var(--enroll-text-secondary)" }}>Intent</dt>
+            <dt style={{ color: "var(--enroll-text-secondary)" }}>{t("transactions.transfer.intent")}</dt>
             <dd className="font-semibold" style={{ color: "var(--enroll-text-primary)" }}>{intent}</dd>
           </div>
           <div className="flex justify-between py-2" style={{ borderColor: "var(--enroll-card-border)" }}>
-            <dt style={{ color: "var(--enroll-text-secondary)" }}>Effective</dt>
-            <dd className="font-semibold" style={{ color: "var(--enroll-text-primary)" }}>Next market close (4:00 PM ET)</dd>
+            <dt style={{ color: "var(--enroll-text-secondary)" }}>{t("transactions.transfer.effective")}</dt>
+            <dd className="font-semibold" style={{ color: "var(--enroll-text-primary)" }}>{t("transactions.transfer.effectiveNextClose")}</dd>
           </div>
         </dl>
         {!isReadOnly && (
@@ -35,13 +37,15 @@ export const TransferReviewStep = ({ transaction, initialData, onDataChange, rea
               style={{ accentColor: "var(--enroll-brand)" }}
             />
             <span className="text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
-              I understand that reallocation will take effect at the next market close.
+              {t("transactions.transfer.understandNextClose")}
             </span>
           </label>
         )}
         {isReadOnly && (
           <p className="text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
-            This transaction has been {transaction.status === "completed" ? "completed" : "submitted for processing"}.
+            {t("transactions.loan.submittedOrCompleted", {
+              status: transaction.status === "completed" ? t("transactions.placeholder.statusCompleted") : t("transactions.placeholder.statusSubmitted"),
+            })}
           </p>
         )}
       </div>

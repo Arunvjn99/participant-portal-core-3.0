@@ -1,16 +1,17 @@
 import { MessageCircle, Calendar } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { ADVISORS } from "./constants";
 
 export const AdvisorSection = () => {
+  const { t } = useTranslation();
   return (
     <section className="py-8 sm:py-12 md:py-16 lg:py-20 bg-white dark:bg-slate-900/50 border-t border-slate-100 dark:border-slate-800 w-full rounded-2xl min-w-0 overflow-hidden px-4 sm:px-6 md:px-8">
       <div className="text-center max-w-2xl mx-auto mb-6 sm:mb-8 md:mb-12">
         <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-slate-900 dark:text-slate-100 mb-2 sm:mb-3 md:mb-4">
-          Need guidance? Real people are here.
+          {t("preEnrollment.needGuidance")}
         </h2>
         <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base md:text-lg">
-          Robots are great for math, but sometimes you just need to talk to a human.
-          Our team is non-commissioned and here to help.
+          {t("preEnrollment.needGuidanceSubtitle")}
         </p>
       </div>
 
@@ -41,14 +42,14 @@ export const AdvisorSection = () => {
                   className="flex-1 py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 font-medium text-xs sm:text-sm hover:border-brand-300 dark:hover:border-brand-600 hover:text-brand-600 dark:hover:text-brand-300 transition-colors flex items-center justify-center gap-1.5 sm:gap-2"
                 >
                   <MessageCircle size={14} className="sm:w-4 sm:h-4" />
-                  Chat
+                  {t("preEnrollment.chat")}
                 </button>
                 <button
                   type="button"
                   className="flex-1 py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl sm:rounded-2xl bg-primary text-white font-medium text-xs sm:text-sm hover:bg-primary-hover transition-colors flex items-center justify-center gap-1.5 sm:gap-2 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-slate-800"
                 >
                   <Calendar size={14} className="sm:w-4 sm:h-4" />
-                  Book
+                  {t("preEnrollment.book")}
                 </button>
               </div>
             </div>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { DashboardLayout } from "../../../layouts/DashboardLayout";
 import { DashboardHeader } from "../../../components/dashboard/DashboardHeader";
 import { DashboardCard } from "../../../components/dashboard/DashboardCard";
@@ -18,6 +19,7 @@ interface BaseApplicationProps {
  * Handles draft creation, routing, stepper, and common layout
  */
 export const BaseApplication = ({ transactionType, children }: BaseApplicationProps) => {
+  const { t } = useTranslation();
   const { transactionId } = useParams<{ transactionId: string }>();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
@@ -35,7 +37,7 @@ export const BaseApplication = ({ transactionType, children }: BaseApplicationPr
     return (
       <DashboardLayout header={<DashboardHeader />}>
         <DashboardCard>
-          <p>Transaction not found.</p>
+          <p>{t("transactions.transactionNotFound")}</p>
         </DashboardCard>
       </DashboardLayout>
     );
@@ -72,12 +74,12 @@ export const BaseApplication = ({ transactionType, children }: BaseApplicationPr
             type="button"
             onClick={() => navigate("/transactions")}
             className="transaction-application__back-button"
-            aria-label="Back to transactions"
+            aria-label={t("transactions.backToTransactions")}
           >
-            ← Back to Transactions
+            ← {t("transactions.backToTransactions")}
           </button>
           <h1 className="transaction-application__title">
-            {getTransactionTypeLabel(transactionType)} Application
+            {getTransactionTypeLabel(transactionType, t)} {t("transactions.application")}
           </h1>
         </div>
 
@@ -85,7 +87,7 @@ export const BaseApplication = ({ transactionType, children }: BaseApplicationPr
           <EnrollmentStepper
             currentStep={currentStep}
             totalSteps={totalSteps}
-            stepLabels={getStepLabels(transactionType)}
+            stepLabels={getStepLabels(transactionType).map((key) => t(key))}
           />
         </div>
 
@@ -100,7 +102,7 @@ export const BaseApplication = ({ transactionType, children }: BaseApplicationPr
             disabled={currentStep === 0}
             className="transaction-application__button transaction-application__button--back"
           >
-            Back
+            {t("transactions.back")}
           </button>
           <div className="transaction-application__footer-actions">
             <button
@@ -108,14 +110,14 @@ export const BaseApplication = ({ transactionType, children }: BaseApplicationPr
               onClick={handleSaveAndExit}
               className="transaction-application__button transaction-application__button--save"
             >
-              Save & Exit
+              {t("transactions.saveAndExit")}
             </button>
             <button
               type="button"
               onClick={handleNext}
               className="transaction-application__button transaction-application__button--next"
             >
-              {isLastStep ? "Submit" : "Next"}
+              {isLastStep ? t("transactions.submit") : t("transactions.next")}
             </button>
           </div>
         </div>
@@ -124,21 +126,21 @@ export const BaseApplication = ({ transactionType, children }: BaseApplicationPr
   );
 };
 
-const getTransactionTypeLabel = (type: TransactionType): string => {
+const getTransactionTypeLabel = (type: TransactionType, t: (key: string) => string): string => {
   switch (type) {
     case "loan":
-      return "401(k) Loan";
+      return t("transactions.loanApplication");
     case "withdrawal":
-      return "Hardship Withdrawal";
+      return t("transactions.withdrawalApplication");
     case "distribution":
-      return "Distribution";
+      return t("transactions.distributionApplication");
     case "rollover":
-      return "Rollover";
+      return t("transactions.rolloverApplication");
     case "transfer":
-      return "Transfer Investments";
+      return t("transactions.transferApplication");
     case "rebalance":
-      return "Rebalance Portfolio";
+      return t("transactions.rebalanceApplication");
     default:
-      return "Transaction";
+      return t("transactions.application");
   }
 };

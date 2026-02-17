@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { DashboardLayout } from "../../layouts/DashboardLayout";
 import { DashboardHeader } from "../../components/dashboard/DashboardHeader";
@@ -12,6 +13,7 @@ interface InvestmentsLayoutProps {
 }
 
 export default function InvestmentsLayout({ children }: InvestmentsLayoutProps) {
+  const { t } = useTranslation();
   const { pathname } = useLocation();
   const isEnrollmentFlow = pathname === "/enrollment/investments" || pathname.startsWith("/enrollment/investments/");
 
@@ -19,7 +21,7 @@ export default function InvestmentsLayout({ children }: InvestmentsLayoutProps) 
     <div style={{ background: "var(--enroll-bg)" }} className="w-full min-h-screen pb-28">
       {!isEnrollmentFlow && (
         <div className="enrollment-stepper-section investments-layout__stepper">
-          <EnrollmentStepper currentStep={3} title="Investment Elections" subtitle="Choose how your contributions are invested." />
+          <EnrollmentStepper currentStep={3} title={t("enrollment.investmentElectionsTitle")} subtitle={t("enrollment.investmentElectionsSubtitle")} />
         </div>
       )}
 
@@ -35,13 +37,13 @@ export default function InvestmentsLayout({ children }: InvestmentsLayoutProps) 
             className="text-[28px] md:text-[32px] font-bold leading-tight"
             style={{ color: "var(--enroll-text-primary)" }}
           >
-            Build Your Investment Strategy
+            {t("enrollment.buildYourStrategy")}
           </h1>
           <p
             className="mt-1.5 text-base"
             style={{ color: "var(--enroll-text-secondary)" }}
           >
-            Balance growth and stability based on your risk comfort.
+            {t("enrollment.balanceGrowthStability")}
           </p>
         </motion.header>
 

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { DashboardCard } from "../dashboard/DashboardCard";
 import type { TransactionStepProps } from "./TransactionApplication";
 import { getStepLabels } from "../../config/transactionSteps";
@@ -7,53 +8,55 @@ import { getStepLabels } from "../../config/transactionSteps";
  * Used for transaction types that don't have specific step components yet
  */
 export const PlaceholderStep = ({ transaction, currentStep, readOnly, onDataChange }: TransactionStepProps) => {
+  const { t } = useTranslation();
   const stepLabels = getStepLabels(transaction.type);
-  const stepLabel = stepLabels[currentStep] || `Step ${currentStep + 1}`;
+  const stepLabelKey = stepLabels[currentStep];
+  const stepLabel = stepLabelKey ? t(stepLabelKey) : t("transactions.placeholder.stepN", { n: currentStep + 1 });
 
   const getPlaceholderContent = () => {
     switch (transaction.type) {
       case "withdrawal":
         return currentStep === 0
-          ? "Withdrawal application eligibility check will be implemented here."
+          ? t("transactions.placeholder.withdrawalEligibility")
           : currentStep === 1
-            ? "Withdrawal amount selection will be implemented here."
+            ? t("transactions.placeholder.withdrawalAmount")
             : currentStep === 2
-              ? "Tax information and withholding options will be implemented here."
-              : "Review your withdrawal details and submit your application.";
+              ? t("transactions.placeholder.withdrawalTax")
+              : t("transactions.placeholder.withdrawalReview");
       case "distribution":
         return currentStep === 0
-          ? "Distribution application eligibility check will be implemented here."
+          ? t("transactions.placeholder.distributionEligibility")
           : currentStep === 1
-            ? "Distribution amount selection will be implemented here."
+            ? t("transactions.placeholder.distributionAmount")
             : currentStep === 2
-              ? "Tax withholding options will be implemented here."
-              : "Review your distribution details and submit your application.";
+              ? t("transactions.placeholder.distributionTax")
+              : t("transactions.placeholder.distributionReview");
       case "rollover":
         return currentStep === 0
-          ? "Rollover application eligibility check will be implemented here."
+          ? t("transactions.placeholder.rolloverEligibility")
           : currentStep === 1
-            ? "Rollover amount selection will be implemented here."
+            ? t("transactions.placeholder.rolloverAmount")
             : currentStep === 2
-              ? "Destination account selection will be implemented here."
-              : "Review your rollover details and submit your application.";
+              ? t("transactions.placeholder.rolloverDestination")
+              : t("transactions.placeholder.rolloverReview");
       case "transfer":
         return currentStep === 0
-          ? "Transfer application eligibility check will be implemented here."
+          ? t("transactions.placeholder.transferEligibility")
           : currentStep === 1
-            ? "Transfer details will be implemented here."
+            ? t("transactions.placeholder.transferDetails")
             : currentStep === 2
-              ? "Investment selection will be implemented here."
-              : "Review your transfer details and submit your application.";
+              ? t("transactions.placeholder.transferInvestment")
+              : t("transactions.placeholder.transferReview");
       case "rebalance":
         return currentStep === 0
-          ? "Rebalance application eligibility check will be implemented here."
+          ? t("transactions.placeholder.rebalanceEligibility")
           : currentStep === 1
-            ? "Current allocation review will be implemented here."
+            ? t("transactions.placeholder.rebalanceCurrent")
             : currentStep === 2
-              ? "Target allocation selection will be implemented here."
-              : "Review your rebalance details and submit your application.";
+              ? t("transactions.placeholder.rebalanceTarget")
+              : t("transactions.placeholder.rebalanceReview");
       default:
-        return `${stepLabel} step will be implemented here.`;
+        return t("transactions.placeholder.stepWillBeImplemented", { label: stepLabelKey ? t(stepLabelKey) : String(currentStep + 1) });
     }
   };
 
@@ -62,20 +65,20 @@ export const PlaceholderStep = ({ transaction, currentStep, readOnly, onDataChan
   const isIrreversible = transaction.isIrreversible;
 
   return (
-    <DashboardCard title={isLastStep && isReadOnly ? "Review & Confirm" : stepLabel}>
+    <DashboardCard title={isLastStep && isReadOnly ? t("transactions.placeholder.reviewConfirm") : stepLabel}>
       <div className={isLastStep ? "review-step" : ""}>
         <p>{getPlaceholderContent()}</p>
-        
+
         {isLastStep && isIrreversible && !isReadOnly && (
           <div className="review-step__warning">
-            <strong>⚠️ Irreversible Action</strong>
-            <p>This transaction cannot be undone once submitted. Please review all details carefully.</p>
+            <strong>⚠️ {t("transactions.placeholder.irreversibleAction")}</strong>
+            <p>{t("transactions.placeholder.irreversibleWarning")}</p>
           </div>
         )}
 
         {isLastStep && (
           <div className="review-step__summary">
-            <p>Summary and warnings will be displayed here.</p>
+            <p>{t("transactions.placeholder.summaryPlaceholder")}</p>
           </div>
         )}
 
@@ -92,14 +95,18 @@ export const PlaceholderStep = ({ transaction, currentStep, readOnly, onDataChan
                   }
                 }}
               />
-              <span>I confirm that I have reviewed all details and understand the terms of this transaction.</span>
+              <span>{t("transactions.placeholder.confirmReviewedTerms")}</span>
             </label>
           </div>
         )}
 
         {isLastStep && isReadOnly && (
           <div className="review-step__read-only-note">
-            <p>This transaction has been {transaction.status === "completed" ? "completed" : "submitted for processing"}.</p>
+            <p>
+              {t("transactions.loan.submittedOrCompleted", {
+                status: transaction.status === "completed" ? t("transactions.placeholder.statusCompleted") : t("transactions.placeholder.statusSubmitted"),
+              })}
+            </p>
           </div>
         )}
       </div>

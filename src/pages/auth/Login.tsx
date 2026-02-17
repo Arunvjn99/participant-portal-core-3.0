@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   AuthLayout,
   AuthFormShell,
@@ -28,6 +29,7 @@ const SCENARIO_COLORS: Record<string, string> = {
 };
 
 export const Login = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [showDemoPanel, setShowDemoPanel] = useState(false);
 
@@ -56,18 +58,18 @@ export const Login = () => {
   const standardBody = (
     <>
       <AuthInput
-        label="Email"
+        label={t("auth.email")}
         type="text"
         name="email"
         id="email"
-        placeholder="Enter your Email or Username"
+        placeholder={t("auth.enterEmail")}
       />
       <div className="flex flex-col gap-2">
         <AuthPasswordInput
-          label="Password"
+          label={t("auth.password")}
           name="password"
           id="password"
-          placeholder="Enter your password"
+          placeholder={t("auth.enterPassword")}
         />
         <div className="flex justify-end">
           <a
@@ -78,18 +80,18 @@ export const Login = () => {
               handleForgotPassword();
             }}
           >
-            Forgot password?
+            {t("auth.forgotPassword")}
           </a>
         </div>
       </div>
       <AuthButton onClick={handleLogin} className="w-full">
-        Login
+        {t("auth.login")}
       </AuthButton>
 
       {/* ── Divider ── */}
       <div className="relative flex items-center py-1">
         <div className="flex-1 border-t border-slate-200 dark:border-slate-700" />
-        <span className="mx-3 text-xs font-medium text-slate-400 dark:text-slate-500">OR</span>
+        <span className="mx-3 text-xs font-medium text-slate-400 dark:text-slate-500">{t("auth.or")}</span>
         <div className="flex-1 border-t border-slate-200 dark:border-slate-700" />
       </div>
 
@@ -105,14 +107,14 @@ export const Login = () => {
           <line x1="20" y1="8" x2="20" y2="14" />
           <line x1="23" y1="11" x2="17" y2="11" />
         </svg>
-        Explore Demo Scenarios
+        {t("auth.exploreDemoScenarios")}
         <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-bold text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300">
-          {personas.length} personas
+          {personas.length} {t("auth.personas")}
         </span>
       </button>
 
       <p className="text-center text-sm text-slate-500 dark:text-slate-400">
-        Still need help? Contact{" "}
+        {t("auth.stillNeedHelp")}{" "}
         <a
           href="#"
           className="text-blue-600 no-underline hover:underline dark:text-blue-400"
@@ -121,7 +123,7 @@ export const Login = () => {
             handleHelpCenter();
           }}
         >
-          Help Center
+          {t("auth.helpCenter")}
         </a>
       </p>
     </>
@@ -131,7 +133,7 @@ export const Login = () => {
     <AuthLayout>
       <AuthFormShell
         headerSlot={headerSlot}
-        title="Login"
+        title={t("auth.login")}
         bodySlot={standardBody}
       />
 
@@ -151,17 +153,17 @@ export const Login = () => {
             <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 dark:border-slate-800">
               <div>
                 <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">
-                  Explore Scenarios
+                  {t("auth.exploreScenarios")}
                 </h2>
                 <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">
-                  Pick a persona to explore the portal
+                  {t("auth.pickPersona")}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setShowDemoPanel(false)}
                 className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
-                aria-label="Close"
+                aria-label={t("auth.close")}
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                   <line x1="18" y1="6" x2="6" y2="18" />

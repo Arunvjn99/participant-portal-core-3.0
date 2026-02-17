@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import Button from "../ui/Button";
 
 interface TransactionFlowFooterProps {
@@ -27,6 +28,7 @@ export function TransactionFlowFooter({
   summaryText,
   summaryError = false,
 }: TransactionFlowFooterProps) {
+  const { t } = useTranslation();
   const isFirstStep = currentStep === 0;
 
   return (
@@ -42,9 +44,9 @@ export function TransactionFlowFooter({
             onClick={onBack}
             disabled={isFirstStep}
             className="transaction-flow-footer__back"
-            aria-label={isFirstStep ? "Back (disabled)" : "Back to previous step"}
+            aria-label={isFirstStep ? t("transactions.footerBackDisabledAria") : t("transactions.footerBackAria")}
           >
-            Back
+            {t("transactions.back")}
           </Button>
         </div>
         <div className="transaction-flow-footer__center" aria-live="polite">
@@ -62,7 +64,7 @@ export function TransactionFlowFooter({
             onClick={onSaveAndExit}
             className="transaction-flow-footer__save-exit"
           >
-            Save & Exit
+            {t("transactions.saveAndExit")}
           </Button>
           <Button
             type="button"

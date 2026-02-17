@@ -1,5 +1,6 @@
 import { memo } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "framer-motion";
 import { SectionHeader } from "../../../components/dashboard/shared/SectionHeader";
 import { StatusBadge } from "../../../components/dashboard/shared/StatusBadge";
@@ -7,12 +8,12 @@ import type { ActionTileConfig } from "../types";
 const formatCurrency = (n: number) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
 
-const TILES: ActionTileConfig[] = [
+const TILE_CONFIGS: { type: ActionTileConfig["type"]; titleKey: string; subtextKey: string; statusBadgeKey?: string; eligibilityAmount?: number; route: string; icon: React.ReactNode }[] = [
   {
     type: "loan",
-    title: "Take Loan",
-    subtext: "Borrow from 401(k)",
-    statusBadge: "Eligible",
+    titleKey: "transactions.takeLoan",
+    subtextKey: "transactions.borrowFrom401k",
+    statusBadgeKey: "transactions.eligible",
     route: "/transactions/loan/start",
     icon: (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -22,9 +23,9 @@ const TILES: ActionTileConfig[] = [
   },
   {
     type: "withdrawal",
-    title: "Withdrawal",
-    subtext: "Hardship & Regular",
-    eligibilityText: `${formatCurrency(32000)} Available`,
+    titleKey: "transactions.withdrawal",
+    subtextKey: "transactions.hardshipAndRegular",
+    eligibilityAmount: 32000,
     route: "/transactions/withdrawal/start",
     icon: (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -34,9 +35,9 @@ const TILES: ActionTileConfig[] = [
   },
   {
     type: "transfer",
-    title: "Reallocate",
-    subtext: "Transfer Funds",
-    statusBadge: "Smart",
+    titleKey: "transactions.reallocate",
+    subtextKey: "transactions.transferFunds",
+    statusBadgeKey: "transactions.smart",
     route: "/transactions/transfer/start",
     icon: (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -46,8 +47,8 @@ const TILES: ActionTileConfig[] = [
   },
   {
     type: "rollover",
-    title: "Start Rollover",
-    subtext: "Consolidate accounts",
+    titleKey: "transactions.startRollover",
+    subtextKey: "transactions.consolidateAccounts",
     route: "/transactions/rollover/start",
     icon: (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -58,14 +59,15 @@ const TILES: ActionTileConfig[] = [
 ];
 
 export const ActionHub = memo(function ActionHub() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const reduced = !!useReducedMotion();
 
   return (
     <section className="space-y-3">
-      <SectionHeader title="Actions" subtitle="Quick actions for your retirement" />
+      <SectionHeader title={t("transactions.actionsTitle")} subtitle={t("transactions.actionsSubtitle")} />
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        {TILES.map((tile, i) => (
+        {TILE_CONFIGS.map((tile, i) => (
           <motion.button
             key={tile.type}
             type="button"
@@ -92,18 +94,18 @@ export const ActionHub = memo(function ActionHub() {
               >
                 {tile.icon}
               </span>
-              {tile.statusBadge && <StatusBadge label={tile.statusBadge} variant="success" />}
+              {tile.statusBadgeKey && <StatusBadge label={t(tile.statusBadgeKey)} variant="success" />}
             </div>
             <div>
               <span className="block text-sm font-semibold" style={{ color: "var(--color-text)" }}>
-                {tile.title}
+                {t(tile.titleKey)}
               </span>
               <span className="block text-xs" style={{ color: "var(--color-text-secondary)" }}>
-                {tile.subtext}
+                {t(tile.subtextKey)}
               </span>
-              {tile.eligibilityText && (
+              {tile.eligibilityAmount != null && (
                 <span className="mt-1 block text-[10px] font-medium uppercase tracking-wide" style={{ color: "var(--color-success)" }}>
-                  {tile.eligibilityText}
+                  {formatCurrency(tile.eligibilityAmount)} {t("transactions.available")}
                 </span>
               )}
             </div>

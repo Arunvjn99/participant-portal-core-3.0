@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { TransactionStepCard } from "../../../../../components/transactions/TransactionStepCard";
 import type { TransactionStepProps } from "../../../../../components/transactions/TransactionApplication";
 
@@ -6,6 +7,7 @@ const formatCurrency = (n: number) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0 }).format(n);
 
 export const RolloverAmountStep = ({ initialData, onDataChange, readOnly }: TransactionStepProps) => {
+  const { t } = useTranslation();
   const estimatedBalance = initialData?.estimatedBalance ?? 25000;
 
   const handleChange = useCallback(
@@ -18,20 +20,20 @@ export const RolloverAmountStep = ({ initialData, onDataChange, readOnly }: Tran
 
   if (readOnly) {
     return (
-      <TransactionStepCard title="Rollover Amount">
+      <TransactionStepCard title={t("transactions.rollover.rolloverAmount")}>
         <p className="text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
-          Estimated: {formatCurrency(estimatedBalance)}
+          {t("transactions.rollover.estimatedReadOnly", { amount: formatCurrency(estimatedBalance) })}
         </p>
       </TransactionStepCard>
     );
   }
 
   return (
-    <TransactionStepCard title="Rollover Amount">
+    <TransactionStepCard title={t("transactions.rollover.rolloverAmount")}>
       <div className="space-y-6">
         <div>
           <label className="block text-sm font-medium mb-2" style={{ color: "var(--enroll-text-primary)" }}>
-            Estimated balance to roll over
+            {t("transactions.rollover.estimatedBalanceLabel")}
           </label>
           <div className="relative">
             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-medium" style={{ color: "var(--enroll-text-muted)" }}>$</span>
@@ -50,7 +52,7 @@ export const RolloverAmountStep = ({ initialData, onDataChange, readOnly }: Tran
             />
           </div>
           <p className="mt-1 text-sm" style={{ color: "var(--enroll-text-muted)" }}>
-            Approximate amount from your previous plan or IRA
+            {t("transactions.rollover.approximateFromPlan")}
           </p>
         </div>
       </div>

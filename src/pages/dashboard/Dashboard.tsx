@@ -33,7 +33,7 @@ export const Dashboard = () => {
         {/* Section 1: Learning Resources - Figma: white rounded container, title left, carousel inside */}
         <div className="relative min-w-0 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800 md:p-8">
           <h2 className="mb-5 text-left text-xl font-bold text-slate-900 dark:text-slate-100 md:text-2xl">
-            Learning Resources
+            {t("dashboard.learningResources")}
           </h2>
           <LearningResourcesCarousel>
             {SHARED_LEARNING_RESOURCES.map((resource, index) => (
@@ -55,38 +55,38 @@ export const Dashboard = () => {
         </div>
       </section>
 
-      <DashboardSection title="Want help choosing a plan? Meet our advisors.">
+      <DashboardSection title={t("dashboard.meetAdvisors")}>
         <AdvisorList>
           <AdvisorCard
             name="Alex Morgan"
-            role="Retirement Advisor"
-            description="Helping employees make confident retirement decisions with simple, personalized guidance."
+            role={t("dashboard.advisor1Role")}
+            description={t("dashboard.advisor1Desc")}
             avatarSrc={advisorAvatars.alex}
           />
           <AdvisorCard
             name="Maya Patel"
-            role="Certified Planner"
-            description="Experienced CFP providing clear recommendations tailored for busy professionals."
+            role={t("dashboard.advisor2Role")}
+            description={t("dashboard.advisor2Desc")}
             avatarSrc={advisorAvatars.maya}
           />
         </AdvisorList>
       </DashboardSection>
-      <DashboardSection title="Why Choose Our Plan">
+      <DashboardSection title={t("dashboard.whyChoosePlan")}>
         <ValuePropGrid>
           <ValuePropCard
             icon="dollar"
-            title="Employer Match"
-            description="Get free money. We match 100% up to 6% of your salary."
+            title={t("dashboard.employerMatch")}
+            description={t("dashboard.employerMatchDesc")}
           />
           <ValuePropCard
             icon="shield"
-            title="Tax Advantages"
-            description="Lower your taxable income now or enjoy tax-free withdrawals later."
+            title={t("dashboard.taxAdvantages")}
+            description={t("dashboard.taxAdvantagesDesc")}
           />
           <ValuePropCard
             icon="chart"
-            title="Compound Growth"
-            description="Start early. Even small contributions grow significantly over time."
+            title={t("dashboard.compoundGrowth")}
+            description={t("dashboard.compoundGrowthDesc")}
           />
         </ValuePropGrid>
       </DashboardSection>

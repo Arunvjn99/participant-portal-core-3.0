@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import Button from "../ui/Button";
 import {
   loadEnrollmentDraft,
@@ -34,6 +35,7 @@ export const EnrollmentFooter = ({
   summaryError = false,
   getDraftSnapshot,
 }: EnrollmentFooterProps) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleBack = () => {
@@ -80,9 +82,9 @@ export const EnrollmentFooter = ({
             onClick={handleBack}
             disabled={isFirstStep}
             className="enrollment-footer__back"
-            aria-label={isFirstStep ? "Back (disabled on first step)" : "Back to previous step"}
+            aria-label={isFirstStep ? t("enrollment.footerBackDisabledAria") : t("enrollment.footerBackAria")}
           >
-            Back
+            {t("enrollment.footerBack")}
           </Button>
         </div>
         <div className="enrollment-footer__center" aria-live="polite">
@@ -98,7 +100,7 @@ export const EnrollmentFooter = ({
             onClick={handleSaveAndExit}
             className="enrollment-footer__save-exit"
           >
-            Save & Exit
+            {t("enrollment.footerSaveAndExit")}
           </Button>
           <Button
             type="button"

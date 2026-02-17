@@ -1,5 +1,6 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useEnrollment } from "../../enrollment/context/EnrollmentContext";
 import { PlanRail } from "../../components/enrollment/PlanRail";
 import { PlanDetailsPanel } from "../../components/enrollment/PlanDetailsPanel";
@@ -35,36 +36,45 @@ const FALLBACK_AGE = 30;
 const FALLBACK_RETIREMENT_AGE = 65;
 const FALLBACK_SALARY = 50000;
 
-function buildPlansFromRecommendation(recommendation: PlanRecommendation): PlanOption[] {
+function buildPlansFromRecommendation(recommendation: PlanRecommendation, t: (key: string) => string): PlanOption[] {
   const base: PlanOption[] = [
     {
       id: "traditional-401k",
-      title: "Traditional 401(k)",
-      matchInfo: "Tax-deferred contributions",
-      description:
-        "Contributions are made with pre-tax dollars, reducing your taxable income now. You'll pay taxes when you withdraw in retirement.",
-      benefits: ["Immediate tax savings", "Lower taxable income", "Employer match eligible"],
+      title: t("enrollment.planTraditional401kTitle"),
+      matchInfo: t("enrollment.planTraditional401kMatch"),
+      description: t("enrollment.planTraditional401kDesc"),
+      benefits: [
+        t("enrollment.planTraditional401kBenefit1"),
+        t("enrollment.planTraditional401kBenefit2"),
+        t("enrollment.planTraditional401kBenefit3"),
+      ],
       isRecommended: false,
       isEligible: true,
     },
     {
       id: "roth-401k",
-      title: "Roth 401(k)",
-      matchInfo: "100% up to 6% Match",
-      description:
-        "Contributions are after-tax. Withdrawals in retirement are tax-free.",
-      benefits: ["Tax-free growth", "Tax-free withdrawal", "Employer Match"],
+      title: t("enrollment.planRoth401kTitle"),
+      matchInfo: t("enrollment.planRoth401kMatch"),
+      description: t("enrollment.planRoth401kDesc"),
+      benefits: [
+        t("enrollment.planRoth401kBenefit1"),
+        t("enrollment.planRoth401kBenefit2"),
+        t("enrollment.planRoth401kBenefit3"),
+      ],
       isRecommended: true,
       fitScore: recommendation.fitScore,
       isEligible: true,
     },
     {
       id: "roth-ira",
-      title: "Safe Harbor 401(k)",
-      matchInfo: "100% up to 4% Match (Immediate Vesting)",
-      description:
-        "Employer contributions are immediately vested. No annual testing required.",
-      benefits: ["Immediate vesting", "Guaranteed match", "No discrimination testing"],
+      title: t("enrollment.planSafeHarborTitle"),
+      matchInfo: t("enrollment.planSafeHarborMatch"),
+      description: t("enrollment.planSafeHarborDesc"),
+      benefits: [
+        t("enrollment.planSafeHarborBenefit1"),
+        t("enrollment.planSafeHarborBenefit2"),
+        t("enrollment.planSafeHarborBenefit3"),
+      ],
       isRecommended: false,
       isEligible: true,
     },
@@ -78,6 +88,7 @@ function buildPlansFromRecommendation(recommendation: PlanRecommendation): PlanO
 }
 
 export const ChoosePlan = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { state, setSelectedPlan } = useEnrollment();
   const draft = loadEnrollmentDraft();
@@ -89,7 +100,7 @@ export const ChoosePlan = () => {
     currentBalance: state.currentBalance ?? (draft?.otherSavings?.amount ?? 0),
   });
 
-  const plans = buildPlansFromRecommendation(recommendation);
+  const plans = useMemo(() => buildPlansFromRecommendation(recommendation, t), [recommendation, t]);
   const recommendedId = plans.find((p) => p.isRecommended)?.id ?? plans[0]?.id;
   const selectedPlanIdRaw = planIdToRaw(state.selectedPlan) ?? recommendedId;
   const selectedPlan = plans.find((p) => p.id === selectedPlanIdRaw) ?? plans[0];
@@ -131,8 +142,8 @@ export const ChoosePlan = () => {
 
   return (
     <EnrollmentPageContent
-      title="Select your retirement plan"
-      subtitle="Choose an option to see how it affects your future savings."
+      title={t("enrollment.selectPlanTitle")}
+      subtitle={t("enrollment.selectPlanSubtitle")}
     >
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         <div className="lg:col-span-7 space-y-8">
@@ -143,9 +154,9 @@ export const ChoosePlan = () => {
           />
           <div className="lg:hidden">
             <p className="text-sm" style={{ color: "var(--enroll-text-muted)" }}>
-              Need help deciding? Our advisors are available to discuss which plan is right for your financial goals.{" "}
+              {t("enrollment.needHelpDeciding")}{" "}
               <a href="#" className="underline" style={{ color: "var(--enroll-brand)" }} onClick={(e) => e.preventDefault()}>
-                Schedule a consultation
+                {t("enrollment.scheduleConsultation")}
               </a>
             </p>
           </div>
@@ -160,7 +171,7 @@ export const ChoosePlan = () => {
 
       <EnrollmentFooter
         step={0}
-        primaryLabel="Continue to Contributions"
+        primaryLabel={t("enrollment.continueToContributions")}
         primaryDisabled={!canContinue}
         onPrimary={handleContinue}
         getDraftSnapshot={() => ({ selectedPlanId: state.selectedPlan ?? null })}

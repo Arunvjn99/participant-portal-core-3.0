@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "framer-motion";
 import { DashboardLayout } from "../../layouts/DashboardLayout";
 import { DashboardHeader } from "../../components/dashboard/DashboardHeader";
@@ -8,13 +9,6 @@ import { MOCK_ENROLLED_PLANS, type EnrolledPlan, type PlanStatus } from "../../d
 
 const formatCurrency = (n: number) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
-
-const FILTERS: { value: PlanStatus | "all"; label: string }[] = [
-  { value: "all", label: "All" },
-  { value: "enrolled", label: "Enrolled" },
-  { value: "eligible", label: "Eligible" },
-  { value: "ineligible", label: "Ineligible" },
-];
 
 const pageVariants = {
   hidden: { opacity: 0, y: 8 },
@@ -43,7 +37,15 @@ const cardVariants = {
  * Enrollment Management - Post-enrollment management page.
  * All information visible; flat cards, Tailwind, subtle Framer Motion.
  */
+const FILTER_KEYS: { value: PlanStatus | "all"; key: string }[] = [
+  { value: "all", key: "enrollment.filterAll" },
+  { value: "enrolled", key: "enrollment.filterEnrolled" },
+  { value: "eligible", key: "enrollment.filterEligible" },
+  { value: "ineligible", key: "enrollment.filterIneligible" },
+];
+
 export const EnrollmentManagement = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [filter, setFilter] = useState<PlanStatus | "all">("all");
   const reducedMotion = useReducedMotion();
@@ -62,9 +64,9 @@ export const EnrollmentManagement = () => {
   };
 
   const getActionLabel = (plan: EnrolledPlan): string => {
-    if (plan.status === "enrolled") return "Manage";
-    if (plan.status === "eligible") return "Enroll";
-    return "Not available";
+    if (plan.status === "enrolled") return t("enrollment.actionManage");
+    if (plan.status === "eligible") return t("enrollment.actionEnroll");
+    return t("enrollment.actionNotAvailable");
   };
 
   const getStatusStyles = (status: PlanStatus): string => {
@@ -80,9 +82,9 @@ export const EnrollmentManagement = () => {
 
   const getStatusLabel = (status: PlanStatus): string => {
     switch (status) {
-      case "enrolled": return "Enrolled";
-      case "eligible": return "Eligible";
-      case "ineligible": return "Ineligible";
+      case "enrolled": return t("enrollment.statusEnrolled");
+      case "eligible": return t("enrollment.statusEligible");
+      case "ineligible": return t("enrollment.statusIneligible");
     }
   };
 
@@ -97,15 +99,15 @@ export const EnrollmentManagement = () => {
       >
         <header className="space-y-2">
           <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 md:text-3xl">
-            Enrollment Management
+            {t("enrollment.managementTitle")}
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            View and manage your retirement plan enrollments
+            {t("enrollment.managementDescription")}
           </p>
         </header>
 
         <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by status">
-          {FILTERS.map((f) => (
+          {FILTER_KEYS.map((f) => (
             <motion.button
               key={f.value}
               type="button"
@@ -120,7 +122,7 @@ export const EnrollmentManagement = () => {
               whileTap={reducedMotion ? undefined : { scale: 0.98 }}
               transition={{ duration: 0.15, ease: "easeOut" }}
             >
-              {f.label}
+              {t(f.key)}
             </motion.button>
           ))}
         </div>
@@ -133,7 +135,7 @@ export const EnrollmentManagement = () => {
               custom={!!reducedMotion}
             >
               <p className="text-sm text-slate-600 dark:text-slate-400">
-                No plans found matching the selected filter.
+                {t("enrollment.noPlansFound")}
               </p>
             </motion.div>
           ) : (
@@ -151,7 +153,7 @@ export const EnrollmentManagement = () => {
                         {plan.planName}
                       </h3>
                       <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-sm text-slate-500 dark:text-slate-400">
-                        <span>Plan ID: {plan.planId}</span>
+                        <span>{t("enrollment.planId")}: {plan.planId}</span>
                         <span className="italic">{plan.planType}</span>
                       </div>
                     </div>
@@ -173,7 +175,7 @@ export const EnrollmentManagement = () => {
                   {plan.status === "enrolled" && plan.balance !== undefined && (
                     <div className="flex items-center justify-between rounded-lg border border-slate-100 bg-slate-50/80 px-4 py-3 dark:border-slate-700 dark:bg-slate-700/30">
                       <span className="text-sm text-slate-500 dark:text-slate-400">
-                        Current Balance:
+                        {t("enrollment.currentBalance")}:
                       </span>
                       <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                         {formatCurrency(plan.balance)}

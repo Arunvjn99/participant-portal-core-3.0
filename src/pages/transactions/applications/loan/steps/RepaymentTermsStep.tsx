@@ -1,9 +1,11 @@
 import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { FileSignature, FileText, Heart } from "lucide-react";
 import { TransactionStepCard } from "../../../../../components/transactions/TransactionStepCard";
 import type { TransactionStepProps } from "../../../../../components/transactions/TransactionApplication";
 
 export const RepaymentTermsStep = ({ initialData, onDataChange, readOnly }: TransactionStepProps) => {
+  const { t } = useTranslation();
   const agreedToTerms = initialData?.agreedToTerms ?? false;
   const agreedToDisclosures = initialData?.agreedToDisclosures ?? false;
   const spousalConsent = initialData?.spousalConsent ?? false;
@@ -29,18 +31,18 @@ export const RepaymentTermsStep = ({ initialData, onDataChange, readOnly }: Tran
 
   if (readOnly) {
     return (
-      <TransactionStepCard title="Compliance">
+      <TransactionStepCard title={t("transactions.loan.compliance")}>
         <p className="text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
-          Promissory Note, Truth in Lending, and Spousal Consent acknowledged.
+          {t("transactions.loan.complianceReadOnlyNote")}
         </p>
       </TransactionStepCard>
     );
   }
 
   return (
-    <TransactionStepCard title="Compliance">
+    <TransactionStepCard title={t("transactions.loan.compliance")}>
       <p className="text-sm mb-6" style={{ color: "var(--enroll-text-secondary)" }}>
-        Please read and acknowledge the following before continuing. All are required to submit your loan request.
+        {t("transactions.loan.complianceIntro")}
       </p>
       <div className="space-y-4">
         <label
@@ -60,7 +62,7 @@ export const RepaymentTermsStep = ({ initialData, onDataChange, readOnly }: Tran
           <span className="flex items-start gap-2 flex-1">
             <FileSignature className="h-5 w-5 shrink-0 mt-0.5" style={{ color: "var(--enroll-text-muted)" }} />
             <span className="text-sm" style={{ color: "var(--enroll-text-primary)" }}>
-              <strong>Promissory Note.</strong> I agree to repay this loan according to the terms and schedule. I understand that default may result in the loan being treated as a distribution and subject to taxes and penalties.
+              <strong>{t("transactions.loan.promissoryNoteTitle")}</strong> {t("transactions.loan.promissoryNoteText")}
             </span>
           </span>
         </label>
@@ -82,7 +84,7 @@ export const RepaymentTermsStep = ({ initialData, onDataChange, readOnly }: Tran
           <span className="flex items-start gap-2 flex-1">
             <FileText className="h-5 w-5 shrink-0 mt-0.5" style={{ color: "var(--enroll-text-muted)" }} />
             <span className="text-sm" style={{ color: "var(--enroll-text-primary)" }}>
-              <strong>Truth in Lending.</strong> I have received and understand the required disclosures, including the APR, finance charge, and payment schedule.
+              <strong>{t("transactions.loan.truthInLendingTitle")}</strong> {t("transactions.loan.truthInLendingText")}
             </span>
           </span>
         </label>
@@ -104,7 +106,7 @@ export const RepaymentTermsStep = ({ initialData, onDataChange, readOnly }: Tran
           <span className="flex items-start gap-2 flex-1">
             <Heart className="h-5 w-5 shrink-0 mt-0.5" style={{ color: "var(--enroll-text-muted)" }} />
             <span className="text-sm" style={{ color: "var(--enroll-text-primary)" }}>
-              <strong>Spousal Consent.</strong> If required by the plan, my spouse has been informed and consents to this loan.
+              <strong>{t("transactions.loan.spousalConsentTitle")}</strong> {t("transactions.loan.spousalConsentText")}
             </span>
           </span>
         </label>

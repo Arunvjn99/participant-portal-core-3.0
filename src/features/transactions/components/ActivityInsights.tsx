@@ -1,7 +1,15 @@
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "framer-motion";
 import { Sparkles, ArrowRight, AlertTriangle, TrendingUp, Clock, Info } from "lucide-react";
 import type { ActivityInsight, InsightImpactType } from "../types";
+
+const IMPACT_KEYS: Record<string, string> = {
+  Growth: "transactions.insights.impactGrowth",
+  Risk: "transactions.insights.impactRisk",
+  Pending: "transactions.insights.impactPending",
+  Info: "transactions.insights.impactInfo",
+};
 
 interface ActivityInsightsProps {
   insights: ActivityInsight[];
@@ -49,6 +57,7 @@ const getImpactStyles = (type: InsightImpactType) => {
 };
 
 export const ActivityInsights = memo(function ActivityInsights({ insights }: ActivityInsightsProps) {
+  const { t } = useTranslation();
   const reduced = !!useReducedMotion();
   if (insights.length === 0) return null;
 
@@ -58,14 +67,14 @@ export const ActivityInsights = memo(function ActivityInsights({ insights }: Act
         <div className="flex items-center gap-2">
           <Sparkles className="h-4 w-4" style={{ color: "var(--enroll-brand)" }} />
           <h3 className="text-sm font-semibold uppercase tracking-wider" style={{ color: "var(--color-text-secondary)" }}>
-            Smart Priority Insights
+            {t("transactions.insights.smartPriorityInsights")}
           </h3>
         </div>
         <span
           className="rounded-md px-2 py-1 text-xs font-medium"
           style={{ background: "var(--color-background-secondary)", color: "var(--color-text-tertiary)" }}
         >
-          AI Generated • Today
+          {t("transactions.insights.aiGeneratedToday")}
         </span>
       </div>
 
@@ -98,7 +107,7 @@ export const ActivityInsights = memo(function ActivityInsights({ insights }: Act
                   className="rounded-full px-2 py-1 text-[10px] font-bold uppercase tracking-wide"
                   style={{ background: styles.bg, color: styles.badge }}
                 >
-                  {impactType} Impact
+                  {t(IMPACT_KEYS[impactType] ?? "transactions.insights.impactInfo")}
                 </span>
               </div>
 

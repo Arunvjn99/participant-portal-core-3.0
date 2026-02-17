@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { SectionHeader } from "../../../components/dashboard/shared/SectionHeader";
 
@@ -14,12 +15,13 @@ const formatCurrency = (n: number) =>
  * Withdrawal action widget for Transactions sidebar. Tokens only.
  */
 export const WithdrawalWidget = memo(function WithdrawalWidget() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const availableAmount = 32000;
 
   return (
     <section className="space-y-3">
-      <SectionHeader title="Withdrawal" subtitle="Hardship or in-service" />
+      <SectionHeader title={t("transactions.widgets.withdrawalTitle")} subtitle={t("transactions.widgets.withdrawalSubtitle")} />
       <button
         type="button"
         onClick={() => navigate("/transactions/withdrawal/start")}
@@ -41,10 +43,10 @@ export const WithdrawalWidget = memo(function WithdrawalWidget() {
           </span>
           <div className="min-w-0 flex-1">
             <p className="text-sm font-semibold" style={{ color: "var(--enroll-text-primary)" }}>
-              Make Withdrawal
+              {t("transactions.widgets.makeWithdrawal")}
             </p>
             <p className="text-xs" style={{ color: "var(--enroll-text-secondary)" }}>
-              Available: {formatCurrency(availableAmount)}
+              {t("transactions.widgets.availableAmount", { amount: formatCurrency(availableAmount) })}
             </p>
           </div>
         </div>

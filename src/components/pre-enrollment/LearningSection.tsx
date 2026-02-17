@@ -1,23 +1,25 @@
 import { Play } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { RESOURCES } from "./constants";
 
 export const LearningSection = () => {
+  const { t } = useTranslation();
   return (
     <section className="py-8 sm:py-12 md:py-16 lg:py-20 w-full min-w-0">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3 sm:gap-4 mb-5 sm:mb-8">
         <div className="min-w-0">
           <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-slate-900 dark:text-slate-100 mb-1 sm:mb-2">
-            Learn at your pace
+            {t("preEnrollment.learnAtYourPace")}
           </h2>
           <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base md:text-lg">
-            Short, simple guides to help you make informed decisions.
+            {t("preEnrollment.learnSubtitle")}
           </p>
         </div>
         <button
           type="button"
           className="hidden sm:block text-brand-600 dark:text-brand-400 font-medium hover:text-brand-800 dark:hover:text-brand-300 transition-colors rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:ring-offset-2 dark:focus:ring-offset-slate-900 py-1 shrink-0"
         >
-          View library
+          {t("preEnrollment.viewLibrary")}
         </button>
       </div>
 

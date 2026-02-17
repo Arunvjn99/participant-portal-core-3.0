@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { DashboardLayout } from "../../layouts/DashboardLayout";
 import { DashboardHeader } from "../../components/dashboard/DashboardHeader";
 import { TransactionFlowLayout } from "../../components/transactions/TransactionFlowLayout";
@@ -12,53 +13,29 @@ import { getTransactionById } from "../../data/mockTransactions";
 import Button from "../../components/ui/Button";
 import type { TransactionType } from "../../types/transactions";
 
-const getTransactionTypeLabel = (type: TransactionType): string => {
-  switch (type) {
-    case "loan":
-      return "401(k) Loan";
-    case "withdrawal":
-      return "Hardship Withdrawal";
-    case "distribution":
-      return "Distribution";
-    case "rollover":
-      return "Rollover";
-    case "transfer":
-      return "Transfer Investments";
-    case "rebalance":
-      return "Rebalance Portfolio";
-  }
+const TYPE_KEYS: Record<TransactionType, string> = {
+  loan: "transactions.loanApplication",
+  withdrawal: "transactions.withdrawalApplication",
+  distribution: "transactions.distributionApplication",
+  rollover: "transactions.rolloverApplication",
+  transfer: "transactions.transferApplication",
+  rebalance: "transactions.rebalanceApplication",
 };
 
-const getStatusLabel = (status: string): string => {
-  switch (status) {
-    case "draft":
-      return "Draft";
-    case "active":
-      return "Active";
-    case "completed":
-      return "Completed";
-    case "cancelled":
-      return "Cancelled";
-    default:
-      return status;
-  }
+const STATUS_KEYS: Record<string, string> = {
+  draft: "transactions.analysis.statusDraft",
+  active: "transactions.analysis.statusActive",
+  completed: "transactions.analysis.statusCompleted",
+  cancelled: "transactions.analysis.statusCancelled",
 };
 
-const getTransactionExplanation = (type: TransactionType): string => {
-  switch (type) {
-    case "loan":
-      return "You're borrowing from your 401(k) account. The loan amount is deducted from your balance, and you'll repay it with interest through payroll deductions over the loan term. Interest payments go back into your account.";
-    case "withdrawal":
-      return "You're taking an early withdrawal from your 401(k). This permanently reduces your retirement savings. Withdrawals are subject to income tax and may incur a 10% early withdrawal penalty if you're under age 59½.";
-    case "distribution":
-      return "You're receiving a distribution from your 401(k). This permanently reduces your retirement balance. Distributions are subject to income tax, and required minimum distributions (RMDs) are mandatory starting at age 73.";
-    case "rollover":
-      return "You're moving funds from this 401(k) to another qualified retirement account. Rollovers preserve your retirement savings and maintain tax-deferred status when completed within 60 days or as a direct transfer.";
-    case "transfer":
-      return "You're transferring investments between accounts. This allows you to move funds while maintaining your investment strategy and tax-deferred status.";
-    case "rebalance":
-      return "You're rebalancing your portfolio to adjust your investment allocation. This helps maintain your target asset allocation and manage risk over time.";
-  }
+const EXPLANATION_KEYS: Record<TransactionType, string> = {
+  loan: "transactions.analysis.explanationLoan",
+  withdrawal: "transactions.analysis.explanationWithdrawal",
+  distribution: "transactions.analysis.explanationDistribution",
+  rollover: "transactions.analysis.explanationRollover",
+  transfer: "transactions.analysis.explanationTransfer",
+  rebalance: "transactions.analysis.explanationRebalance",
 };
 
 const formatCurrency = (amount: number) =>
@@ -95,15 +72,16 @@ const SummaryRow = ({
 );
 
 export const TransactionAnalysis = () => {
+  const { t } = useTranslation();
   const { transactionId } = useParams<{ transactionId: string }>();
   const navigate = useNavigate();
 
   if (!transactionId) {
     return (
       <DashboardLayout header={<DashboardHeader />} transparentBackground>
-        <TransactionFlowLayout title="Transaction Details" onBack={() => navigate("/transactions")}>
-          <TransactionStepCard title="Not Found">
-            <p>Transaction not found.</p>
+        <TransactionFlowLayout title={t("transactions.analysis.transactionDetails")} onBack={() => navigate("/transactions")}>
+          <TransactionStepCard title={t("transactions.analysis.notFound")}>
+            <p>{t("transactions.analysis.transactionNotFound")}</p>
           </TransactionStepCard>
         </TransactionFlowLayout>
       </DashboardLayout>
@@ -117,9 +95,9 @@ export const TransactionAnalysis = () => {
   if (!transaction) {
     return (
       <DashboardLayout header={<DashboardHeader />} transparentBackground>
-        <TransactionFlowLayout title="Transaction Details" onBack={() => navigate("/transactions")}>
-          <TransactionStepCard title="Not Found">
-            <p>Transaction not found.</p>
+        <TransactionFlowLayout title={t("transactions.analysis.transactionDetails")} onBack={() => navigate("/transactions")}>
+          <TransactionStepCard title={t("transactions.analysis.notFound")}>
+            <p>{t("transactions.analysis.transactionNotFound")}</p>
           </TransactionStepCard>
         </TransactionFlowLayout>
       </DashboardLayout>
@@ -144,13 +122,13 @@ export const TransactionAnalysis = () => {
   const getActionLabel = (): string => {
     switch (transaction.status) {
       case "draft":
-        return "Resume Transaction";
+        return t("transactions.analysis.resumeTransaction");
       case "active":
-        return "Track Status";
+        return t("transactions.analysis.trackStatus");
       case "completed":
-        return "View Documents";
+        return t("transactions.analysis.viewDocuments");
       default:
-        return "View Details";
+        return t("transactions.analysis.viewDetails");
     }
   };
 
@@ -164,42 +142,42 @@ export const TransactionAnalysis = () => {
   return (
     <DashboardLayout header={<DashboardHeader />} transparentBackground>
       <TransactionFlowLayout
-        title="Transaction Details"
-        subtitle={getTransactionTypeLabel(transaction.type)}
+        title={t("transactions.analysis.transactionDetails")}
+        subtitle={t(TYPE_KEYS[transaction.type])}
         onBack={() => navigate("/transactions")}
       >
         <div className="space-y-6">
-          <TransactionStepCard title="Transaction Summary">
+          <TransactionStepCard title={t("transactions.analysis.transactionSummary")}>
             <div className="space-y-0">
-              <SummaryRow label="Type" value={getTransactionTypeLabel(transaction.type)} />
+              <SummaryRow label={t("transactions.analysis.type")} value={t(TYPE_KEYS[transaction.type])} />
               <SummaryRow
-                label="Status"
-                value={getStatusLabel(transaction.status)}
+                label={t("transactions.analysis.status")}
+                value={STATUS_KEYS[transaction.status] ? t(STATUS_KEYS[transaction.status]) : transaction.status}
                 valueStyle={getStatusStyle()}
               />
-              <SummaryRow label="Amount" value={formatCurrency(transaction.amount ?? 0)} />
+              <SummaryRow label={t("transactions.analysis.amount")} value={formatCurrency(transaction.amount ?? 0)} />
               <SummaryRow
-                label="Date Initiated"
+                label={t("transactions.analysis.dateInitiated")}
                 value={new Date(transaction.dateInitiated).toLocaleDateString()}
               />
               {transaction.dateCompleted && (
                 <SummaryRow
-                  label="Date Completed"
+                  label={t("transactions.analysis.dateCompleted")}
                   value={new Date(transaction.dateCompleted).toLocaleDateString()}
                 />
               )}
               {transaction.processingTime && (
-                <SummaryRow label="Processing Time" value={transaction.processingTime} />
+                <SummaryRow label={t("transactions.analysis.processingTime")} value={transaction.processingTime} />
               )}
             </div>
           </TransactionStepCard>
 
-          <TransactionStepCard title="What This Transaction Does">
+          <TransactionStepCard title={t("transactions.analysis.whatThisDoes")}>
             <p
               className="text-[0.9375em] leading-relaxed"
               style={{ color: "var(--enroll-text-secondary)" }}
             >
-              {getTransactionExplanation(transaction.type)}
+              {t(EXPLANATION_KEYS[transaction.type])}
             </p>
           </TransactionStepCard>
 
@@ -213,23 +191,23 @@ export const TransactionAnalysis = () => {
             (transaction.taxWithholding !== undefined && transaction.taxWithholding > 0) ||
             transaction.netAmount ||
             transaction.repaymentInfo) && (
-            <TransactionStepCard title="Financial Breakdown">
+            <TransactionStepCard title={t("transactions.analysis.financialBreakdown")}>
               <div className="space-y-0">
                 {transaction.grossAmount && (
-                  <SummaryRow label="Gross Amount" value={formatCurrency(transaction.grossAmount)} />
+                  <SummaryRow label={t("transactions.analysis.grossAmount")} value={formatCurrency(transaction.grossAmount)} />
                 )}
                 {transaction.fees !== undefined && transaction.fees > 0 && (
-                  <SummaryRow label="Fees" value={formatCurrency(transaction.fees)} />
+                  <SummaryRow label={t("transactions.analysis.fees")} value={formatCurrency(transaction.fees)} />
                 )}
                 {transaction.taxWithholding !== undefined && transaction.taxWithholding > 0 && (
                   <SummaryRow
-                    label="Tax Withholding"
+                    label={t("transactions.analysis.taxWithholding")}
                     value={formatCurrency(transaction.taxWithholding)}
                   />
                 )}
                 {transaction.netAmount && (
                   <SummaryRow
-                    label="Net Amount"
+                    label={t("transactions.analysis.netAmount")}
                     value={formatCurrency(transaction.netAmount)}
                     valueStyle={{ color: "var(--enroll-text-primary)", fontWeight: 600 }}
                   />
@@ -240,19 +218,19 @@ export const TransactionAnalysis = () => {
                       className="text-sm font-semibold mb-3"
                       style={{ color: "var(--enroll-text-primary)" }}
                     >
-                      Repayment Information
+                      {t("transactions.analysis.repaymentInformation")}
                     </h3>
                     <div className="space-y-0">
                       <SummaryRow
-                        label="Monthly Payment"
+                        label={t("transactions.analysis.monthlyPayment")}
                         value={formatCurrency(transaction.repaymentInfo.monthlyPayment)}
                       />
                       <SummaryRow
-                        label="Term"
-                        value={`${transaction.repaymentInfo.termMonths} months`}
+                        label={t("transactions.analysis.term")}
+                        value={t("transactions.analysis.termMonths", { months: transaction.repaymentInfo.termMonths })}
                       />
                       <SummaryRow
-                        label="Interest Rate"
+                        label={t("transactions.analysis.interestRate")}
                         value={`${transaction.repaymentInfo.interestRate}%`}
                       />
                     </div>
@@ -262,7 +240,7 @@ export const TransactionAnalysis = () => {
             </TransactionStepCard>
           )}
 
-          <TransactionStepCard title="Timeline & Compliance">
+          <TransactionStepCard title={t("transactions.analysis.timelineAndCompliance")}>
             {transaction.milestones && (
               <div className="mb-4">
                 <TransactionStepper milestones={transaction.milestones} status={transaction.status} />
@@ -270,7 +248,7 @@ export const TransactionAnalysis = () => {
             )}
             {transaction.isIrreversible && (
               <WarningBanner
-                message="This transaction is irreversible. Once completed, it cannot be undone."
+                message={t("transactions.analysis.irreversibleWarning")}
                 type="warning"
               />
             )}
@@ -280,7 +258,7 @@ export const TransactionAnalysis = () => {
                   className="text-sm font-semibold mb-2"
                   style={{ color: "var(--enroll-text-primary)" }}
                 >
-                  Legal Confirmations
+                  {t("transactions.analysis.legalConfirmations")}
                 </h3>
                 <ul className="list-disc list-inside space-y-1" style={{ color: "var(--enroll-text-secondary)" }}>
                   {transaction.legalConfirmations.map((confirmation, index) => (

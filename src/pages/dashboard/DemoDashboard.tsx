@@ -1,4 +1,5 @@
 import { Navigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { DashboardLayout } from "../../layouts/DashboardLayout";
 import { DashboardHeader } from "../../components/dashboard/DashboardHeader";
 import { useDemoUser } from "@/hooks/useDemoUser";
@@ -19,6 +20,7 @@ import {
  * (navigates to login).
  */
 export function DemoDashboard() {
+  const { t } = useTranslation();
   const user = useDemoUser();
 
   if (!user) {
@@ -45,7 +47,7 @@ export function DemoDashboard() {
           <ScenarioShell user={user} accentColor="#6b7280">
             <div className="rounded-xl border border-slate-200 bg-white p-6 text-center dark:border-slate-700 dark:bg-slate-800">
               <p className="text-lg font-semibold text-slate-700 dark:text-slate-200">
-                Dashboard for scenario "{user.scenario}" is coming soon.
+                {t("demo.scenarioComingSoon", { scenario: user.scenario })}
               </p>
             </div>
           </ScenarioShell>

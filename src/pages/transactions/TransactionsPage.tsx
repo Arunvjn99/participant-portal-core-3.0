@@ -1,5 +1,6 @@
 import { memo } from "react";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { DashboardLayout } from "../../layouts/DashboardLayout";
 import { TransactionSuccessScreen } from "../../components/transactions/TransactionSuccessScreen";
@@ -38,6 +39,7 @@ const contentVariants = {
  * Flow: Awareness → Understanding → Action → Monitoring → History.
  */
 export const TransactionsPage = memo(function TransactionsPage() {
+  const { t } = useTranslation();
   const reduced = !!useReducedMotion();
   const location = useLocation();
   const { plans, selectedPlanId, setPlan, hasMultiplePlans } = useMultiPlanFilter();
@@ -67,6 +69,8 @@ export const TransactionsPage = memo(function TransactionsPage() {
       >
         <motion.div variants={sectionVariants} custom={reduced}>
           <TransactionsHeader
+            title={t("transactions.title")}
+            subtitle={t("transactions.subtitle")}
             plans={plans}
             selectedPlanId={selectedPlanId}
             onPlanSelect={setPlan}

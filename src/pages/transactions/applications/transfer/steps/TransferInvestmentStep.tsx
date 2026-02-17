@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { TransactionStepCard } from "../../../../../components/transactions/TransactionStepCard";
 import type { TransactionStepProps } from "../../../../../components/transactions/TransactionApplication";
 
@@ -7,12 +8,14 @@ const MOCK_FUNDS = [
   { id: "f3", name: "T. Rowe Blue Chip", allocation: 15 },
 ];
 
-export const TransferInvestmentStep = ({ initialData }: TransactionStepProps) => (
-  <TransactionStepCard title="Investment Selection">
-    <div className="space-y-4">
-      <p className="text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
-        Current allocation (for reference). Changes will be applied at next market close.
-      </p>
+export const TransferInvestmentStep = ({ initialData }: TransactionStepProps) => {
+  const { t } = useTranslation();
+  return (
+    <TransactionStepCard title={t("transactions.transfer.investmentSelection")}>
+      <div className="space-y-4">
+        <p className="text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
+          {t("transactions.transfer.currentAllocationNote")}
+        </p>
       <ul className="space-y-2">
         {MOCK_FUNDS.map((f) => (
           <li
@@ -25,6 +28,7 @@ export const TransferInvestmentStep = ({ initialData }: TransactionStepProps) =>
           </li>
         ))}
       </ul>
-    </div>
-  </TransactionStepCard>
-);
+      </div>
+    </TransactionStepCard>
+  );
+};

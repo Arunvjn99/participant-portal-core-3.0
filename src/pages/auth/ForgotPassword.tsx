@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   AuthLayout,
   AuthFormShell,
@@ -9,6 +10,7 @@ import {
 import { Logo } from "../../components/brand/Logo";
 
 export const ForgotPassword = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
 
@@ -27,15 +29,15 @@ export const ForgotPassword = () => {
   const bodySlot = (
     <>
       <AuthInput
-        label="Email"
+        label={t("auth.email")}
         type="email"
         name="email"
         id="email"
-        placeholder="Enter your email address"
+        placeholder={t("auth.enterYourEmail")}
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
-      <AuthButton onClick={handleSendResetLink}>Send reset link</AuthButton>
+      <AuthButton onClick={handleSendResetLink}>{t("auth.sendResetLink")}</AuthButton>
       <a
         href="#"
         className="text-center text-sm text-blue-600 no-underline hover:underline dark:text-blue-400"
@@ -44,7 +46,7 @@ export const ForgotPassword = () => {
           handleBackToSignIn();
         }}
       >
-        Back to sign in
+        {t("auth.backToSignIn")}
       </a>
     </>
   );
@@ -53,8 +55,8 @@ export const ForgotPassword = () => {
     <AuthLayout>
       <AuthFormShell
         headerSlot={headerSlot}
-        title="Forgot your password?"
-        description="Enter your email address and we'll send you a link to reset your password."
+        title={t("auth.forgotPasswordTitle")}
+        description={t("auth.forgotPasswordDesc")}
         bodySlot={bodySlot}
       />
     </AuthLayout>

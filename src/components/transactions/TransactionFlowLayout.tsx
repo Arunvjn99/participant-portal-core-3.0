@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 
 interface TransactionFlowLayoutProps {
   title: string;
@@ -15,10 +16,13 @@ interface TransactionFlowLayoutProps {
 export function TransactionFlowLayout({
   title,
   subtitle,
-  backLabel = "← Back to Transactions",
+  backLabel,
   onBack,
   children,
 }: TransactionFlowLayoutProps) {
+  const { t } = useTranslation();
+  const defaultBackLabel = `← ${t("transactions.backToTransactions")}`;
+
   return (
     <div
       className="w-full pb-28"
@@ -32,9 +36,9 @@ export function TransactionFlowLayout({
               onClick={onBack}
               className="mb-4 text-[0.9375em] font-medium cursor-pointer border-none bg-transparent transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 rounded-[var(--radius-sm)]"
               style={{ color: "var(--enroll-brand)" }}
-              aria-label="Back to transactions"
+              aria-label={t("transactions.backToTransactions")}
             >
-              {backLabel}
+              {backLabel ?? defaultBackLabel}
             </button>
           )}
           <h1

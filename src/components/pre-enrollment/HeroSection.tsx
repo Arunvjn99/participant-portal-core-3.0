@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { ArrowRight, Compass } from "lucide-react";
 import { FloatingCards } from "./FloatingCards";
@@ -17,6 +18,7 @@ const staggerContainer = {
 };
 
 export const HeroSection = () => {
+  const { t } = useTranslation();
   const [isWizardOpen, setIsWizardOpen] = useState(false);
 
   return (
@@ -43,7 +45,7 @@ export const HeroSection = () => {
           >
             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wide">
-              Enrollment Window Open
+              {t("dashboard.enrollmentOpen")}
             </span>
           </motion.div>
 
@@ -51,17 +53,17 @@ export const HeroSection = () => {
             variants={fadeUp}
             className="text-xl md:text-2xl font-medium text-slate-500 dark:text-slate-400 mb-3"
           >
-            Good Morning, Brian
+            {t("dashboard.greeting", { name: "Brian" })}
           </motion.h2>
 
           <motion.h1
             variants={fadeUp}
             className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-display font-bold text-slate-900 dark:text-slate-100 leading-[1.08] tracking-tight mb-4 sm:mb-6"
           >
-            Let&apos;s build your{" "}
+            {t("dashboard.heroTitlePart1")}{" "}
             <br className="hidden sm:inline" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-indigo-600">
-              future, together.
+              {t("dashboard.heroTitlePart2")}
             </span>
           </motion.h1>
 
@@ -69,8 +71,7 @@ export const HeroSection = () => {
             variants={fadeUp}
             className="text-sm sm:text-base md:text-lg text-slate-500 dark:text-slate-400 max-w-lg leading-relaxed mb-6 sm:mb-8 md:mb-10"
           >
-            You&apos;re one step away from activating your 401(k). We&apos;ve simplified
-            everything so you can focus on what matters.
+            {t("dashboard.heroSubtitle")}
           </motion.p>
 
           <motion.div
@@ -82,7 +83,7 @@ export const HeroSection = () => {
               onClick={() => setIsWizardOpen(true)}
               className="group relative inline-flex items-center justify-center gap-2 px-5 py-3 sm:px-6 sm:py-3.5 md:px-8 md:py-4 w-full sm:w-auto bg-primary hover:bg-primary-hover text-white rounded-2xl font-semibold text-sm sm:text-base shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-slate-900"
             >
-              Start My Enrollment
+              {t("dashboard.startEnrollment")}
               <ArrowRight
                 size={18}
                 className="transition-transform duration-300 group-hover:translate-x-1"
@@ -96,7 +97,7 @@ export const HeroSection = () => {
               className="inline-flex items-center justify-center gap-2 px-5 py-3 sm:px-6 sm:py-3.5 md:px-8 md:py-4 w-full sm:w-auto bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-2 border-slate-200 dark:border-slate-600 rounded-2xl font-semibold text-sm sm:text-base hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-500 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-slate-300 dark:focus:ring-slate-500 focus:ring-offset-2"
             >
               <Compass size={18} />
-              Explore My Options
+              {t("dashboard.exploreOptions")}
             </motion.button>
           </motion.div>
         </motion.div>

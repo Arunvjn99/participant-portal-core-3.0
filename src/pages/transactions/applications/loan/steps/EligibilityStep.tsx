@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { CheckCircle2, AlertCircle, Info, ChevronDown, ChevronUp, Calendar } from "lucide-react";
 import { TransactionStepCard } from "../../../../../components/transactions/TransactionStepCard";
 import { AnimatedNumber } from "../../../../../components/dashboard/shared/AnimatedNumber";
@@ -40,9 +41,11 @@ const generateAmortizationSchedule = (amount: number, rateAnnual: number, years:
 };
 
 const PURPOSE_OPTIONS = ["General", "Residential", "Hardship", "Education"] as const;
+const PURPOSE_KEYS = ["transactions.loan.purposeGeneral", "transactions.loan.purposeResidential", "transactions.loan.purposeHardship", "transactions.loan.purposeEducation"] as const;
 const TERM_YEARS = [1, 2, 3, 4, 5] as const;
 
 export const EligibilityStep = ({ transaction, initialData, onDataChange, readOnly }: TransactionStepProps) => {
+  const { t } = useTranslation();
   const vestedBalance = ACCOUNT_OVERVIEW.vestedBalance;
   const outstandingLoan = ACCOUNT_OVERVIEW.outstandingLoan;
   const maxLoan = Math.min(
@@ -62,10 +65,10 @@ export const EligibilityStep = ({ transaction, initialData, onDataChange, readOn
   const percentUtilized = vestedBalance > 0 ? clampedAmount / vestedBalance : 0;
   const advisorNote =
     percentUtilized < 0.2
-      ? "This conservative amount keeps your long-term wealth projection highly stable."
+      ? t("transactions.loan.advisorNoteConservative")
       : percentUtilized < 0.4
-        ? "This amount is balanced. Ensure your repayment plan fits your monthly budget comfortably."
-        : "This loan represents a significant portion of your balance. Consider a shorter tenure to replenish funds faster.";
+        ? t("transactions.loan.advisorNoteBalanced")
+        : t("transactions.loan.advisorNoteSignificant");
 
   const monthlyPayment = useMemo(
     () => calculatePMT(DEFAULT_LOAN_PLAN_CONFIG.defaultAnnualRate, tenureYears * 12, clampedAmount),
@@ -99,10 +102,10 @@ export const EligibilityStep = ({ transaction, initialData, onDataChange, readOn
 
   if (readOnly) {
     return (
-      <TransactionStepCard title="Strategy">
+      <TransactionStepCard title={t("transactions.loan.strategy")}>
         <div className="space-y-4">
           <p className="text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
-            Loan amount: {formatCurrency(clampedAmount)} · {tenureYears} year{tenureYears !== 1 ? "s" : ""} · {purpose}
+            {t("transactions.loan.loanAmountSummary", { amount: formatCurrency(clampedAmount), years: tenureYears, purpose })}
           </p>
         </div>
       </TransactionStepCard>
@@ -112,7 +115,7 @@ export const EligibilityStep = ({ transaction, initialData, onDataChange, readOn
   return (
     <div className="space-y-6">
       {/* Eligibility blurb */}
-      <TransactionStepCard title="Eligibility">
+      <TransactionStepCard title={t("transactions.loan.eligibility")}>
         <div
           className="flex items-start gap-4 p-4 rounded-[var(--radius-lg)] border"
           style={{
@@ -127,37 +130,37 @@ export const EligibilityStep = ({ transaction, initialData, onDataChange, readOn
           )}
           <div>
             <p className="font-semibold" style={{ color: "var(--enroll-text-primary)" }}>
-              {isEligible ? "You are eligible for a 401(k) loan" : "Eligibility restrictions apply"}
+              {isEligible ? t("transactions.loan.eligibleTitle") : t("transactions.loan.notEligibleTitle")}
             </p>
             <p className="mt-1 text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
               {isEligible
-                ? `You can borrow up to ${formatCurrency(maxLoan)} based on your vested balance.`
+                ? t("transactions.loan.eligibleDesc", { max: formatCurrency(maxLoan) })
                 : outstandingLoan > 0
-                  ? "You have an outstanding loan. Repay it before taking a new one."
-                  : "Your vested balance is below the minimum required."}
+                  ? t("transactions.loan.outstandingLoanDesc")
+                  : t("transactions.loan.lowBalanceDesc")}
             </p>
           </div>
         </div>
         <dl className="grid gap-3 sm:grid-cols-2 mt-4">
           <div className="p-3 rounded-[var(--radius-md)]" style={{ background: "var(--enroll-soft-bg)" }}>
-            <dt className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>Vested Balance</dt>
+            <dt className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>{t("transactions.loan.vestedBalance")}</dt>
             <dd className="mt-1 font-semibold" style={{ color: "var(--enroll-text-primary)" }}>{formatCurrency(vestedBalance)}</dd>
           </div>
           <div className="p-3 rounded-[var(--radius-md)]" style={{ background: "var(--enroll-soft-bg)" }}>
-            <dt className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>Max Loan</dt>
+            <dt className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>{t("transactions.loan.maxLoan")}</dt>
             <dd className="mt-1 font-semibold" style={{ color: "var(--enroll-text-primary)" }}>{formatCurrency(maxLoan)}</dd>
           </div>
         </dl>
       </TransactionStepCard>
 
       {/* Amount + tenure + purpose */}
-      <TransactionStepCard title="Loan Strategy">
+      <TransactionStepCard title={t("transactions.loan.loanStrategy")}>
         <div className="space-y-6">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <label className="block text-sm font-bold mb-1" style={{ color: "var(--enroll-text-primary)" }}>I want to borrow</label>
+              <label className="block text-sm font-bold mb-1" style={{ color: "var(--enroll-text-primary)" }}>{t("transactions.loan.iWantToBorrow")}</label>
               <p className="text-xs" style={{ color: "var(--enroll-text-muted)" }}>
-                Max: {formatCurrency(maxLoan)} · {(percentUtilized * 100).toFixed(0)}% of vested
+                {t("transactions.loan.maxOfVested", { max: formatCurrency(maxLoan), percent: (percentUtilized * 100).toFixed(0) })}
               </p>
             </div>
             <div className="inline-flex items-baseline rounded-[var(--radius-lg)] border px-4 py-2" style={{ borderColor: "var(--enroll-card-border)", background: "var(--enroll-soft-bg)" }}>
@@ -190,7 +193,7 @@ export const EligibilityStep = ({ transaction, initialData, onDataChange, readOn
           </div>
 
           <div>
-            <p className="text-sm font-bold mb-3" style={{ color: "var(--enroll-text-primary)" }}>Repayment term</p>
+            <p className="text-sm font-bold mb-3" style={{ color: "var(--enroll-text-primary)" }}>{t("transactions.loan.repaymentTerm")}</p>
             <div className="flex flex-wrap gap-2">
               {TERM_YEARS.map((y) => (
                 <button
@@ -223,22 +226,22 @@ export const EligibilityStep = ({ transaction, initialData, onDataChange, readOn
             </div>
             <div>
               <p className="text-xs font-bold uppercase tracking-wide mb-1" style={{ color: "var(--enroll-text-primary)" }}>
-                {isLongTerm ? "Cash flow optimized" : "Interest saver"}
+                {isLongTerm ? t("transactions.loan.cashFlowOptimized") : t("transactions.loan.interestSaver")}
               </p>
               <p className="text-sm font-medium mb-2" style={{ color: "var(--enroll-text-secondary)" }}>
                 {isLongTerm
-                  ? `Extending to ${tenureYears} years lowers your monthly payment but increases total interest.`
-                  : `Choosing ${tenureYears} years saves you money on interest but requires higher monthly payments.`}
+                  ? t("transactions.loan.tenureLongDesc", { years: tenureYears })
+                  : t("transactions.loan.tenureShortDesc", { years: tenureYears })}
               </p>
               <div className="flex gap-4 text-xs">
                 <div>
-                  <span className="block" style={{ color: "var(--enroll-text-muted)" }}>vs {comparisonYears}Y term</span>
+                  <span className="block" style={{ color: "var(--enroll-text-muted)" }}>{t("transactions.loan.vsTerm", { years: comparisonYears })}</span>
                   <span className="font-bold" style={{ color: diffMonthly < 0 ? "var(--color-success)" : "var(--enroll-text-primary)" }}>
                     {diffMonthly >= 0 ? "+" : ""}{formatCurrency(diffMonthly)}/mo
                   </span>
                 </div>
                 <div>
-                  <span className="block" style={{ color: "var(--enroll-text-muted)" }}>Total interest impact</span>
+                  <span className="block" style={{ color: "var(--enroll-text-muted)" }}>{t("transactions.loan.totalInterestImpact")}</span>
                   <span className="font-bold" style={{ color: diffInterest < 0 ? "var(--color-success)" : "var(--color-warning)" }}>
                     {diffInterest >= 0 ? "+" : ""}{formatCurrency(diffInterest)}
                   </span>
@@ -248,7 +251,7 @@ export const EligibilityStep = ({ transaction, initialData, onDataChange, readOn
           </div>
 
           <div>
-            <p className="text-sm font-bold mb-3" style={{ color: "var(--enroll-text-primary)" }}>Loan purpose</p>
+            <p className="text-sm font-bold mb-3" style={{ color: "var(--enroll-text-primary)" }}>{t("transactions.loan.loanPurpose")}</p>
             <select
               value={purpose}
               onChange={(e) => handlePurposeChange(e.target.value)}
@@ -259,12 +262,12 @@ export const EligibilityStep = ({ transaction, initialData, onDataChange, readOn
                 color: "var(--enroll-text-primary)",
               }}
             >
-              {PURPOSE_OPTIONS.map((p) => (
-                <option key={p} value={p}>{p}</option>
+              {PURPOSE_OPTIONS.map((p, i) => (
+                <option key={p} value={p}>{t(PURPOSE_KEYS[i])}</option>
               ))}
             </select>
             <p className="mt-2 text-xs" style={{ color: "var(--enroll-text-muted)" }}>
-              Residential loans may require a Purchase Agreement and can extend up to 15 years in some plans.
+              {t("transactions.loan.residentialNote")}
             </p>
           </div>
 
@@ -277,7 +280,7 @@ export const EligibilityStep = ({ transaction, initialData, onDataChange, readOn
               style={{ color: "var(--enroll-brand)" }}
             >
               <span className="flex items-center gap-2">
-                <Calendar className="h-3.5 w-3.5" /> View repayment breakdown
+                <Calendar className="h-3.5 w-3.5" /> {t("transactions.loan.viewRepaymentBreakdown")}
               </span>
               {amortOpen ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
             </button>
@@ -287,11 +290,11 @@ export const EligibilityStep = ({ transaction, initialData, onDataChange, readOn
                   <thead>
                     <tr style={{ background: "var(--enroll-soft-bg)", color: "var(--enroll-text-muted)" }}>
                       <th className="p-2.5 font-semibold">#</th>
-                      <th className="p-2.5">Date</th>
-                      <th className="p-2.5 text-right">Payment</th>
-                      <th className="p-2.5 text-right">Principal</th>
-                      <th className="p-2.5 text-right">Interest</th>
-                      <th className="p-2.5 text-right">Balance</th>
+                      <th className="p-2.5">{t("transactions.loan.date")}</th>
+                      <th className="p-2.5 text-right">{t("transactions.loan.payment")}</th>
+                      <th className="p-2.5 text-right">{t("transactions.loan.principal")}</th>
+                      <th className="p-2.5 text-right">{t("transactions.loan.interest")}</th>
+                      <th className="p-2.5 text-right">{t("transactions.loan.balance")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -314,25 +317,25 @@ export const EligibilityStep = ({ transaction, initialData, onDataChange, readOn
       </TransactionStepCard>
 
       {/* Summary panel (inline, no second column) */}
-      <TransactionStepCard title="Estimated impact">
+      <TransactionStepCard title={t("transactions.loan.estimatedImpact")}>
         <div className="space-y-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--enroll-text-muted)" }}>Estimated monthly payment</p>
+            <p className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--enroll-text-muted)" }}>{t("transactions.loan.estimatedMonthlyPayment")}</p>
             <p className="text-2xl font-bold" style={{ color: "var(--enroll-text-primary)" }}>
               <AnimatedNumber value={monthlyPayment} format="currency" decimals={2} />
-              <span className="text-sm font-normal ml-1" style={{ color: "var(--enroll-text-muted)" }}>/ month</span>
+              <span className="text-sm font-normal ml-1" style={{ color: "var(--enroll-text-muted)" }}>{t("transactions.loan.perMonth")}</span>
             </p>
           </div>
           <div className="flex justify-between text-sm py-2 border-t border-b" style={{ borderColor: "var(--enroll-card-border)" }}>
-            <span style={{ color: "var(--enroll-text-secondary)" }}>Principal</span>
+            <span style={{ color: "var(--enroll-text-secondary)" }}>{t("transactions.loan.principal")}</span>
             <span className="font-medium" style={{ color: "var(--enroll-text-primary)" }}>{formatCurrency(clampedAmount)}</span>
           </div>
           <div className="flex justify-between text-sm py-2 border-b" style={{ borderColor: "var(--enroll-card-border)" }}>
-            <span style={{ color: "var(--enroll-text-secondary)" }}>Origination fee</span>
+            <span style={{ color: "var(--enroll-text-secondary)" }}>{t("transactions.loan.originationFee")}</span>
             <span className="font-medium" style={{ color: "var(--enroll-text-primary)" }}>{formatCurrency(clampedAmount * DEFAULT_LOAN_PLAN_CONFIG.originationFeePct)}</span>
           </div>
           <div className="flex justify-between text-sm py-2" style={{ color: "var(--enroll-text-primary)" }}>
-            <span className="font-semibold">Net disbursement</span>
+            <span className="font-semibold">{t("transactions.loan.netDisbursement")}</span>
             <span className="font-bold" style={{ color: "var(--color-success)" }}>{formatCurrency(clampedAmount - clampedAmount * DEFAULT_LOAN_PLAN_CONFIG.originationFeePct)}</span>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import type { PersonaProfile } from "@/mock/personas";
 import { SCENARIO_LABELS } from "@/mock/personas";
 
@@ -13,6 +14,7 @@ interface ScenarioShellProps {
  * Renders a greeting banner + the scenario-specific content.
  */
 export function ScenarioShell({ user, accentColor, children }: ScenarioShellProps) {
+  const { t } = useTranslation();
   const label = SCENARIO_LABELS[user.scenario];
   const formatter = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
@@ -24,7 +26,7 @@ export function ScenarioShell({ user, accentColor, children }: ScenarioShellProp
         style={{ borderColor: `${accentColor}33`, backgroundColor: `${accentColor}08` }}
       >
         <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
-          Welcome back,
+          {t("demo.welcomeBack")}
         </p>
         <h1 className="mt-1 text-2xl font-bold text-slate-900 sm:text-3xl dark:text-slate-100">
           {user.name}
@@ -36,13 +38,13 @@ export function ScenarioShell({ user, accentColor, children }: ScenarioShellProp
           >
             {label}
           </span>
-          <span>Age {user.age}</span>
+          <span>{t("demo.age")} {user.age}</span>
           <span className="hidden sm:inline">•</span>
-          <span>Balance: {formatter.format(user.balance)}</span>
+          <span>{t("demo.balance")}: {formatter.format(user.balance)}</span>
           {user.retirementScore > 0 && (
             <>
               <span className="hidden sm:inline">•</span>
-              <span>Retirement Score: {user.retirementScore}</span>
+              <span>{t("demo.retirementScore")}: {user.retirementScore}</span>
             </>
           )}
         </div>

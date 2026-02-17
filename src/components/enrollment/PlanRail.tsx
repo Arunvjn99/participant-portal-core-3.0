@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { Lock, Sparkles, CheckCircle2, Trophy } from "lucide-react";
 import type { PlanOption } from "../../types/enrollment";
 
@@ -31,6 +32,7 @@ const HorizontalTile: React.FC<{
   isSelected: boolean;
   onSelect: () => void;
 }> = ({ plan, isSelected, onSelect }) => {
+  const { t } = useTranslation();
   const isEligible = plan.isEligible !== false;
   const isRecommended = plan.isRecommended === true;
   const confidenceScore = plan.fitScore ?? 0;
@@ -111,12 +113,12 @@ const HorizontalTile: React.FC<{
               `}
             >
               {isRecommended && isEligible ? <Trophy size={11} className="text-yellow-300 fill-yellow-300" /> : null}
-              {isEligible ? `${confidenceScore}% Fit` : "Locked"}
+              {isEligible ? t("enrollment.fitLabel", { percent: confidenceScore }) : t("enrollment.locked")}
             </div>
             {isRecommended && isEligible && (
               <span className="text-[11px] font-medium text-indigo-600/80 dark:text-indigo-400 flex items-center gap-1">
                 <Sparkles size={10} />
-                AI Recommended Strategy
+                {t("enrollment.aiRecommendedStrategy")}
               </span>
             )}
           </div>
@@ -125,7 +127,7 @@ const HorizontalTile: React.FC<{
             {isSelected && (
               <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 text-white text-[10px] font-bold uppercase tracking-wide shadow-md dark:bg-slate-100 dark:text-slate-900">
                 <CheckCircle2 size={12} className="text-emerald-400 dark:text-emerald-600" />
-                Selected
+                {t("enrollment.selected")}
               </div>
             )}
           </div>
@@ -143,7 +145,7 @@ const HorizontalTile: React.FC<{
                 onSelect();
               }}
             >
-              Select
+              {t("enrollment.select")}
             </button>
           )}
         </div>
@@ -177,13 +179,13 @@ const HorizontalTile: React.FC<{
                   : "bg-slate-50/50 border-slate-100 text-slate-500 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-400"}
               `}
             >
-              <span className="opacity-70 font-normal mr-1">Benefit:</span>
+              <span className="opacity-70 font-normal mr-1">{t("enrollment.benefitLabel")}</span>
               {value}
             </div>
           ))}
           {isRecommended && isEligible && (
             <div className="px-3 py-1.5 rounded-md border border-emerald-100 bg-emerald-50/50 text-emerald-700 text-[10px] font-semibold flex items-center gap-1 dark:border-emerald-900 dark:bg-emerald-950/30 dark:text-emerald-400">
-              Tax-Free Growth
+              {t("enrollment.taxFreeGrowth")}
             </div>
           )}
         </div>

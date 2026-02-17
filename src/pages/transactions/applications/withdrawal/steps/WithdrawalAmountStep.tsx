@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { TransactionStepCard } from "../../../../../components/transactions/TransactionStepCard";
 import { ACCOUNT_OVERVIEW } from "../../../../../data/accountOverview";
 import type { TransactionStepProps } from "../../../../../components/transactions/TransactionApplication";
@@ -9,6 +10,7 @@ const formatCurrency = (n: number) =>
 const MIN_WITHDRAWAL = 100;
 
 export const WithdrawalAmountStep = ({ initialData, onDataChange, readOnly }: TransactionStepProps) => {
+  const { t } = useTranslation();
   const vestedBalance = ACCOUNT_OVERVIEW.vestedBalance;
   const maxAmount = Math.floor(vestedBalance * 0.25);
   const amount = initialData?.amount ?? Math.min(5000, maxAmount);
@@ -23,20 +25,20 @@ export const WithdrawalAmountStep = ({ initialData, onDataChange, readOnly }: Tr
 
   if (readOnly) {
     return (
-      <TransactionStepCard title="Withdrawal Amount">
+      <TransactionStepCard title={t("transactions.withdrawal.withdrawalAmount")}>
         <p className="text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
-          Requested: {formatCurrency(amount)}
+          {t("transactions.withdrawal.requestedReadOnly", { amount: formatCurrency(amount) })}
         </p>
       </TransactionStepCard>
     );
   }
 
   return (
-    <TransactionStepCard title="Withdrawal Amount">
+    <TransactionStepCard title={t("transactions.withdrawal.withdrawalAmount")}>
       <div className="space-y-6">
         <div>
           <label htmlFor="withdrawal-amount" className="block text-sm font-medium mb-2" style={{ color: "var(--enroll-text-primary)" }}>
-            Requested amount
+            {t("transactions.withdrawal.requestedAmount")}
           </label>
           <div className="relative">
             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-medium" style={{ color: "var(--enroll-text-muted)" }}>$</span>
@@ -57,7 +59,7 @@ export const WithdrawalAmountStep = ({ initialData, onDataChange, readOnly }: Tr
             />
           </div>
           <p className="mt-1 text-sm" style={{ color: "var(--enroll-text-muted)" }}>
-            Max {formatCurrency(maxAmount)} (subject to plan rules)
+            {t("transactions.withdrawal.maxSubjectToPlan", { max: formatCurrency(maxAmount) })}
           </p>
         </div>
         <div
@@ -65,7 +67,7 @@ export const WithdrawalAmountStep = ({ initialData, onDataChange, readOnly }: Tr
           style={{ background: "var(--color-warning-light)", borderColor: "var(--color-warning)" }}
         >
           <p className="text-sm" style={{ color: "var(--enroll-text-primary)" }}>
-            Hardship withdrawals may be subject to income tax and a 10% early withdrawal penalty if under 59½.
+            {t("transactions.withdrawal.taxPenaltyWarning")}
           </p>
         </div>
       </div>

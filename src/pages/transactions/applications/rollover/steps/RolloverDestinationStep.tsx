@@ -1,16 +1,18 @@
 import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { TransactionStepCard } from "../../../../../components/transactions/TransactionStepCard";
 import type { TransactionStepProps } from "../../../../../components/transactions/TransactionApplication";
 
 export const RolloverDestinationStep = ({ initialData, onDataChange, readOnly }: TransactionStepProps) => {
+  const { t } = useTranslation();
   const providerName = initialData?.providerName ?? "";
   const accountType = initialData?.accountType ?? "401(k)";
 
   if (readOnly) {
     return (
-      <TransactionStepCard title="Destination Account">
+      <TransactionStepCard title={t("transactions.rollover.destinationAccount")}>
         <p className="text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
-          Source: {providerName || "—"} · {accountType}
+          {t("transactions.rollover.sourceReadOnly", { source: providerName || "—", accountType })}
         </p>
       </TransactionStepCard>
     );
@@ -27,17 +29,17 @@ export const RolloverDestinationStep = ({ initialData, onDataChange, readOnly }:
   );
 
   return (
-    <TransactionStepCard title="Destination Account">
+    <TransactionStepCard title={t("transactions.rollover.destinationAccount")}>
       <div className="space-y-6">
         <div>
           <label className="block text-sm font-medium mb-2" style={{ color: "var(--enroll-text-primary)" }}>
-            Source institution / plan name
+            {t("transactions.rollover.sourceInstitution")}
           </label>
           <input
             type="text"
             value={providerName}
             onChange={handleProviderChange}
-            placeholder="e.g. Fidelity, Vanguard"
+            placeholder={t("transactions.rollover.sourcePlaceholder")}
             className="w-full px-4 py-3 rounded-[var(--radius-lg)] border"
             style={{
               background: "var(--enroll-card-bg)",
@@ -48,7 +50,7 @@ export const RolloverDestinationStep = ({ initialData, onDataChange, readOnly }:
         </div>
         <div>
           <label className="block text-sm font-medium mb-2" style={{ color: "var(--enroll-text-primary)" }}>
-            Account type
+            {t("transactions.rollover.accountType")}
           </label>
           <select
             value={accountType}
@@ -60,10 +62,10 @@ export const RolloverDestinationStep = ({ initialData, onDataChange, readOnly }:
               color: "var(--enroll-text-primary)",
             }}
           >
-            <option value="401(k)">401(k)</option>
-            <option value="403(b)">403(b)</option>
-            <option value="IRA">IRA</option>
-            <option value="Roth IRA">Roth IRA</option>
+            <option value="401(k)">{t("transactions.rollover.accountType401k")}</option>
+            <option value="403(b)">{t("transactions.rollover.accountType403b")}</option>
+            <option value="IRA">{t("transactions.rollover.accountTypeIRA")}</option>
+            <option value="Roth IRA">{t("transactions.rollover.accountTypeRothIRA")}</option>
           </select>
         </div>
       </div>

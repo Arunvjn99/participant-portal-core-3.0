@@ -1,45 +1,45 @@
 import type { TransactionType } from "../types/transactions";
 
 /**
- * Step label configuration for all transaction types
- * Ensures consistency across all transaction flows
+ * Step label configuration for all transaction types.
+ * Values are i18n keys; translate with t(key) where labels are rendered.
  */
 export const TRANSACTION_STEPS: Record<TransactionType, string[]> = {
   loan: [
-    "Strategy",
-    "Money Flow",
-    "Compliance",
-    "Review",
+    "transactions.stepsLoan0",
+    "transactions.stepsLoan1",
+    "transactions.stepsLoan2",
+    "transactions.stepsLoan3",
   ],
   withdrawal: [
-    "Eligibility",
-    "Withdrawal Amount",
-    "Tax Information",
-    "Review & Submit",
+    "transactions.stepsWithdrawal0",
+    "transactions.stepsWithdrawal1",
+    "transactions.stepsWithdrawal2",
+    "transactions.stepsWithdrawal3",
   ],
   distribution: [
-    "Eligibility",
-    "Distribution Amount",
-    "Tax Withholding",
-    "Review & Submit",
+    "transactions.stepsWithdrawal0",
+    "transactions.stepsWithdrawal1",
+    "transactions.stepsWithdrawal2",
+    "transactions.stepsWithdrawal3",
   ],
   rollover: [
-    "Eligibility",
-    "Rollover Amount",
-    "Destination Account",
-    "Review & Submit",
+    "transactions.stepsRollover0",
+    "transactions.stepsRollover1",
+    "transactions.stepsRollover2",
+    "transactions.stepsRollover3",
   ],
   transfer: [
-    "Eligibility",
-    "Transfer Details",
-    "Investment Selection",
-    "Review & Submit",
+    "transactions.stepsTransfer0",
+    "transactions.stepsTransfer1",
+    "transactions.stepsTransfer2",
+    "transactions.stepsTransfer3",
   ],
   rebalance: [
-    "Eligibility",
-    "Current Allocation",
-    "Target Allocation",
-    "Review & Submit",
+    "transactions.stepsRollover0",
+    "transactions.stepsRollover1",
+    "transactions.stepsRollover2",
+    "transactions.stepsRollover3",
   ],
 };
 

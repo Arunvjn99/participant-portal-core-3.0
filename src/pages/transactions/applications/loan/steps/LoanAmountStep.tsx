@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { CreditCard, FileText } from "lucide-react";
 import { TransactionStepCard } from "../../../../../components/transactions/TransactionStepCard";
 import type { TransactionStepProps } from "../../../../../components/transactions/TransactionApplication";
@@ -8,6 +9,7 @@ const ACCOUNT_MIN = 4;
 const ACCOUNT_MAX = 17;
 
 export const LoanAmountStep = ({ initialData, onDataChange, readOnly }: TransactionStepProps) => {
+  const { t } = useTranslation();
   const paymentMethod = initialData?.paymentMethod ?? "EFT";
   const routingNumber = initialData?.routingNumber ?? "";
   const accountNumber = initialData?.accountNumber ?? "";
@@ -42,9 +44,9 @@ export const LoanAmountStep = ({ initialData, onDataChange, readOnly }: Transact
 
   if (readOnly) {
     return (
-      <TransactionStepCard title="Money Flow">
+      <TransactionStepCard title={t("transactions.loan.moneyFlow")}>
         <p className="text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
-          Disbursement: {paymentMethod === "EFT" ? "Direct deposit" : "Paper check"}
+          {t("transactions.loan.disbursement")}: {paymentMethod === "EFT" ? t("transactions.loan.directDeposit") : t("transactions.loan.paperCheck")}
           {paymentMethod === "EFT" && accountType && ` · ${accountType}`}
         </p>
       </TransactionStepCard>
@@ -52,14 +54,14 @@ export const LoanAmountStep = ({ initialData, onDataChange, readOnly }: Transact
   }
 
   return (
-    <TransactionStepCard title="Money Flow">
+    <TransactionStepCard title={t("transactions.loan.moneyFlow")}>
       <div className="space-y-6">
         <p className="text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
-          Review disbursement details and how you will receive funds.
+          {t("transactions.loan.reviewDisbursement")}
         </p>
 
         <div>
-          <p className="text-sm font-bold mb-3" style={{ color: "var(--enroll-text-primary)" }}>Disbursement method</p>
+          <p className="text-sm font-bold mb-3" style={{ color: "var(--enroll-text-primary)" }}>{t("transactions.loan.disbursementMethod")}</p>
           <div className="grid grid-cols-2 gap-4">
             <button
               type="button"
@@ -80,8 +82,8 @@ export const LoanAmountStep = ({ initialData, onDataChange, readOnly }: Transact
                 <CreditCard className="h-5 w-5" />
               </span>
               <div>
-                <p className="font-bold text-sm" style={{ color: "var(--enroll-text-primary)" }}>Direct deposit</p>
-                <p className="text-xs" style={{ color: "var(--enroll-text-muted)" }}>Fastest (2–3 days)</p>
+                <p className="font-bold text-sm" style={{ color: "var(--enroll-text-primary)" }}>{t("transactions.loan.directDeposit")}</p>
+                <p className="text-xs" style={{ color: "var(--enroll-text-muted)" }}>{t("transactions.loan.fastestDays")}</p>
               </div>
             </button>
             <button
@@ -103,8 +105,8 @@ export const LoanAmountStep = ({ initialData, onDataChange, readOnly }: Transact
                 <FileText className="h-5 w-5" />
               </span>
               <div>
-                <p className="font-bold text-sm" style={{ color: "var(--enroll-text-primary)" }}>Paper check</p>
-                <p className="text-xs" style={{ color: "var(--enroll-text-muted)" }}>Mail (7–10 days)</p>
+                <p className="font-bold text-sm" style={{ color: "var(--enroll-text-primary)" }}>{t("transactions.loan.paperCheck")}</p>
+                <p className="text-xs" style={{ color: "var(--enroll-text-muted)" }}>{t("transactions.loan.mailDays")}</p>
               </div>
             </button>
           </div>
@@ -113,7 +115,7 @@ export const LoanAmountStep = ({ initialData, onDataChange, readOnly }: Transact
         {paymentMethod === "EFT" && (
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold uppercase mb-1.5" style={{ color: "var(--enroll-text-muted)" }}>Routing number</label>
+              <label className="block text-xs font-semibold uppercase mb-1.5" style={{ color: "var(--enroll-text-muted)" }}>{t("transactions.loan.routingNumber")}</label>
               <input
                 type="text"
                 inputMode="numeric"
@@ -128,10 +130,10 @@ export const LoanAmountStep = ({ initialData, onDataChange, readOnly }: Transact
                   color: "var(--enroll-text-primary)",
                 }}
               />
-              <p className="mt-1 text-[10px]" style={{ color: "var(--enroll-text-muted)" }}>9 digits</p>
+              <p className="mt-1 text-[10px]" style={{ color: "var(--enroll-text-muted)" }}>{t("transactions.loan.routingDigits")}</p>
             </div>
             <div>
-              <label className="block text-xs font-semibold uppercase mb-1.5" style={{ color: "var(--enroll-text-muted)" }}>Account number</label>
+              <label className="block text-xs font-semibold uppercase mb-1.5" style={{ color: "var(--enroll-text-muted)" }}>{t("transactions.loan.accountNumber")}</label>
               <input
                 type="password"
                 inputMode="numeric"
@@ -146,10 +148,10 @@ export const LoanAmountStep = ({ initialData, onDataChange, readOnly }: Transact
                   color: "var(--enroll-text-primary)",
                 }}
               />
-              <p className="mt-1 text-[10px]" style={{ color: "var(--enroll-text-muted)" }}>4–17 digits</p>
+              <p className="mt-1 text-[10px]" style={{ color: "var(--enroll-text-muted)" }}>{t("transactions.loan.accountDigits")}</p>
             </div>
             <div>
-              <p className="block text-xs font-semibold uppercase mb-2" style={{ color: "var(--enroll-text-muted)" }}>Account type</p>
+              <p className="block text-xs font-semibold uppercase mb-2" style={{ color: "var(--enroll-text-muted)" }}>{t("transactions.loan.accountType")}</p>
               <div className="flex gap-4">
                 {(["Checking", "Savings"] as const).map((type) => (
                   <label key={type} className="flex items-center gap-2 cursor-pointer">
@@ -161,7 +163,7 @@ export const LoanAmountStep = ({ initialData, onDataChange, readOnly }: Transact
                       className="rounded-full"
                       style={{ accentColor: "var(--enroll-brand)" }}
                     />
-                    <span className="text-sm" style={{ color: "var(--enroll-text-primary)" }}>{type}</span>
+                    <span className="text-sm" style={{ color: "var(--enroll-text-primary)" }}>{t(type === "Checking" ? "transactions.loan.checking" : "transactions.loan.savings")}</span>
                   </label>
                 ))}
               </div>
@@ -179,8 +181,8 @@ export const LoanAmountStep = ({ initialData, onDataChange, readOnly }: Transact
           >
             <FileText className="h-5 w-5 shrink-0" style={{ color: "var(--color-warning)" }} />
             <div>
-              <p className="text-sm font-semibold" style={{ color: "var(--enroll-text-primary)" }}>Mailing to address on file</p>
-              <p className="text-xs mt-1" style={{ color: "var(--enroll-text-secondary)" }}>Check will be mailed to your address on file within 7–10 business days.</p>
+              <p className="text-sm font-semibold" style={{ color: "var(--enroll-text-primary)" }}>{t("transactions.loan.mailingToAddress")}</p>
+              <p className="text-xs mt-1" style={{ color: "var(--enroll-text-secondary)" }}>{t("transactions.loan.checkMailedNote")}</p>
             </div>
           </div>
         )}

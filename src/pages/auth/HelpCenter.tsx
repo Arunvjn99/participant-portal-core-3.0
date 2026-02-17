@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   AuthLayout,
   AuthFormShell,
@@ -6,6 +7,7 @@ import {
 import { Logo } from "../../components/brand/Logo";
 
 export const HelpCenter = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleBackToSignIn = () => {
@@ -21,7 +23,7 @@ export const HelpCenter = () => {
       <div className="flex w-full flex-col gap-4">
         <div className="flex flex-col gap-2 rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/50">
           <div className="text-sm font-medium text-slate-500 dark:text-slate-400">
-            Phone support
+            {t("auth.phoneSupport")}
           </div>
           <a
             href="tel:1-800-555-0199"
@@ -32,7 +34,7 @@ export const HelpCenter = () => {
         </div>
         <div className="flex flex-col gap-2 rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/50">
           <div className="text-sm font-medium text-slate-500 dark:text-slate-400">
-            Email
+            {t("auth.email")}
           </div>
           <a
             href="mailto:support@example.com"
@@ -50,7 +52,7 @@ export const HelpCenter = () => {
           handleBackToSignIn();
         }}
       >
-        Back to sign in
+        {t("auth.backToSignIn")}
       </a>
     </>
   );
@@ -59,8 +61,8 @@ export const HelpCenter = () => {
     <AuthLayout>
       <AuthFormShell
         headerSlot={headerSlot}
-        title="Help Center"
-        description="If you're having trouble signing in, contact us:"
+        title={t("auth.helpCenterTitle")}
+        description={t("auth.helpCenterDesc")}
         bodySlot={bodySlot}
       />
     </AuthLayout>

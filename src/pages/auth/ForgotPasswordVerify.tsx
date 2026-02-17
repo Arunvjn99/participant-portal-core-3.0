@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   AuthLayout,
   AuthFormShell,
@@ -9,6 +10,7 @@ import {
 import { Logo } from "../../components/brand/Logo";
 
 export const ForgotPasswordVerify = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const email = (location.state as { email?: string })?.email ?? "";
@@ -39,7 +41,7 @@ export const ForgotPasswordVerify = () => {
     <>
       <AuthOTPInput onComplete={handleOTPComplete} />
       <AuthButton onClick={handleVerify} disabled={otpValue.length !== 6}>
-        Verify & continue
+        {t("auth.verifyContinue")}
       </AuthButton>
       <div className="flex flex-col items-center gap-3">
         <a
@@ -49,9 +51,9 @@ export const ForgotPasswordVerify = () => {
             e.preventDefault();
             handleResend();
           }}
-          aria-label="Resend verification code"
+          aria-label={t("auth.resendCode")}
         >
-          Resend code
+          {t("auth.resendCode")}
         </a>
         <a
           href="#"
@@ -61,22 +63,22 @@ export const ForgotPasswordVerify = () => {
             handleBackToSignIn();
           }}
         >
-          Back to sign in
+          {t("auth.backToSignIn")}
         </a>
       </div>
     </>
   );
 
+  const description = email
+    ? t("auth.verificationCodeDescWithEmail", { email })
+    : t("auth.verificationCodeDesc");
+
   return (
     <AuthLayout>
       <AuthFormShell
         headerSlot={headerSlot}
-        title="Verification code"
-        description={
-          email
-            ? `We've sent a 6-digit code to ${email}. Enter it below.`
-            : "We've sent a 6-digit code to your email address. Enter it below."
-        }
+        title={t("auth.verificationCode")}
+        description={description}
         bodySlot={bodySlot}
       />
     </AuthLayout>
