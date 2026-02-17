@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import * as Dialog from "@radix-ui/react-dialog";
@@ -154,43 +154,55 @@ export const InvestmentProfileWizard = ({
     exit: (dir: number) => ({ x: dir > 0 ? -60 : 60, opacity: 0 }),
   };
 
-  return (
+  /* Lock body scroll when wizard is open so modal is clearly on top */
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
+  const wizardContent = (
     <Dialog.Root open={isOpen} onOpenChange={(open) => !open && handleClose()}>
       <AnimatePresence>
         {isOpen && (
-          <Dialog.Portal forceMount>
-            {/* Overlay */}
-            <Dialog.Overlay asChild forceMount>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="fixed inset-0 z-50"
-                style={{ background: "rgba(0, 0, 0, 0.6)", backdropFilter: "blur(8px)" }}
-              />
-            </Dialog.Overlay>
+          <Dialog.Portal forceMount container={document.body}>
+            {/* Full-screen flex container: centers dialog on viewport and ensures high stacking order */}
+            <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
+              {/* Overlay */}
+              <Dialog.Overlay asChild forceMount>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="absolute inset-0"
+                  style={{ background: "rgba(0, 0, 0, 0.6)", backdropFilter: "blur(8px)" }}
+                />
+              </Dialog.Overlay>
 
-            {/* Content */}
-            <Dialog.Content asChild forceMount
-              aria-describedby={undefined}
-              onPointerDownOutside={(e) => e.preventDefault()}
-              onEscapeKeyDown={() => handleClose()}
-            >
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 12 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 12 }}
-                transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
-                className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-[600px] -translate-x-1/2 -translate-y-1/2 focus:outline-none"
-                style={{
-                  background: "var(--enroll-card-bg)",
-                  border: "1px solid var(--enroll-card-border)",
-                  borderRadius: "24px",
-                  boxShadow: "0 24px 64px rgba(0, 0, 0, 0.12), 0 0 80px rgb(var(--enroll-brand-rgb) / 0.06)",
-                  overflow: "hidden",
-                }}
+              {/* Content — centered by flex parent, no fixed/translate so it always appears in center */}
+              <Dialog.Content asChild forceMount
+                aria-describedby={undefined}
+                onPointerDownOutside={(e) => e.preventDefault()}
+                onEscapeKeyDown={() => handleClose()}
               >
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: 12 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 12 }}
+                  transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+                  className="relative z-10 w-full max-w-[600px] max-h-[90vh] overflow-y-auto focus:outline-none rounded-3xl"
+                  style={{
+                    background: "var(--enroll-card-bg)",
+                    border: "1px solid var(--enroll-card-border)",
+                    boxShadow: "0 24px 64px rgba(0, 0, 0, 0.12), 0 0 80px rgb(var(--enroll-brand-rgb) / 0.06)",
+                  }}
+                >
                 {/* ── Radial glow accent ── */}
                 <div
                   className="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] h-[200px] pointer-events-none"
@@ -341,11 +353,14 @@ export const InvestmentProfileWizard = ({
                 </div>
               </motion.div>
             </Dialog.Content>
+            </div>
           </Dialog.Portal>
         )}
       </AnimatePresence>
     </Dialog.Root>
   );
+
+  return wizardContent;
 };
 
 /* ═══════════════════════════════════════════════════════

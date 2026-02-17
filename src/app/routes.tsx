@@ -7,7 +7,7 @@ import { HelpCenter } from "@/pages/auth/HelpCenter";
 import { Dashboard } from "../pages/dashboard/Dashboard";
 import { ChoosePlan } from "../pages/enrollment/ChoosePlan";
 import { Contribution } from "../pages/enrollment/Contribution";
-import { TransactionsHub } from "../pages/transactions/TransactionsHub";
+import { TransactionsPage } from "../features/transactions/TransactionsPage";
 import { TransactionAnalysis } from "../pages/transactions/TransactionAnalysis";
 import { TransactionApplicationRouter } from "../pages/transactions/applications/TransactionApplicationRouter";
 import { EnrollmentLayout } from "../layouts/EnrollmentLayout";
@@ -30,7 +30,7 @@ export const AppRoutes = () => {
         <Route path="choose-plan" element={<ChoosePlan />} />
         <Route path="contribution" element={<Contribution />} />
       </Route>
-      <Route path="/transactions" element={<TransactionsHub />} />
+      <Route path="/transactions" element={<TransactionsPage />} />
       {/* Generic route handler for all transaction application flows - must come before /transactions/:transactionId */}
       <Route path="/transactions/:transactionType/start" element={<TransactionApplicationRouter />} />
       <Route path="/transactions/:transactionType/:transactionId" element={<TransactionApplicationRouter />} />

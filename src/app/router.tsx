@@ -16,7 +16,7 @@ import { ChoosePlan } from "../pages/enrollment/ChoosePlan";
 import { PlansPage } from "../pages/enrollment/PlansPage";
 import { Contribution } from "../pages/enrollment/Contribution";
 import { FutureContributions } from "../pages/enrollment/FutureContributions";
-import { TransactionsHub } from "../pages/transactions/TransactionsHub";
+import { TransactionsPage } from "../features/transactions/TransactionsPage";
 import { TransactionAnalysis } from "../pages/transactions/TransactionAnalysis";
 import { TransactionApplicationRouter } from "../pages/transactions/applications/TransactionApplicationRouter";
 import { LoanFlow } from "../pages/transactions/applications/LoanFlow";
@@ -125,7 +125,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/transactions",
-        element: <TransactionsHub />,
+        element: <TransactionsPage />,
       },
       {
         path: "/transactions/loan/:transactionId",
