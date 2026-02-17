@@ -7,6 +7,7 @@ export const MOCK_TRANSACTIONS: Record<string, Transaction> = {
   "txn-001": {
     id: "txn-001",
     type: "loan",
+    planId: "current",
     status: "completed",
     amount: 50000,
     grossAmount: 50000,
@@ -39,6 +40,7 @@ export const MOCK_TRANSACTIONS: Record<string, Transaction> = {
   "txn-002": {
     id: "txn-002",
     type: "withdrawal",
+    planId: "current",
     status: "active",
     amount: 10000,
     grossAmount: 10000,
@@ -64,6 +66,7 @@ export const MOCK_TRANSACTIONS: Record<string, Transaction> = {
   "txn-003": {
     id: "txn-003",
     type: "rollover",
+    planId: "previous",
     status: "draft",
     amount: 25000,
     grossAmount: 25000,
@@ -83,6 +86,7 @@ export const MOCK_TRANSACTIONS: Record<string, Transaction> = {
   "txn-004": {
     id: "txn-004",
     type: "distribution",
+    planId: "ira",
     status: "completed",
     amount: 15000,
     grossAmount: 15000,

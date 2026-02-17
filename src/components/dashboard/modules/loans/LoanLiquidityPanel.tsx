@@ -97,7 +97,7 @@ export const LoanLiquidityPanel = memo(function LoanLiquidityPanel({ engine }: M
 
       <button
         type="button"
-        onClick={() => navigate("/transactions/applications/loan")}
+        onClick={() => navigate("/transactions/loan/start")}
         className="mt-3 w-full text-[11px] font-semibold py-2 rounded-xl border-none cursor-pointer transition-colors"
         style={{
           background: "rgb(var(--enroll-brand-rgb) / 0.06)",

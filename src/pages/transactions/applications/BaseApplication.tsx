@@ -3,9 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../../layouts/DashboardLayout";
 import { DashboardHeader } from "../../../components/dashboard/DashboardHeader";
 import { DashboardCard } from "../../../components/dashboard/DashboardCard";
-import { TransactionFlowStepper } from "../../../components/transactions/TransactionFlowStepper";
+import { EnrollmentStepper } from "../../../components/enrollment/EnrollmentStepper";
 import { transactionStore } from "../../../data/transactionStore";
-import { getTotalSteps } from "../../../config/transactionSteps";
+import { getStepLabels, getTotalSteps } from "../../../config/transactionSteps";
 import type { TransactionType } from "../../../types/transactions";
 
 interface BaseApplicationProps {
@@ -82,7 +82,11 @@ export const BaseApplication = ({ transactionType, children }: BaseApplicationPr
         </div>
 
         <div className="transaction-application__stepper">
-          <TransactionFlowStepper transactionType={transactionType} currentStep={currentStep} />
+          <EnrollmentStepper
+            currentStep={currentStep}
+            totalSteps={totalSteps}
+            stepLabels={getStepLabels(transactionType)}
+          />
         </div>
 
         <div className="transaction-application__content">

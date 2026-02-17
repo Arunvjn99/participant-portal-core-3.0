@@ -43,10 +43,20 @@ export interface MonthlySummaryRow {
   pct?: number;
 }
 
+export type InsightImpactType = "Growth" | "Risk" | "Pending" | "Info";
+
 export interface ActivityInsight {
   id: string;
-  statement: string;
+  title: string;
+  description: string;
+  impact?: string;
+  actionLabel?: string;
+  onAction?: () => void;
   type: "contribution" | "withdrawal" | "rollover" | "general" | "warning";
+  /** SmartInsights-style impact type for styling */
+  impactType?: InsightImpactType;
+  value?: string;
+  priority?: boolean;
 }
 
 export interface ActionTileConfig {
@@ -54,6 +64,8 @@ export interface ActionTileConfig {
   title: string;
   subtext: string;
   statusBadge?: string;
+  /** Shown as eligibility text (e.g. "$32k Available") */
+  eligibilityText?: string;
   route: string;
   icon: ReactNode;
 }

@@ -6,10 +6,10 @@ import type { TransactionType } from "../types/transactions";
  */
 export const TRANSACTION_STEPS: Record<TransactionType, string[]> = {
   loan: [
-    "Eligibility",
-    "Loan Amount",
-    "Repayment Terms",
-    "Review & Submit",
+    "Strategy",
+    "Money Flow",
+    "Compliance",
+    "Review",
   ],
   withdrawal: [
     "Eligibility",

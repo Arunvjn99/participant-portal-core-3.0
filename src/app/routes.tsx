@@ -7,7 +7,7 @@ import { HelpCenter } from "@/pages/auth/HelpCenter";
 import { Dashboard } from "../pages/dashboard/Dashboard";
 import { ChoosePlan } from "../pages/enrollment/ChoosePlan";
 import { Contribution } from "../pages/enrollment/Contribution";
-import { TransactionsPage } from "../features/transactions/TransactionsPage";
+import { TransactionsPage } from "../pages/transactions/TransactionsPage";
 import { TransactionAnalysis } from "../pages/transactions/TransactionAnalysis";
 import { TransactionApplicationRouter } from "../pages/transactions/applications/TransactionApplicationRouter";
 import { EnrollmentLayout } from "../layouts/EnrollmentLayout";

@@ -42,4 +42,6 @@ export interface Transaction {
   accountType?: string;
   /** When true, amount is shown as negative in activity list */
   amountNegative?: boolean;
+  /** Plan ID for multi-plan filtering (e.g. "current", "previous", "ira") */
+  planId?: string;
 }

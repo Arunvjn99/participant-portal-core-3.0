@@ -16,10 +16,9 @@ import { ChoosePlan } from "../pages/enrollment/ChoosePlan";
 import { PlansPage } from "../pages/enrollment/PlansPage";
 import { Contribution } from "../pages/enrollment/Contribution";
 import { FutureContributions } from "../pages/enrollment/FutureContributions";
-import { TransactionsPage } from "../features/transactions/TransactionsPage";
+import { TransactionsPage } from "../pages/transactions/TransactionsPage";
 import { TransactionAnalysis } from "../pages/transactions/TransactionAnalysis";
 import { TransactionApplicationRouter } from "../pages/transactions/applications/TransactionApplicationRouter";
-import { LoanFlow } from "../pages/transactions/applications/LoanFlow";
 import { EnrollmentLayout } from "../layouts/EnrollmentLayout";
 import { InvestmentProvider } from "../context/InvestmentContext";
 import InvestmentsLayout from "../app/investments/layout";
@@ -126,10 +125,6 @@ export const router = createBrowserRouter([
       {
         path: "/transactions",
         element: <TransactionsPage />,
-      },
-      {
-        path: "/transactions/loan/:transactionId",
-        element: <LoanFlow />,
       },
       {
         path: "/transactions/:transactionType/start",

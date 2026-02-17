@@ -9,6 +9,8 @@ interface InsightCardProps {
   actionLabel?: string;
   onAction?: () => void;
   index?: number;
+  /** When true, used inside another card — no border, no entrance animation */
+  embedded?: boolean;
 }
 
 /**
@@ -22,19 +24,10 @@ export const InsightCard = memo(function InsightCard({
   actionLabel,
   onAction,
   index = 0,
+  embedded = false,
 }: InsightCardProps) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: 0.08 * index, ease: [0.4, 0, 0.2, 1] }}
-      whileHover={{ boxShadow: "0 0 20px rgb(var(--enroll-brand-rgb) / 0.08)" }}
-      className="p-4 rounded-xl transition-all"
-      style={{
-        background: "var(--color-bg-surface, var(--enroll-card-bg))",
-        border: "1px solid var(--enroll-card-border)",
-      }}
-    >
+  const content = (
+    <>
       <div className="flex items-start gap-3">
         {icon && (
           <div
@@ -86,6 +79,26 @@ export const InsightCard = memo(function InsightCard({
           {actionLabel}
         </button>
       )}
+    </>
+  );
+
+  if (embedded) {
+    return <div className="min-w-0">{content}</div>;
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: 0.08 * index, ease: [0.4, 0, 0.2, 1] }}
+      whileHover={{ boxShadow: "0 0 20px rgb(var(--enroll-brand-rgb) / 0.08)" }}
+      className="p-4 rounded-xl transition-all"
+      style={{
+        background: "var(--color-bg-surface, var(--enroll-card-bg))",
+        border: "1px solid var(--enroll-card-border)",
+      }}
+    >
+      {content}
     </motion.div>
   );
 });

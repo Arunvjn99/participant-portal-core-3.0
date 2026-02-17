@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { branding } from "../../config/branding";
+import LanguageSwitcher from "@/components/common/LanguageSwitcher";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import { useDemoUser, clearDemoUser } from "@/hooks/useDemoUser";
 import { SCENARIO_LABELS } from "@/mock/personas";
@@ -165,6 +166,7 @@ export const DashboardHeader = () => {
 
         {/* ── Right: Actions ── */}
         <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+          <LanguageSwitcher />
           {/* Demo Mode badge */}
           {demoUser && (
             <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-amber-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-amber-700 dark:border-amber-600 dark:bg-amber-900/30 dark:text-amber-300">

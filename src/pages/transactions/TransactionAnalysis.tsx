@@ -1,10 +1,13 @@
+import type { CSSProperties } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../layouts/DashboardLayout";
 import { DashboardHeader } from "../../components/dashboard/DashboardHeader";
-import { DashboardCard } from "../../components/dashboard/DashboardCard";
+import { TransactionFlowLayout } from "../../components/transactions/TransactionFlowLayout";
+import { TransactionStepCard } from "../../components/transactions/TransactionStepCard";
 import { RetirementImpact } from "../../components/transactions/RetirementImpact";
 import { WarningBanner } from "../../components/transactions/WarningBanner";
 import { TransactionStepper } from "../../components/transactions/TransactionStepper";
+import { transactionStore } from "../../data/transactionStore";
 import { getTransactionById } from "../../data/mockTransactions";
 import Button from "../../components/ui/Button";
 import type { TransactionType } from "../../types/transactions";
@@ -58,59 +61,83 @@ const getTransactionExplanation = (type: TransactionType): string => {
   }
 };
 
+const formatCurrency = (amount: number) =>
+  new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
+
+const SummaryRow = ({
+  label,
+  value,
+  valueStyle,
+}: {
+  label: string;
+  value: string;
+  valueStyle?: CSSProperties;
+}) => (
+  <div
+    className="flex justify-between items-center py-2 border-b last:border-b-0"
+    style={{ borderColor: "var(--enroll-card-border)" }}
+  >
+    <span className="text-[0.9375em] font-medium" style={{ color: "var(--enroll-text-muted)" }}>
+      {label}
+    </span>
+    <span
+      className="text-[0.9375em] font-medium"
+      style={valueStyle ?? { color: "var(--enroll-text-primary)" }}
+    >
+      {value}
+    </span>
+  </div>
+);
+
 export const TransactionAnalysis = () => {
   const { transactionId } = useParams<{ transactionId: string }>();
   const navigate = useNavigate();
 
   if (!transactionId) {
     return (
-      <DashboardLayout header={<DashboardHeader />}>
-        <div className="transaction-analysis">
-          <DashboardCard>
+      <DashboardLayout header={<DashboardHeader />} transparentBackground>
+        <TransactionFlowLayout title="Transaction Details" onBack={() => navigate("/transactions")}>
+          <TransactionStepCard title="Not Found">
             <p>Transaction not found.</p>
-          </DashboardCard>
-        </div>
+          </TransactionStepCard>
+        </TransactionFlowLayout>
       </DashboardLayout>
     );
   }
 
-  const transaction = getTransactionById(transactionId);
+  // Use transactionStore first (drafts, flow-created), then mock data
+  const transaction =
+    transactionStore.getTransaction(transactionId) ?? getTransactionById(transactionId);
 
   if (!transaction) {
     return (
-      <DashboardLayout header={<DashboardHeader />}>
-        <div className="transaction-analysis">
-          <DashboardCard>
+      <DashboardLayout header={<DashboardHeader />} transparentBackground>
+        <TransactionFlowLayout title="Transaction Details" onBack={() => navigate("/transactions")}>
+          <TransactionStepCard title="Not Found">
             <p>Transaction not found.</p>
-          </DashboardCard>
-        </div>
+          </TransactionStepCard>
+        </TransactionFlowLayout>
       </DashboardLayout>
     );
   }
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
 
   const handleAction = () => {
     switch (transaction.status) {
       case "draft":
-        // TODO: Navigate to resume transaction flow
-        console.log("Resume transaction");
-        break;
       case "active":
-        // TODO: Navigate to status tracking
-        console.log("Track status");
+        navigate(`/transactions/${transaction.type}/${transaction.id}`);
         break;
       case "completed":
-        // TODO: Navigate to documents
+        // Placeholder: in production would open documents
         console.log("View documents");
         break;
+      default:
+        navigate("/transactions");
     }
   };
 
@@ -127,130 +154,117 @@ export const TransactionAnalysis = () => {
     }
   };
 
-  return (
-    <DashboardLayout header={<DashboardHeader />}>
-      <div className="transaction-analysis">
-        <div className="transaction-analysis__header">
-          <button
-            type="button"
-            onClick={() => navigate(-1)}
-            className="transaction-analysis__back-button"
-            aria-label="Back to transactions"
-          >
-            ← Back
-          </button>
-          <h1 className="transaction-analysis__title">Transaction Details</h1>
-        </div>
+  const getStatusStyle = (): CSSProperties | undefined => {
+    if (transaction.status === "completed")
+      return { color: "var(--color-success, #22c55e)" };
+    if (transaction.status === "active") return { color: "var(--enroll-brand)" };
+    return undefined;
+  };
 
-        <div className="transaction-analysis__content">
-          {/* Card 1: Transaction Summary */}
-          <DashboardCard title="Transaction Summary">
-            <div className="transaction-summary">
-              <div className="transaction-summary__row">
-                <span className="transaction-summary__label">Type:</span>
-                <span className="transaction-summary__value">{getTransactionTypeLabel(transaction.type)}</span>
-              </div>
-              <div className="transaction-summary__row">
-                <span className="transaction-summary__label">Status:</span>
-                <span className={`transaction-summary__value transaction-summary__value--${transaction.status}`}>
-                  {getStatusLabel(transaction.status)}
-                </span>
-              </div>
-              <div className="transaction-summary__row">
-                <span className="transaction-summary__label">Amount:</span>
-                <span className="transaction-summary__value">{formatCurrency(transaction.amount)}</span>
-              </div>
-              <div className="transaction-summary__row">
-                <span className="transaction-summary__label">Date Initiated:</span>
-                <span className="transaction-summary__value">
-                  {new Date(transaction.dateInitiated).toLocaleDateString()}
-                </span>
-              </div>
+  return (
+    <DashboardLayout header={<DashboardHeader />} transparentBackground>
+      <TransactionFlowLayout
+        title="Transaction Details"
+        subtitle={getTransactionTypeLabel(transaction.type)}
+        onBack={() => navigate("/transactions")}
+      >
+        <div className="space-y-6">
+          <TransactionStepCard title="Transaction Summary">
+            <div className="space-y-0">
+              <SummaryRow label="Type" value={getTransactionTypeLabel(transaction.type)} />
+              <SummaryRow
+                label="Status"
+                value={getStatusLabel(transaction.status)}
+                valueStyle={getStatusStyle()}
+              />
+              <SummaryRow label="Amount" value={formatCurrency(transaction.amount ?? 0)} />
+              <SummaryRow
+                label="Date Initiated"
+                value={new Date(transaction.dateInitiated).toLocaleDateString()}
+              />
               {transaction.dateCompleted && (
-                <div className="transaction-summary__row">
-                  <span className="transaction-summary__label">Date Completed:</span>
-                  <span className="transaction-summary__value">
-                    {new Date(transaction.dateCompleted).toLocaleDateString()}
-                  </span>
-                </div>
+                <SummaryRow
+                  label="Date Completed"
+                  value={new Date(transaction.dateCompleted).toLocaleDateString()}
+                />
               )}
               {transaction.processingTime && (
-                <div className="transaction-summary__row">
-                  <span className="transaction-summary__label">Processing Time:</span>
-                  <span className="transaction-summary__value">{transaction.processingTime}</span>
-                </div>
+                <SummaryRow label="Processing Time" value={transaction.processingTime} />
               )}
             </div>
-          </DashboardCard>
+          </TransactionStepCard>
 
-          {/* Card 2: What This Transaction Does */}
-          <DashboardCard title="What This Transaction Does">
-            <p className="transaction-explanation">{getTransactionExplanation(transaction.type)}</p>
-          </DashboardCard>
+          <TransactionStepCard title="What This Transaction Does">
+            <p
+              className="text-[0.9375em] leading-relaxed"
+              style={{ color: "var(--enroll-text-secondary)" }}
+            >
+              {getTransactionExplanation(transaction.type)}
+            </p>
+          </TransactionStepCard>
 
-          {/* Card 3: Retirement Impact */}
           <RetirementImpact
             level={transaction.retirementImpact.level}
             rationale={transaction.retirementImpact.rationale}
           />
 
-          {/* Card 4: Financial Breakdown */}
-          <DashboardCard title="Financial Breakdown">
-            <div className="financial-breakdown">
-              {transaction.grossAmount && (
-                <div className="financial-breakdown__row">
-                  <span className="financial-breakdown__label">Gross Amount:</span>
-                  <span className="financial-breakdown__value">{formatCurrency(transaction.grossAmount)}</span>
-                </div>
-              )}
-              {transaction.fees !== undefined && transaction.fees > 0 && (
-                <div className="financial-breakdown__row">
-                  <span className="financial-breakdown__label">Fees:</span>
-                  <span className="financial-breakdown__value">{formatCurrency(transaction.fees)}</span>
-                </div>
-              )}
-              {transaction.taxWithholding !== undefined && transaction.taxWithholding > 0 && (
-                <div className="financial-breakdown__row">
-                  <span className="financial-breakdown__label">Tax Withholding:</span>
-                  <span className="financial-breakdown__value">{formatCurrency(transaction.taxWithholding)}</span>
-                </div>
-              )}
-              {transaction.netAmount && (
-                <div className="financial-breakdown__row financial-breakdown__row--total">
-                  <span className="financial-breakdown__label">Net Amount:</span>
-                  <span className="financial-breakdown__value">{formatCurrency(transaction.netAmount)}</span>
-                </div>
-              )}
-              {transaction.repaymentInfo && (
-                <div className="financial-breakdown__repayment">
-                  <h3 className="financial-breakdown__repayment-title">Repayment Information</h3>
-                  <div className="financial-breakdown__row">
-                    <span className="financial-breakdown__label">Monthly Payment:</span>
-                    <span className="financial-breakdown__value">
-                      {formatCurrency(transaction.repaymentInfo.monthlyPayment)}
-                    </span>
+          {(transaction.grossAmount ||
+            (transaction.fees !== undefined && transaction.fees > 0) ||
+            (transaction.taxWithholding !== undefined && transaction.taxWithholding > 0) ||
+            transaction.netAmount ||
+            transaction.repaymentInfo) && (
+            <TransactionStepCard title="Financial Breakdown">
+              <div className="space-y-0">
+                {transaction.grossAmount && (
+                  <SummaryRow label="Gross Amount" value={formatCurrency(transaction.grossAmount)} />
+                )}
+                {transaction.fees !== undefined && transaction.fees > 0 && (
+                  <SummaryRow label="Fees" value={formatCurrency(transaction.fees)} />
+                )}
+                {transaction.taxWithholding !== undefined && transaction.taxWithholding > 0 && (
+                  <SummaryRow
+                    label="Tax Withholding"
+                    value={formatCurrency(transaction.taxWithholding)}
+                  />
+                )}
+                {transaction.netAmount && (
+                  <SummaryRow
+                    label="Net Amount"
+                    value={formatCurrency(transaction.netAmount)}
+                    valueStyle={{ color: "var(--enroll-text-primary)", fontWeight: 600 }}
+                  />
+                )}
+                {transaction.repaymentInfo && (
+                  <div className="mt-4 pt-4 border-t" style={{ borderColor: "var(--enroll-card-border)" }}>
+                    <h3
+                      className="text-sm font-semibold mb-3"
+                      style={{ color: "var(--enroll-text-primary)" }}
+                    >
+                      Repayment Information
+                    </h3>
+                    <div className="space-y-0">
+                      <SummaryRow
+                        label="Monthly Payment"
+                        value={formatCurrency(transaction.repaymentInfo.monthlyPayment)}
+                      />
+                      <SummaryRow
+                        label="Term"
+                        value={`${transaction.repaymentInfo.termMonths} months`}
+                      />
+                      <SummaryRow
+                        label="Interest Rate"
+                        value={`${transaction.repaymentInfo.interestRate}%`}
+                      />
+                    </div>
                   </div>
-                  <div className="financial-breakdown__row">
-                    <span className="financial-breakdown__label">Term:</span>
-                    <span className="financial-breakdown__value">
-                      {transaction.repaymentInfo.termMonths} months
-                    </span>
-                  </div>
-                  <div className="financial-breakdown__row">
-                    <span className="financial-breakdown__label">Interest Rate:</span>
-                    <span className="financial-breakdown__value">
-                      {transaction.repaymentInfo.interestRate}%
-                    </span>
-                  </div>
-                </div>
-              )}
-            </div>
-          </DashboardCard>
+                )}
+              </div>
+            </TransactionStepCard>
+          )}
 
-          {/* Card 5: Timeline & Compliance */}
-          <DashboardCard title="Timeline & Compliance">
+          <TransactionStepCard title="Timeline & Compliance">
             {transaction.milestones && (
-              <div className="transaction-timeline">
+              <div className="mb-4">
                 <TransactionStepper milestones={transaction.milestones} status={transaction.status} />
               </div>
             )}
@@ -260,28 +274,37 @@ export const TransactionAnalysis = () => {
                 type="warning"
               />
             )}
-            {transaction.legalConfirmations.length > 0 && (
-              <div className="legal-confirmations">
-                <h3 className="legal-confirmations__title">Legal Confirmations</h3>
-                <ul className="legal-confirmations__list">
+            {transaction.legalConfirmations && transaction.legalConfirmations.length > 0 && (
+              <div className="mt-4">
+                <h3
+                  className="text-sm font-semibold mb-2"
+                  style={{ color: "var(--enroll-text-primary)" }}
+                >
+                  Legal Confirmations
+                </h3>
+                <ul className="list-disc list-inside space-y-1" style={{ color: "var(--enroll-text-secondary)" }}>
                   {transaction.legalConfirmations.map((confirmation, index) => (
-                    <li key={index} className="legal-confirmations__item">
-                      {confirmation}
-                    </li>
+                    <li key={index}>{confirmation}</li>
                   ))}
                 </ul>
               </div>
             )}
-          </DashboardCard>
+          </TransactionStepCard>
 
-          {/* Action Button */}
-          <div className="transaction-analysis__actions">
-            <Button onClick={handleAction} className="transaction-analysis__action-button">
+          <div className="pt-4">
+            <Button
+              onClick={handleAction}
+              className="min-w-[200px]"
+              style={{
+                background: "var(--enroll-brand)",
+                color: "var(--color-text-inverse)",
+              }}
+            >
               {getActionLabel()}
             </Button>
           </div>
         </div>
-      </div>
+      </TransactionFlowLayout>
     </DashboardLayout>
   );
 };

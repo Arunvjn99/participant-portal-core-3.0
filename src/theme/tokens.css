@@ -49,6 +49,7 @@
   --color-text-secondary: #6b7280;
   --color-text-tertiary: #9ca3af;
   --color-text-inverse: #ffffff;
+  --color-text-inverse-muted: #94a3b8;
 
   /* Surfaces / Borders (theme overrides recommended) */
   --color-border: #e5e7eb;
@@ -90,6 +91,7 @@
   --color-warning: #f59e0b;
   --color-warning-light: #fef3c7;
   --color-success-light: #d1fae5;
+  --color-danger-light: #fee2e2;
   --banner-gradient: linear-gradient(135deg, #3b82f6 0%, #5b21b6 100%);
   --banner-gradient-dark: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
   /* Chart palette - theme-aware */
@@ -142,6 +144,15 @@
   --shadow-strong: var(--enroll-elevation-3);
   --radius-large: var(--enroll-card-radius);
   --transition-smooth: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ── Transaction Flow (Retirement Command Center) ── */
+  --txn-brand: var(--enroll-brand);
+  --txn-brand-soft: rgb(79 70 229 / 0.08);
+  --txn-success: var(--color-success);
+  --txn-success-soft: var(--color-success-light);
+  --txn-warning-soft: var(--color-warning-light);
+  --txn-card-radius: var(--enroll-card-radius);
+  --txn-elevation: var(--enroll-elevation-2);
 
   /* ── Investment Slider ── */
   --inv-slider-track: var(--enroll-card-border);

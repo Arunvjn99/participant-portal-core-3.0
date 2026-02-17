@@ -6,7 +6,7 @@ import { getStepLabels } from "../../config/transactionSteps";
  * Generic placeholder step component for transaction flows
  * Used for transaction types that don't have specific step components yet
  */
-export const PlaceholderStep = ({ transaction, currentStep, readOnly }: TransactionStepProps) => {
+export const PlaceholderStep = ({ transaction, currentStep, readOnly, onDataChange }: TransactionStepProps) => {
   const stepLabels = getStepLabels(transaction.type);
   const stepLabel = stepLabels[currentStep] || `Step ${currentStep + 1}`;
 

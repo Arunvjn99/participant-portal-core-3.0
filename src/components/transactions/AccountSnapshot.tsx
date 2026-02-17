@@ -37,7 +37,12 @@ export const AccountSnapshot = () => {
 
   return (
     <motion.section
-      className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800"
+      className="rounded-xl border p-6"
+      style={{
+        borderColor: "var(--enroll-card-border)",
+        background: "var(--enroll-card-bg)",
+        boxShadow: "var(--enroll-elevation-1)",
+      }}
       variants={container}
       initial="hidden"
       animate="visible"
@@ -50,13 +55,13 @@ export const AccountSnapshot = () => {
           variants={item}
           custom={reduced}
         >
-          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+          <p className="text-sm font-medium" style={{ color: "var(--enroll-text-muted)" }}>
             Total Balance
           </p>
-          <p className="mt-1 text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+          <p className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl" style={{ color: "var(--enroll-text-primary)" }}>
             {formatCurrency(ACCOUNT_OVERVIEW.totalBalance)}
           </p>
-          <div className="mt-2 flex items-center gap-1.5 text-sm font-medium text-emerald-600 dark:text-emerald-400">
+          <div className="mt-2 flex items-center gap-1.5 text-sm font-medium" style={{ color: "var(--color-success)" }}>
             <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
             </svg>
@@ -71,34 +76,34 @@ export const AccountSnapshot = () => {
           custom={reduced}
         >
           <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+            <p className="text-xs font-medium uppercase tracking-wide" style={{ color: "var(--enroll-text-muted)" }}>
               Vested Balance
             </p>
-            <p className="mt-0.5 text-lg font-semibold text-slate-900 dark:text-white">
+            <p className="mt-0.5 text-lg font-semibold" style={{ color: "var(--enroll-text-primary)" }}>
               {formatCurrency(ACCOUNT_OVERVIEW.vestedBalance, 0)}
             </p>
           </div>
           <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+            <p className="text-xs font-medium uppercase tracking-wide" style={{ color: "var(--enroll-text-muted)" }}>
               Outstanding Loan
             </p>
-            <p className="mt-0.5 text-lg font-semibold text-slate-900 dark:text-white">
+            <p className="mt-0.5 text-lg font-semibold" style={{ color: "var(--enroll-text-primary)" }}>
               {formatCurrency(ACCOUNT_OVERVIEW.outstandingLoan)}
             </p>
           </div>
           <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+            <p className="text-xs font-medium uppercase tracking-wide" style={{ color: "var(--enroll-text-muted)" }}>
               YTD Contribution
             </p>
-            <p className="mt-0.5 text-lg font-semibold text-slate-900 dark:text-white">
+            <p className="mt-0.5 text-lg font-semibold" style={{ color: "var(--enroll-text-primary)" }}>
               {formatCurrency(ACCOUNT_OVERVIEW.ytdContribution, 0)}
             </p>
           </div>
           <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+            <p className="text-xs font-medium uppercase tracking-wide" style={{ color: "var(--enroll-text-muted)" }}>
               Rate of Return
             </p>
-            <p className="mt-0.5 text-lg font-semibold text-emerald-600 dark:text-emerald-400">
+            <p className="mt-0.5 text-lg font-semibold" style={{ color: "var(--color-success)" }}>
               {ACCOUNT_OVERVIEW.rateOfReturnPercent}%
             </p>
           </div>
@@ -110,16 +115,26 @@ export const AccountSnapshot = () => {
           variants={item}
           custom={reduced}
         >
-          <div className="rounded-xl bg-blue-500 px-4 py-4 text-white shadow-sm dark:bg-blue-600">
+          <div
+            className="rounded-xl px-4 py-4"
+            style={{
+              background: "var(--enroll-brand)",
+              color: "var(--color-text-inverse)",
+              boxShadow: "var(--enroll-elevation-1)",
+            }}
+          >
             <div className="flex items-center gap-2">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20">
+              <span
+                className="flex h-8 w-8 items-center justify-center rounded-lg"
+                style={{ background: "rgba(255,255,255,0.2)" }}
+              >
                 <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                 </svg>
               </span>
               <span className="font-semibold">{ACCOUNT_OVERVIEW.onTrack.title}</span>
             </div>
-            <p className="mt-2 text-sm text-white/95">
+            <p className="mt-2 text-sm" style={{ opacity: 0.95 }}>
               {ACCOUNT_OVERVIEW.onTrack.message}
             </p>
           </div>

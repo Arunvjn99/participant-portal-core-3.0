@@ -5,11 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useReducedMotion } from "framer-motion";
 import { DashboardLayout } from "../../../layouts/DashboardLayout";
 import { DashboardHeader } from "../../../components/dashboard/DashboardHeader";
-import {
-  LoanProgressStepper,
-  LoanIneligibleState,
-  LOAN_STEP_LABELS,
-} from "../../../components/loan";
+import { LoanIneligibleState } from "../../../components/loan";
+import { EnrollmentStepper } from "../../../components/enrollment/EnrollmentStepper";
 import { LoanBasicsStep } from "../../../components/loan/steps/LoanBasicsStep";
 import { PaymentSetupStep } from "../../../components/loan/steps/PaymentSetupStep";
 import { InvestmentBreakdownStep } from "../../../components/loan/steps/InvestmentBreakdownStep";
@@ -29,6 +26,14 @@ import { DEFAULT_LOAN_PLAN_CONFIG } from "../../../config/loanPlanConfig";
 import { ACCOUNT_OVERVIEW } from "../../../data/accountOverview";
 
 const TOTAL_STEPS = 6;
+const LOAN_STEP_LABELS = [
+  "Loan basics",
+  "Payment setup",
+  "Investment breakdown",
+  "Documents & compliance",
+  "Review",
+  "Confirmation",
+];
 
 function getDefaultFlowData(planConfig: typeof DEFAULT_LOAN_PLAN_CONFIG): LoanFlowData {
   const nextMonth = new Date();
@@ -154,7 +159,8 @@ export function LoanFlow() {
           <button
             type="button"
             onClick={() => navigate("/transactions")}
-            className="text-sm font-medium text-blue-600 dark:text-blue-400"
+            className="text-sm font-medium hover:underline"
+            style={{ color: "var(--enroll-brand)" }}
             aria-label="Back to transactions"
           >
             ← Back to Transactions
@@ -168,20 +174,27 @@ export function LoanFlow() {
   return (
     <DashboardLayout header={<DashboardHeader />}>
       <div className="flex min-h-screen flex-col">
-        <div className="border-b border-slate-200 bg-white px-4 py-4 dark:border-slate-700 dark:bg-slate-800 md:px-6">
+        <div
+          className="border-b px-4 py-4 md:px-6"
+          style={{ borderColor: "var(--enroll-card-border)", background: "var(--enroll-card-bg)" }}
+        >
           <button
             type="button"
             onClick={() => navigate("/transactions")}
-            className="mb-2 text-sm font-medium text-blue-600 hover:underline dark:text-blue-400"
+            className="mb-2 text-sm font-medium hover:underline"
+            style={{ color: "var(--enroll-brand)" }}
             aria-label="Back to transactions"
           >
             ← Back to Transactions
           </button>
-          <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100 md:text-2xl">
+          <h1
+            className="text-xl font-semibold md:text-2xl"
+            style={{ color: "var(--enroll-text-primary)" }}
+          >
             401(k) Loan Application
           </h1>
           <div className="mt-4">
-            <LoanProgressStepper
+            <EnrollmentStepper
               currentStep={currentStep}
               totalSteps={TOTAL_STEPS}
               stepLabels={LOAN_STEP_LABELS}
@@ -246,7 +259,12 @@ export function LoanFlow() {
 
           {stepValidationErrors.length > 0 && currentStep < 5 && (
             <motion.div
-              className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-200"
+              className="mt-4 rounded-lg border p-3 text-sm"
+              style={{
+                borderColor: "var(--color-warning)",
+                background: "var(--color-warning-light)",
+                color: "var(--enroll-text-primary)",
+              }}
               role="alert"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -262,13 +280,25 @@ export function LoanFlow() {
         </div>
 
         {!isConfirmation && (
-          <footer className="sticky bottom-0 border-t border-slate-200 bg-white px-4 py-4 shadow-[0_-4px_6px_-2px_rgba(0,0,0,0.05)] dark:border-slate-700 dark:bg-slate-800 md:px-6">
+          <footer
+            className="sticky bottom-0 border-t px-4 py-4 md:px-6"
+            style={{
+              borderColor: "var(--enroll-card-border)",
+              background: "var(--enroll-card-bg)",
+              boxShadow: "var(--enroll-elevation-1)",
+            }}
+          >
             <div className="mx-auto flex max-w-4xl items-center justify-between gap-4">
               <button
                 type="button"
                 onClick={handleBack}
                 disabled={currentStep === 0}
-                className="rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                className="rounded-xl border px-6 py-3 text-sm font-medium transition-colors hover:opacity-90 disabled:opacity-50"
+                style={{
+                  borderColor: "var(--enroll-card-border)",
+                  background: "var(--enroll-card-bg)",
+                  color: "var(--enroll-text-primary)",
+                }}
                 aria-label="Previous step"
               >
                 Back
@@ -277,7 +307,12 @@ export function LoanFlow() {
                 <button
                   type="button"
                   onClick={handleSaveAndExit}
-                  className="rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-medium text-slate-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300"
+                  className="rounded-xl border px-6 py-3 text-sm font-medium"
+                  style={{
+                    borderColor: "var(--enroll-card-border)",
+                    background: "var(--enroll-card-bg)",
+                    color: "var(--enroll-text-primary)",
+                  }}
                   aria-label="Save and exit"
                 >
                   Save & Exit
@@ -286,7 +321,8 @@ export function LoanFlow() {
                   type="button"
                   onClick={handleNext}
                   disabled={currentStep < 4 && !canProceed}
-                  className="rounded-xl bg-blue-600 px-6 py-3 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 dark:bg-blue-500 dark:hover:bg-blue-600"
+                  className="rounded-xl px-6 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+                  style={{ background: "var(--enroll-brand)" }}
                   aria-label={isLastStep ? "Submit" : "Next step"}
                 >
                   {currentStep === 4 ? "Submit" : "Next"}
@@ -297,12 +333,16 @@ export function LoanFlow() {
         )}
 
         {isConfirmation && (
-          <footer className="border-t border-slate-200 bg-white px-4 py-4 dark:border-slate-700 dark:bg-slate-800 md:px-6">
+          <footer
+            className="border-t px-4 py-4 md:px-6"
+            style={{ borderColor: "var(--enroll-card-border)", background: "var(--enroll-card-bg)" }}
+          >
             <div className="mx-auto flex max-w-4xl justify-center">
               <button
                 type="button"
                 onClick={() => navigate("/transactions")}
-                className="rounded-xl bg-blue-600 px-6 py-3 text-sm font-medium text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+                className="rounded-xl px-6 py-3 text-sm font-medium text-white hover:opacity-90"
+                style={{ background: "var(--enroll-brand)" }}
                 aria-label="Back to transactions"
               >
                 Back to Transactions

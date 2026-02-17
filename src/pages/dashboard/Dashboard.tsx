@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { DashboardLayout } from "../../layouts/DashboardLayout";
 import { DashboardHeader } from "../../components/dashboard/DashboardHeader";
 import { SaveToast } from "../../components/ui/SaveToast";
@@ -14,10 +15,18 @@ import { ValuePropGrid } from "../../components/dashboard/ValuePropGrid";
 import { ValuePropCard } from "../../components/dashboard/ValuePropCard";
 
 export const Dashboard = () => {
+  const { t } = useTranslation();
+
   return (
     <DashboardLayout header={<DashboardHeader />}>
       <SaveToast />
-      <HeroEnrollmentCard />
+      <HeroEnrollmentCard
+        greeting={t("dashboard.greeting", { name: "Brian" })}
+        headline={t("dashboard.heroTitle")}
+        description={t("dashboard.heroSubtitle")}
+        enrollmentBadge={t("dashboard.enrollmentOpen")}
+        primaryCtaLabel={t("dashboard.startEnrollment")}
+      />
 
       {/* Learning Resources (left) + Personalized Score (right) - canonical grid like Plans */}
       <section className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_400px] 2xl:grid-cols-[minmax(0,1fr)_420px] lg:items-start">

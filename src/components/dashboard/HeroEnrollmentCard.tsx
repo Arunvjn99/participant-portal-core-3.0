@@ -14,6 +14,8 @@ interface HeroEnrollmentCardProps {
   heroImageSrc?: string;
   /** Enrollment badge text. Hidden if empty. */
   enrollmentBadge?: string;
+  /** Primary CTA button label (e.g. "Start My Enrollment"). */
+  primaryCtaLabel?: string;
   /** Floating insight card: plan name */
   insightPlanName?: string;
   /** Floating insight card: balance label */
@@ -30,6 +32,7 @@ export const HeroEnrollmentCard = ({
   description = "Enroll in your retirement plan today and start building your financial future. The process is simple and takes just a few minutes.",
   heroImageSrc = DEFAULT_HERO_IMAGE,
   enrollmentBadge = "+ ENROLLMENT OPEN",
+  primaryCtaLabel,
   insightPlanName = "Plan: Roth 401(k)",
   insightBalanceLabel = "Current Balance",
   insightBalanceValue = "$12,500",
@@ -73,7 +76,7 @@ export const HeroEnrollmentCard = ({
               className="rounded-2xl px-8 py-3.5 font-semibold text-white bg-primary hover:bg-primary-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 dark:focus-visible:outline-offset-slate-900 transition-colors shadow-md hover:shadow-lg"
               onClick={handleEnrollClick}
             >
-              Enroll Now
+              {primaryCtaLabel ?? "Enroll Now"}
             </Button>
           </motion.div>
 

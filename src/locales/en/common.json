@@ -1,0 +1,21 @@
+{
+  "dashboard": {
+    "greeting": "Good Morning, {{name}}",
+    "heroTitle": "Let's build your future, together.",
+    "heroSubtitle": "You're one step away from activating your 401(k). We've simplified everything so you can focus on what matters.",
+    "startEnrollment": "Start My Enrollment",
+    "exploreOptions": "Explore My Options",
+    "enrollmentOpen": "Enrollment Window Open"
+  },
+  "common": {
+    "english": "English",
+    "spanish": "Español",
+    "language": "Language"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "enrollment": "Enrollment",
+    "profile": "Profile",
+    "transactions": "Transactions"
+  }
+}

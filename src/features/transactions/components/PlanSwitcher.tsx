@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import type { PlanOption } from "../types";
 
 interface PlanSwitcherProps {
@@ -8,12 +8,6 @@ interface PlanSwitcherProps {
   onSelect: (id: string | null) => void;
   hasMultiplePlans: boolean;
 }
-
-const tabVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 },
-  exit: { opacity: 0 },
-};
 
 export const PlanSwitcher = memo(function PlanSwitcher({
   plans,
@@ -26,7 +20,7 @@ export const PlanSwitcher = memo(function PlanSwitcher({
   return (
     <nav
       className="flex gap-0 rounded-[var(--radius-lg)] border border-[var(--color-border)] p-[var(--spacing-1)]"
-      style={{ background: "var(--color-surface)" }}
+      style={{ background: "var(--color-surface)", boxShadow: "var(--shadow-sm)" }}
       role="tablist"
     >
       {plans.map((plan) => {
@@ -38,7 +32,7 @@ export const PlanSwitcher = memo(function PlanSwitcher({
             role="tab"
             aria-selected={isSelected}
             onClick={() => onSelect(plan.id)}
-            className="relative min-w-[120px] rounded-[var(--radius-md)] px-[var(--spacing-4)] py-[var(--spacing-2)] text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
+            className="relative min-w-[100px] rounded-[var(--radius-md)] px-[var(--spacing-4)] py-[var(--spacing-2)] text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
             style={{
               color: isSelected ? "var(--color-text)" : "var(--color-text-secondary)",
             }}

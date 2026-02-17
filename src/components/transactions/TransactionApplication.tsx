@@ -2,7 +2,9 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../layouts/DashboardLayout";
 import { DashboardHeader } from "../dashboard/DashboardHeader";
-import { TransactionFlowStepper } from "./TransactionFlowStepper";
+import { EnrollmentStepper } from "../enrollment/EnrollmentStepper";
+import { TransactionFlowLayout } from "./TransactionFlowLayout";
+import { TransactionFlowFooter } from "./TransactionFlowFooter";
 import { transactionStore } from "../../data/transactionStore";
 import type { TransactionType, Transaction } from "../../types/transactions";
 
@@ -35,7 +37,10 @@ export interface TransactionApplicationProps {
   transactionType: TransactionType;
   steps: TransactionStepDefinition[];
   initialData?: any;
+  /** If provided, called on submit. If it returns/resolves, component navigates to /transactions. Pass onSuccess for custom navigation with state. */
   onSubmit?: (transaction: Transaction, data: any) => void | Promise<void>;
+  /** If provided, called instead of default navigate("/transactions"). Use to pass success state. */
+  onSuccessNavigate?: (transaction: Transaction, data: any) => void;
   readOnly?: boolean;
 }
 
@@ -51,12 +56,14 @@ export const TransactionApplication = ({
   steps,
   initialData,
   onSubmit,
+  onSuccessNavigate,
   readOnly: propReadOnly,
 }: TransactionApplicationProps) => {
   const { transactionId } = useParams<{ transactionId: string }>();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [stepData, setStepData] = useState<any>(initialData || {});
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   // If no transactionId, create a draft and redirect
   if (!transactionId) {
@@ -100,28 +107,42 @@ export const TransactionApplication = ({
     }
 
     if (isLastStep) {
+      // Validate last step before submit
+      if (currentStepDefinition.validate) {
+        const isValid = await currentStepDefinition.validate(stepData);
+        if (!isValid) {
+          setValidationError("Please confirm the terms above");
+          return;
+        }
+      }
+      setValidationError(null);
       // Handle submission
       if (onSubmit) {
         await onSubmit(transaction, stepData);
       } else {
-        // Default submit behavior
         console.log("Submit transaction", { transaction, stepData });
       }
-      // Navigate to transactions hub after submission
-      navigate("/transactions");
+      // Navigate to transactions hub (with optional success state)
+      if (onSuccessNavigate) {
+        onSuccessNavigate(transaction, stepData);
+      } else {
+        navigate("/transactions");
+      }
     } else {
-      // Optional: Validate before proceeding
       if (currentStepDefinition.validate) {
         const isValid = await currentStepDefinition.validate(stepData);
         if (!isValid) {
-          return; // Stay on current step if validation fails
+          setValidationError(isLastStep ? "Please confirm the terms above" : "Please complete all required fields");
+          return;
         }
       }
+      setValidationError(null);
       setCurrentStep(currentStep + 1);
     }
   };
 
   const handleBack = () => {
+    setValidationError(null);
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     }
@@ -143,46 +164,45 @@ export const TransactionApplication = ({
   // Build step labels for the stepper
   const stepLabels = steps.map((step) => step.label);
 
-  return (
-    <DashboardLayout header={<DashboardHeader />}>
-      <div className="transaction-application">
-        <div className="transaction-application__header">
-          <button
-            type="button"
-            onClick={() => navigate("/transactions")}
-            className="transaction-application__back-button"
-            aria-label="Back to transactions"
-          >
-            ← Back to Transactions
-          </button>
-          <h1 className="transaction-application__title">
-            {getTransactionTypeLabel(transactionType)} Application
-          </h1>
-        </div>
+  const title = getTransactionTypeLabel(transactionType);
+  const subtitle = `Step ${currentStep + 1} of ${totalSteps}`;
 
-        <div className="transaction-application__stepper">
-          <TransactionFlowStepper 
-            transactionType={transactionType} 
+  return (
+    <DashboardLayout header={<DashboardHeader />} transparentBackground>
+      <TransactionFlowLayout
+        title={`${title} Application`}
+        subtitle={subtitle}
+        onBack={() => navigate("/transactions")}
+      >
+        <div className="mb-8">
+          <EnrollmentStepper
             currentStep={currentStep}
+            totalSteps={totalSteps}
             stepLabels={stepLabels}
           />
         </div>
 
-        <div className="transaction-application__content">
+        <div className="space-y-6 min-h-[400px]">
           {readOnly && (
-            <div className="transaction-application__read-only-banner">
-              <span className="transaction-application__read-only-label">
+            <div
+              className="p-4 rounded-[var(--radius-lg)] border"
+              style={{
+                background: "var(--color-background-secondary)",
+                borderColor: "var(--color-border)",
+              }}
+            >
+              <span className="font-semibold" style={{ color: "var(--color-text)" }}>
                 {transaction.status === "completed" ? "View Only" : "Read Only"}
               </span>
               {transaction.status === "active" && (
-                <span className="transaction-application__read-only-note">
+                <p className="mt-1 text-sm" style={{ color: "var(--color-text-secondary)" }}>
                   This transaction is being processed. You can view details but cannot make changes.
-                </span>
+                </p>
               )}
               {transaction.status === "completed" && (
-                <span className="transaction-application__read-only-note">
+                <p className="mt-1 text-sm" style={{ color: "var(--color-text-secondary)" }}>
                   This transaction has been completed. You can view details and documents.
-                </span>
+                </p>
               )}
             </div>
           )}
@@ -196,45 +216,18 @@ export const TransactionApplication = ({
           />
         </div>
 
-        <div className="transaction-application__footer">
-          <button
-            type="button"
-            onClick={handleBack}
-            disabled={currentStep === 0}
-            className="transaction-application__button transaction-application__button--back"
-          >
-            Back
-          </button>
-          <div className="transaction-application__footer-actions">
-            {!readOnly && (
-              <button
-                type="button"
-                onClick={handleSaveAndExit}
-                className="transaction-application__button transaction-application__button--save"
-              >
-                Save & Exit
-              </button>
-            )}
-            {readOnly ? (
-              <button
-                type="button"
-                onClick={() => navigate("/transactions")}
-                className="transaction-application__button transaction-application__button--next"
-              >
-                Back to Transactions
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={handleNext}
-                className="transaction-application__button transaction-application__button--next"
-              >
-                {isLastStep ? "Submit" : "Next"}
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
+        <TransactionFlowFooter
+          currentStep={currentStep}
+          totalSteps={totalSteps}
+          primaryLabel={readOnly ? "Back to Transactions" : isLastStep ? "Submit" : "Next"}
+          primaryDisabled={false}
+          onPrimary={readOnly ? () => navigate("/transactions") : handleNext}
+          onBack={handleBack}
+          onSaveAndExit={handleSaveAndExit}
+          summaryText={validationError ?? undefined}
+          summaryError={!!validationError}
+        />
+      </TransactionFlowLayout>
     </DashboardLayout>
   );
 };

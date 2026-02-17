@@ -1,6 +1,8 @@
 import { memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
+import { SectionHeader } from "../../../components/dashboard/shared/SectionHeader";
+import { StatusBadge } from "../../../components/dashboard/shared/StatusBadge";
 import type { ActionTileConfig } from "../types";
 const formatCurrency = (n: number) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
@@ -9,7 +11,7 @@ const TILES: ActionTileConfig[] = [
   {
     type: "loan",
     title: "Take Loan",
-    subtext: `Eligible up to ${formatCurrency(50000)}`,
+    subtext: "Borrow from 401(k)",
     statusBadge: "Eligible",
     route: "/transactions/loan/start",
     icon: (
@@ -20,8 +22,9 @@ const TILES: ActionTileConfig[] = [
   },
   {
     type: "withdrawal",
-    title: "Make Withdrawal",
-    subtext: `Available: ${formatCurrency(32000)}`,
+    title: "Withdrawal",
+    subtext: "Hardship & Regular",
+    eligibilityText: `${formatCurrency(32000)} Available`,
     route: "/transactions/withdrawal/start",
     icon: (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -30,25 +33,25 @@ const TILES: ActionTileConfig[] = [
     ),
   },
   {
-    type: "rollover",
-    title: "Start Rollover",
-    subtext: `${formatCurrency(129500)} eligible`,
-    statusBadge: "Eligible",
-    route: "/transactions/rollover/start",
+    type: "transfer",
+    title: "Reallocate",
+    subtext: "Transfer Funds",
+    statusBadge: "Smart",
+    route: "/transactions/transfer/start",
     icon: (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 21m16-10v10l-8 4" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
       </svg>
     ),
   },
   {
-    type: "transfer",
-    title: "Adjust Contributions",
-    subtext: "Currently 9%",
-    route: "/enrollment/contribution",
+    type: "rollover",
+    title: "Start Rollover",
+    subtext: "Consolidate accounts",
+    route: "/transactions/rollover/start",
     icon: (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
       </svg>
     ),
   },
@@ -59,11 +62,9 @@ export const ActionHub = memo(function ActionHub() {
   const reduced = !!useReducedMotion();
 
   return (
-    <section className="space-y-2">
-      <h2 className="text-sm font-semibold" style={{ color: "var(--color-text-secondary)" }}>
-        Quick actions
-      </h2>
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+    <section className="space-y-3">
+      <SectionHeader title="Actions" subtitle="Quick actions for your retirement" />
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         {TILES.map((tile, i) => (
           <motion.button
             key={tile.type}
@@ -72,31 +73,40 @@ export const ActionHub = memo(function ActionHub() {
             initial={reduced ? false : { opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.25, delay: i * 0.05, ease: "easeOut" }}
-            whileHover={reduced ? undefined : { scale: 1.01 }}
-            style={{ transition: "box-shadow 0.2s ease" }}
-            className="flex flex-col items-start gap-2 rounded-[var(--radius-lg)] border border-[var(--color-border)] p-[var(--spacing-4)] text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
+            whileHover={reduced ? undefined : { scale: 1.02 }}
+            className="group flex flex-col items-start justify-between rounded-[var(--txn-card-radius)] border p-5 text-left transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--enroll-brand)] focus-visible:ring-offset-2"
             style={{
               background: "var(--color-surface)",
-              boxShadow: "var(--shadow-sm)",
+              borderColor: "var(--color-border)",
+              boxShadow: "var(--shadow-soft)",
             }}
           >
-            <span className="flex h-9 w-9 items-center justify-center rounded-[var(--radius-md)]" style={{ background: "var(--color-background-secondary)", color: "var(--color-primary)" }}>
-              {tile.icon}
-            </span>
-            <span className="text-sm font-semibold" style={{ color: "var(--color-text)" }}>
-              {tile.title}
-            </span>
-            <span className="text-xs" style={{ color: "var(--color-text-secondary)" }}>
-              {tile.subtext}
-            </span>
-            {tile.statusBadge && (
+            <div className="mb-3 flex w-full items-start justify-between">
               <span
-                className="rounded-[var(--radius-sm)] px-1.5 py-0.5 text-[10px] font-medium"
-                style={{ background: "var(--color-success-light)", color: "var(--color-success)" }}
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition-colors"
+                style={{
+                  background: "var(--color-surface)",
+                  borderColor: "var(--color-border)",
+                  color: "var(--color-text-secondary)",
+                }}
               >
-                {tile.statusBadge}
+                {tile.icon}
               </span>
-            )}
+              {tile.statusBadge && <StatusBadge label={tile.statusBadge} variant="success" />}
+            </div>
+            <div>
+              <span className="block text-sm font-semibold" style={{ color: "var(--color-text)" }}>
+                {tile.title}
+              </span>
+              <span className="block text-xs" style={{ color: "var(--color-text-secondary)" }}>
+                {tile.subtext}
+              </span>
+              {tile.eligibilityText && (
+                <span className="mt-1 block text-[10px] font-medium uppercase tracking-wide" style={{ color: "var(--color-success)" }}>
+                  {tile.eligibilityText}
+                </span>
+              )}
+            </div>
           </motion.button>
         ))}
       </div>

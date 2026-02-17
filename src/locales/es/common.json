@@ -1,0 +1,21 @@
+{
+  "dashboard": {
+    "greeting": "Buenos días, {{name}}",
+    "heroTitle": "Construyamos tu futuro, juntos.",
+    "heroSubtitle": "Estás a un paso de activar tu 401(k). Hemos simplificado todo para que puedas enfocarte en lo que importa.",
+    "startEnrollment": "Comenzar inscripción",
+    "exploreOptions": "Explorar opciones",
+    "enrollmentOpen": "Ventana de inscripción abierta"
+  },
+  "common": {
+    "english": "Inglés",
+    "spanish": "Español",
+    "language": "Idioma"
+  },
+  "nav": {
+    "dashboard": "Panel de control",
+    "enrollment": "Inscripción",
+    "profile": "Perfil",
+    "transactions": "Transacciones"
+  }
+}

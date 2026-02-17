@@ -1,6 +1,7 @@
 import { memo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { StatusBadge } from "../../../components/dashboard/shared/StatusBadge";
 import type { Transaction, TransactionType } from "../../../types/transactions";
 import type { TransactionLifecycleStatus } from "../types";
 
@@ -92,15 +93,18 @@ export const TransactionCard = memo(function TransactionCard({
             {planName ?? transaction.accountType ?? "—"} {taxType ? `· ${taxType}` : ""}
           </p>
         </div>
-        <span
-          className="shrink-0 rounded-[var(--radius-sm)] px-2 py-0.5 text-[10px] font-medium"
-          style={{
-            background: status === "completed" ? "var(--color-success-light)" : status === "failed" ? "var(--color-danger)" : "var(--color-background-secondary)",
-            color: status === "completed" ? "var(--color-success)" : status === "failed" ? "var(--color-text-inverse)" : "var(--color-text-secondary)",
-          }}
-        >
-          {statusLabel[status]}
-        </span>
+        <StatusBadge
+          label={statusLabel[status]}
+          variant={
+            status === "completed"
+              ? "success"
+              : status === "failed"
+                ? "danger"
+                : status === "processing"
+                  ? "primary"
+                  : "neutral"
+          }
+        />
         <span
           className="shrink-0 text-sm font-semibold"
           style={{ color: isNegative ? "var(--color-danger)" : "var(--color-success)" }}
@@ -133,12 +137,29 @@ export const TransactionCard = memo(function TransactionCard({
             className="border-t border-[var(--color-border)] px-[var(--spacing-4)] py-3"
             style={{ background: "var(--color-background-secondary)" }}
           >
-            <p className="text-xs" style={{ color: "var(--color-text-secondary)" }}>
-              Tax: {taxType ?? "—"} · Impact: {transaction.retirementImpact?.rationale ?? "—"}
-            </p>
+            <dl className="space-y-1.5 text-xs" style={{ color: "var(--color-text-secondary)" }}>
+              <div>
+                <dt className="font-medium" style={{ color: "var(--color-text)" }}>Settlement date</dt>
+                <dd>{transaction.dateCompleted ?? transaction.dateInitiated ?? "—"}</dd>
+              </div>
+              <div>
+                <dt className="font-medium" style={{ color: "var(--color-text)" }}>Tax classification</dt>
+                <dd>{taxType ?? "—"}</dd>
+              </div>
+              <div>
+                <dt className="font-medium" style={{ color: "var(--color-text)" }}>Impact on retirement projection</dt>
+                <dd>{transaction.retirementImpact?.rationale ?? "—"}</dd>
+              </div>
+              {planName && (
+                <div>
+                  <dt className="font-medium" style={{ color: "var(--color-text)" }}>Related plan</dt>
+                  <dd>{planName}</dd>
+                </div>
+              )}
+            </dl>
             <button
               type="button"
-              className="mt-2 text-xs font-medium"
+              className="mt-3 text-xs font-medium"
               style={{ color: "var(--color-primary)" }}
             >
               Download confirmation

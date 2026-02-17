@@ -27,7 +27,7 @@ export const AIInsightsPanel = memo(function AIInsightsPanel({ engine }: ModuleP
     roth: "/enrollment/contribution",
     rebalance: "/enrollment/investments",
     increase: "/enrollment/contribution",
-    "loan-warning": "/transactions/applications/loan",
+    "loan-warning": "/transactions/loan/start",
   };
 
   return (

@@ -31,12 +31,13 @@ const getDisplayName = (t: Transaction): string =>
 const getAccountType = (t: Transaction): string =>
   t.accountType || "Traditional 401(k)";
 
-const getIcon = (type: TransactionType): { bg: string; icon: React.ReactNode } => {
-  const base = "flex h-9 w-9 items-center justify-center rounded-lg text-white";
+const getIcon = (type: TransactionType): { bgStyle: React.CSSProperties; icon: React.ReactNode } => {
+  const base = "flex h-9 w-9 items-center justify-center rounded-lg";
+  const white = { color: "var(--color-text-inverse)" };
   switch (type) {
     case "loan":
       return {
-        bg: "bg-amber-500",
+        bgStyle: { background: "var(--color-warning)", ...white },
         icon: (
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -45,7 +46,7 @@ const getIcon = (type: TransactionType): { bg: string; icon: React.ReactNode } =
       };
     case "distribution":
       return {
-        bg: "bg-emerald-500",
+        bgStyle: { background: "var(--color-success)", ...white },
         icon: (
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -54,7 +55,7 @@ const getIcon = (type: TransactionType): { bg: string; icon: React.ReactNode } =
       };
     case "withdrawal":
       return {
-        bg: "bg-blue-500",
+        bgStyle: { background: "var(--enroll-brand)", ...white },
         icon: (
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -63,7 +64,7 @@ const getIcon = (type: TransactionType): { bg: string; icon: React.ReactNode } =
       };
     case "rollover":
       return {
-        bg: "bg-violet-500",
+        bgStyle: { background: "var(--enroll-brand)", ...white },
         icon: (
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
@@ -73,7 +74,7 @@ const getIcon = (type: TransactionType): { bg: string; icon: React.ReactNode } =
     case "transfer":
     case "rebalance":
       return {
-        bg: "bg-sky-500",
+        bgStyle: { background: "var(--enroll-brand)", ...white },
         icon: (
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
@@ -82,7 +83,7 @@ const getIcon = (type: TransactionType): { bg: string; icon: React.ReactNode } =
       };
     default:
       return {
-        bg: "bg-slate-500",
+        bgStyle: { background: "var(--enroll-text-muted)", ...white },
         icon: (
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V7a2 2 0 012-2z" />
@@ -144,10 +145,10 @@ export const RecentTransactions = ({ onTransactionAction }: RecentTransactionsPr
     <section id="recent-transactions">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+          <h2 className="text-lg font-semibold" style={{ color: "var(--enroll-text-primary)" }}>
             Recent Transactions
           </h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
+          <p className="text-sm" style={{ color: "var(--enroll-text-muted)" }}>
             Your latest account activity
           </p>
         </div>
@@ -157,7 +158,8 @@ export const RecentTransactions = ({ onTransactionAction }: RecentTransactionsPr
             e.preventDefault();
             document.getElementById("recent-transactions")?.scrollIntoView({ behavior: "smooth" });
           }}
-          className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+          className="text-sm font-medium hover:opacity-90"
+          style={{ color: "var(--enroll-brand)" }}
         >
           See all
         </a>
@@ -165,7 +167,10 @@ export const RecentTransactions = ({ onTransactionAction }: RecentTransactionsPr
 
       <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1">
-          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+          <span
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2"
+            style={{ color: "var(--enroll-text-muted)" }}
+          >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
@@ -175,7 +180,12 @@ export const RecentTransactions = ({ onTransactionAction }: RecentTransactionsPr
             placeholder="Search transactions..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-lg border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500"
+            className="transaction-form-input w-full rounded-lg border py-2.5 pl-10 pr-4 text-sm focus:outline-none"
+            style={{
+              borderColor: "var(--enroll-card-border)",
+              background: "var(--enroll-card-bg)",
+              color: "var(--enroll-text-primary)",
+            }}
           />
         </div>
         <div className="flex gap-2">
@@ -183,7 +193,12 @@ export const RecentTransactions = ({ onTransactionAction }: RecentTransactionsPr
             aria-label="Sort by"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as "date" | "amount")}
-            className="rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
+            className="transaction-form-input rounded-lg border px-3 py-2.5 text-sm focus:outline-none"
+            style={{
+              borderColor: "var(--enroll-card-border)",
+              background: "var(--enroll-card-bg)",
+              color: "var(--enroll-text-primary)",
+            }}
           >
             <option value="date">Sort by Date</option>
             <option value="amount">Sort by Amount</option>
@@ -192,7 +207,12 @@ export const RecentTransactions = ({ onTransactionAction }: RecentTransactionsPr
             aria-label="Category"
             value={category}
             onChange={(e) => setCategory(e.target.value as TransactionType | "all")}
-            className="rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
+            className="transaction-form-input rounded-lg border px-3 py-2.5 text-sm focus:outline-none"
+            style={{
+              borderColor: "var(--enroll-card-border)",
+              background: "var(--enroll-card-bg)",
+              color: "var(--enroll-text-primary)",
+            }}
           >
             <option value="all">Category: All</option>
             <option value="loan">Loan</option>
@@ -205,16 +225,23 @@ export const RecentTransactions = ({ onTransactionAction }: RecentTransactionsPr
         </div>
       </div>
 
-      <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
-        <ul className="divide-y divide-slate-200 dark:divide-slate-700">
+      <div
+        className="mt-4 overflow-hidden rounded-xl border"
+        style={{
+          borderColor: "var(--enroll-card-border)",
+          background: "var(--enroll-card-bg)",
+          boxShadow: "var(--enroll-elevation-1)",
+        }}
+      >
+        <ul className="divide-y" style={{ borderColor: "var(--enroll-card-border)" }}>
           {transactions.length === 0 ? (
-            <li className="px-4 py-8 text-center text-sm text-slate-500 dark:text-slate-400">
+            <li className="px-4 py-8 text-center text-sm" style={{ color: "var(--enroll-text-muted)" }}>
               No transactions match your filters.
             </li>
           ) : (
             transactions.map((t, i) => {
               const isNegative = t.amountNegative ?? (t.type === "loan" || t.type === "withdrawal");
-              const { bg, icon } = getIcon(t.type);
+              const { bgStyle, icon } = getIcon(t.type);
               return (
                 <motion.li
                   key={t.id}
@@ -223,15 +250,16 @@ export const RecentTransactions = ({ onTransactionAction }: RecentTransactionsPr
                   animate="visible"
                   custom={reduced}
                   transition={{ delay: reduced ? 0 : i * 0.03 }}
-                  className="flex cursor-pointer items-center gap-4 px-4 py-4 transition-colors hover:bg-slate-50 dark:hover:bg-slate-700/50"
+                  className="flex cursor-pointer items-center gap-4 px-4 py-4 transition-colors hover:opacity-90"
+                  style={{ borderColor: "var(--enroll-card-border)" }}
                   onClick={() => handleRowClick(t)}
                 >
-                  <span className={`shrink-0 rounded-lg ${bg}`}>{icon}</span>
+                  <span className="shrink-0 rounded-lg" style={bgStyle}>{icon}</span>
                   <div className="min-w-0 flex-1">
-                    <p className="font-medium text-slate-900 dark:text-white">
+                    <p className="font-medium" style={{ color: "var(--enroll-text-primary)" }}>
                       {getDisplayName(t)}
                     </p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                    <p className="text-xs" style={{ color: "var(--enroll-text-muted)" }}>
                       {new Date(t.dateInitiated).toLocaleDateString("en-US", {
                         month: "short",
                         day: "numeric",
@@ -241,15 +269,12 @@ export const RecentTransactions = ({ onTransactionAction }: RecentTransactionsPr
                   </div>
                   <div className="text-right">
                     <p
-                      className={`font-semibold ${
-                        isNegative
-                          ? "text-red-600 dark:text-red-400"
-                          : "text-emerald-600 dark:text-emerald-400"
-                      }`}
+                      className="font-semibold"
+                      style={{ color: isNegative ? "var(--color-danger)" : "var(--color-success)" }}
                     >
                       {formatCurrency(t.amount, isNegative)}
                     </p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                    <p className="text-xs" style={{ color: "var(--enroll-text-muted)" }}>
                       {getAccountType(t)}
                     </p>
                   </div>
