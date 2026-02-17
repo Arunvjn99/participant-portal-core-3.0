@@ -2,7 +2,7 @@ import "./i18n";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
-import { I18nextProvider } from "react-i18next";
+import { I18nextProvider, useTranslation } from "react-i18next";
 import i18n from "./i18n";
 import "./theme/tokens.css";
 import "./theme/light.css";
@@ -18,12 +18,20 @@ const isDark = savedTheme === "dark";
 document.documentElement.classList.remove("light", "dark");
 document.documentElement.classList.add(isDark ? "dark" : "light");
 
+/** Keys router to current language so all route content remounts and picks up new translations. */
+function RootWithLanguageKey() {
+  const { i18n: i18nInstance } = useTranslation();
+  return (
+    <ThemeProvider>
+      <RouterProvider key={i18nInstance.language || "en"} router={router} />
+    </ThemeProvider>
+  );
+}
+
 createRoot(document.getElementById("root")!).render(
   <I18nextProvider i18n={i18n}>
     <StrictMode>
-      <ThemeProvider>
-        <RouterProvider router={router} />
-      </ThemeProvider>
+      <RootWithLanguageKey />
     </StrictMode>
   </I18nextProvider>,
 );

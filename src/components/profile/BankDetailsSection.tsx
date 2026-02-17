@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Input } from "../ui/Input";
 import Button from "../ui/Button";
 import type { BankDetails } from "../../data/mockProfile";
@@ -22,6 +23,7 @@ export const BankDetailsSection = ({
   onSave,
   onCancel,
 }: BankDetailsSectionProps) => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState<BankDetails>(data);
 
   const handleSave = () => {
@@ -44,12 +46,12 @@ export const BankDetailsSection = ({
     return (
       <div className="profile-section">
         <div className="profile-section__header">
-          <h2 className="profile-section__title">Bank & Payment Details</h2>
+          <h2 className="profile-section__title">{t("profile.bankDetails")}</h2>
         </div>
         <div className="profile-section__content">
           <div className="profile-section__form">
             <Input
-              label="Bank Name"
+              label={t("profile.bankName")}
               type="text"
               name="bankName"
               value={formData.bankName}
@@ -57,7 +59,7 @@ export const BankDetailsSection = ({
               required
             />
             <div className="profile-section__field">
-              <label className="profile-section__label">Account Type</label>
+              <label className="profile-section__label">{t("profile.accountType")}</label>
               <select
                 className="profile-section__select"
                 name="accountType"
@@ -69,38 +71,34 @@ export const BankDetailsSection = ({
                   })
                 }
               >
-                <option value="checking">Checking</option>
-                <option value="savings">Savings</option>
+                <option value="checking">{t("profile.checking")}</option>
+                <option value="savings">{t("profile.savings")}</option>
               </select>
             </div>
             <div className="profile-section__field">
               <Input
-                label="Account Number"
+                label={t("profile.accountNumber")}
                 type="text"
                 name="accountNumber"
                 value={formData.accountNumber}
                 onChange={(e) => setFormData({ ...formData, accountNumber: e.target.value })}
                 required
               />
-              <p className="profile-section__helper-text">
-                Enter full account number. It will be masked after saving.
-              </p>
+              <p className="profile-section__helper-text">{t("profile.accountNumberHelper")}</p>
             </div>
             <div className="profile-section__field">
               <Input
-                label="Routing Number"
+                label={t("profile.routingNumber")}
                 type="text"
                 name="routingNumber"
                 value={formData.routingNumber}
                 onChange={(e) => setFormData({ ...formData, routingNumber: e.target.value })}
                 required
               />
-              <p className="profile-section__helper-text">
-                Enter full routing number. It will be masked after saving.
-              </p>
+              <p className="profile-section__helper-text">{t("profile.routingNumberHelper")}</p>
             </div>
             <Input
-              label="Account Holder Name"
+              label={t("profile.accountHolderName")}
               type="text"
               name="accountHolderName"
               value={formData.accountHolderName}
@@ -108,19 +106,19 @@ export const BankDetailsSection = ({
               required
             />
             <p className="profile-section__helper-text profile-section__helper-text--warning">
-              You will need to verify your bank account after saving
+              {t("profile.verifyBankAfterSave")}
             </p>
           </div>
           <div className="profile-section__actions">
             <Button onClick={handleCancel} className="profile-section__button profile-section__button--cancel">
-              Cancel
+              {t("profile.cancel")}
             </Button>
             <Button onClick={handleSave} className="profile-section__button profile-section__button--save">
-              Save Changes
+              {t("profile.saveChanges")}
             </Button>
           </div>
           {data.lastUpdated && (
-            <p className="profile-section__timestamp">Last updated: {data.lastUpdated}</p>
+            <p className="profile-section__timestamp">{t("profile.lastUpdated", { date: data.lastUpdated })}</p>
           )}
         </div>
       </div>
@@ -130,38 +128,38 @@ export const BankDetailsSection = ({
   return (
     <div className="profile-section">
       <div className="profile-section__header">
-        <h2 className="profile-section__title">Bank & Payment Details</h2>
+        <h2 className="profile-section__title">{t("profile.bankDetails")}</h2>
         <Button onClick={onEdit} className="profile-section__edit-button">
-          Edit
+          {t("profile.edit")}
         </Button>
       </div>
       <div className="profile-section__content">
         <div className="profile-section__field-list">
           <div className="profile-section__field-item">
-            <span className="profile-section__field-label">Bank Name</span>
+            <span className="profile-section__field-label">{t("profile.bankName")}</span>
             <span className="profile-section__field-value">{data.bankName}</span>
           </div>
           <div className="profile-section__field-item">
-            <span className="profile-section__field-label">Account Type</span>
+            <span className="profile-section__field-label">{t("profile.accountType")}</span>
             <span className="profile-section__field-value">
               {data.accountType.charAt(0).toUpperCase() + data.accountType.slice(1)}
             </span>
           </div>
           <div className="profile-section__field-item">
-            <span className="profile-section__field-label">Account Number</span>
+            <span className="profile-section__field-label">{t("profile.accountNumber")}</span>
             <span className="profile-section__field-value">{data.accountNumber}</span>
           </div>
           <div className="profile-section__field-item">
-            <span className="profile-section__field-label">Routing Number</span>
+            <span className="profile-section__field-label">{t("profile.routingNumber")}</span>
             <span className="profile-section__field-value">{data.routingNumber}</span>
           </div>
           <div className="profile-section__field-item">
-            <span className="profile-section__field-label">Account Holder Name</span>
+            <span className="profile-section__field-label">{t("profile.accountHolderName")}</span>
             <span className="profile-section__field-value">{data.accountHolderName}</span>
           </div>
         </div>
         {data.lastUpdated && (
-          <p className="profile-section__timestamp">Last updated: {data.lastUpdated}</p>
+          <p className="profile-section__timestamp">{t("profile.lastUpdated", { date: data.lastUpdated })}</p>
         )}
       </div>
     </div>

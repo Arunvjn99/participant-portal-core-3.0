@@ -73,7 +73,7 @@ export const EnrollmentFooter = ({
     <footer
       className="enrollment-footer"
       role="contentinfo"
-      aria-label="Enrollment step actions"
+      aria-label={t("enrollment.footerAria")}
     >
       <div className="enrollment-footer__inner">
         <div className="enrollment-footer__left">

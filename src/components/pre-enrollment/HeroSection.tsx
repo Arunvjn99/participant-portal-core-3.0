@@ -118,7 +118,7 @@ export const HeroSection = () => {
             <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" />
             <div className="text-center p-6 sm:p-8">
               <h3 className="text-2xl sm:text-3xl font-bold text-brand-900 dark:text-brand-200 mb-2">$1.2M</h3>
-              <p className="text-sm sm:text-base text-brand-700 dark:text-brand-300 font-medium">Projected Future Value</p>
+              <p className="text-sm sm:text-base text-brand-700 dark:text-brand-300 font-medium">{t("dashboard.projectedFutureValue")}</p>
             </div>
           </div>
         </motion.div>

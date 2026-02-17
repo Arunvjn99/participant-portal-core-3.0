@@ -22,21 +22,32 @@ const resources = {
 
 const supportedLngs = ["en", "es", "fr", "ta", "zh", "ja", "de", "hi"];
 
+function normalizeLng(lng: string | null): string {
+  if (!lng) return "en";
+  const base = lng.split("-")[0].toLowerCase();
+  return supportedLngs.includes(base) ? base : "en";
+}
+
+const initialLng = normalizeLng(localStorage.getItem("i18nextLng"));
+
 i18n.use(initReactI18next).init({
   resources,
-  lng: localStorage.getItem("i18nextLng") || "en",
+  lng: initialLng,
   fallbackLng: "en",
   supportedLngs,
+  load: "currentOnly",
   interpolation: {
     escapeValue: false,
   },
   react: {
     useSuspense: false,
+    bindI18n: "languageChanged loaded",
+    bindI18nStore: "added removed",
   },
 });
 
-i18n.on("languageChanged", (lng) => {
-  localStorage.setItem("i18nextLng", lng);
+i18n.on("languageChanged", (lng: string) => {
+  localStorage.setItem("i18nextLng", normalizeLng(lng));
 });
 
 export default i18n;

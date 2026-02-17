@@ -16,7 +16,11 @@ export const AdvisorSection = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 lg:gap-8">
-        {ADVISORS.map((advisor) => (
+        {ADVISORS.map((advisor) => {
+          const name = t(`preEnrollment.advisor${advisor.id}Name` as const);
+          const role = t(`preEnrollment.advisor${advisor.id}Role` as const);
+          const bio = t(`preEnrollment.advisor${advisor.id}Bio` as const);
+          return (
           <div
             key={advisor.id}
             className="flex flex-col items-center text-center p-4 sm:p-5 md:p-6 lg:p-8 rounded-xl sm:rounded-2xl bg-slate-50/80 dark:bg-slate-800/80 hover:bg-brand-50/50 dark:hover:bg-slate-700/80 transition-colors border border-slate-100 dark:border-slate-700 hover:border-brand-100 dark:hover:border-slate-600 hover:shadow-lg shadow-sm dark:shadow-black/20 group min-w-0"
@@ -25,16 +29,16 @@ export const AdvisorSection = () => {
                 <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-4 border-white dark:border-slate-700 shadow-lg">
                   <img
                     src={advisor.image}
-                    alt={advisor.name}
+                    alt={name}
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <div className="absolute bottom-0 right-0 w-5 h-5 sm:w-6 sm:h-6 bg-emerald-500 border-[3px] sm:border-4 border-white dark:border-slate-700 rounded-full" />
               </div>
 
-              <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-slate-100">{advisor.name}</h3>
-              <p className="text-brand-600 dark:text-brand-400 text-xs sm:text-sm font-medium mb-2 sm:mb-3">{advisor.role}</p>
-              <p className="text-slate-500 dark:text-slate-400 mb-4 sm:mb-6 md:mb-8 leading-relaxed text-xs sm:text-sm md:text-base">&quot;{advisor.bio}&quot;</p>
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-slate-100">{name}</h3>
+              <p className="text-brand-600 dark:text-brand-400 text-xs sm:text-sm font-medium mb-2 sm:mb-3">{role}</p>
+              <p className="text-slate-500 dark:text-slate-400 mb-4 sm:mb-6 md:mb-8 leading-relaxed text-xs sm:text-sm md:text-base">&quot;{bio}&quot;</p>
 
               <div className="flex gap-2 sm:gap-3 w-full mt-auto">
                 <button
@@ -53,7 +57,8 @@ export const AdvisorSection = () => {
                 </button>
               </div>
             </div>
-          ))}
+          );
+        })}
       </div>
     </section>
   );

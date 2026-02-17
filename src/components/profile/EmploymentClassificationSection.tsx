@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import Button from "../ui/Button";
 import type { EmploymentClassification } from "../../data/mockProfile";
 
@@ -20,40 +21,37 @@ export const EmploymentClassificationSection = ({
   onSave,
   onCancel,
 }: EmploymentClassificationSectionProps) => {
-  // This section is read-only
+  const { t } = useTranslation();
   return (
     <div className="profile-section">
       <div className="profile-section__header">
-        <h2 className="profile-section__title">Employment Classification</h2>
+        <h2 className="profile-section__title">{t("profile.employmentClassification")}</h2>
       </div>
       <div className="profile-section__content">
         <div className="profile-section__read-only-notice">
-          <p className="profile-section__read-only-text">
-            This information is determined by your employment status and cannot be changed. Contact HR if you
-            believe there is an error.
-          </p>
+          <p className="profile-section__read-only-text">{t("profile.determinedByEmployment")}</p>
         </div>
         <div className="profile-section__field-list">
           <div className="profile-section__field-item">
-            <span className="profile-section__field-label">Employee Type</span>
+            <span className="profile-section__field-label">{t("profile.employeeType")}</span>
             <span className="profile-section__field-value">
               {data.employeeType.charAt(0).toUpperCase() + data.employeeType.slice(1).replace(/-/g, " ")}
             </span>
           </div>
           <div className="profile-section__field-item">
-            <span className="profile-section__field-label">Union Status</span>
+            <span className="profile-section__field-label">{t("profile.unionStatus")}</span>
             <span className="profile-section__field-value">
               {data.unionStatus.charAt(0).toUpperCase() + data.unionStatus.slice(1).replace(/-/g, " ")}
             </span>
           </div>
           <div className="profile-section__field-item">
-            <span className="profile-section__field-label">Compensation Type</span>
+            <span className="profile-section__field-label">{t("profile.compensationType")}</span>
             <span className="profile-section__field-value">
               {data.compensationType.charAt(0).toUpperCase() + data.compensationType.slice(1)}
             </span>
           </div>
           <div className="profile-section__field-item">
-            <span className="profile-section__field-label">Eligibility Status</span>
+            <span className="profile-section__field-label">{t("profile.eligibilityStatus")}</span>
             <span className="profile-section__field-value">
               {data.eligibilityStatus.charAt(0).toUpperCase() + data.eligibilityStatus.slice(1)}
             </span>

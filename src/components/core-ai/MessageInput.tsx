@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 
 /**
  * MessageInput — Input bar with integrated mic button.
@@ -32,6 +33,7 @@ export function MessageInput({
   onMicClick,
   disabled,
 }: MessageInputProps) {
+  const { t } = useTranslation();
   const [value, setValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -49,10 +51,10 @@ export function MessageInput({
 
   /* Derive placeholder from mic state */
   const placeholder = isListening
-    ? "Listening..."
+    ? t("coreAi.placeholderListening")
     : isProcessing
-      ? "Processing speech..."
-      : "Ask anything about your retirement plan...";
+      ? t("coreAi.placeholderProcessing")
+      : t("coreAi.placeholderDefault");
 
   /* Mic is busy if listening or processing */
   const micBusy = isListening || isProcessing;
@@ -77,17 +79,17 @@ export function MessageInput({
           }`}
           aria-label={
             isListening
-              ? "Stop recording"
+              ? t("coreAi.ariaMicStop")
               : isProcessing
-                ? "Processing speech"
-                : "Start recording"
+                ? t("coreAi.ariaMicProcessing")
+                : t("coreAi.ariaMicStart")
           }
           title={
             isListening
-              ? "Stop recording"
+              ? t("coreAi.titleMicStop")
               : isProcessing
-                ? "Processing..."
-                : "Voice input"
+                ? t("coreAi.titleMicProcessing")
+                : t("coreAi.titleMicVoice")
           }
         >
           {/* Pulse ring when listening */}
@@ -140,7 +142,7 @@ export function MessageInput({
           placeholder={placeholder}
           disabled={disabled || micBusy}
           className="flex-1 bg-transparent py-2.5 text-sm text-white placeholder-slate-500 outline-none min-w-0 disabled:opacity-50"
-          aria-label="Message input"
+          aria-label={t("coreAi.ariaMessageInput")}
         />
 
         {/* Send button */}
@@ -148,8 +150,8 @@ export function MessageInput({
           type="submit"
           disabled={!value.trim() || disabled || micBusy}
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-teal-600 text-white transition-all hover:bg-teal-500 disabled:opacity-30 disabled:cursor-not-allowed"
-          aria-label="Send message"
-          title="Send"
+          aria-label={t("coreAi.ariaSend")}
+          title={t("coreAi.titleSend")}
         >
           <svg
             width="16"
@@ -170,12 +172,12 @@ export function MessageInput({
       {/* Speech status */}
       {isListening && (
         <p className="mt-1.5 text-center text-[11px] text-red-400/80 animate-pulse">
-          Recording... click mic to stop
+          {t("coreAi.recordingHint")}
         </p>
       )}
       {isProcessing && (
         <p className="mt-1.5 text-center text-[11px] text-amber-400/80">
-          Processing your speech...
+          {t("coreAi.processingHint")}
         </p>
       )}
     </form>

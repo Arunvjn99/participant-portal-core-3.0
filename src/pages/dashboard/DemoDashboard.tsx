@@ -20,7 +20,7 @@ import {
  * (navigates to login).
  */
 export function DemoDashboard() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const user = useDemoUser();
 
   if (!user) {
@@ -57,7 +57,7 @@ export function DemoDashboard() {
 
   return (
     <DashboardLayout header={<DashboardHeader />}>
-      {scenarioContent}
+      <div key={i18n.language}>{scenarioContent}</div>
     </DashboardLayout>
   );
 }

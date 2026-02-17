@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useEnrollment } from "../../enrollment/context/EnrollmentContext";
@@ -13,53 +14,41 @@ import type {
 import { DEFAULT_INVESTMENT_PROFILE } from "../../enrollment/types/investmentProfile";
 
 /* ═══════════════════════════════════════════════════════
-   STEP DATA
+   STEP DATA (i18n keys)
    ═══════════════════════════════════════════════════════ */
 
-const RISK_OPTIONS: { value: RiskTolerance; label: string; short: string; feedback: string }[] = [
-  { value: 1, label: "Very Uncomfortable", short: "Conservative", feedback: "We'll prioritize capital preservation and stability." },
-  { value: 2, label: "Uncomfortable", short: "Cautious", feedback: "We'll balance growth with strong downside protection." },
-  { value: 3, label: "Neutral", short: "Balanced", feedback: "A blend of growth and stability — the most common choice." },
-  { value: 4, label: "Comfortable", short: "Growth", feedback: "We'll lean into equities for stronger long-term returns." },
-  { value: 5, label: "Very Comfortable", short: "Aggressive", feedback: "Maximum growth focus — comfortable riding market waves." },
+const RISK_OPTIONS: { value: RiskTolerance; labelKey: string; shortKey: string; feedbackKey: string }[] = [
+  { value: 1, labelKey: "enrollment.profileRisk1Label", shortKey: "enrollment.profileRisk1Short", feedbackKey: "enrollment.profileRisk1Feedback" },
+  { value: 2, labelKey: "enrollment.profileRisk2Label", shortKey: "enrollment.profileRisk2Short", feedbackKey: "enrollment.profileRisk2Feedback" },
+  { value: 3, labelKey: "enrollment.profileRisk3Label", shortKey: "enrollment.profileRisk3Short", feedbackKey: "enrollment.profileRisk3Feedback" },
+  { value: 4, labelKey: "enrollment.profileRisk4Label", shortKey: "enrollment.profileRisk4Short", feedbackKey: "enrollment.profileRisk4Feedback" },
+  { value: 5, labelKey: "enrollment.profileRisk5Label", shortKey: "enrollment.profileRisk5Short", feedbackKey: "enrollment.profileRisk5Feedback" },
 ];
 
-const HORIZON_OPTIONS: { value: InvestmentHorizon; label: string; icon: string; feedback: string }[] = [
-  { value: "< 5 years", label: "Under 5 years", icon: "⏱", feedback: "Short-term — we'll keep allocations conservative." },
-  { value: "5–10 years", label: "5–10 years", icon: "📅", feedback: "Medium-term — balanced allocation ahead." },
-  { value: "10–20 years", label: "10–20 years", icon: "📈", feedback: "Long-term — room for growth-focused strategies." },
-  { value: "20+ years", label: "20+ years", icon: "🚀", feedback: "Extended horizon — maximum compounding potential." },
+const HORIZON_OPTIONS: { value: InvestmentHorizon; labelKey: string; icon: string; feedbackKey: string }[] = [
+  { value: "< 5 years", labelKey: "enrollment.profileHorizon1Label", icon: "⏱", feedbackKey: "enrollment.profileHorizon1Feedback" },
+  { value: "5–10 years", labelKey: "enrollment.profileHorizon2Label", icon: "📅", feedbackKey: "enrollment.profileHorizon2Feedback" },
+  { value: "10–20 years", labelKey: "enrollment.profileHorizon3Label", icon: "📈", feedbackKey: "enrollment.profileHorizon3Feedback" },
+  { value: "20+ years", labelKey: "enrollment.profileHorizon4Label", icon: "🚀", feedbackKey: "enrollment.profileHorizon4Feedback" },
 ];
 
-const PREFERENCE_OPTIONS: { value: InvestmentPreference; label: string; desc: string; icon: string; feedback: string }[] = [
-  { value: "prefer recommended", label: "Recommended", desc: "Hands-off, optimized by AI", icon: "✨", feedback: "We'll optimize your portfolio automatically." },
-  { value: "adjust allocations", label: "Guided", desc: "Fine-tune allocations yourself", icon: "🎛", feedback: "You'll have control over fine-tuning allocations." },
-  { value: "full manual", label: "Manual", desc: "Full control over every fund", icon: "⚙", feedback: "Full control — every fund, every percentage." },
-  { value: "advisor assistance", label: "Advisor", desc: "A human expert guides you", icon: "👤", feedback: "A licensed advisor will help guide your choices." },
+const PREFERENCE_OPTIONS: { value: InvestmentPreference; labelKey: string; descKey: string; icon: string; feedbackKey: string }[] = [
+  { value: "prefer recommended", labelKey: "enrollment.profilePref1Label", descKey: "enrollment.profilePref1Desc", icon: "✨", feedbackKey: "enrollment.profilePref1Feedback" },
+  { value: "adjust allocations", labelKey: "enrollment.profilePref2Label", descKey: "enrollment.profilePref2Desc", icon: "🎛", feedbackKey: "enrollment.profilePref2Feedback" },
+  { value: "full manual", labelKey: "enrollment.profilePref3Label", descKey: "enrollment.profilePref3Desc", icon: "⚙", feedbackKey: "enrollment.profilePref3Feedback" },
+  { value: "advisor assistance", labelKey: "enrollment.profilePref4Label", descKey: "enrollment.profilePref4Desc", icon: "👤", feedbackKey: "enrollment.profilePref4Feedback" },
 ];
 
 interface StepConfig {
-  title: string;
-  subtitle: string;
+  titleKey: string;
+  subtitleKey: string;
   key: keyof InvestmentProfile;
 }
 
 const STEP_CONFIGS: StepConfig[] = [
-  {
-    title: "Let's understand your comfort with market fluctuations.",
-    subtitle: "This helps us recommend the right balance of growth and stability for your portfolio.",
-    key: "riskTolerance",
-  },
-  {
-    title: "When do you plan to start using these funds?",
-    subtitle: "Your time horizon shapes how aggressively we can invest on your behalf.",
-    key: "investmentHorizon",
-  },
-  {
-    title: "How hands-on do you want to be?",
-    subtitle: "Choose the level of involvement that feels right for you.",
-    key: "investmentPreference",
-  },
+  { titleKey: "enrollment.profileStep1Title", subtitleKey: "enrollment.profileStep1Subtitle", key: "riskTolerance" },
+  { titleKey: "enrollment.profileStep2Title", subtitleKey: "enrollment.profileStep2Subtitle", key: "investmentHorizon" },
+  { titleKey: "enrollment.profileStep3Title", subtitleKey: "enrollment.profileStep3Subtitle", key: "investmentPreference" },
 ];
 
 /* ═══════════════════════════════════════════════════════
@@ -77,6 +66,7 @@ export const InvestmentProfileWizard = ({
   onClose,
   onComplete,
 }: InvestmentProfileWizardProps) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { setInvestmentProfile, setInvestmentProfileCompleted } = useEnrollment();
   const [step, setStep] = useState(1);
@@ -140,12 +130,13 @@ export const InvestmentProfileWizard = ({
   }, [setInvestmentProfile, setInvestmentProfileCompleted, onClose, navigate]);
 
   /* ── Feedback message for current selection ── */
-  const feedbackMessage = (() => {
+  const feedbackMessageKey = (() => {
     if (!currentValue) return null;
-    if (step === 1) return RISK_OPTIONS.find((o) => o.value === currentValue)?.feedback ?? null;
-    if (step === 2) return HORIZON_OPTIONS.find((o) => o.value === currentValue)?.feedback ?? null;
-    return PREFERENCE_OPTIONS.find((o) => o.value === currentValue)?.feedback ?? null;
+    if (step === 1) return RISK_OPTIONS.find((o) => o.value === currentValue)?.feedbackKey ?? null;
+    if (step === 2) return HORIZON_OPTIONS.find((o) => o.value === currentValue)?.feedbackKey ?? null;
+    return PREFERENCE_OPTIONS.find((o) => o.value === currentValue)?.feedbackKey ?? null;
   })();
+  const feedbackMessage = feedbackMessageKey ? t(feedbackMessageKey) : null;
 
   /* ── Slide animation variants ── */
   const slideVariants = {
@@ -226,11 +217,11 @@ export const InvestmentProfileWizard = ({
                       <div>
                         <Dialog.Title asChild>
                           <p className="text-sm font-bold" style={{ color: "var(--enroll-text-primary)" }}>
-                            Investment Profile
+                            {t("enrollment.investmentProfile")}
                           </p>
                         </Dialog.Title>
                         <p className="text-[11px] mt-0.5" style={{ color: "var(--enroll-text-muted)" }}>
-                          3 quick questions to personalize your portfolio
+                          {t("enrollment.investmentProfileSubtitle")}
                         </p>
                       </div>
                     </div>
@@ -239,7 +230,7 @@ export const InvestmentProfileWizard = ({
                         type="button"
                         className="flex h-8 w-8 items-center justify-center rounded-lg border-none cursor-pointer transition-colors"
                         style={{ background: "var(--enroll-soft-bg)", color: "var(--enroll-text-muted)" }}
-                        aria-label="Close (skips wizard and applies default profile)"
+                        aria-label={t("enrollment.closeWizardAria")}
                       >
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                           <path d="M18 6L6 18M6 6l12 12" />
@@ -270,7 +261,7 @@ export const InvestmentProfileWizard = ({
                         ))}
                       </div>
                       <span className="text-[11px] font-semibold" style={{ color: "var(--enroll-text-muted)" }}>
-                        {step} of 3
+                        {t("enrollment.stepOf3", { current: step })}
                       </span>
                     </div>
                   </div>
@@ -288,10 +279,10 @@ export const InvestmentProfileWizard = ({
                     >
                       {/* Question */}
                       <h3 className="text-lg md:text-xl font-bold leading-snug mb-1.5" style={{ color: "var(--enroll-text-primary)" }}>
-                        {config.title}
+                        {t(config.titleKey)}
                       </h3>
                       <p className="text-sm mb-5" style={{ color: "var(--enroll-text-secondary)" }}>
-                        {config.subtitle}
+                        {t(config.subtitleKey)}
                       </p>
 
                       {/* Options */}
@@ -328,7 +319,7 @@ export const InvestmentProfileWizard = ({
                       className="px-5 py-2.5 text-xs font-semibold rounded-xl border-none cursor-pointer transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                       style={{ background: "var(--enroll-soft-bg)", color: "var(--enroll-text-secondary)" }}
                     >
-                      Back
+                      {t("enrollment.back")}
                     </button>
                     <button
                       type="button"
@@ -341,14 +332,13 @@ export const InvestmentProfileWizard = ({
                         boxShadow: canProceed ? "0 4px 12px rgb(var(--enroll-brand-rgb) / 0.2)" : "none",
                       }}
                     >
-                      {step < 3 ? "Continue" : "Build My Portfolio"}
+                      {step < 3 ? t("enrollment.continue") : t("enrollment.buildMyPortfolio")}
                     </button>
                   </div>
 
                   {/* ── Disclaimer (subtle) ── */}
                   <p className="text-[10px] mt-4 leading-relaxed text-center" style={{ color: "var(--enroll-text-muted)", opacity: 0.7 }}>
-                    AI-generated profile for educational purposes only. Not personalized investment advice.
-                    Consult a licensed financial advisor for tailored recommendations.
+                    {t("enrollment.profileDisclaimer")}
                   </p>
                 </div>
               </motion.div>
@@ -369,6 +359,7 @@ export const InvestmentProfileWizard = ({
    ═══════════════════════════════════════════════════════ */
 
 function RiskSpectrum({ value, onSelect }: { value?: RiskTolerance; onSelect: (v: RiskTolerance) => void }) {
+  const { t } = useTranslation();
   return (
     <div>
       {/* Spectrum bar with nodes */}
@@ -396,7 +387,7 @@ function RiskSpectrum({ value, onSelect }: { value?: RiskTolerance; onSelect: (v
               type="button"
               onClick={() => onSelect(opt.value)}
               className="relative z-10 flex flex-col items-center gap-1.5 border-none cursor-pointer bg-transparent p-0 group"
-              aria-label={opt.label}
+              aria-label={t(opt.labelKey)}
             >
               <motion.div
                 animate={{
@@ -440,7 +431,7 @@ function RiskSpectrum({ value, onSelect }: { value?: RiskTolerance; onSelect: (v
                 className="text-[10px] font-semibold text-center leading-tight transition-colors"
                 style={{ color: isSelected ? "var(--enroll-brand)" : "var(--enroll-text-muted)" }}
               >
-                {opt.short}
+                {t(opt.shortKey)}
               </span>
             </button>
           );
@@ -455,6 +446,7 @@ function RiskSpectrum({ value, onSelect }: { value?: RiskTolerance; onSelect: (v
    ═══════════════════════════════════════════════════════ */
 
 function HorizonTiles({ value, onSelect }: { value?: InvestmentHorizon; onSelect: (v: InvestmentHorizon) => void }) {
+  const { t } = useTranslation();
   return (
     <div className="grid grid-cols-2 gap-2">
       {HORIZON_OPTIONS.map((opt) => {
@@ -479,7 +471,7 @@ function HorizonTiles({ value, onSelect }: { value?: InvestmentHorizon; onSelect
                 className="text-sm font-bold"
                 style={{ color: isSelected ? "var(--enroll-brand)" : "var(--enroll-text-primary)" }}
               >
-                {opt.label}
+                {t(opt.labelKey)}
               </p>
             </div>
           </motion.button>
@@ -494,6 +486,7 @@ function HorizonTiles({ value, onSelect }: { value?: InvestmentHorizon; onSelect
    ═══════════════════════════════════════════════════════ */
 
 function PreferenceTiles({ value, onSelect }: { value?: InvestmentPreference; onSelect: (v: InvestmentPreference) => void }) {
+  const { t } = useTranslation();
   return (
     <div className="grid grid-cols-2 gap-2">
       {PREFERENCE_OPTIONS.map((opt) => {
@@ -517,9 +510,9 @@ function PreferenceTiles({ value, onSelect }: { value?: InvestmentPreference; on
               className="text-xs font-bold"
               style={{ color: isSelected ? "var(--enroll-brand)" : "var(--enroll-text-primary)" }}
             >
-              {opt.label}
+              {t(opt.labelKey)}
             </p>
-            <p className="text-[10px]" style={{ color: "var(--enroll-text-muted)" }}>{opt.desc}</p>
+            <p className="text-[10px]" style={{ color: "var(--enroll-text-muted)" }}>{t(opt.descKey)}</p>
           </motion.button>
         );
       })}

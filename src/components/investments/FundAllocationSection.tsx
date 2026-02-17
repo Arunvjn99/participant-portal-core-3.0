@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { FundAllocationRow } from "./FundAllocationRow";
 import { AddInvestmentModal } from "./AddInvestmentModal";
@@ -8,10 +9,10 @@ import { getSourceTotal, isSourceValid } from "../../utils/investmentAllocationH
 
 type SourceKey = "preTax" | "roth" | "afterTax";
 
-const SOURCE_LABELS: Record<SourceKey, string> = {
-  preTax: "Pre-tax",
-  roth: "Roth",
-  afterTax: "After-tax",
+const SOURCE_LABEL_KEYS: Record<SourceKey, string> = {
+  preTax: "enrollment.preTax",
+  roth: "enrollment.roth",
+  afterTax: "enrollment.afterTax",
 };
 
 const cardStyle: React.CSSProperties = {
@@ -52,6 +53,7 @@ interface AllocationSubsectionProps {
 }
 
 function AllocationSubsection({ source, defaultExpanded }: AllocationSubsectionProps) {
+  const { t } = useTranslation();
   const {
     getFundsForSource,
     updateSourceAllocation,
@@ -66,6 +68,7 @@ function AllocationSubsection({ source, defaultExpanded }: AllocationSubsectionP
   const funds = getFundsForSource(source);
   const total = getSourceTotal(funds);
   const allocatedFundIds = funds.map((f) => f.fundId);
+  const sourceLabel = t(SOURCE_LABEL_KEYS[source]);
 
   const handleAddComplete = (fundId: string) => {
     lastAddedFundIdRef.current = fundId;
@@ -96,7 +99,7 @@ function AllocationSubsection({ source, defaultExpanded }: AllocationSubsectionP
       >
         <div className="flex items-center gap-2.5">
           <span className="text-sm font-bold" style={{ color: "var(--enroll-text-primary)" }}>
-            {SOURCE_LABELS[source]}
+            {sourceLabel}
           </span>
           <span className="text-xs" style={{ color: "var(--enroll-text-muted)" }}>
             {funds.length} fund{funds.length !== 1 ? "s" : ""}
@@ -136,7 +139,7 @@ function AllocationSubsection({ source, defaultExpanded }: AllocationSubsectionP
           >
             <div className="pt-4 pb-2 space-y-3">
               <p className="text-xs px-1" style={{ color: "var(--enroll-text-muted)" }}>
-                Allocate your {SOURCE_LABELS[source].toLowerCase()} contributions. Total must equal 100%.
+                {t("enrollment.allocateSourceTotal100", { source: sourceLabel.toLowerCase() })}
               </p>
 
               {editAllocationEnabled && (
@@ -150,7 +153,7 @@ function AllocationSubsection({ source, defaultExpanded }: AllocationSubsectionP
                   }}
                 >
                   <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M8 3v10M3 8h10" strokeLinecap="round" /></svg>
-                  Add Investment
+                  {t("enrollment.addInvestment")}
                 </button>
               )}
 
@@ -180,7 +183,7 @@ function AllocationSubsection({ source, defaultExpanded }: AllocationSubsectionP
                 }}
               >
                 <span className="text-xs font-semibold" style={{ color: "var(--enroll-text-secondary)" }}>
-                  Total Allocation
+                  {t("enrollment.totalAllocation")}
                 </span>
                 <span
                   className="text-sm font-bold"
@@ -207,6 +210,7 @@ function AllocationSubsection({ source, defaultExpanded }: AllocationSubsectionP
 }
 
 export function FundAllocationSection() {
+  const { t } = useTranslation();
   const {
     activeSources,
     editAllocationEnabled,
@@ -238,7 +242,7 @@ export function FundAllocationSection() {
         className="text-[10px] font-bold uppercase tracking-widest mb-4"
         style={{ color: "var(--enroll-text-muted)" }}
       >
-        Fund Allocation
+        {t("enrollment.fundAllocation")}
       </h2>
 
       <div className="p-5 space-y-5" style={cardStyle}>
@@ -259,10 +263,10 @@ export function FundAllocationSection() {
             </div>
             <div>
               <p className="text-sm font-semibold" style={{ color: "var(--enroll-text-primary)" }}>
-                Edit allocation
+                {t("enrollment.editAllocation")}
               </p>
               <p className="text-[11px]" style={{ color: "var(--enroll-text-muted)" }}>
-                Customize recommended allocations
+                {t("enrollment.customizeRecommendedAllocation")}
               </p>
             </div>
           </div>
@@ -328,14 +332,14 @@ export function FundAllocationSection() {
                   ? "var(--color-danger)"
                   : "var(--color-warning)",
             }}>
-              {globalStatus === "success" && "Total Allocation: 100%"}
-              {globalStatus === "error" && "Over-allocated"}
-              {globalStatus === "warning" && "Incomplete allocation"}
+              {globalStatus === "success" && t("enrollment.totalAllocation100")}
+              {globalStatus === "error" && t("enrollment.overAllocated")}
+              {globalStatus === "warning" && t("enrollment.incompleteAllocation")}
             </p>
             <p className="text-xs" style={{ color: "var(--enroll-text-muted)" }}>
-              {globalStatus === "success" && "Your allocation is complete."}
-              {globalStatus === "error" && "Reduce allocations so each source totals 100%."}
-              {globalStatus === "warning" && "Each source must total exactly 100%."}
+              {globalStatus === "success" && t("enrollment.allocationComplete")}
+              {globalStatus === "error" && t("enrollment.reduceAllocationsPerSource")}
+              {globalStatus === "warning" && t("enrollment.eachSourceMustTotal100")}
             </p>
           </div>
         </div>

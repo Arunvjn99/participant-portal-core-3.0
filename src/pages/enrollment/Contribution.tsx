@@ -27,9 +27,9 @@ const PRESETS = [
 ] as const;
 
 const SOURCE_OPTIONS = [
-  { id: "preTax", main: "Pre-tax", sub: "(default)", key: "preTax" as const },
-  { id: "roth", main: "Roth", sub: "(after-tax, tax-free growth)", key: "roth" as const },
-  { id: "afterTax", main: "After-tax", sub: "(non-Roth)", key: "afterTax" as const },
+  { id: "preTax", mainKey: "enrollment.preTax", subKey: "enrollment.preTaxSub", key: "preTax" as const },
+  { id: "roth", mainKey: "enrollment.roth", subKey: "enrollment.rothSub", key: "roth" as const },
+  { id: "afterTax", mainKey: "enrollment.afterTax", subKey: "enrollment.afterTaxSub", key: "afterTax" as const },
 ] as const;
 
 /* ── Shared card style using tokens ── */
@@ -44,9 +44,22 @@ const cardStyle: React.CSSProperties = {
    Contribution Page
    ═══════════════════════════════════════════════════════════════ */
 
+const LOCALE_MAP: Record<string, string> = {
+  en: "en-US",
+  fr: "fr-FR",
+  es: "es-ES",
+  ta: "ta-IN",
+  zh: "zh-CN",
+  ja: "ja-JP",
+  de: "de-DE",
+  hi: "hi-IN",
+};
+
 export const Contribution = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const lang = (i18n.language ?? "en").split("-")[0];
+  const locale = LOCALE_MAP[lang] ?? LOCALE_MAP.en ?? "en-US";
   const {
     state,
     setContributionType,
@@ -109,11 +122,14 @@ export const Contribution = () => {
 
   const activePreset = PRESETS.find((p) => p.percentage === contributionPct)?.id ?? null;
 
-  /* ── Handlers (unchanged) ── */
-  const formatCurrency = (n: number) =>
-    new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
-      Number.isFinite(n) && n >= 0 ? n : 0
-    );
+  /* ── Handlers & formatters (locale-aware) ── */
+  const formatCurrency = useCallback(
+    (n: number) =>
+      new Intl.NumberFormat(locale, { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
+        Number.isFinite(n) && n >= 0 ? n : 0
+      ),
+    [locale]
+  );
 
   const handlePreset = (pct: number) => {
     setContributionType("percentage");
@@ -268,7 +284,7 @@ export const Contribution = () => {
                 max={SLIDER_MAX}
                 value={Math.min(SLIDER_MAX, Math.max(SLIDER_MIN, contributionPct))}
                 onChange={handleSliderChange}
-                aria-label="Contribution percentage"
+                aria-label={t("enrollment.contributionPercentageAria")}
                 className="w-full h-2 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:cursor-pointer"
                 style={{
                   background: `linear-gradient(to right, var(--enroll-brand) 0%, var(--enroll-brand) ${sliderPct}%, var(--enroll-soft-bg) ${sliderPct}%, var(--enroll-soft-bg) 100%)`,
@@ -297,7 +313,7 @@ export const Contribution = () => {
                     min="0"
                     max="100"
                     step="0.1"
-                    aria-label="Contribution percentage"
+                    aria-label={t("enrollment.contributionPercentageAria")}
                     className="w-full min-w-0 bg-transparent text-2xl font-bold focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     style={{ color: "var(--enroll-text-primary)" }}
                   />
@@ -307,7 +323,7 @@ export const Contribution = () => {
                   className="flex shrink-0 items-center px-2"
                   style={{ borderLeft: "1px solid var(--enroll-card-border)", borderRight: "1px solid var(--enroll-card-border)" }}
                 >
-                  <span className="text-xs font-medium" style={{ color: "var(--enroll-text-muted)" }}>or</span>
+                  <span className="text-xs font-medium" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.contributionOr")}</span>
                 </div>
                 <div className="flex flex-1 items-center gap-1.5 min-w-0 px-4 py-3">
                   <input
@@ -319,11 +335,11 @@ export const Contribution = () => {
                     placeholder="0"
                     min="0"
                     step="1"
-                    aria-label="Annual contribution amount"
+                    aria-label={t("enrollment.annualContributionAria")}
                     className="w-full min-w-0 bg-transparent text-2xl font-bold focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     style={{ color: "var(--enroll-text-primary)" }}
                   />
-                  <span className="text-lg font-semibold shrink-0" style={{ color: "var(--enroll-text-muted)" }}>$/yr</span>
+                  <span className="text-lg font-semibold shrink-0" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.dollarPerYear")}</span>
                 </div>
               </div>
             </div>
@@ -341,26 +357,26 @@ export const Contribution = () => {
                 style={{ color: isMaxMatch ? "var(--enroll-accent)" : "var(--enroll-text-primary)" }}
               >
                 {isMaxMatch
-                  ? "You're maximizing your employer match!"
-                  : `You're contributing ${contributionPct}% of your salary`}
+                  ? t("enrollment.maximizingMatch")
+                  : t("enrollment.contributingPctOfSalary", { pct: contributionPct })}
               </p>
               <p
                 className="text-xs mt-1"
                 style={{ color: isMaxMatch ? "rgb(var(--enroll-accent-rgb) / 0.8)" : "var(--enroll-text-muted)" }}
               >
-                That's {formatCurrency(perPaycheck)} per paycheck
+                {t("enrollment.thatIsPerPaycheck", { amount: formatCurrency(perPaycheck) })}
               </p>
             </div>
 
             {/* ── Paycheck Impact Blocks ── */}
             <div className="grid grid-cols-3 gap-3">
               <PaycheckCell
-                label="You invest"
+                label={t("enrollment.youInvest")}
                 value={formatCurrency(perPaycheck)}
                 colorVar="--enroll-brand-rgb"
               />
               <PaycheckCell
-                label="Employer adds"
+                label={t("enrollment.employerAdds")}
                 value={formatCurrency(employerMatchPerPaycheck)}
                 colorVar="--enroll-accent-rgb"
               />
@@ -371,7 +387,7 @@ export const Contribution = () => {
                   border: "1px solid var(--enroll-card-border)",
                 }}
               >
-                <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>Total working</p>
+                <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.totalWorking")}</p>
                 <p className="text-lg font-bold mt-1" style={{ color: "var(--enroll-text-primary)" }}>{formatCurrency(totalPerPaycheck)}</p>
               </div>
             </div>
@@ -386,7 +402,7 @@ export const Contribution = () => {
                 onClick={() => setSourcesExpanded(!sourcesExpanded)}
                 className="flex w-full items-center justify-between px-5 py-4 text-left transition-colors hover:opacity-80"
               >
-                <span className="text-sm font-semibold" style={{ color: "var(--enroll-text-primary)" }}>Customize Your Tax Strategy</span>
+                <span className="text-sm font-semibold" style={{ color: "var(--enroll-text-primary)" }}>{t("enrollment.customizeTaxStrategy")}</span>
                 <motion.span
                   animate={{ rotate: sourcesExpanded ? 180 : 0 }}
                   transition={{ duration: 0.2 }}
@@ -409,7 +425,7 @@ export const Contribution = () => {
                   >
                     <div className="px-5 pb-5 pt-4" style={{ borderTop: "1px solid var(--enroll-card-border)" }}>
                       <div className="flex flex-wrap justify-between items-center gap-3 mb-4">
-                        <span className="text-sm font-medium" style={{ color: "var(--enroll-text-secondary)" }}>Contribution Sources</span>
+                        <span className="text-sm font-medium" style={{ color: "var(--enroll-text-secondary)" }}>{t("enrollment.contributionSources")}</span>
                         <div className="flex items-center gap-4">
                           <div className="inline-flex rounded-lg p-0.5" style={{ background: "var(--enroll-soft-bg)" }}>
                             <button
@@ -438,7 +454,7 @@ export const Contribution = () => {
                             </button>
                           </div>
                           <label className="flex items-center gap-2 cursor-pointer">
-                            <span className="text-xs" style={{ color: "var(--enroll-text-muted)" }}>Edit</span>
+                            <span className="text-xs" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.edit")}</span>
                             <div className="relative inline-flex h-5 w-9 shrink-0 cursor-pointer">
                               <input
                                 type="checkbox"
@@ -504,8 +520,8 @@ export const Contribution = () => {
                                 />
                                 <div className="flex flex-col gap-0.5">
                                   <span className="text-sm" style={{ color: "var(--enroll-text-primary)" }}>
-                                    <span className="font-semibold">{opt.main}</span>
-                                    {opt.sub && <span className="font-normal" style={{ color: "var(--enroll-text-muted)" }}> {opt.sub}</span>}
+                                    <span className="font-semibold">{t(opt.mainKey)}</span>
+                                    {opt.subKey && <span className="font-normal" style={{ color: "var(--enroll-text-muted)" }}> {t(opt.subKey)}</span>}
                                   </span>
                                 </div>
                               </label>
@@ -546,7 +562,7 @@ export const Contribution = () => {
                         })}
                       </div>
                       {sourceTotal !== 100 && (
-                        <p className="mt-2 text-sm text-red-600">Total must equal 100%</p>
+                        <p className="mt-2 text-sm text-red-600">{t("enrollment.totalMustEqual100")}</p>
                       )}
                     </div>
                   </motion.div>
@@ -570,7 +586,7 @@ export const Contribution = () => {
                 className="text-[10px] font-bold uppercase tracking-widest mb-1"
                 style={{ color: "var(--enroll-text-muted)" }}
               >
-                Projected at retirement
+                {t("enrollment.projectedAtRetirement")}
               </h3>
               <motion.p
                 key={Math.round(projectedTotal)}
@@ -580,10 +596,10 @@ export const Contribution = () => {
                 className="text-3xl font-bold"
                 style={{ color: "var(--enroll-text-primary)" }}
               >
-                {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(projectedTotal)}
+                {new Intl.NumberFormat(locale, { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(projectedTotal)}
               </motion.p>
               <p className="text-xs mt-1" style={{ color: "var(--enroll-text-muted)" }}>
-                By age {retirementAge} ({retirementAge - currentAge} years)
+                {t("enrollment.byAgeYears", { age: retirementAge, years: retirementAge - currentAge })}
               </p>
 
               <div
@@ -594,12 +610,12 @@ export const Contribution = () => {
                 }}
               >
                 <div className="min-h-[180px]">
-                  <ProjectionLineChart baseline={projectionBaseline.dataPoints} />
+                  <ProjectionLineChart baseline={projectionBaseline.dataPoints} locale={locale} />
                 </div>
               </div>
 
               <p className="text-[10px] leading-relaxed mt-3" style={{ color: "var(--enroll-text-muted)" }}>
-                Assumes {state.assumptions.annualReturnRate}% annual return, {state.assumptions.inflationRate}% inflation.
+                {t("enrollment.assumesReturnInflation", { return: state.assumptions.annualReturnRate, inflation: state.assumptions.inflationRate })}
               </p>
             </div>
 
@@ -616,13 +632,13 @@ export const Contribution = () => {
                 className="text-[10px] font-bold uppercase tracking-widest mb-2"
                 style={{ color: "var(--enroll-brand)" }}
               >
-                Per paycheck (bi-weekly)
+                {t("enrollment.perPaycheckBiWeekly")}
               </h3>
               <p className="text-2xl font-bold" style={{ color: "var(--enroll-text-primary)" }}>
                 {formatCurrency(perPaycheck)}
               </p>
               <p className="text-xs mt-1" style={{ color: "var(--enroll-text-secondary)" }}>
-                {formatCurrency(monthlyAmount)}/month. Pre-tax deduction lowers your taxable income.
+                {t("enrollment.perMonthPreTaxNote", { amount: formatCurrency(monthlyAmount) })}
               </p>
             </div>
           </div>
@@ -666,13 +682,16 @@ function PaycheckCell({ label, value, colorVar }: { label: string; value: string
    Projection Line Chart (unchanged logic)
    ═══════════════════════════════════════════════════════════════ */
 
-const formatTooltipCurrency = (n: number) =>
-  new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
-
-function ProjectionLineChart({ baseline }: { baseline: ProjectionDataPoint[] }) {
+function ProjectionLineChart({ baseline, locale }: { baseline: ProjectionDataPoint[]; locale: string }) {
+  const { t } = useTranslation();
+  const formatTooltipCurrency = useCallback(
+    (n: number) =>
+      new Intl.NumberFormat(locale, { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n),
+    [locale]
+  );
   const [tooltip, setTooltip] = useState<{ index: number; x: number; y: number } | null>(null);
   const points = baseline.length;
-  if (points === 0) return <div className="flex items-center justify-center min-h-[160px] text-sm" style={{ color: "var(--enroll-text-muted)" }}>No data</div>;
+  if (points === 0) return <div className="flex items-center justify-center min-h-[160px] text-sm" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.noData")}</div>;
 
   const maxBalance = Math.max(...baseline.map((p) => p.balance));
   const yTicks = getYAxisTicks(maxBalance);
@@ -749,7 +768,7 @@ function ProjectionLineChart({ baseline }: { baseline: ProjectionDataPoint[] }) 
           }}
         >
           <div className="font-medium" style={{ color: "var(--enroll-text-primary)" }}>
-            Year {new Date().getFullYear() + baseline[tooltip.index].year}
+            {t("enrollment.yearLabel", { year: new Date().getFullYear() + baseline[tooltip.index].year })}
           </div>
           <div className="font-semibold" style={{ color: "var(--enroll-brand)" }}>
             {formatTooltipCurrency(baseline[tooltip.index].balance)}

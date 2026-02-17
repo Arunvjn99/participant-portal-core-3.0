@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { InsightCard } from "../../shared/InsightCard";
 import { CARD_STYLE } from "../../core/types";
@@ -17,6 +18,7 @@ const ICONS: Record<string, React.ReactNode> = {
  * with staggered entrance, hover glow, and Apply Action buttons.
  */
 export const AIInsightsPanel = memo(function AIInsightsPanel({ engine }: ModuleProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const actions = engine.recommendedActions;
 
@@ -40,7 +42,7 @@ export const AIInsightsPanel = memo(function AIInsightsPanel({ engine }: ModuleP
           className="text-xs font-bold"
           style={{ color: "var(--enroll-text-primary)" }}
         >
-          AI Insights
+          {t("dashboard.insightsTitle")}
         </p>
       </div>
 
@@ -52,7 +54,7 @@ export const AIInsightsPanel = memo(function AIInsightsPanel({ engine }: ModuleP
             title={action.title}
             description={action.description}
             impact={action.impact}
-            actionLabel="Apply Suggestion"
+            actionLabel={t("dashboard.insightsApplySuggestion")}
             onAction={() => navigate(routeMap[action.type] ?? "/enrollment/contribution")}
             index={i}
           />
@@ -63,7 +65,7 @@ export const AIInsightsPanel = memo(function AIInsightsPanel({ engine }: ModuleP
         className="text-[10px] mt-3 text-center"
         style={{ color: "var(--enroll-text-muted)", opacity: 0.7 }}
       >
-        Insights generated from your plan data.
+        {t("dashboard.insightsGeneratedFromPlan")}
       </p>
     </div>
   );

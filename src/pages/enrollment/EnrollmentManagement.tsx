@@ -7,8 +7,7 @@ import { DashboardHeader } from "../../components/dashboard/DashboardHeader";
 import Button from "../../components/ui/Button";
 import { MOCK_ENROLLED_PLANS, type EnrolledPlan, type PlanStatus } from "../../data/mockEnrolledPlans";
 
-const formatCurrency = (n: number) =>
-  new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
+const getCurrencyLocale = (lng: string) => (lng && lng !== "en" ? lng : "en-US");
 
 const pageVariants = {
   hidden: { opacity: 0, y: 8 },
@@ -45,10 +44,12 @@ const FILTER_KEYS: { value: PlanStatus | "all"; key: string }[] = [
 ];
 
 export const EnrollmentManagement = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [filter, setFilter] = useState<PlanStatus | "all">("all");
   const reducedMotion = useReducedMotion();
+  const formatCurrency = (n: number) =>
+    new Intl.NumberFormat(getCurrencyLocale(i18n.language), { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
 
   const filteredPlans = useMemo(() => {
     if (filter === "all") return MOCK_ENROLLED_PLANS;
@@ -106,7 +107,7 @@ export const EnrollmentManagement = () => {
           </p>
         </header>
 
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by status">
+        <div className="flex flex-wrap gap-2" role="group" aria-label={t("enrollment.filterByStatus")}>
           {FILTER_KEYS.map((f) => (
             <motion.button
               key={f.value}

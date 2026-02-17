@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Input } from "../ui/Input";
 import Button from "../ui/Button";
 import type { ContactInformation } from "../../data/mockProfile";
@@ -22,6 +23,7 @@ export const ContactInformationSection = ({
   onSave,
   onCancel,
 }: ContactInformationSectionProps) => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState<ContactInformation>(data);
 
   const handleSave = () => {
@@ -44,13 +46,13 @@ export const ContactInformationSection = ({
     return (
       <div className="profile-section">
         <div className="profile-section__header">
-          <h2 className="profile-section__title">Contact Information</h2>
+          <h2 className="profile-section__title">{t("profile.contactInformation")}</h2>
         </div>
         <div className="profile-section__content">
           <div className="profile-section__form">
             <div className="profile-section__field">
               <Input
-                label="Email"
+                label={t("profile.email")}
                 type="email"
                 name="email"
                 value={formData.email}
@@ -59,16 +61,14 @@ export const ContactInformationSection = ({
               />
               {data.emailVerified && (
                 <p className="profile-section__helper-text profile-section__helper-text--verified">
-                  ✓ Verified
+                  ✓ {t("profile.verified")}
                 </p>
               )}
-              <p className="profile-section__helper-text">
-                You will need to verify your email after saving
-              </p>
+              <p className="profile-section__helper-text">{t("profile.verifyEmailAfterSave")}</p>
             </div>
             <div className="profile-section__field">
               <Input
-                label="Phone"
+                label={t("profile.phone")}
                 type="tel"
                 name="phone"
                 value={formData.phone}
@@ -77,17 +77,15 @@ export const ContactInformationSection = ({
               />
               {data.phoneVerified && (
                 <p className="profile-section__helper-text profile-section__helper-text--verified">
-                  ✓ Verified
+                  ✓ {t("profile.verified")}
                 </p>
               )}
-              <p className="profile-section__helper-text">
-                You will need to verify your phone after saving
-              </p>
+              <p className="profile-section__helper-text">{t("profile.verifyPhoneAfterSave")}</p>
             </div>
             <div className="profile-section__field-group">
-              <h3 className="profile-section__field-group-title">Primary Address</h3>
+              <h3 className="profile-section__field-group-title">{t("profile.primaryAddress")}</h3>
               <Input
-                label="Street Address"
+                label={t("profile.streetAddress")}
                 type="text"
                 name="street"
                 value={formData.address.street}
@@ -101,7 +99,7 @@ export const ContactInformationSection = ({
               />
               <div className="profile-section__field-row">
                 <Input
-                  label="City"
+                  label={t("profile.city")}
                   type="text"
                   name="city"
                   value={formData.address.city}
@@ -114,7 +112,7 @@ export const ContactInformationSection = ({
                   required
                 />
                 <Input
-                  label="State"
+                  label={t("profile.state")}
                   type="text"
                   name="state"
                   value={formData.address.state}
@@ -127,7 +125,7 @@ export const ContactInformationSection = ({
                   required
                 />
                 <Input
-                  label="ZIP Code"
+                  label={t("profile.zipCode")}
                   type="text"
                   name="zipCode"
                   value={formData.address.zipCode}
@@ -141,7 +139,7 @@ export const ContactInformationSection = ({
                 />
               </div>
               <Input
-                label="Country"
+                label={t("profile.country")}
                 type="text"
                 name="country"
                 value={formData.address.country}
@@ -157,14 +155,14 @@ export const ContactInformationSection = ({
           </div>
           <div className="profile-section__actions">
             <Button onClick={handleCancel} className="profile-section__button profile-section__button--cancel">
-              Cancel
+              {t("profile.cancel")}
             </Button>
             <Button onClick={handleSave} className="profile-section__button profile-section__button--save">
-              Save Changes
+              {t("profile.saveChanges")}
             </Button>
           </div>
           {data.lastUpdated && (
-            <p className="profile-section__timestamp">Last updated: {data.lastUpdated}</p>
+            <p className="profile-section__timestamp">{t("profile.lastUpdated", { date: data.lastUpdated })}</p>
           )}
         </div>
       </div>
@@ -174,33 +172,33 @@ export const ContactInformationSection = ({
   return (
     <div className="profile-section">
       <div className="profile-section__header">
-        <h2 className="profile-section__title">Contact Information</h2>
+        <h2 className="profile-section__title">{t("profile.contactInformation")}</h2>
         <Button onClick={onEdit} className="profile-section__edit-button">
-          Edit
+          {t("profile.edit")}
         </Button>
       </div>
       <div className="profile-section__content">
         <div className="profile-section__field-list">
           <div className="profile-section__field-item">
-            <span className="profile-section__field-label">Email</span>
+            <span className="profile-section__field-label">{t("profile.email")}</span>
             <div className="profile-section__field-value-group">
               <span className="profile-section__field-value">{data.email}</span>
               {data.emailVerified && (
-                <span className="profile-section__verified-badge">Verified</span>
+                <span className="profile-section__verified-badge">{t("profile.verified")}</span>
               )}
             </div>
           </div>
           <div className="profile-section__field-item">
-            <span className="profile-section__field-label">Phone</span>
+            <span className="profile-section__field-label">{t("profile.phone")}</span>
             <div className="profile-section__field-value-group">
               <span className="profile-section__field-value">{data.phone}</span>
               {data.phoneVerified && (
-                <span className="profile-section__verified-badge">Verified</span>
+                <span className="profile-section__verified-badge">{t("profile.verified")}</span>
               )}
             </div>
           </div>
           <div className="profile-section__field-item">
-            <span className="profile-section__field-label">Address</span>
+            <span className="profile-section__field-label">{t("profile.address")}</span>
             <span className="profile-section__field-value">
               {data.address.street}
               <br />
@@ -211,7 +209,7 @@ export const ContactInformationSection = ({
           </div>
         </div>
         {data.lastUpdated && (
-          <p className="profile-section__timestamp">Last updated: {data.lastUpdated}</p>
+          <p className="profile-section__timestamp">{t("profile.lastUpdated", { date: data.lastUpdated })}</p>
         )}
       </div>
     </div>

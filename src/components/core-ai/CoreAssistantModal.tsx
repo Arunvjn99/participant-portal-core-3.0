@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { MessageList } from "./MessageList";
@@ -35,27 +36,30 @@ const nextId = () => `msg-${++msgCounter}-${Date.now()}`;
  * Welcome message with suggestion chips embedded IN the message stream.
  * No separate suggestion bar — suggestions are part of the first AI bubble.
  */
-const createWelcomeMessage = (): ChatMessage => ({
-  id: "welcome",
-  role: "assistant",
-  content: "Hi, I'm Core AI — your retirement assistant. What would you like to do?",
-  timestamp: new Date(),
-  suggestions: [
-    "I want to enroll",
-    "I want to apply for a loan",
-    "How much can I withdraw?",
-    "Check my vested balance",
-  ],
-});
+function getWelcomeMessage(t: (key: string) => string): ChatMessage {
+  return {
+    id: "welcome",
+    role: "assistant",
+    content: t("coreAi.welcomeMessage"),
+    timestamp: new Date(),
+    suggestions: [
+      t("coreAi.suggestionEnroll"),
+      t("coreAi.suggestionLoan"),
+      t("coreAi.suggestionWithdraw"),
+      t("coreAi.suggestionVested"),
+    ],
+  };
+}
 
 /* ── Component ── */
 export function CoreAssistantModal({ isOpen, onClose }: CoreAssistantModalProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const enrollment = useEnrollmentSafe();
 
   /* ── State ── */
-  const [messages, setMessages] = useState<ChatMessage[]>([createWelcomeMessage()]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const flowStateRef = useRef<ActiveFlowState | null>(null);
   const prevOpenRef = useRef(false);
@@ -89,7 +93,7 @@ export function CoreAssistantModal({ isOpen, onClose }: CoreAssistantModalProps)
 
     if (isOpen && !wasOpen) {
       /* Fresh open — reset everything */
-      setMessages([createWelcomeMessage()]);
+      setMessages([getWelcomeMessage(t)]);
       setIsLoading(false);
       isLoadingRef.current = false;
       flowStateRef.current = null;
@@ -273,7 +277,7 @@ export function CoreAssistantModal({ isOpen, onClose }: CoreAssistantModalProps)
             className="relative z-10 flex flex-col overflow-hidden rounded-t-2xl sm:rounded-2xl bg-[#0f172a] text-white shadow-2xl w-full sm:w-[min(640px,calc(100vw-2rem))] md:w-[min(720px,calc(100vw-2rem))] h-[calc(100dvh-1rem)] sm:h-[min(620px,calc(100dvh-3rem))]"
             role="dialog"
             aria-modal="true"
-            aria-label="Core AI Assistant"
+            aria-label={t("coreAi.modalAria")}
           >
             {/* ── Header ── */}
             <div className="shrink-0 flex items-center justify-between gap-3 border-b border-slate-700/60 px-5 py-3">
@@ -286,13 +290,13 @@ export function CoreAssistantModal({ isOpen, onClose }: CoreAssistantModalProps)
                   </svg>
                 </div>
                 <div className="min-w-0">
-                  <h2 className="text-sm font-semibold text-white truncate">Core AI</h2>
+                  <h2 className="text-sm font-semibold text-white truncate">{t("coreAi.headerTitle")}</h2>
                   <div className="flex items-center gap-1.5">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" aria-hidden />
                     <span className="text-[11px] text-slate-400">
                       {flowStateRef.current
-                        ? `${flowStateRef.current.type.charAt(0).toUpperCase() + flowStateRef.current.type.slice(1)} flow`
-                        : "Online"}
+                        ? t("coreAi.statusFlow", { type: flowStateRef.current.type.charAt(0).toUpperCase() + flowStateRef.current.type.slice(1) })
+                        : t("coreAi.statusOnline")}
                     </span>
                   </div>
                 </div>
@@ -303,7 +307,7 @@ export function CoreAssistantModal({ isOpen, onClose }: CoreAssistantModalProps)
                 type="button"
                 onClick={onClose}
                 className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-700 hover:text-white"
-                aria-label="Close assistant"
+                aria-label={t("coreAi.closeAria")}
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18" />
@@ -334,7 +338,7 @@ export function CoreAssistantModal({ isOpen, onClose }: CoreAssistantModalProps)
             {/* ── Footer ── */}
             <div className="shrink-0 border-t border-slate-700/60 px-5 py-2">
               <p className="text-[10px] text-slate-500 text-center">
-                Core AI can make mistakes. Verify important information with your plan administrator.
+                {t("coreAi.disclaimer")}
               </p>
             </div>
           </motion.div>

@@ -15,6 +15,9 @@ export interface PlanDetailsUserSnapshot {
 export interface PlanDetailsPanelProps {
   plan: PlanOption | null;
   user: PlanDetailsUserSnapshot;
+  /** Optional i18n key for rationale (e.g. enrollment.rationaleRothYoung). When set, rationale text is translated. */
+  rationaleKey?: string;
+  /** Fallback rationale text when rationaleKey is not used. */
   rationale?: string;
 }
 
@@ -35,7 +38,7 @@ const softBgStyle: React.CSSProperties = {
   border: "1px solid var(--enroll-card-border)",
 };
 
-export function PlanDetailsPanel({ plan, user, rationale }: PlanDetailsPanelProps) {
+export function PlanDetailsPanel({ plan, user, rationaleKey, rationale }: PlanDetailsPanelProps) {
   const { t } = useTranslation();
 
   if (!plan) {
@@ -88,9 +91,9 @@ export function PlanDetailsPanel({ plan, user, rationale }: PlanDetailsPanelProp
             ? t("enrollment.bestForTaxFree")
             : t("enrollment.solidOption")}
         </p>
-        {rationale && (
+        {(rationaleKey || (rationale != null && rationale !== "")) && (
           <p className="text-sm leading-relaxed mb-4" style={{ color: "var(--enroll-text-secondary)" }}>
-            {rationale}
+            {rationaleKey ? t(rationaleKey, { years: user.yearsToRetire ?? 0 }) : rationale}
           </p>
         )}
         <div

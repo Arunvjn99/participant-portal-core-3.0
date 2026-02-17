@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import Button from "../ui/Button";
 import { AllocationChart } from "./AllocationChart";
@@ -19,11 +20,11 @@ const cardStyle: React.CSSProperties = {
   boxShadow: "var(--enroll-elevation-2)",
 };
 
-function formatRiskLevel(risk: number): string {
-  if (risk < 3) return "Conservative";
-  if (risk < 5) return "Moderate";
-  if (risk < 7) return "Moderate-Aggressive";
-  return "Aggressive";
+function getRiskLevelKey(risk: number): string {
+  if (risk < 3) return "enrollment.riskConservative";
+  if (risk < 5) return "enrollment.riskModerate";
+  if (risk < 7) return "enrollment.riskModerateAggressive";
+  return "enrollment.riskAggressive";
 }
 
 function getRiskColor(risk: number): string {
@@ -34,6 +35,7 @@ function getRiskColor(risk: number): string {
 }
 
 export const AllocationSummary = ({ variant = "dashboard" }: AllocationSummaryProps) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const {
     weightedSummary,
@@ -50,7 +52,7 @@ export const AllocationSummary = ({ variant = "dashboard" }: AllocationSummaryPr
   };
 
   const riskPercent = Math.min(100, (weightedSummary.riskLevel / 10) * 100);
-  const riskLabel = formatRiskLevel(weightedSummary.riskLevel);
+  const riskLabel = t(getRiskLevelKey(weightedSummary.riskLevel));
   const riskColor = getRiskColor(weightedSummary.riskLevel);
   const totalAllocation = chartAllocations.reduce((s, a) => s + a.percentage, 0);
 
@@ -66,16 +68,16 @@ export const AllocationSummary = ({ variant = "dashboard" }: AllocationSummaryPr
           style={cardStyle}
         >
           <h3 className="text-sm font-bold" style={{ color: "var(--enroll-text-primary)" }}>
-            Allocation Summary
+            {t("enrollment.allocationSummary")}
           </h3>
           <p className="text-xs mt-0.5 mb-5" style={{ color: "var(--enroll-text-muted)" }}>
-            Real-time impact of your elections.
+            {t("enrollment.realtimeImpactElections")}
           </p>
 
           {/* Donut chart */}
           <AllocationChart
             allocations={chartAllocations}
-            centerLabel="TOTAL"
+            centerLabel={t("enrollment.totalLabel")}
             centerValue={totalAllocation.toFixed(0)}
             showValidBadge
             isValid={weightedSummary.isValid}
@@ -84,8 +86,8 @@ export const AllocationSummary = ({ variant = "dashboard" }: AllocationSummaryPr
           {/* Risk meter */}
           <div className="mt-6 pt-5" style={{ borderTop: "1px solid var(--enroll-card-border)" }}>
             <div className="flex justify-between text-[10px] font-bold uppercase tracking-wider mb-2" style={{ color: "var(--enroll-text-muted)" }}>
-              <span>Conservative</span>
-              <span>Aggressive</span>
+              <span>{t("enrollment.riskConservative")}</span>
+              <span>{t("enrollment.riskAggressive")}</span>
             </div>
             <div className="h-2 w-full rounded-full overflow-hidden" style={{ background: "var(--enroll-soft-bg)" }}>
               <motion.div
@@ -96,7 +98,7 @@ export const AllocationSummary = ({ variant = "dashboard" }: AllocationSummaryPr
               />
             </div>
             <p className="text-xs font-semibold mt-2" style={{ color: riskColor }}>
-              Risk Level: {riskLabel}
+              {t("enrollment.riskLevelLabel", { level: riskLabel })}
             </p>
           </div>
 
@@ -107,7 +109,7 @@ export const AllocationSummary = ({ variant = "dashboard" }: AllocationSummaryPr
             className="w-full mt-5"
             type="button"
           >
-            Confirm Allocation
+            {t("enrollment.confirmAllocation")}
           </Button>
         </motion.div>
 
@@ -134,11 +136,11 @@ export const AllocationSummary = ({ variant = "dashboard" }: AllocationSummaryPr
               </svg>
             </div>
             <h4 className="text-sm font-bold" style={{ color: "var(--enroll-text-primary)" }}>
-              Need help choosing?
+              {t("enrollment.needHelpChoosing")}
             </h4>
           </div>
           <p className="text-xs leading-relaxed mb-3" style={{ color: "var(--enroll-text-secondary)" }}>
-            Get personalized guidance from our AI advisor or connect with a human expert.
+            {t("enrollment.advisorHelpDesc")}
           </p>
           <Button
             type="button"
@@ -146,7 +148,7 @@ export const AllocationSummary = ({ variant = "dashboard" }: AllocationSummaryPr
             className="w-full text-sm"
             onClick={() => setShowAdvisorWizard(true)}
           >
-            Get Advisor Help
+            {t("enrollment.getAdvisorHelp")}
           </Button>
         </motion.div>
       </div>

@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { CARD_STYLE } from "../../core/types";
 import type { ModuleProps } from "../../core/types";
@@ -7,6 +8,7 @@ import type { ModuleProps } from "../../core/types";
  * AccountIntegrityPanel — Onboarding progress, account health, badges.
  */
 export const AccountIntegrityPanel = memo(function AccountIntegrityPanel({ engine, data }: ModuleProps) {
+  const { t } = useTranslation();
   const onboarding = data.onboardingProgress;
   if (!onboarding) return null;
 
@@ -19,7 +21,7 @@ export const AccountIntegrityPanel = memo(function AccountIntegrityPanel({ engin
         className="text-[10px] font-bold uppercase tracking-widest mb-3"
         style={{ color: "var(--enroll-text-muted)" }}
       >
-        Account Health
+        {t("dashboard.accountHealthTitle")}
       </p>
 
       <div className="flex items-center gap-4">
@@ -51,7 +53,7 @@ export const AccountIntegrityPanel = memo(function AccountIntegrityPanel({ engin
 
         <div className="flex-1 min-w-0">
           <p className="text-sm font-bold" style={{ color: "var(--enroll-text-primary)" }}>
-            {pct === 100 ? "All Set!" : `${100 - pct}% Remaining`}
+            {pct === 100 ? t("dashboard.accountHealthAllSet") : t("dashboard.accountHealthRemaining", { pct: 100 - pct })}
           </p>
           <p className="text-[10px] mt-0.5" style={{ color: "var(--enroll-text-muted)" }}>
             {onboarding.message}

@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Input } from "../ui/Input";
 import Button from "../ui/Button";
 import { Modal } from "../ui/Modal";
@@ -27,6 +28,7 @@ export const BeneficiariesSection = ({
   onSave,
   onCancel,
 }: BeneficiariesSectionProps) => {
+  const { t } = useTranslation();
   const [primaryBeneficiaries, setPrimaryBeneficiaries] = useState<Beneficiary[]>(data.primary);
   const [contingentBeneficiaries, setContingentBeneficiaries] = useState<Beneficiary[]>(data.contingent);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -56,12 +58,12 @@ export const BeneficiariesSection = ({
   }, [contingentTotal]);
 
   // Status badge text
-  const primaryStatus = primaryIsValid ? "Complete" : "Incomplete";
+  const primaryStatus = primaryIsValid ? t("profile.complete") : t("profile.incomplete");
   const contingentStatus = contingentBeneficiaries.length === 0
-    ? "Not Set"
+    ? t("profile.notSet")
     : contingentIsValid
-    ? "Complete"
-    : "Incomplete";
+    ? t("profile.complete")
+    : t("profile.incomplete");
 
   const handleAddPrimary = () => {
     const newBeneficiary: Beneficiary = {
@@ -76,7 +78,7 @@ export const BeneficiariesSection = ({
 
   const handleRemovePrimary = (id: string) => {
     if (primaryBeneficiaries.length === 1) {
-      alert("At least one primary beneficiary is required.");
+      alert(t("profile.atLeastOnePrimaryRequired"));
       return;
     }
     setPrimaryBeneficiaries(primaryBeneficiaries.filter((b) => b.id !== id));
@@ -148,7 +150,7 @@ export const BeneficiariesSection = ({
       <>
         <div className="profile-section">
           <div className="profile-section__header">
-            <h2 className="profile-section__title">Beneficiaries</h2>
+            <h2 className="profile-section__title">{t("profile.beneficiaries")}</h2>
           </div>
           <div className="profile-section__content">
             <div className="profile-section__form">
@@ -156,19 +158,19 @@ export const BeneficiariesSection = ({
               <div className="profile-section__field-group">
                 <div className="profile-section__field-group-header">
                   <div>
-                    <h3 className="profile-section__field-group-title">Primary Beneficiaries</h3>
+                    <h3 className="profile-section__field-group-title">{t("profile.primaryBeneficiaries")}</h3>
                     <p className="profile-section__field-group-description">
-                      Primary beneficiaries receive benefits if you pass away. Total must equal 100%.
+                      {t("profile.primaryBeneficiariesDesc")}
                     </p>
                   </div>
                   <Button onClick={handleAddPrimary} className="profile-section__add-button" type="button">
-                    Add Beneficiary
+                    {t("profile.addBeneficiary")}
                   </Button>
                 </div>
 
                 {primaryBeneficiaries.length === 0 && (
                   <p className="profile-section__empty-state">
-                    At least one primary beneficiary is required.
+                    {t("profile.atLeastOnePrimaryRequired")}
                   </p>
                 )}
 
@@ -179,36 +181,36 @@ export const BeneficiariesSection = ({
                   const maxPercentage = 100 - otherTotal;
                   const percentageError =
                     beneficiary.percentage > maxPercentage
-                      ? `Cannot exceed ${maxPercentage.toFixed(1)}% (remaining allocation)`
+                      ? t("profile.cannotExceedRemaining", { max: maxPercentage.toFixed(1) })
                       : null;
 
                   return (
                     <div key={beneficiary.id} className="profile-section__beneficiary-card">
                       <div className="profile-section__beneficiary-card-header">
-                        <h4 className="profile-section__beneficiary-card-title">Beneficiary</h4>
+                        <h4 className="profile-section__beneficiary-card-title">{t("profile.beneficiary")}</h4>
                         {primaryBeneficiaries.length > 1 && (
                           <Button
                             onClick={() => handleRemovePrimary(beneficiary.id)}
                             className="profile-section__remove-button"
                             type="button"
-                            aria-label="Remove beneficiary"
+                            aria-label={t("profile.removeBeneficiaryAria")}
                           >
-                            Remove
+                            {t("profile.remove")}
                           </Button>
                         )}
                       </div>
                       <div className="profile-section__beneficiary-form">
                         <Input
-                          label="Full Legal Name"
+                          label={t("profile.fullLegalName")}
                           type="text"
                           name={`primary-name-${beneficiary.id}`}
                           value={beneficiary.name}
                           onChange={(e) => handleUpdatePrimary(beneficiary.id, { name: e.target.value })}
                           required
-                          placeholder="Enter full legal name"
+                          placeholder={t("profile.placeholderFullName")}
                         />
                         <Input
-                          label="Relationship"
+                          label={t("profile.relationship")}
                           type="text"
                           name={`primary-relationship-${beneficiary.id}`}
                           value={beneficiary.relationship}
@@ -216,11 +218,11 @@ export const BeneficiariesSection = ({
                             handleUpdatePrimary(beneficiary.id, { relationship: e.target.value })
                           }
                           required
-                          placeholder="e.g., Spouse, Child, Parent"
+                          placeholder={t("profile.placeholderRelationship")}
                         />
                         <div className="profile-section__field">
                           <Input
-                            label="Percentage Allocation"
+                            label={t("profile.percentageAllocation")}
                             type="number"
                             name={`primary-percentage-${beneficiary.id}`}
                             value={beneficiary.percentage > 0 ? beneficiary.percentage.toString() : ""}
@@ -235,12 +237,12 @@ export const BeneficiariesSection = ({
                             error={percentageError || undefined}
                           />
                           <p className="profile-section__helper-text">
-                            Remaining: {primaryRemaining.toFixed(1)}%
+                            {t("profile.remaining", { pct: primaryRemaining.toFixed(1) })}
                           </p>
                         </div>
                         <div className="profile-section__field">
                           <Input
-                            label="Date of Birth (Optional)"
+                            label={t("profile.dateOfBirthOptional")}
                             type="date"
                             name={`primary-dob-${beneficiary.id}`}
                             value={beneficiary.dateOfBirth || ""}
@@ -256,7 +258,7 @@ export const BeneficiariesSection = ({
 
                 <div className="profile-section__validation-summary">
                   <div className="profile-section__validation-row">
-                    <span className="profile-section__validation-label">Primary Total:</span>
+                    <span className="profile-section__validation-label">{t("profile.primaryTotal")}</span>
                     <span
                       className={`profile-section__validation-value ${
                         primaryIsValid
@@ -276,7 +278,7 @@ export const BeneficiariesSection = ({
                   </div>
                   {!primaryIsValid && (
                     <p className="profile-section__validation-error" role="alert">
-                      Primary beneficiary percentages must total exactly 100%
+                      {t("profile.primaryMustTotal100")}
                     </p>
                   )}
                 </div>
@@ -286,10 +288,9 @@ export const BeneficiariesSection = ({
               <div className="profile-section__field-group">
                 <div className="profile-section__field-group-header">
                   <div>
-                    <h3 className="profile-section__field-group-title">Contingent Beneficiaries</h3>
+                    <h3 className="profile-section__field-group-title">{t("profile.contingentBeneficiaries")}</h3>
                     <p className="profile-section__field-group-description">
-                      Contingent beneficiaries receive benefits if all primary beneficiaries are deceased. Optional.
-                      If set, total must equal 100%.
+                      {t("profile.contingentBeneficiariesDescLong")}
                     </p>
                   </div>
                   <Button
@@ -297,7 +298,7 @@ export const BeneficiariesSection = ({
                     className="profile-section__add-button"
                     type="button"
                   >
-                    Add Beneficiary
+                    {t("profile.addBeneficiary")}
                   </Button>
                 </div>
 
@@ -308,34 +309,34 @@ export const BeneficiariesSection = ({
                   const maxPercentage = 100 - otherTotal;
                   const percentageError =
                     beneficiary.percentage > maxPercentage
-                      ? `Cannot exceed ${maxPercentage.toFixed(1)}% (remaining allocation)`
+                      ? t("profile.cannotExceedRemaining", { max: maxPercentage.toFixed(1) })
                       : null;
 
                   return (
                     <div key={beneficiary.id} className="profile-section__beneficiary-card">
                       <div className="profile-section__beneficiary-card-header">
-                        <h4 className="profile-section__beneficiary-card-title">Contingent Beneficiary</h4>
+                        <h4 className="profile-section__beneficiary-card-title">{t("profile.contingentBeneficiary")}</h4>
                         <Button
                           onClick={() => handleRemoveContingent(beneficiary.id)}
                           className="profile-section__remove-button"
                           type="button"
-                          aria-label="Remove beneficiary"
+                          aria-label={t("profile.removeBeneficiaryAria")}
                         >
-                          Remove
+                          {t("profile.remove")}
                         </Button>
                       </div>
                       <div className="profile-section__beneficiary-form">
                         <Input
-                          label="Full Legal Name"
+                          label={t("profile.fullLegalName")}
                           type="text"
                           name={`contingent-name-${beneficiary.id}`}
                           value={beneficiary.name}
                           onChange={(e) => handleUpdateContingent(beneficiary.id, { name: e.target.value })}
                           required
-                          placeholder="Enter full legal name"
+                          placeholder={t("profile.placeholderFullName")}
                         />
                         <Input
-                          label="Relationship"
+                          label={t("profile.relationship")}
                           type="text"
                           name={`contingent-relationship-${beneficiary.id}`}
                           value={beneficiary.relationship}
@@ -343,11 +344,11 @@ export const BeneficiariesSection = ({
                             handleUpdateContingent(beneficiary.id, { relationship: e.target.value })
                           }
                           required
-                          placeholder="e.g., Spouse, Child, Parent"
+                          placeholder={t("profile.placeholderRelationship")}
                         />
                         <div className="profile-section__field">
                           <Input
-                            label="Percentage Allocation"
+                            label={t("profile.percentageAllocation")}
                             type="number"
                             name={`contingent-percentage-${beneficiary.id}`}
                             value={beneficiary.percentage > 0 ? beneficiary.percentage.toString() : ""}
@@ -362,12 +363,12 @@ export const BeneficiariesSection = ({
                             error={percentageError || undefined}
                           />
                           <p className="profile-section__helper-text">
-                            Remaining: {contingentRemaining.toFixed(1)}%
+                            {t("profile.remaining", { pct: contingentRemaining.toFixed(1) })}
                           </p>
                         </div>
                         <div className="profile-section__field">
                           <Input
-                            label="Date of Birth (Optional)"
+                            label={t("profile.dateOfBirthOptional")}
                             type="date"
                             name={`contingent-dob-${beneficiary.id}`}
                             value={beneficiary.dateOfBirth || ""}
@@ -386,7 +387,7 @@ export const BeneficiariesSection = ({
                 {contingentBeneficiaries.length > 0 && (
                   <div className="profile-section__validation-summary">
                     <div className="profile-section__validation-row">
-                      <span className="profile-section__validation-label">Contingent Total:</span>
+                      <span className="profile-section__validation-label">{t("profile.contingentTotal")}</span>
                       <span
                         className={`profile-section__validation-value ${
                           contingentIsValid
@@ -406,7 +407,7 @@ export const BeneficiariesSection = ({
                     </div>
                     {!contingentIsValid && (
                       <p className="profile-section__validation-error" role="alert">
-                        Contingent beneficiary percentages must total exactly 100%
+                        {t("profile.contingentMustTotal100")}
                       </p>
                     )}
                   </div>
@@ -416,23 +417,23 @@ export const BeneficiariesSection = ({
 
             <div className="profile-section__actions">
               <Button onClick={handleCancel} className="profile-section__button profile-section__button--cancel">
-                Cancel
+                {t("profile.cancel")}
               </Button>
               <Button
                 onClick={handleSaveClick}
                 disabled={!isValid}
                 className="profile-section__button profile-section__button--save"
               >
-                Save Changes
+                {t("profile.saveChanges")}
               </Button>
             </div>
             {!isValid && (
               <p className="profile-section__validation-summary-text" role="alert">
-                Please correct validation errors before saving.
+                {t("profile.correctValidationErrors")}
               </p>
             )}
             {data.lastUpdated && (
-              <p className="profile-section__timestamp">Last updated: {data.lastUpdated}</p>
+              <p className="profile-section__timestamp">{t("profile.lastUpdated", { date: data.lastUpdated })}</p>
             )}
           </div>
         </div>
@@ -453,16 +454,16 @@ export const BeneficiariesSection = ({
   return (
     <div className="profile-section">
       <div className="profile-section__header">
-        <h2 className="profile-section__title">Beneficiaries</h2>
+        <h2 className="profile-section__title">{t("profile.beneficiaries")}</h2>
         <Button onClick={onEdit} className="profile-section__edit-button">
-          Edit Beneficiaries
+          {t("profile.editBeneficiaries")}
         </Button>
       </div>
       <div className="profile-section__content">
         {/* Primary Beneficiaries Table */}
         <div className="profile-section__beneficiaries-table-group">
           <div className="profile-section__table-header">
-            <h3 className="profile-section__table-title">Primary Beneficiaries</h3>
+            <h3 className="profile-section__table-title">{t("profile.primaryBeneficiaries")}</h3>
             <span
               className={`profile-section__status-badge profile-section__status-badge--${
                 primaryIsValid ? "complete" : "incomplete"
@@ -475,8 +476,8 @@ export const BeneficiariesSection = ({
             <>
               <div className="profile-section__table">
                 <div className="profile-section__table-row profile-section__table-row--header">
-                  <div className="profile-section__table-cell">Name</div>
-                  <div className="profile-section__table-cell">Relationship</div>
+                  <div className="profile-section__table-cell">{t("profile.name")}</div>
+                  <div className="profile-section__table-cell">{t("profile.relationship")}</div>
                   <div className="profile-section__table-cell">Allocation</div>
                   {primaryBeneficiaries.some((b) => b.dateOfBirth) && (
                     <div className="profile-section__table-cell">Date of Birth</div>
@@ -533,7 +534,7 @@ export const BeneficiariesSection = ({
         {contingentBeneficiaries.length > 0 && (
           <div className="profile-section__beneficiaries-table-group">
             <div className="profile-section__table-header">
-              <h3 className="profile-section__table-title">Contingent Beneficiaries</h3>
+              <h3 className="profile-section__table-title">{t("profile.contingentBeneficiaries")}</h3>
               <span
                 className={`profile-section__status-badge profile-section__status-badge--${
                   contingentIsValid ? "complete" : "incomplete"
@@ -544,11 +545,11 @@ export const BeneficiariesSection = ({
             </div>
             <div className="profile-section__table">
               <div className="profile-section__table-row profile-section__table-row--header">
-                <div className="profile-section__table-cell">Name</div>
-                <div className="profile-section__table-cell">Relationship</div>
+                <div className="profile-section__table-cell">{t("profile.name")}</div>
+                <div className="profile-section__table-cell">{t("profile.relationship")}</div>
                 <div className="profile-section__table-cell">Allocation</div>
                 {contingentBeneficiaries.some((b) => b.dateOfBirth) && (
-                  <div className="profile-section__table-cell">Date of Birth</div>
+                  <div className="profile-section__table-cell">{t("profile.dateOfBirthOptional")}</div>
                 )}
               </div>
               {contingentBeneficiaries.map((beneficiary) => (
@@ -626,6 +627,7 @@ const BeneficiaryConfirmationModal = ({
   primaryBeneficiaries,
   contingentBeneficiaries,
 }: BeneficiaryConfirmationModalProps) => {
+  const { t } = useTranslation();
   const [confirmed, setConfirmed] = useState(false);
 
   const handleConfirm = () => {
@@ -638,27 +640,20 @@ const BeneficiaryConfirmationModal = ({
     <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
       <div className="beneficiary-confirmation-modal">
         <div className="beneficiary-confirmation-modal__header">
-          <h2 className="beneficiary-confirmation-modal__title">Confirm Beneficiary Changes</h2>
+          <h2 className="beneficiary-confirmation-modal__title">{t("profile.confirmBeneficiaryChanges")}</h2>
         </div>
 
         <div className="beneficiary-confirmation-modal__content">
           <div className="beneficiary-confirmation-modal__warning">
             <p className="beneficiary-confirmation-modal__warning-text">
-              <strong>Important:</strong> Your beneficiary designations determine who will receive your
-              retirement plan benefits in the event of your death. This is a legally binding designation.
+              {t("profile.legalImplicationsWarning")}
             </p>
-            <ul className="beneficiary-confirmation-modal__consequences">
-              <li>Your beneficiary designations will be updated immediately upon confirmation</li>
-              <li>These designations override any will or estate planning documents for retirement plan assets</li>
-              <li>You can change beneficiaries at any time, but changes take effect immediately</li>
-              <li>All beneficiaries must be legally eligible to receive benefits</li>
-            </ul>
           </div>
 
           <div className="beneficiary-confirmation-modal__summary">
-            <h3 className="beneficiary-confirmation-modal__summary-title">Summary of Changes</h3>
+            <h3 className="beneficiary-confirmation-modal__summary-title">{t("profile.summaryOfChanges")}</h3>
             <div className="beneficiary-confirmation-modal__summary-section">
-              <h4 className="beneficiary-confirmation-modal__summary-subtitle">Primary Beneficiaries</h4>
+              <h4 className="beneficiary-confirmation-modal__summary-subtitle">{t("profile.primaryBeneficiaries")}</h4>
               <ul className="beneficiary-confirmation-modal__summary-list">
                 {primaryBeneficiaries.map((beneficiary) => (
                   <li key={beneficiary.id}>
@@ -669,7 +664,7 @@ const BeneficiaryConfirmationModal = ({
             </div>
             {contingentBeneficiaries.length > 0 && (
               <div className="beneficiary-confirmation-modal__summary-section">
-                <h4 className="beneficiary-confirmation-modal__summary-subtitle">Contingent Beneficiaries</h4>
+                <h4 className="beneficiary-confirmation-modal__summary-subtitle">{t("profile.contingentBeneficiaries")}</h4>
                 <ul className="beneficiary-confirmation-modal__summary-list">
                   {contingentBeneficiaries.map((beneficiary) => (
                     <li key={beneficiary.id}>
@@ -691,10 +686,7 @@ const BeneficiaryConfirmationModal = ({
                 onChange={(e) => setConfirmed(e.target.checked)}
                 required
               />
-              <span>
-                I understand the legal implications and confirm that I want to update my beneficiary
-                designations as shown above.
-              </span>
+              <span>{t("profile.confirmBeneficiaryCheckbox")}</span>
             </label>
           </div>
         </div>
@@ -704,14 +696,14 @@ const BeneficiaryConfirmationModal = ({
             onClick={onClose}
             className="beneficiary-confirmation-modal__button beneficiary-confirmation-modal__button--cancel"
           >
-            Cancel
+            {t("profile.cancel")}
           </Button>
           <Button
             onClick={handleConfirm}
             disabled={!confirmed}
             className="beneficiary-confirmation-modal__button beneficiary-confirmation-modal__button--confirm"
           >
-            Confirm Changes
+            {t("profile.saveChanges")}
           </Button>
         </div>
       </div>

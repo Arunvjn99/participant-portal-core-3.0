@@ -78,15 +78,23 @@ function useAnimatedValue(target: number, duration = 600): number {
 const formatCurrency = (n: number) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(Number.isFinite(n) && n >= 0 ? n : 0);
 
-function getAssetClassLabel(ac: string): string {
-  if (ac.includes("Large Cap")) return "Large Cap";
-  if (ac.includes("Mid Cap")) return "Mid Cap";
-  if (ac.includes("Small Cap")) return "Small Cap";
-  if (ac.includes("International")) return "Intl";
-  if (ac.includes("Bond")) return "Bond";
-  if (ac.includes("Real Estate")) return "REIT";
-  if (ac.includes("Cash")) return "Cash";
-  if (ac.includes("Target")) return "Target";
+const ASSET_CLASS_KEYS: Record<string, string> = {
+  "Large Cap": "enrollment.assetClassLargeCap",
+  "Mid Cap": "enrollment.assetClassMidCap",
+  "Small Cap": "enrollment.assetClassSmallCap",
+  International: "enrollment.assetClassInternational",
+  Intl: "enrollment.assetClassIntl",
+  Bond: "enrollment.assetClassBond",
+  "Real Estate": "enrollment.assetClassRealEstate",
+  REIT: "enrollment.assetClassReit",
+  Cash: "enrollment.assetClassCash",
+  Target: "enrollment.assetClassTarget",
+};
+
+function getAssetClassKey(ac: string): string {
+  for (const [needle, key] of Object.entries(ASSET_CLASS_KEYS)) {
+    if (ac.includes(needle)) return key;
+  }
   return ac;
 }
 
@@ -537,7 +545,7 @@ export const Review = () => {
                         <span className="text-xs font-semibold truncate" style={{ color: "var(--enroll-text-primary)" }}>{fund.name}</span>
                       </div>
                       <div className="flex items-center gap-2 mt-1">
-                        <span className="text-[10px]" style={{ color: "var(--enroll-text-muted)" }}>{getAssetClassLabel(fund.assetClass)}</span>
+                        <span className="text-[10px]" style={{ color: "var(--enroll-text-muted)" }}>{t(getAssetClassKey(fund.assetClass))}</span>
                         <span className="text-[10px]" style={{ color: "var(--enroll-text-muted)" }}>{fund.expenseRatio.toFixed(2)}% ER</span>
                       </div>
                     </div>

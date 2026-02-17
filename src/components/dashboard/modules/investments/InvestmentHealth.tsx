@@ -1,4 +1,5 @@
 import { memo, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { AllocationChart } from "../../../investments/AllocationChart";
@@ -9,6 +10,7 @@ import type { ModuleProps } from "../../core/types";
  * InvestmentHealth — Allocation donut, risk alignment, diversification score, hover insights.
  */
 export const InvestmentHealth = memo(function InvestmentHealth({ engine, data }: ModuleProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const allocationForChart = useMemo(
@@ -28,7 +30,7 @@ export const InvestmentHealth = memo(function InvestmentHealth({ engine, data }:
           className="text-[10px] font-bold uppercase tracking-widest"
           style={{ color: "var(--enroll-text-muted)" }}
         >
-          Investment Health
+          {t("dashboard.investmentTitle")}
         </p>
         <button
           type="button"
@@ -39,19 +41,19 @@ export const InvestmentHealth = memo(function InvestmentHealth({ engine, data }:
             color: "var(--enroll-brand)",
           }}
         >
-          Manage
+          {t("dashboard.investmentManage")}
         </button>
       </div>
 
       {/* Allocation chart */}
-      <AllocationChart allocations={allocationForChart} centerLabel="Allocated" showValidBadge={false} />
+      <AllocationChart allocations={allocationForChart} centerLabel={t("dashboard.investmentAllocated")} showValidBadge={false} />
 
       {/* Risk alignment bar */}
       <div className="mt-4 space-y-3">
         <div>
           <div className="flex items-center justify-between mb-1">
             <span className="text-[10px] font-semibold" style={{ color: "var(--enroll-text-muted)" }}>
-              Risk Alignment
+              {t("dashboard.investmentRiskAlignment")}
             </span>
             <span className="text-[10px] font-bold" style={{ color: "var(--enroll-text-primary)" }}>
               {riskPct}%
@@ -75,7 +77,7 @@ export const InvestmentHealth = memo(function InvestmentHealth({ engine, data }:
         <div>
           <div className="flex items-center justify-between mb-1">
             <span className="text-[10px] font-semibold" style={{ color: "var(--enroll-text-muted)" }}>
-              Diversification
+              {t("dashboard.investmentDiversification")}
             </span>
             <span className="text-[10px] font-bold" style={{ color: "var(--enroll-text-primary)" }}>
               {diversPct}%

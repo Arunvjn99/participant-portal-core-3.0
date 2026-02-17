@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { AnimatedNumber } from "../../shared/AnimatedNumber";
@@ -9,12 +10,13 @@ import type { ModuleProps } from "../../core/types";
  * LoanLiquidityPanel — Borrowing power, risk state, impact warning, repayment info.
  */
 export const LoanLiquidityPanel = memo(function LoanLiquidityPanel({ engine }: ModuleProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const statusConfig = {
-    healthy: { label: "Healthy Liquidity", color: "var(--enroll-accent)", bgToken: "enroll-accent-rgb" },
-    warning: { label: "Moderate", color: "var(--color-warning)", bgToken: "color-warning-rgb" },
-    critical: { label: "Low Liquidity", color: "var(--color-danger)", bgToken: "color-danger-rgb" },
+    healthy: { labelKey: "dashboard.loanHealthyLiquidity" as const, color: "var(--enroll-accent)", bgToken: "enroll-accent-rgb" },
+    warning: { labelKey: "dashboard.loanModerate" as const, color: "var(--color-warning)", bgToken: "color-warning-rgb" },
+    critical: { labelKey: "dashboard.loanLowLiquidity" as const, color: "var(--color-danger)", bgToken: "color-danger-rgb" },
   };
 
   const status = statusConfig[engine.liquidityStatus];
@@ -27,7 +29,7 @@ export const LoanLiquidityPanel = memo(function LoanLiquidityPanel({ engine }: M
           className="text-[10px] font-bold uppercase tracking-widest"
           style={{ color: "var(--enroll-text-muted)" }}
         >
-          Loan & Liquidity
+          {t("dashboard.loanTitle")}
         </p>
         <span
           className="text-[9px] font-bold px-2 py-0.5 rounded-full"
@@ -36,14 +38,14 @@ export const LoanLiquidityPanel = memo(function LoanLiquidityPanel({ engine }: M
             color: status.color,
           }}
         >
-          {status.label}
+          {t(status.labelKey)}
         </span>
       </div>
 
       {/* Max borrowable */}
       <div className="mb-3">
         <p className="text-[10px] font-semibold" style={{ color: "var(--enroll-text-muted)" }}>
-          Max Borrowable
+          {t("dashboard.loanMaxBorrowable")}
         </p>
         <AnimatedNumber
           value={engine.maxLoanAmount}
@@ -63,12 +65,12 @@ export const LoanLiquidityPanel = memo(function LoanLiquidityPanel({ engine }: M
         }}
       >
         {[
-          { label: "Estimated Monthly", value: fmtCurrency(monthlyRepayment) },
-          { label: "Repayment Period", value: "60 months" },
-          { label: "Source", value: "Vested Balance" },
-        ].map(({ label, value }) => (
-          <div key={label} className="flex items-center justify-between">
-            <span className="text-[10px]" style={{ color: "var(--enroll-text-muted)" }}>{label}</span>
+          { labelKey: "dashboard.loanEstimatedMonthly" as const, value: fmtCurrency(monthlyRepayment) },
+          { labelKey: "dashboard.loanRepaymentPeriod" as const, value: t("dashboard.loanMonths60") },
+          { labelKey: "dashboard.loanSource" as const, value: t("dashboard.loanVestedBalance") },
+        ].map(({ labelKey, value }) => (
+          <div key={labelKey} className="flex items-center justify-between">
+            <span className="text-[10px]" style={{ color: "var(--enroll-text-muted)" }}>{t(labelKey)}</span>
             <span className="text-[10px] font-semibold" style={{ color: "var(--enroll-text-primary)" }}>{value}</span>
           </div>
         ))}
@@ -91,7 +93,7 @@ export const LoanLiquidityPanel = memo(function LoanLiquidityPanel({ engine }: M
           <line x1="12" y1="17" x2="12.01" y2="17" />
         </svg>
         <p className="text-[10px] leading-relaxed" style={{ color: "var(--enroll-text-secondary)" }}>
-          Borrowing reduces your invested balance and future growth potential. Consider other options first.
+          {t("dashboard.loanBorrowingWarning")}
         </p>
       </motion.div>
 
@@ -104,7 +106,7 @@ export const LoanLiquidityPanel = memo(function LoanLiquidityPanel({ engine }: M
           color: "var(--enroll-brand)",
         }}
       >
-        Explore Loan Options
+        {t("dashboard.loanExploreOptions")}
       </button>
     </div>
   );

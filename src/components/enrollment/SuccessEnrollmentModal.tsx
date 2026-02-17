@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { useReducedMotion } from "../../hooks/useReducedMotion";
 
@@ -22,6 +23,7 @@ export function SuccessEnrollmentModal({
   onClose,
   onViewPlanDetails,
 }: SuccessEnrollmentModalProps) {
+  const { t } = useTranslation();
   const reducedMotion = useReducedMotion();
 
   useEffect(() => {
@@ -177,7 +179,7 @@ export function SuccessEnrollmentModal({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.3 }}
           >
-            Congratulations, You&apos;re all set!
+            {t("enrollment.successModalTitle")}
           </motion.h2>
 
           {/* Description */}
@@ -187,7 +189,7 @@ export function SuccessEnrollmentModal({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.3 }}
           >
-            Your enrolment has been successfully confirmed.
+            {t("enrollment.successModalMessage")}
           </motion.p>
 
           {/* Okay button */}
@@ -202,7 +204,7 @@ export function SuccessEnrollmentModal({
               onClick={handleOkay}
               className="w-full max-w-[200px] rounded-xl bg-emerald-500 px-6 py-3 text-base font-medium text-white transition-colors hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-emerald-600 dark:hover:bg-emerald-700 dark:focus:ring-offset-slate-900"
             >
-              Okay
+              {t("enrollment.successModalOkay")}
             </button>
           </motion.div>
 
@@ -218,7 +220,7 @@ export function SuccessEnrollmentModal({
               onClick={handleViewPlanDetails}
               className="text-sm font-medium text-slate-600 underline-offset-2 hover:underline dark:text-slate-400 dark:hover:text-slate-300"
             >
-              View plan details
+              {t("enrollment.successModalViewPlan")}
             </button>
           </motion.div>
         </motion.div>

@@ -272,7 +272,7 @@ export const FutureContributions = () => {
                       </div>
                       <p className="text-sm leading-relaxed" style={{ color: "var(--enroll-text-secondary)" }}>
                         {t("enrollment.withAnnualIncrease", { percent: ai.percentage })}{" "}
-                        <strong style={{ color: "var(--enroll-accent)" }}>{deltaPct > 0 ? `${Math.round(deltaPct)}%` : "—"} more</strong>{" "}
+                        <strong style={{ color: "var(--enroll-accent)" }}>{deltaPct > 0 ? `${Math.round(deltaPct)}%` : "—"} {t("enrollment.moreLabel")}</strong>{" "}
                         {t("enrollment.moreByAge", { age: retirementAge })}{" "}
                         <strong style={{ color: "var(--enroll-accent)" }}>{formatCurrency(delta)}</strong> {t("enrollment.additionalTowardRetirement")}
                       </p>
@@ -302,7 +302,7 @@ export const FutureContributions = () => {
                       max="100"
                       className="w-16 text-lg font-bold bg-transparent border-none outline-none p-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       style={{ color: "var(--enroll-text-primary)" }}
-                      aria-label="Contribution percentage"
+                      aria-label={t("enrollment.contributionPercentageAria")}
                     />
                     <span className="text-sm font-semibold" style={{ color: "var(--enroll-text-muted)" }}>%</span>
                   </div>
@@ -321,7 +321,7 @@ export const FutureContributions = () => {
                       min="0"
                       className="w-20 text-lg font-bold bg-transparent border-none outline-none p-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       style={{ color: "var(--enroll-text-primary)" }}
-                      aria-label="Contribution per paycheck (dollar)"
+                      aria-label={t("enrollment.contributionPerPaycheckDollarAria")}
                     />
                   </div>
                 </div>
@@ -443,7 +443,7 @@ export const FutureContributions = () => {
                                   border: "1px solid var(--enroll-card-border)",
                                   color: "var(--enroll-text-primary)",
                                 }}
-                                aria-label={`${label} increase ${increaseViewMode === "percent" ? "percentage" : "dollar amount"}`}
+                                aria-label={`${label} increase ${increaseViewMode === "percent" ? t("enrollment.increasePercentage") : t("enrollment.increaseDollarAmount")}`}
                               />
                               <span className="text-xs font-semibold" style={{ color: "var(--enroll-text-muted)" }}>
                                 {increaseViewMode === "percent" ? "%" : "$"}

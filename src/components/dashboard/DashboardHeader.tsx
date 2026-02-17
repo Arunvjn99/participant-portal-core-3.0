@@ -5,7 +5,6 @@ import { branding } from "../../config/branding";
 import LanguageSwitcher from "@/components/common/LanguageSwitcher";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import { useDemoUser, clearDemoUser } from "@/hooks/useDemoUser";
-import { SCENARIO_LABELS } from "@/mock/personas";
 
 /* ────────────────────────────── Nav config ────────────────────────────── */
 
@@ -69,7 +68,7 @@ const ICON_BTN =
 /* ──────────────────────────── Component ──────────────────────────────── */
 
 export const DashboardHeader = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -115,6 +114,7 @@ export const DashboardHeader = () => {
 
   return (
     <>
+      <div key={i18n.language}>
       {/*
         Main header bar.
         Padding matches DashboardLayout content: px-4 → sm:px-6 → lg:px-8
@@ -173,7 +173,7 @@ export const DashboardHeader = () => {
           {demoUser && (
             <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-amber-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-amber-700 dark:border-amber-600 dark:bg-amber-900/30 dark:text-amber-300">
               <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" aria-hidden />
-              Demo — {SCENARIO_LABELS[demoUser.scenario]}
+              {t("demo.badge", { scenario: t(`demo.scenario_${demoUser.scenario}` as const) })}
             </span>
           )}
 
@@ -184,7 +184,7 @@ export const DashboardHeader = () => {
           <button
             type="button"
             className={`${ICON_BTN} hidden lg:flex`}
-            aria-label="Notifications"
+            aria-label={t("nav.notifications")}
           >
             <BellIcon />
             <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-slate-900" aria-hidden />
@@ -195,7 +195,7 @@ export const DashboardHeader = () => {
             <button
               type="button"
               className="flex items-center gap-1.5 rounded-lg p-1 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800"
-              aria-label="User menu"
+              aria-label={t("nav.userMenu")}
               aria-expanded={userMenuOpen}
               aria-haspopup="true"
               onClick={() => setUserMenuOpen((o) => !o)}
@@ -239,7 +239,7 @@ export const DashboardHeader = () => {
           <button
             type="button"
             className={`${ICON_BTN} lg:hidden`}
-            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-label={mobileMenuOpen ? t("nav.closeMenu") : t("nav.openMenu")}
             aria-expanded={mobileMenuOpen}
             onClick={() => setMobileMenuOpen((o) => !o)}
           >
@@ -253,7 +253,7 @@ export const DashboardHeader = () => {
       <div
         className="absolute inset-x-0 top-full z-40 border-b border-slate-200 bg-white shadow-lg lg:hidden dark:border-slate-700 dark:bg-slate-900"
         role="dialog"
-        aria-label="Mobile navigation"
+        aria-label={t("nav.mobileNav")}
       >
         <nav className="px-4 sm:px-6 py-3">
           <ul className="flex flex-col gap-0.5">
@@ -288,6 +288,7 @@ export const DashboardHeader = () => {
         </nav>
       </div>
       )}
+      </div>
     </>
   );
 };

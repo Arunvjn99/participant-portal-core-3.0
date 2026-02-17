@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { CoreAssistantModal } from "../core-ai/CoreAssistantModal";
 
 /**
@@ -9,6 +10,7 @@ import { CoreAssistantModal } from "../core-ai/CoreAssistantModal";
  * No second modal. No voice route. No toggle.
  */
 export const CoreAIFab = () => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -19,7 +21,7 @@ export const CoreAIFab = () => {
           type="button"
           onClick={() => setIsOpen(true)}
           className="flex items-center gap-2 rounded-full px-5 py-3 bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 text-white shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-2 focus:ring-offset-transparent dark:from-teal-500 dark:via-teal-600 dark:to-teal-700"
-          aria-label="Ask Core AI - Retirement Assistant"
+          aria-label={t("coreAi.fabAria")}
         >
           <img
             src="/image/bella-icon.png"
@@ -29,7 +31,7 @@ export const CoreAIFab = () => {
             className="h-7 w-7 object-contain"
             aria-hidden
           />
-          <span className="font-semibold text-sm">Ask Core AI</span>
+          <span className="font-semibold text-sm">{t("coreAi.fabLabel")}</span>
         </button>
       </div>
 

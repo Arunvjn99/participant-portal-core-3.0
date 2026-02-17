@@ -32,29 +32,38 @@ export function getPlanRecommendation(input: PlanRecommendationInput): PlanRecom
 
   let recommendedPlanId: string;
   let fitScore: number;
+  let rationaleKey: string;
   let rationale: string;
 
   if (rothScore >= tradScore) {
     recommendedPlanId = "roth-401k";
     fitScore = Math.min(98, Math.max(72, 70 + Math.floor(rothScore / 2)));
-    rationale =
-      yearsToRetire >= 25 && age < 45
-        ? `With ${yearsToRetire} years to retirement and your current age, paying taxes now and letting growth compound tax-free often works well.`
-        : salaryNum < 100_000
-          ? "Based on your income and timeline, locking in today's tax rate with tax-free growth can be a strong fit."
-          : "Based on your age and retirement timeline, a Roth 401(k) can offer strong long-term tax-free growth.";
+    if (yearsToRetire >= 25 && age < 45) {
+      rationaleKey = "enrollment.rationaleRothYoung";
+      rationale = `With ${yearsToRetire} years to retirement and your current age, paying taxes now and letting growth compound tax-free often works well.`;
+    } else if (salaryNum < 100_000) {
+      rationaleKey = "enrollment.rationaleRothIncome";
+      rationale = "Based on your income and timeline, locking in today's tax rate with tax-free growth can be a strong fit.";
+    } else {
+      rationaleKey = "enrollment.rationaleRothAge";
+      rationale = "Based on your age and retirement timeline, a Roth 401(k) can offer strong long-term tax-free growth.";
+    }
   } else {
     recommendedPlanId = "traditional-401k";
     fitScore = Math.min(95, Math.max(70, 68 + Math.floor(tradScore / 2)));
-    rationale =
-      salaryNum >= 100_000
-        ? "With your current salary, reducing taxable income now with pre-tax contributions can lower your tax bill today."
-        : "A traditional 401(k) can help lower your taxable income now while you save for retirement.";
+    if (salaryNum >= 100_000) {
+      rationaleKey = "enrollment.rationaleTradHighSalary";
+      rationale = "With your current salary, reducing taxable income now with pre-tax contributions can lower your tax bill today.";
+    } else {
+      rationaleKey = "enrollment.rationaleTradDefault";
+      rationale = "A traditional 401(k) can help lower your taxable income now while you save for retirement.";
+    }
   }
 
   return {
     recommendedPlanId,
     fitScore,
+    rationaleKey,
     rationale,
     profileSnapshot: {
       age: currentAge,

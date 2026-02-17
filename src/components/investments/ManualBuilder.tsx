@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { FundAllocationSection } from "./FundAllocationSection";
 import { PlanDefaultPortfolioCard } from "./PlanDefaultPortfolioCard";
@@ -7,40 +8,41 @@ import { useInvestment } from "../../context/InvestmentContext";
 type PersonalityKey = "conservative" | "balanced" | "growth" | "aggressive";
 
 interface PersonalityProfile {
-  label: string;
-  desc: string;
+  labelKey: string;
+  descKey: string;
   icon: string;
   allocations: Record<string, number>;
 }
 
 const PERSONALITY_PROFILES: Record<PersonalityKey, PersonalityProfile> = {
   conservative: {
-    label: "Conservative",
-    desc: "Stability-focused",
+    labelKey: "enrollment.personalityConservative",
+    descKey: "enrollment.personalityDescStability",
     icon: "🛡️",
     allocations: { "fund-7": 50, "fund-8": 20, "fund-1": 20, "fund-9": 10 },
   },
   balanced: {
-    label: "Balanced",
-    desc: "Growth + stability",
+    labelKey: "enrollment.personalityBalanced",
+    descKey: "enrollment.personalityDescGrowthStability",
     icon: "⚖️",
     allocations: { "fund-1": 40, "fund-5": 20, "fund-7": 30, "fund-9": 10 },
   },
   growth: {
-    label: "Growth",
-    desc: "Higher returns",
+    labelKey: "enrollment.personalityGrowth",
+    descKey: "enrollment.personalityDescHigherReturns",
     icon: "📈",
     allocations: { "fund-1": 45, "fund-3": 20, "fund-5": 25, "fund-7": 10 },
   },
   aggressive: {
-    label: "Aggressive",
-    desc: "Maximum growth",
+    labelKey: "enrollment.personalityAggressive",
+    descKey: "enrollment.personalityDescMaxGrowth",
     icon: "🚀",
     allocations: { "fund-1": 35, "fund-4": 25, "fund-6": 25, "fund-3": 15 },
   },
 };
 
 export const ManualBuilder = () => {
+  const { t } = useTranslation();
   const [activePersonality, setActivePersonality] = useState<PersonalityKey>("balanced");
   const { activeSources, updateSourceAllocation, getFundsForSource, addFundToSource } = useInvestment();
 
@@ -83,7 +85,7 @@ export const ManualBuilder = () => {
           className="text-[10px] font-bold uppercase tracking-widest mb-3"
           style={{ color: "var(--enroll-text-muted)" }}
         >
-          Investment Style
+          {t("enrollment.investmentStyle")}
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {(Object.keys(PERSONALITY_PROFILES) as PersonalityKey[]).map((key) => {
@@ -106,10 +108,10 @@ export const ManualBuilder = () => {
                   className="text-xs font-bold"
                   style={{ color: isActive ? "var(--enroll-brand)" : "var(--enroll-text-primary)" }}
                 >
-                  {profile.label}
+                  {t(profile.labelKey)}
                 </span>
                 <span className="text-[10px]" style={{ color: "var(--enroll-text-muted)" }}>
-                  {profile.desc}
+                  {t(profile.descKey)}
                 </span>
               </button>
             );

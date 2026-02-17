@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { DashboardLayout } from "../../../layouts/DashboardLayout";
 import { DashboardHeader } from "../DashboardHeader";
@@ -21,6 +22,7 @@ interface DashboardShellProps {
  * 4. Renders full-width, primary (2/3), and secondary (1/3) slots
  */
 export function DashboardShell({ data }: DashboardShellProps) {
+  const { t, i18n } = useTranslation();
   const engine = useDashboardEngine(data);
 
   const { fullModules, primaryModules, secondaryModules } = useMemo(() => {
@@ -42,9 +44,10 @@ export function DashboardShell({ data }: DashboardShellProps) {
   return (
     <DashboardLayout header={<DashboardHeader />}>
       <div
+        key={i18n.language}
         className="w-full min-w-0 space-y-6"
         role="region"
-        aria-label="Retirement command center"
+        aria-label={t("dashboard.shellAriaRegion")}
       >
         {/* Full-width modules (Hero) */}
         {fullModules.map((entry) => (
@@ -94,7 +97,7 @@ export function DashboardShell({ data }: DashboardShellProps) {
             className="text-sm italic"
             style={{ color: "var(--enroll-text-muted)", opacity: 0.7 }}
           >
-            "Time is your most powerful asset."
+            {t("dashboard.shellFooterQuote")}
           </p>
         </motion.div>
       </div>

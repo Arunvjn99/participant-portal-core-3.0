@@ -185,7 +185,7 @@ export const Profile = () => {
           {/* Left Navigation */}
           <div className="profile-page__navigation">
             <DashboardCard>
-              <nav className="profile-navigation" aria-label="Profile sections">
+              <nav className="profile-navigation" aria-label={t("profile.sectionsAria")}>
                 <ul className="profile-navigation__list">
                   {PROFILE_SECTIONS.map((sectionId) => (
                     <li key={sectionId}>

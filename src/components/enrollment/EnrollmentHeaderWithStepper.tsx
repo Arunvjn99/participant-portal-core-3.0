@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { EnrollmentStepper } from "./EnrollmentStepper";
 
 export interface EnrollmentHeaderWithStepperProps {
@@ -36,15 +37,23 @@ function useDesktopStepper() {
  * This component only renders the stepper progress bar.
  */
 export function EnrollmentHeaderWithStepper({ activeStep }: EnrollmentHeaderWithStepperProps) {
+  const { t } = useTranslation();
   const compact = useCompactStepper();
   const desktop = useDesktopStepper();
+  const stepLabels = [
+    t("enrollment.stepperPlan"),
+    t("enrollment.stepperContribution"),
+    t("enrollment.stepperAutoIncrease"),
+    t("enrollment.stepperInvestment"),
+    t("enrollment.stepperReview"),
+  ];
 
   return (
     <div className="border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 py-3">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <EnrollmentStepper
           currentStep={activeStep}
-          stepLabels={["Plan", "Contribution", "Auto Increase", "Investment", "Review"]}
+          stepLabels={stepLabels}
           compact={!desktop && compact}
         />
       </div>

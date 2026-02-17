@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ConfidenceGauge } from "../../shared/ConfidenceGauge";
@@ -12,6 +13,7 @@ import type { ModuleProps } from "../../core/types";
  * life stage badge, dynamic inspirational messaging.
  */
 export const RetirementHero = memo(function RetirementHero({ engine }: ModuleProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
@@ -41,7 +43,7 @@ export const RetirementHero = memo(function RetirementHero({ engine }: ModulePro
           <ConfidenceGauge
             value={engine.readinessScore}
             size={128}
-            label="on track"
+            label={t("dashboard.heroOnTrack")}
             sublabel={engine.lifeStageLabel}
           />
         </div>
@@ -53,7 +55,7 @@ export const RetirementHero = memo(function RetirementHero({ engine }: ModulePro
               className="text-[10px] font-bold uppercase tracking-widest"
               style={{ color: "var(--enroll-text-muted)" }}
             >
-              Your Retirement Progress
+              {t("dashboard.heroYourProgress")}
             </p>
             <span
               className="text-[9px] font-semibold px-2 py-0.5 rounded-full"
@@ -77,7 +79,7 @@ export const RetirementHero = memo(function RetirementHero({ engine }: ModulePro
             className="text-sm mt-1.5 mb-4"
             style={{ color: "var(--enroll-text-secondary)" }}
           >
-            Projected at {engine.retirementAge}:{" "}
+            {t("dashboard.heroProjectedAt", { age: engine.retirementAge })}{" "}
             <AnimatedNumber
               value={engine.projectedBalance}
               format="currency"
@@ -99,7 +101,7 @@ export const RetirementHero = memo(function RetirementHero({ engine }: ModulePro
                 className="text-[10px] font-bold uppercase tracking-wider"
                 style={{ color: "var(--enroll-text-muted)" }}
               >
-                Balance
+                {t("dashboard.heroBalance")}
               </p>
               <AnimatedNumber
                 value={engine.currentBalance}
@@ -120,7 +122,7 @@ export const RetirementHero = memo(function RetirementHero({ engine }: ModulePro
                 className="text-[10px] font-bold uppercase tracking-wider"
                 style={{ color: "var(--enroll-text-muted)" }}
               >
-                YTD Return
+                {t("dashboard.heroYtdReturn")}
               </p>
               <p className="text-base font-bold" style={{ color: "var(--enroll-accent)" }}>
                 +{engine.ytdReturn}%
@@ -136,7 +138,7 @@ export const RetirementHero = memo(function RetirementHero({ engine }: ModulePro
                 boxShadow: "0 4px 12px rgb(var(--enroll-brand-rgb) / 0.2)",
               }}
             >
-              Take Action
+              {t("dashboard.heroTakeAction")}
             </button>
           </div>
         </div>

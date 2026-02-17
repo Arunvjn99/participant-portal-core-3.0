@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "framer-motion";
 import { Card, CardContent } from "../../../components/ui/card";
 import { ProgressBar } from "../../../components/dashboard/shared/ProgressBar";
@@ -9,6 +10,7 @@ import { Clock, CheckCircle2, AlertCircle, ShieldCheck, TrendingUp } from "lucid
  * Uses enrollment/transaction design tokens only.
  */
 export const ActivityRiskOverview = memo(function ActivityRiskOverview() {
+  const { t } = useTranslation();
   const reduced = !!useReducedMotion();
 
   return (
@@ -22,7 +24,7 @@ export const ActivityRiskOverview = memo(function ActivityRiskOverview() {
         <Card className="sticky top-6 border-[var(--color-border)]" style={{ boxShadow: "var(--shadow-soft)" }}>
           <div className="border-b px-4 py-4" style={{ borderColor: "var(--color-border)" }}>
             <h3 className="text-base font-semibold" style={{ color: "var(--color-text)" }}>
-              Activity & Status
+              {t("transactions.riskOverview.activityStatus")}
             </h3>
           </div>
           <CardContent className="space-y-6 p-4">
@@ -30,22 +32,22 @@ export const ActivityRiskOverview = memo(function ActivityRiskOverview() {
             <div>
               <div className="mb-2 flex items-center justify-between">
                 <span className="text-sm font-medium" style={{ color: "var(--color-text)" }}>
-                  Rollover Verification
+                  {t("transactions.riskOverview.rolloverVerification")}
                 </span>
                 <span
                   className="rounded px-1.5 py-0.5 text-xs font-bold"
                   style={{ background: "var(--txn-brand-soft)", color: "var(--enroll-brand)" }}
                 >
-                  In Progress
+                  {t("transactions.riskOverview.inProgress")}
                 </span>
               </div>
               <ProgressBar value={75} max={100} height={6} barColor="var(--enroll-brand)" />
               <div className="mt-2 flex items-center justify-between">
                 <span className="flex items-center gap-1.5 text-xs" style={{ color: "var(--color-text-secondary)" }}>
-                  <Clock className="h-3 w-3" style={{ color: "var(--color-text-tertiary)" }} /> ETA: 3 Days
+                  <Clock className="h-3 w-3" style={{ color: "var(--color-text-tertiary)" }} /> {t("transactions.riskOverview.etaDays", { days: 3 })}
                 </span>
                 <span className="text-xs font-medium" style={{ color: "var(--color-text-tertiary)" }}>
-                  Step 3 of 4
+                  {t("transactions.riskOverview.stepOf", { current: 3, total: 4 })}
                 </span>
               </div>
             </div>
@@ -57,7 +59,7 @@ export const ActivityRiskOverview = memo(function ActivityRiskOverview() {
               <div className="mb-2 flex items-start justify-between">
                 <div>
                   <span className="block text-sm font-medium" style={{ color: "var(--color-text)" }}>
-                    Pending Withdrawal
+                    {t("transactions.riskOverview.pendingWithdrawal")}
                   </span>
                   <span className="text-xs" style={{ color: "var(--color-text-secondary)" }}>
                     Hardship Request #W992
@@ -77,7 +79,7 @@ export const ActivityRiskOverview = memo(function ActivityRiskOverview() {
                 }}
               >
                 <AlertCircle className="mt-0.5 h-3 w-3 flex-shrink-0" />
-                <span>Awaiting employer approval. Documents submitted.</span>
+                <span>{t("transactions.riskOverview.awaitingApproval")}</span>
               </div>
             </div>
 
@@ -88,10 +90,10 @@ export const ActivityRiskOverview = memo(function ActivityRiskOverview() {
               <CheckCircle2 className="h-5 w-5 flex-shrink-0" style={{ color: "var(--color-success)" }} />
               <div>
                 <span className="block text-sm font-medium line-through" style={{ color: "var(--color-text)" }}>
-                  Quarterly Rebalancing
+                  {t("transactions.riskOverview.quarterlyRebalancing")}
                 </span>
                 <span className="text-xs" style={{ color: "var(--color-text-secondary)" }}>
-                  Completed Jan 1, 2025
+                  {t("transactions.riskOverview.completedDate")}
                 </span>
               </div>
             </div>
@@ -119,7 +121,7 @@ export const ActivityRiskOverview = memo(function ActivityRiskOverview() {
           />
             <div className="relative z-10 border-b px-4 py-4" style={{ borderColor: "rgb(255 255 255 / 0.1)" }}>
             <div className="flex items-center justify-between">
-              <h3 className="text-base font-semibold" style={{ color: "var(--color-text-inverse)" }}>Risk & Projection</h3>
+              <h3 className="text-base font-semibold" style={{ color: "var(--color-text-inverse)" }}>{t("transactions.riskOverview.riskProjection")}</h3>
               <ShieldCheck className="h-5 w-5" style={{ color: "var(--color-success)" }} />
             </div>
           </div>
@@ -136,10 +138,9 @@ export const ActivityRiskOverview = memo(function ActivityRiskOverview() {
                 <TrendingUp className="h-4 w-4" />
               </div>
               <div>
-                <p className="text-sm font-medium" style={{ color: "var(--color-text-inverse)" }}>Growth Projection</p>
+                <p className="text-sm font-medium" style={{ color: "var(--color-text-inverse)" }}>{t("transactions.riskOverview.growthProjection")}</p>
                 <p className="mt-1 text-xs leading-relaxed" style={{ color: "var(--color-text-inverse-muted)" }}>
-                  Recent contribution increase (+1%) adds an estimated{" "}
-                  <span className="font-bold" style={{ color: "var(--color-success)" }}>$18,400</span> to your balance by age 65.
+                  {t("transactions.riskOverview.growthProjectionDesc", { amount: "$18,400" })}
                 </p>
               </div>
             </div>
@@ -158,9 +159,9 @@ export const ActivityRiskOverview = memo(function ActivityRiskOverview() {
                 <AlertCircle className="h-4 w-4" />
               </div>
               <div>
-                <p className="text-sm font-medium" style={{ color: "var(--color-text-inverse)" }}>Tax Awareness</p>
+                <p className="text-sm font-medium" style={{ color: "var(--color-text-inverse)" }}>{t("transactions.riskOverview.taxAwareness")}</p>
                 <p className="mt-1 text-xs leading-relaxed" style={{ color: "var(--color-text-inverse-muted)" }}>
-                  $500 loan repayment pending for 2025. Clear before Dec 31 to avoid taxable distribution.
+                  {t("transactions.riskOverview.taxAwarenessDesc")}
                 </p>
               </div>
             </div>

@@ -1,6 +1,11 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import type { EnrollmentSummary } from "../../../data/enrollmentSummary";
 import type { DashboardEngine, LifeStage, RecommendedAction } from "./types";
+
+const fmtCurrency = (n: number) =>
+  new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(n);
 
 /* ═══════════════════════════════════════════════════════
    Personalization Logic Engine
@@ -8,11 +13,11 @@ import type { DashboardEngine, LifeStage, RecommendedAction } from "./types";
    and dynamic messaging from raw enrollment data.
    ═══════════════════════════════════════════════════════ */
 
-function deriveLifeStage(age: number): { stage: LifeStage; label: string } {
-  if (age < 30) return { stage: "early-career", label: "Early Career" };
-  if (age < 45) return { stage: "growth", label: "Growth Phase" };
-  if (age < 60) return { stage: "peak-earnings", label: "Peak Earnings" };
-  return { stage: "pre-retirement", label: "Pre-Retirement" };
+function deriveLifeStage(age: number, t: TFunction): { stage: LifeStage; label: string } {
+  if (age < 30) return { stage: "early-career", label: t("dashboard.lifeStageEarlyCareer") };
+  if (age < 45) return { stage: "growth", label: t("dashboard.lifeStageGrowth") };
+  if (age < 60) return { stage: "peak-earnings", label: t("dashboard.lifeStagePeakEarnings") };
+  return { stage: "pre-retirement", label: t("dashboard.lifeStagePreRetirement") };
 }
 
 function computeRecommendations(
@@ -20,6 +25,7 @@ function computeRecommendations(
   matchGap: number,
   missingMatch: number,
   lifeStage: LifeStage,
+  t: TFunction,
 ): RecommendedAction[] {
   const actions: RecommendedAction[] = [];
 
@@ -27,9 +33,9 @@ function computeRecommendations(
     actions.push({
       id: "match-gap",
       type: "match",
-      title: `You're missing ${new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(missingMatch)}/year in employer match`,
-      description: `Increase your contribution by ${matchGap}% to capture the full employer match.`,
-      impact: `+${new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(missingMatch)}/year free`,
+      title: t("dashboard.insightMatchTitle", { amount: fmtCurrency(missingMatch) }),
+      description: t("dashboard.insightMatchDesc", { pct: matchGap }),
+      impact: t("dashboard.insightMatchImpact", { amount: fmtCurrency(missingMatch) }),
       priority: 1,
     });
   }
@@ -38,9 +44,9 @@ function computeRecommendations(
     actions.push({
       id: "roth-diversify",
       type: "roth",
-      title: "Switching to Roth increases tax diversification",
-      description: "Adding a Roth component provides tax-free growth and withdrawal flexibility in retirement.",
-      impact: "Tax diversification",
+      title: t("dashboard.insightRothTitle"),
+      description: t("dashboard.insightRothDesc"),
+      impact: t("dashboard.insightRothImpact"),
       priority: 2,
     });
   }
@@ -52,9 +58,9 @@ function computeRecommendations(
       actions.push({
         id: "rebalance",
         type: "rebalance",
-        title: "Rebalancing reduces portfolio volatility",
-        description: `Your top fund holds ${maxAlloc}% of your portfolio. Diversifying may reduce risk.`,
-        impact: "Lower risk",
+        title: t("dashboard.insightRebalanceTitle"),
+        description: t("dashboard.insightRebalanceDesc", { pct: maxAlloc }),
+        impact: t("dashboard.insightRebalanceImpact"),
         priority: 3,
       });
     }
@@ -63,12 +69,13 @@ function computeRecommendations(
   if (lifeStage === "early-career" || lifeStage === "growth") {
     const rate = data.planDetails?.contributionRate ?? 0;
     if (rate < 15) {
+      const years = lifeStage === "early-career" ? "35+" : "20+";
       actions.push({
         id: "increase-savings",
         type: "increase",
-        title: "Boost your savings rate to accelerate growth",
-        description: `At ${rate}%, you have room to increase. Even 1% more compounds significantly over ${lifeStage === "early-career" ? "35+" : "20+"} years.`,
-        impact: "+1% = significant long-term growth",
+        title: t("dashboard.insightIncreaseTitle"),
+        description: t("dashboard.insightIncreaseDesc", { rate, years }),
+        impact: t("dashboard.insightIncreaseImpact"),
         priority: 4,
       });
     }
@@ -81,28 +88,30 @@ function computeHeroMessage(
   readinessScore: number,
   matchGap: number,
   lifeStage: LifeStage,
+  t: TFunction,
 ): string {
-  if (readinessScore >= 90) return "You're in excellent shape. Keep building momentum.";
+  if (readinessScore >= 90) return t("dashboard.heroMsgExcellent");
   if (readinessScore >= 70) {
     if (matchGap > 0) {
-      return `You are ${readinessScore}% on track. Increasing by ${matchGap}% puts you in the green zone.`;
+      return t("dashboard.heroMsgOnTrackWithGap", { score: readinessScore, gap: matchGap });
     }
-    return `You are ${readinessScore}% on track. Small adjustments today create powerful results.`;
+    return t("dashboard.heroMsgOnTrack", { score: readinessScore });
   }
   if (readinessScore >= 50) {
     switch (lifeStage) {
       case "early-career":
-        return "Time is on your side. Start strong and let compounding do the work.";
+        return t("dashboard.heroMsgTimeOnSide");
       case "growth":
-        return "You're in your growth phase. This is the decade to maximize contributions.";
+        return t("dashboard.heroMsgGrowthPhase");
       default:
-        return "Every step forward matters. Let's find ways to close the gap.";
+        return t("dashboard.heroMsgEveryStep");
     }
   }
-  return "Let's build your foundation. Small consistent steps lead to big results.";
+  return t("dashboard.heroMsgBuildFoundation");
 }
 
 export function useDashboardEngine(data: EnrollmentSummary): DashboardEngine {
+  const { t, i18n } = useTranslation();
   return useMemo(() => {
     const plan = data.planDetails;
     const goal = data.goalProgress;
@@ -121,7 +130,7 @@ export function useDashboardEngine(data: EnrollmentSummary): DashboardEngine {
     const vestedBalance = balances?.vestedBalance ?? 0;
 
     /* Life stage */
-    const { stage: lifeStage, label: lifeStageLabel } = deriveLifeStage(currentAge);
+    const { stage: lifeStage, label: lifeStageLabel } = deriveLifeStage(currentAge, t);
 
     /* Match calculation */
     const effectiveContribution = Math.min(contributionRate, matchCap);
@@ -161,10 +170,10 @@ export function useDashboardEngine(data: EnrollmentSummary): DashboardEngine {
     const maxLoanAmount = Math.min(50000, vestedBalance * 0.5);
 
     /* Recommendations */
-    const recommendedActions = computeRecommendations(data, matchGap, missingMatch, lifeStage);
+    const recommendedActions = computeRecommendations(data, matchGap, missingMatch, lifeStage, t);
 
     /* Hero message */
-    const heroMessage = computeHeroMessage(readinessScore, matchGap, lifeStage);
+    const heroMessage = computeHeroMessage(readinessScore, matchGap, lifeStage, t);
 
     return {
       readinessScore,
@@ -192,5 +201,5 @@ export function useDashboardEngine(data: EnrollmentSummary): DashboardEngine {
       loanEligible,
       maxLoanAmount,
     };
-  }, [data]);
+  }, [data, t, i18n.language]);
 }

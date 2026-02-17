@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CARD_STYLE, fmtCurrency } from "../../core/types";
@@ -12,15 +13,17 @@ const TX_ICON: Record<string, string> = {
   "loan-repayment": "🔄",
 };
 
-const fmtDate = (d: string) => {
-  const dt = new Date(d + "T00:00:00");
-  return dt.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-};
+const localeForDate = (lng: string) => (lng && lng !== "en" ? lng : "en-US");
 
 /**
  * ActivityFeed — Recent transactions with animated entrance and color-coded amounts.
  */
 export const ActivityFeed = memo(function ActivityFeed({ data }: ModuleProps) {
+  const { t, i18n } = useTranslation();
+  const fmtDate = (d: string) => {
+    const dt = new Date(d + "T00:00:00");
+    return dt.toLocaleDateString(localeForDate(i18n.language), { month: "short", day: "numeric" });
+  };
   const navigate = useNavigate();
   const transactions = data.transactions.slice(0, 5);
 
@@ -33,7 +36,7 @@ export const ActivityFeed = memo(function ActivityFeed({ data }: ModuleProps) {
           className="text-[10px] font-bold uppercase tracking-widest"
           style={{ color: "var(--enroll-text-muted)" }}
         >
-          Recent Activity
+          {t("dashboard.activityRecent")}
         </p>
         <button
           type="button"
@@ -41,7 +44,7 @@ export const ActivityFeed = memo(function ActivityFeed({ data }: ModuleProps) {
           className="text-[10px] font-semibold border-none bg-transparent cursor-pointer p-0"
           style={{ color: "var(--enroll-brand)" }}
         >
-          View all →
+          {t("dashboard.activityViewAll")}
         </button>
       </div>
 

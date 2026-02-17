@@ -1,4 +1,5 @@
 import { Outlet, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { DashboardLayout } from "./DashboardLayout";
 import { DashboardHeader } from "../components/dashboard/DashboardHeader";
 import { EnrollmentHeaderWithStepper } from "../components/enrollment/EnrollmentHeaderWithStepper";
@@ -25,6 +26,7 @@ function useIsEnrollmentStepPath(): boolean {
 
 function EnrollmentStepLayout() {
   const location = useLocation();
+  const { i18n } = useTranslation();
   const isStep = useIsEnrollmentStepPath();
   const pathname = location.pathname;
   const step = pathToStep(pathname);
@@ -36,11 +38,17 @@ function EnrollmentStepLayout() {
         subHeader={<EnrollmentHeaderWithStepper activeStep={step} />}
         transparentBackground
       >
-        <Outlet />
+        <div key={i18n.language}>
+          <Outlet />
+        </div>
       </DashboardLayout>
     );
   }
-  return <Outlet />;
+  return (
+    <div key={i18n.language}>
+      <Outlet />
+    </div>
+  );
 }
 
 /**

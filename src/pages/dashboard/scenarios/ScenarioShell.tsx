@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { PersonaProfile } from "@/mock/personas";
-import { SCENARIO_LABELS } from "@/mock/personas";
 
 interface ScenarioShellProps {
   user: PersonaProfile;
@@ -15,8 +14,8 @@ interface ScenarioShellProps {
  */
 export function ScenarioShell({ user, accentColor, children }: ScenarioShellProps) {
   const { t } = useTranslation();
-  const label = SCENARIO_LABELS[user.scenario];
-  const formatter = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+  const label = t(`demo.scenario_${user.scenario}` as const);
+  const formatter = new Intl.NumberFormat(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
   return (
     <div className="flex flex-col gap-6">

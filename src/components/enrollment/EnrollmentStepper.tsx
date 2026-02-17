@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { Check, Target, PiggyBank, TrendingUp, BarChart2, FileCheck, type LucideIcon } from "lucide-react";
 
 /** Default enrollment steps: Plan → Contribution → Auto Increase → Investment → Review */
@@ -52,9 +53,11 @@ export function EnrollmentStepper({
   title: _title,
   subtitle: _subtitle,
 }: EnrollmentStepperProps) {
+  const { t } = useTranslation();
   const labels = stepLabels as string[];
   const stepsCount = totalSteps ?? labels.length;
   const safeActive = Math.min(Math.max(currentStep, 0), stepsCount - 1);
+  const stepOfLabel = t("enrollment.stepperStepOf", { current: safeActive + 1, total: stepsCount });
 
   if (compact) {
     return (
@@ -64,10 +67,10 @@ export function EnrollmentStepper({
         aria-valuenow={safeActive + 1}
         aria-valuemin={1}
         aria-valuemax={stepsCount}
-        aria-label={`Step ${safeActive + 1} of ${stepsCount}`}
+        aria-label={stepOfLabel}
       >
         <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
-          Step {safeActive + 1} of {stepsCount}
+          {stepOfLabel}
         </span>
       </div>
     );
@@ -80,7 +83,7 @@ export function EnrollmentStepper({
       aria-valuenow={safeActive + 1}
       aria-valuemin={1}
       aria-valuemax={stepsCount}
-      aria-label={`Step ${safeActive + 1} of ${stepsCount}`}
+      aria-label={stepOfLabel}
     >
       <div className="flex items-center justify-between w-full">
         {labels.slice(0, stepsCount).map((label, index) => {

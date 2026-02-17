@@ -164,7 +164,7 @@ export const ChoosePlan = () => {
 
         <div className="lg:col-span-5 relative">
           <div className="lg:sticky lg:top-24 transition-all duration-300">
-            <PlanDetailsPanel plan={selectedPlan} user={userSnapshot} rationale={recommendation.rationale} />
+            <PlanDetailsPanel plan={selectedPlan} user={userSnapshot} rationaleKey={recommendation.rationaleKey} rationale={recommendation.rationale} />
           </div>
         </div>
       </div>

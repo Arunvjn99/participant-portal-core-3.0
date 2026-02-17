@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Input } from "../ui/Input";
 import Button from "../ui/Button";
 import type { PersonalDetails } from "../../data/mockProfile";
@@ -22,6 +23,7 @@ export const PersonalDetailsSection = ({
   onSave,
   onCancel,
 }: PersonalDetailsSectionProps) => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState<PersonalDetails>(data);
 
   // Calculate age from date of birth
@@ -55,12 +57,12 @@ export const PersonalDetailsSection = ({
     return (
       <div className="profile-section">
         <div className="profile-section__header">
-          <h2 className="profile-section__title">Personal Details</h2>
+          <h2 className="profile-section__title">{t("profile.personalDetails")}</h2>
         </div>
         <div className="profile-section__content">
           <div className="profile-section__form">
             <Input
-              label="First Name"
+              label={t("profile.firstName")}
               type="text"
               name="firstName"
               value={formData.firstName}
@@ -68,14 +70,14 @@ export const PersonalDetailsSection = ({
               required
             />
             <Input
-              label="Middle Name"
+              label={t("profile.middleName")}
               type="text"
               name="middleName"
               value={formData.middleName || ""}
               onChange={(e) => setFormData({ ...formData, middleName: e.target.value })}
             />
             <Input
-              label="Last Name"
+              label={t("profile.lastName")}
               type="text"
               name="lastName"
               value={formData.lastName}
@@ -84,17 +86,17 @@ export const PersonalDetailsSection = ({
             />
             <div className="profile-section__field">
               <Input
-                label="Legal Name"
+                label={t("profile.legalName")}
                 type="text"
                 name="legalName"
                 value={formData.legalName}
                 onChange={(e) => setFormData({ ...formData, legalName: e.target.value })}
                 required
               />
-              <p className="profile-section__helper-text">Name as it appears on legal documents</p>
+              <p className="profile-section__helper-text">{t("profile.legalNameHelper")}</p>
             </div>
             <div className="profile-section__field">
-              <label className="profile-section__label">Gender</label>
+              <label className="profile-section__label">{t("profile.gender")}</label>
               <select
                 className="profile-section__select"
                 name="gender"
@@ -106,30 +108,30 @@ export const PersonalDetailsSection = ({
                   })
                 }
               >
-                <option value="">Prefer not to say</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-                <option value="prefer-not-to-say">Prefer not to say</option>
+                <option value="">{t("profile.preferNotToSay")}</option>
+                <option value="male">{t("profile.male")}</option>
+                <option value="female">{t("profile.female")}</option>
+                <option value="other">{t("profile.other")}</option>
+                <option value="prefer-not-to-say">{t("profile.preferNotToSay")}</option>
               </select>
             </div>
             <div className="profile-section__field profile-section__field--read-only">
-              <label className="profile-section__label">Date of Birth</label>
+              <label className="profile-section__label">{t("profile.dateOfBirth")}</label>
               <div className="profile-section__read-only-value">
-                {new Date(data.dateOfBirth).toLocaleDateString("en-US", {
+                {new Date(data.dateOfBirth).toLocaleDateString(undefined, {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
                 })}
               </div>
-              <p className="profile-section__helper-text">Date of birth cannot be changed</p>
+              <p className="profile-section__helper-text">{t("profile.dateOfBirthCannotChange")}</p>
             </div>
             <div className="profile-section__field profile-section__field--read-only">
-              <label className="profile-section__label">Age</label>
-              <div className="profile-section__read-only-value">{age} years</div>
+              <label className="profile-section__label">{t("profile.age")}</label>
+              <div className="profile-section__read-only-value">{t("profile.ageYears", { count: age })}</div>
             </div>
             <div className="profile-section__field">
-              <label className="profile-section__label">Marital Status</label>
+              <label className="profile-section__label">{t("profile.maritalStatus")}</label>
               <select
                 className="profile-section__select"
                 name="maritalStatus"
@@ -141,15 +143,15 @@ export const PersonalDetailsSection = ({
                   })
                 }
               >
-                <option value="single">Single</option>
-                <option value="married">Married</option>
-                <option value="divorced">Divorced</option>
-                <option value="widowed">Widowed</option>
-                <option value="domestic-partnership">Domestic Partnership</option>
+                <option value="single">{t("profile.single")}</option>
+                <option value="married">{t("profile.married")}</option>
+                <option value="divorced">{t("profile.divorced")}</option>
+                <option value="widowed">{t("profile.widowed")}</option>
+                <option value="domestic-partnership">{t("profile.domesticPartnership")}</option>
               </select>
             </div>
             <Input
-              label="Citizenship"
+              label={t("profile.citizenship")}
               type="text"
               name="citizenship"
               value={formData.citizenship}
@@ -157,7 +159,7 @@ export const PersonalDetailsSection = ({
               required
             />
             <Input
-              label="Residency"
+              label={t("profile.residency")}
               type="text"
               name="residency"
               value={formData.residency}
@@ -167,60 +169,70 @@ export const PersonalDetailsSection = ({
           </div>
           <div className="profile-section__actions">
             <Button onClick={handleCancel} className="profile-section__button profile-section__button--cancel">
-              Cancel
+              {t("profile.cancel")}
             </Button>
             <Button onClick={handleSave} className="profile-section__button profile-section__button--save">
-              Save Changes
+              {t("profile.saveChanges")}
             </Button>
           </div>
           {data.lastUpdated && (
-            <p className="profile-section__timestamp">Last updated: {data.lastUpdated}</p>
+            <p className="profile-section__timestamp">{t("profile.lastUpdated", { date: data.lastUpdated })}</p>
           )}
         </div>
       </div>
     );
   }
 
+  const MARITAL_KEYS: Record<string, string> = {
+    single: "profile.single",
+    married: "profile.married",
+    divorced: "profile.divorced",
+    widowed: "profile.widowed",
+    "domestic-partnership": "profile.domesticPartnership",
+  };
+  const genderDisplayKey = data.gender ? (data.gender === "prefer-not-to-say" ? "profile.preferNotToSay" : `profile.${data.gender}`) : null;
+  const maritalDisplayKey = MARITAL_KEYS[data.maritalStatus] ?? data.maritalStatus;
+
   return (
     <div className="profile-section">
       <div className="profile-section__header">
-        <h2 className="profile-section__title">Personal Details</h2>
+        <h2 className="profile-section__title">{t("profile.personalDetails")}</h2>
         <Button onClick={onEdit} className="profile-section__edit-button">
-          Edit
+          {t("profile.edit")}
         </Button>
       </div>
       <div className="profile-section__content">
         <div className="profile-section__field-list">
           <div className="profile-section__field-item">
-            <span className="profile-section__field-label">First Name</span>
+            <span className="profile-section__field-label">{t("profile.firstName")}</span>
             <span className="profile-section__field-value">{data.firstName}</span>
           </div>
           {data.middleName && (
             <div className="profile-section__field-item">
-              <span className="profile-section__field-label">Middle Name</span>
+              <span className="profile-section__field-label">{t("profile.middleName")}</span>
               <span className="profile-section__field-value">{data.middleName}</span>
             </div>
           )}
           <div className="profile-section__field-item">
-            <span className="profile-section__field-label">Last Name</span>
+            <span className="profile-section__field-label">{t("profile.lastName")}</span>
             <span className="profile-section__field-value">{data.lastName}</span>
           </div>
           <div className="profile-section__field-item">
-            <span className="profile-section__field-label">Legal Name</span>
+            <span className="profile-section__field-label">{t("profile.legalName")}</span>
             <span className="profile-section__field-value">{data.legalName}</span>
           </div>
           {data.gender && (
             <div className="profile-section__field-item">
-              <span className="profile-section__field-label">Gender</span>
+              <span className="profile-section__field-label">{t("profile.gender")}</span>
               <span className="profile-section__field-value">
-                {data.gender.charAt(0).toUpperCase() + data.gender.slice(1).replace(/-/g, " ")}
+                {genderDisplayKey ? t(genderDisplayKey) : data.gender}
               </span>
             </div>
           )}
           <div className="profile-section__field-item">
-            <span className="profile-section__field-label">Date of Birth</span>
+            <span className="profile-section__field-label">{t("profile.dateOfBirth")}</span>
             <span className="profile-section__field-value">
-              {new Date(data.dateOfBirth).toLocaleDateString("en-US", {
+              {new Date(data.dateOfBirth).toLocaleDateString(undefined, {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
@@ -228,26 +240,24 @@ export const PersonalDetailsSection = ({
             </span>
           </div>
           <div className="profile-section__field-item">
-            <span className="profile-section__field-label">Age</span>
-            <span className="profile-section__field-value">{age} years</span>
+            <span className="profile-section__field-label">{t("profile.age")}</span>
+            <span className="profile-section__field-value">{t("profile.ageYears", { count: age })}</span>
           </div>
           <div className="profile-section__field-item">
-            <span className="profile-section__field-label">Marital Status</span>
-            <span className="profile-section__field-value">
-              {data.maritalStatus.charAt(0).toUpperCase() + data.maritalStatus.slice(1).replace(/-/g, " ")}
-            </span>
+            <span className="profile-section__field-label">{t("profile.maritalStatus")}</span>
+            <span className="profile-section__field-value">{t(maritalDisplayKey)}</span>
           </div>
           <div className="profile-section__field-item">
-            <span className="profile-section__field-label">Citizenship</span>
+            <span className="profile-section__field-label">{t("profile.citizenship")}</span>
             <span className="profile-section__field-value">{data.citizenship}</span>
           </div>
           <div className="profile-section__field-item">
-            <span className="profile-section__field-label">Residency</span>
+            <span className="profile-section__field-label">{t("profile.residency")}</span>
             <span className="profile-section__field-value">{data.residency}</span>
           </div>
         </div>
         {data.lastUpdated && (
-          <p className="profile-section__timestamp">Last updated: {data.lastUpdated}</p>
+          <p className="profile-section__timestamp">{t("profile.lastUpdated", { date: data.lastUpdated })}</p>
         )}
       </div>
     </div>

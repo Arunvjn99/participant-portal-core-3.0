@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { AnimatedNumber } from "../../shared/AnimatedNumber";
@@ -12,6 +13,7 @@ import type { ModuleProps } from "../../core/types";
 export const ContributionOptimizer = memo(function ContributionOptimizer({
   engine,
 }: ModuleProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const hasMissedMatch = engine.matchGap > 0;
 
@@ -30,7 +32,7 @@ export const ContributionOptimizer = memo(function ContributionOptimizer({
           className="text-[10px] font-bold uppercase tracking-widest"
           style={{ color: "var(--enroll-text-muted)" }}
         >
-          Contribution Optimizer
+          {t("dashboard.contributionTitle")}
         </p>
         <AnimatePresence>
           {hasMissedMatch && (
@@ -43,7 +45,7 @@ export const ContributionOptimizer = memo(function ContributionOptimizer({
                 color: "var(--color-warning)",
               }}
             >
-              Free Money Alert
+              {t("dashboard.contributionFreeMoneyAlert")}
             </motion.span>
           )}
         </AnimatePresence>
@@ -53,10 +55,10 @@ export const ContributionOptimizer = memo(function ContributionOptimizer({
       <div className="mb-4">
         <div className="flex items-center justify-between mb-1.5">
           <span className="text-xs font-semibold" style={{ color: "var(--enroll-text-primary)" }}>
-            Your Rate: {engine.contributionRate}%
+            {t("dashboard.contributionYourRate", { pct: engine.contributionRate })}
           </span>
           <span className="text-[10px] font-semibold" style={{ color: "var(--enroll-text-muted)" }}>
-            Match Zone: {engine.employerMatch.cap}%
+            {t("dashboard.contributionMatchZone", { cap: engine.employerMatch.cap })}
           </span>
         </div>
         <div className="relative h-3 rounded-full overflow-hidden" style={{ background: "var(--enroll-card-border)" }}>
@@ -108,10 +110,10 @@ export const ContributionOptimizer = memo(function ContributionOptimizer({
             }}
           >
             <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>
-              Current
+              {t("dashboard.contributionCurrent")}
             </p>
             <p className="text-sm font-bold mt-0.5" style={{ color: "var(--enroll-text-primary)" }}>
-              {fmtCurrency(currentAnnual)}/yr
+              {t("dashboard.contributionPerYear", { amount: fmtCurrency(currentAnnual) })}
             </p>
           </div>
           <div
@@ -122,10 +124,10 @@ export const ContributionOptimizer = memo(function ContributionOptimizer({
             }}
           >
             <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--enroll-accent)" }}>
-              With Full Match
+              {t("dashboard.contributionWithFullMatch")}
             </p>
             <p className="text-sm font-bold mt-0.5" style={{ color: "var(--enroll-accent)" }}>
-              {fmtCurrency(matchedAnnual)}/yr
+              {t("dashboard.contributionPerYear", { amount: fmtCurrency(matchedAnnual) })}
             </p>
           </div>
         </motion.div>
@@ -168,13 +170,13 @@ export const ContributionOptimizer = memo(function ContributionOptimizer({
         <div className="flex-1">
           <p className="text-xs font-semibold" style={{ color: "var(--enroll-text-primary)" }}>
             {hasMissedMatch
-              ? `You're leaving ${fmtCurrency(projectedGainPerYear)}/year on the table`
-              : "You're capturing your full employer match"}
+              ? t("dashboard.contributionLeavingOnTable", { amount: fmtCurrency(projectedGainPerYear) })
+              : t("dashboard.contributionCapturingFullMatch")}
           </p>
           <p className="text-[10px] mt-0.5" style={{ color: "var(--enroll-text-muted)" }}>
             {hasMissedMatch
-              ? `Increase by ${engine.matchGap}% to unlock free employer contributions.`
-              : `Your ${engine.contributionRate}% rate exceeds the ${engine.employerMatch.cap}% match threshold.`}
+              ? t("dashboard.contributionIncreaseToUnlock", { pct: engine.matchGap })
+              : t("dashboard.contributionRateExceedsThreshold", { rate: engine.contributionRate, cap: engine.employerMatch.cap })}
           </p>
         </div>
       </div>
@@ -190,7 +192,7 @@ export const ContributionOptimizer = memo(function ContributionOptimizer({
             boxShadow: "0 4px 12px rgb(var(--enroll-brand-rgb) / 0.15)",
           }}
         >
-          Optimize Contribution
+          {t("dashboard.contributionOptimize")}
         </button>
       )}
     </div>

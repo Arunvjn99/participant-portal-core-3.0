@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { Modal } from "../ui/Modal";
 import { cn } from "@/lib/utils";
@@ -80,6 +81,7 @@ const stepTransition = { duration: 0.2 };
 /* ──────────────────────── Progress Bar ────────────────────────── */
 
 function ProgressBar({ step }: { step: number }) {
+  const { t } = useTranslation();
   return (
     <div className="flex items-center gap-2.5">
       <div className="flex gap-[5px] shrink-0">
@@ -103,7 +105,7 @@ function ProgressBar({ step }: { step: number }) {
         })}
       </div>
       <span className="text-sm font-semibold whitespace-nowrap text-blue-700 dark:text-blue-400">
-        Step {step} of {TOTAL_STEPS}
+        {t("preEnrollment.wizardStepOf", { current: step, total: TOTAL_STEPS })}
       </span>
     </div>
   );
@@ -118,6 +120,7 @@ function Step1CurrentAge({
   currentAge: number;
   onEdit: () => void;
 }) {
+  const { t } = useTranslation();
   return (
     <motion.div
       key="step1"
@@ -132,18 +135,14 @@ function Step1CurrentAge({
           <div className="flex flex-col gap-2 min-w-0">
             <div className="flex flex-col gap-0.5">
               <span className="text-sm font-semibold text-blue-700 dark:text-blue-400">
-                Your Current Age
+                {t("preEnrollment.wizardYourCurrentAge")}
               </span>
               <p className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-slate-100">
-                We believe you're currently{" "}
-                <span className="text-blue-700 dark:text-blue-400">
-                  {currentAge}
-                </span>{" "}
-                years old
+                {t("preEnrollment.wizardWeBelieveAge", { age: currentAge })}
               </p>
             </div>
             <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
-              If it doesn't look right, you can update it.
+              {t("preEnrollment.wizardUpdateHint")}
             </p>
           </div>
           <button
@@ -165,7 +164,7 @@ function Step1CurrentAge({
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
             </svg>
-            Edit
+            {t("preEnrollment.wizardEdit")}
           </button>
         </div>
       </div>
@@ -191,6 +190,7 @@ function Step2RetirementAge({
   const value = Math.min(max, Math.max(min, retirementAge));
   const isRangeLocked = min === max;
 
+  const { t } = useTranslation();
   return (
     <motion.div
       key="step2"
@@ -203,10 +203,10 @@ function Step2RetirementAge({
     >
       <div>
         <h3 className="text-xl sm:text-2xl font-bold leading-7 text-slate-900 dark:text-slate-100">
-          At what age would you like to retire?
+          {t("preEnrollment.wizardRetireAgeQuestion")}
         </h3>
         <p className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">
-          This helps us estimate how many years you have to retirement
+          {t("preEnrollment.wizardRetireAgeHint")}
         </p>
       </div>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_160px] sm:items-center">
@@ -219,7 +219,7 @@ function Step2RetirementAge({
           onChange={(e) =>
             onRetirementAgeChange(parseInt(e.target.value, 10))
           }
-          aria-label="Retirement age slider"
+          aria-label={t("preEnrollment.wizardRetireAgeAria")}
           className="personalize-plan-slider block min-w-0"
         />
         <input
@@ -241,13 +241,7 @@ function Step2RetirementAge({
         animate={{ opacity: 1, y: 0 }}
         className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-center dark:border-slate-700 dark:bg-slate-800/50"
       >
-        <span className="text-slate-700 dark:text-slate-300">
-          That is about{" "}
-        </span>
-        <span className="font-bold text-blue-600 dark:text-blue-400">
-          {yearsToRetire} years
-        </span>
-        <span className="text-slate-700 dark:text-slate-300"> from now</span>
+        {t("preEnrollment.wizardYearsFromNow", { years: yearsToRetire })}
       </motion.div>
     </motion.div>
   );
@@ -262,6 +256,7 @@ function Step3Location({
   value: string;
   onChange: (v: string) => void;
 }) {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
 
   const filtered = useMemo(() => {
@@ -282,10 +277,10 @@ function Step3Location({
     >
       <div>
         <h3 className="text-xl sm:text-2xl font-bold leading-7 text-slate-900 dark:text-slate-100">
-          Where would you like to retire?
+          {t("preEnrollment.wizardWhereRetire")}
         </h3>
         <p className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">
-          This helps us factor in cost-of-living for your plan
+          {t("preEnrollment.wizardWhereRetireHint")}
         </p>
       </div>
 
@@ -308,7 +303,7 @@ function Step3Location({
         </div>
         <input
           type="text"
-          placeholder="Search Location"
+          placeholder={t("preEnrollment.wizardSearchLocation")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full rounded-lg border-2 border-slate-200 bg-white py-3 pl-11 pr-11 text-sm font-medium text-slate-900 placeholder-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500"
@@ -355,7 +350,7 @@ function Step3Location({
           })}
           {filtered.length === 0 && (
             <p className="col-span-full text-center text-sm text-slate-500 py-4 dark:text-slate-400">
-              No locations found
+              {t("preEnrollment.wizardNoLocationsFound")}
             </p>
           )}
         </div>
@@ -373,6 +368,7 @@ function Step4Savings({
   value: number;
   onChange: (v: number) => void;
 }) {
+  const { t } = useTranslation();
   const display = value > 0 ? formatCurrency(value) : "";
 
   return (
@@ -387,10 +383,10 @@ function Step4Savings({
     >
       <div>
         <h3 className="text-xl sm:text-2xl font-bold leading-7 text-slate-900 dark:text-slate-100">
-          Do you have any savings set aside for retirement?
+          {t("preEnrollment.wizardSavingsQuestion")}
         </h3>
         <p className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">
-          Include any 401(k), IRA, or other retirement accounts
+          {t("preEnrollment.wizardSavingsHint")}
         </p>
       </div>
       <div className="relative w-full">
@@ -494,6 +490,7 @@ export const PersonalizePlanModal = ({
   onClose,
   userName = "there",
 }: PersonalizePlanModalProps) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [state, setState] = useState<WizardFormState>(DEFAULT_STATE);
@@ -596,17 +593,17 @@ export const PersonalizePlanModal = ({
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex flex-col gap-1">
               <h2 className="text-xl sm:text-2xl font-bold text-slate-900 truncate dark:text-slate-100">
-                Hello {userName}! 👋
+                {t("preEnrollment.wizardTitle", { name: userName })}
               </h2>
               <p className="text-sm text-slate-500 dark:text-slate-400">
-                Let's plan your retirement together
+                {t("preEnrollment.wizardSubtitle")}
               </p>
             </div>
             <button
               type="button"
               onClick={onClose}
               className="shrink-0 flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-300"
-              aria-label="Close"
+              aria-label={t("preEnrollment.wizardClose")}
             >
               <CloseIcon />
             </button>
@@ -633,7 +630,7 @@ export const PersonalizePlanModal = ({
                 {editingAge ? (
                   <div className="space-y-3">
                     <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
-                      Your current age
+                      {t("preEnrollment.wizardCurrentAgeLabel")}
                     </label>
                     <input
                       type="number"
@@ -655,7 +652,7 @@ export const PersonalizePlanModal = ({
                       onClick={() => setEditingAge(false)}
                       className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
                     >
-                      Done
+                      {t("preEnrollment.wizardDone")}
                     </button>
                   </div>
                 ) : (
@@ -706,7 +703,7 @@ export const PersonalizePlanModal = ({
             >
               <SaveIcon />
               <span className="hidden sm:inline whitespace-nowrap">
-                Save &amp; Exit
+                {t("preEnrollment.wizardSaveAndExit")}
               </span>
             </button>
 
@@ -719,7 +716,7 @@ export const PersonalizePlanModal = ({
                   className="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 sm:px-5 py-2 text-sm font-medium text-slate-500 transition-colors hover:border-slate-400 hover:text-slate-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-400 dark:hover:border-slate-500 dark:hover:text-slate-300"
                 >
                   <ChevronLeftIcon />
-                  <span className="hidden xs:inline">Previous</span>
+                  <span className="hidden xs:inline">{t("preEnrollment.wizardPrevious")}</span>
                 </button>
               )}
               <button
@@ -727,7 +724,7 @@ export const PersonalizePlanModal = ({
                 onClick={handleNext}
                 className="inline-flex items-center gap-1 rounded-lg bg-blue-600 px-4 sm:px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 whitespace-nowrap dark:bg-blue-500 dark:hover:bg-blue-600"
               >
-                {isLastStep ? "Finish" : "Next Step"}
+                {isLastStep ? t("preEnrollment.wizardFinish") : t("preEnrollment.wizardNextStep")}
                 <ChevronRightIcon />
               </button>
             </div>
