@@ -1,0 +1,34 @@
+{
+  "buttons": {
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "saveAndExit": "Save & Exit",
+    "backToTransactions": "Back to Transactions",
+    "edit": "Edit",
+    "downloadPdf": "Download PDF",
+    "revertToEnglish": "English"
+  },
+  "labels": {
+    "dashboard": "Dashboard",
+    "enrollment": "Enrollment",
+    "profile": "Profile",
+    "transactions": "Transactions",
+    "accountStatements": "Account Statements",
+    "notifications": "Notifications",
+    "userMenu": "User menu",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "logOut": "Log out",
+    "language": "Language",
+    "previousStep": "Previous step",
+    "nextStep": "Next step",
+    "english": "English",
+    "spanish": "Spanish",
+    "stepOf": "Step {{current}} of {{total}}"
+  },
+  "validation": {
+    "required": "This field is required.",
+    "invalidFormat": "Invalid format."
+  }
+}

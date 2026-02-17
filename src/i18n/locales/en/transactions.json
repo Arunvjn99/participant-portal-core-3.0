@@ -1,0 +1,173 @@
+{
+  "applications": {
+    "loan": "401(k) Loan Application",
+    "withdrawal": "Hardship Withdrawal Application",
+    "distribution": "Distribution Application",
+    "rollover": "Rollover Application",
+    "transfer": "Transfer Investments Application",
+    "rebalance": "Rebalance Portfolio Application",
+    "generic": "Transaction Application"
+  },
+  "loan": {
+    "title": "401(k) Loan Application",
+    "steps": {
+      "eligibility": "Eligibility",
+      "loanAmount": "Loan Amount",
+      "repaymentTerms": "Repayment Terms",
+      "reviewSubmit": "Review & Submit"
+    },
+    "guidance": {
+      "eligibility": "Customize your loan to balance immediate needs with long-term retirement growth.",
+      "loanAmount": "Choose how you would like to receive your funds securely.",
+      "repaymentTerms": "Review the legal disclosures carefully before proceeding.",
+      "review": "Confirm your selections and understand the long-term impact."
+    },
+    "sections": {
+      "eligibility": "Eligibility",
+      "loanAmount": "Loan amount",
+      "repaymentTerm": "Repayment term",
+      "firstPaymentDate": "First payment date",
+      "paymentFrequency": "Payment frequency",
+      "loanPurpose": "Loan purpose (optional)",
+      "summary": "Loan summary",
+      "paymentSetup": "Payment setup (ACH)",
+      "investmentSource": "Investment source",
+      "allocation": "Allocation",
+      "documents": "Documents",
+      "complianceAcknowledgments": "Compliance acknowledgments",
+      "reviewSubmit": "Review & Submit",
+      "reviewConfirm": "Review & Confirm"
+    },
+    "ineligible": {
+      "title": "You're not eligible for a loan at this time",
+      "reason": "Based on your account and plan rules, we couldn't approve a loan request. Reasons:",
+      "backToTransactions": "Back to Transactions"
+    },
+    "confirmation": {
+      "title": "Loan request submitted",
+      "subtitle": "You will receive a confirmation email with next steps.",
+      "loanAmount": "Loan amount",
+      "netDisbursement": "Net disbursement",
+      "firstPaymentDate": "First payment date",
+      "paymentFrequency": "Payment frequency",
+      "term": "Term",
+      "payoffDate": "Payoff date",
+      "downloadPdf": "Download PDF"
+    },
+    "validation": {
+      "amountTooHigh": "Amount exceeds maximum allowed.",
+      "amountTooLow": "Amount is below minimum.",
+      "invalidDate": "Invalid date."
+    }
+  },
+  "withdrawal": {
+    "steps": {
+      "eligibility": "Eligibility",
+      "withdrawalAmount": "Withdrawal Amount",
+      "taxInformation": "Tax Information",
+      "reviewSubmit": "Review & Submit"
+    },
+    "guidance": {
+      "eligibility": "Confirm your eligibility for a hardship withdrawal before proceeding.",
+      "amount": "Choose how you would like to receive your funds and the amount.",
+      "tax": "Review tax implications and withholding options for your situation.",
+      "review": "Confirm your selections and understand the impact on your retirement savings."
+    },
+    "validation": {
+      "exceedsVested": "Amount exceeds vested balance."
+    }
+  },
+  "rollover": {
+    "steps": {
+      "eligibility": "Eligibility",
+      "rolloverAmount": "Rollover Amount",
+      "destinationAccount": "Destination Account",
+      "reviewSubmit": "Review & Submit"
+    },
+    "guidance": {
+      "eligibility": "Confirm your eligibility and understand rollover rules.",
+      "amount": "Choose the amount and source of funds to roll over.",
+      "destination": "Enter destination account details for a direct rollover.",
+      "review": "Confirm your selections and understand the tax treatment."
+    }
+  },
+  "transfer": {
+    "steps": {
+      "eligibility": "Eligibility",
+      "transferDetails": "Transfer Details",
+      "investmentSelection": "Investment Selection",
+      "reviewSubmit": "Review & Submit"
+    },
+    "guidance": {
+      "eligibility": "Confirm your eligibility to transfer between investment options.",
+      "details": "Specify transfer details and effective date.",
+      "investment": "Choose target investments for the transferred amount.",
+      "review": "Confirm your selections and submit the transfer."
+    }
+  },
+  "distribution": {
+    "steps": {
+      "eligibility": "Eligibility",
+      "distributionAmount": "Distribution Amount",
+      "taxWithholding": "Tax Withholding",
+      "reviewSubmit": "Review & Submit"
+    },
+    "guidance": {
+      "eligibility": "Confirm your eligibility for a distribution.",
+      "amount": "Select the distribution amount and method.",
+      "tax": "Review tax withholding and reporting options.",
+      "review": "Confirm your selections and submit your request."
+    }
+  },
+  "rebalance": {
+    "steps": {
+      "eligibility": "Eligibility",
+      "currentAllocation": "Current Allocation",
+      "targetAllocation": "Target Allocation",
+      "reviewSubmit": "Review & Submit"
+    },
+    "guidance": {
+      "eligibility": "Review your current allocation and rebalance goals.",
+      "current": "See how your current investments are allocated.",
+      "target": "Set your target allocation across funds.",
+      "review": "Confirm your selections and submit the rebalance."
+    }
+  },
+  "shared": {
+    "readOnly": "Read Only",
+    "viewOnly": "View Only",
+    "readOnlyNote": "This transaction is being processed. You can view details but cannot make changes.",
+    "completedNote": "This transaction has been completed. You can view details and documents.",
+    "irreversibleWarning": "Irreversible Action",
+    "irreversibleMessage": "This transaction cannot be undone once submitted. Please review all details carefully.",
+    "summaryPlaceholder": "Summary and warnings will be displayed here.",
+    "confirmCheckbox": "I confirm that I have reviewed all details and understand the terms of this transaction.",
+    "submittedNote": "This transaction has been submitted for processing.",
+    "completedStatus": "completed"
+  },
+  "placeholder": {
+    "loanEligibility": "Loan application eligibility check will be implemented here.",
+    "loanAmount": "Loan amount selection will be implemented here.",
+    "repaymentTerms": "Repayment terms selection will be implemented here.",
+    "withdrawalEligibility": "Withdrawal application eligibility check will be implemented here.",
+    "withdrawalAmount": "Withdrawal amount selection will be implemented here.",
+    "taxInfo": "Tax information and withholding options will be implemented here.",
+    "rolloverEligibility": "Rollover application eligibility check will be implemented here.",
+    "rolloverAmount": "Rollover amount selection will be implemented here.",
+    "destinationAccount": "Destination account selection will be implemented here.",
+    "transferEligibility": "Transfer application eligibility check will be implemented here.",
+    "transferDetails": "Transfer details will be implemented here.",
+    "investmentSelection": "Investment selection will be implemented here.",
+    "reviewWithdrawal": "Review your withdrawal details and submit your application.",
+    "reviewRollover": "Review your rollover details and submit your application.",
+    "reviewTransfer": "Review your transfer details and submit your application.",
+    "reviewDistribution": "Review your distribution details and submit your application.",
+    "reviewRebalance": "Review your rebalance details and submit your application.",
+    "distributionEligibility": "Distribution eligibility check will be implemented here.",
+    "distributionAmount": "Distribution amount selection will be implemented here.",
+    "rebalanceEligibility": "Rebalance eligibility check will be implemented here.",
+    "currentAllocation": "Current allocation review will be implemented here.",
+    "targetAllocation": "Target allocation selection will be implemented here.",
+    "stepImplemented": "{{stepLabel}} step will be implemented here."
+  }
+}

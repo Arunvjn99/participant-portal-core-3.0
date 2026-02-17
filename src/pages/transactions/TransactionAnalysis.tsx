@@ -1,4 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useCurrencyFormatter } from "../../hooks/useCurrencyFormatter";
 import { DashboardLayout } from "../../layouts/DashboardLayout";
 import { DashboardHeader } from "../../components/dashboard/DashboardHeader";
 import { DashboardCard } from "../../components/dashboard/DashboardCard";
@@ -61,13 +63,15 @@ const getTransactionExplanation = (type: TransactionType): string => {
 export const TransactionAnalysis = () => {
   const { transactionId } = useParams<{ transactionId: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation("dashboard");
+  const formatCurrency = useCurrencyFormatter({ minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
   if (!transactionId) {
     return (
       <DashboardLayout header={<DashboardHeader />}>
         <div className="transaction-analysis">
           <DashboardCard>
-            <p>Transaction not found.</p>
+            <p>{t("transactionNotFound")}</p>
           </DashboardCard>
         </div>
       </DashboardLayout>
@@ -81,21 +85,13 @@ export const TransactionAnalysis = () => {
       <DashboardLayout header={<DashboardHeader />}>
         <div className="transaction-analysis">
           <DashboardCard>
-            <p>Transaction not found.</p>
+            <p>{t("transactionNotFound")}</p>
           </DashboardCard>
         </div>
       </DashboardLayout>
     );
   }
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
 
   const handleAction = () => {
     switch (transaction.status) {

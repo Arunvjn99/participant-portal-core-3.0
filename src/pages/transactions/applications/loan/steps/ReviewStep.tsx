@@ -1,21 +1,19 @@
+import { useTranslation } from "react-i18next";
 import { DashboardCard } from "../../../../../components/dashboard/DashboardCard";
 import { StepGuidance } from "../../../../../components/transactions/StepGuidance";
 import type { TransactionStepProps } from "../../../../../components/transactions/TransactionApplication";
 
-const REVIEW_GUIDANCE = "Confirm your selections and understand the long-term impact.";
-
 export const ReviewStep = ({ transaction, initialData, onDataChange, readOnly }: TransactionStepProps) => {
+  const { t } = useTranslation("transactions");
   const isReadOnly = readOnly || transaction.status !== "draft";
   const isIrreversible = transaction.isIrreversible;
 
   return (
     <div className="flex flex-col gap-6" style={{ gap: "var(--spacing-6)" }}>
-      <StepGuidance>{REVIEW_GUIDANCE}</StepGuidance>
-      <DashboardCard title={isReadOnly ? "Review & Confirm" : "Review & Submit"}>
+      <StepGuidance>{t("loan.guidance.review")}</StepGuidance>
+      <DashboardCard title={isReadOnly ? t("loan.sections.reviewConfirm") : t("loan.sections.reviewSubmit")}>
         <div className="flex flex-col gap-4" style={{ gap: "var(--spacing-4)", color: "var(--enroll-text-primary)" }}>
-          <p style={{ color: "var(--enroll-text-secondary)" }}>
-            Review your loan details{isReadOnly ? "" : " and submit your application"}.
-          </p>
+          <p style={{ color: "var(--enroll-text-secondary)" }}>{t("shared.summaryPlaceholder")}</p>
 
           {isIrreversible && !isReadOnly && (
             <div
@@ -26,13 +24,13 @@ export const ReviewStep = ({ transaction, initialData, onDataChange, readOnly }:
                 color: "var(--enroll-text-primary)",
               }}
             >
-              <strong>⚠️ Irreversible Action</strong>
-              <p className="mt-1 text-sm">This transaction cannot be undone once submitted. Please review all details carefully.</p>
+              <strong>⚠️ {t("shared.irreversibleWarning")}</strong>
+              <p className="mt-1 text-sm">{t("shared.irreversibleMessage")}</p>
             </div>
           )}
 
           <div>
-            <p style={{ color: "var(--enroll-text-secondary)" }}>Summary and warnings will be displayed here.</p>
+            <p style={{ color: "var(--enroll-text-secondary)" }}>{t("shared.summaryPlaceholder")}</p>
           </div>
 
           {!isReadOnly && (
@@ -47,15 +45,13 @@ export const ReviewStep = ({ transaction, initialData, onDataChange, readOnly }:
                   }
                 }}
               />
-              <span style={{ color: "var(--enroll-text-primary)" }}>
-                I confirm that I have reviewed all details and understand the terms of this transaction.
-              </span>
+              <span style={{ color: "var(--enroll-text-primary)" }}>{t("shared.confirmCheckbox")}</span>
             </label>
           )}
 
           {isReadOnly && (
             <p className="text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
-              This transaction has been {transaction.status === "completed" ? "completed" : "submitted for processing"}.
+              {transaction.status === "completed" ? t("shared.completedNote") : t("shared.submittedNote")}
             </p>
           )}
         </div>

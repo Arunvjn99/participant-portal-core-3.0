@@ -1,10 +1,11 @@
 import { useParams, Navigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { TransactionApplication } from "../../../components/transactions/TransactionApplication";
 import type { TransactionStepDefinition } from "../../../components/transactions/TransactionApplication";
 import type { TransactionType } from "../../../types/transactions";
 import type { Transaction } from "../../../types/transactions";
 import { transactionStore } from "../../../data/transactionStore";
-import { getStepLabels } from "../../../config/transactionSteps";
+import { getStepLabelKeys } from "../../../config/transactionSteps";
 
 // Loan-specific steps
 import { EligibilityStep } from "./loan/steps/EligibilityStep";
@@ -16,41 +17,28 @@ import { ReviewStep } from "./loan/steps/ReviewStep";
 import { PlaceholderStep } from "../../../components/transactions/PlaceholderStep";
 
 /**
- * Get step definitions for a transaction type
+ * Get step definitions for a transaction type with translated labels
  */
-const getStepDefinitions = (type: TransactionType): TransactionStepDefinition[] => {
-  const stepLabels = getStepLabels(type);
+const getStepDefinitions = (
+  type: TransactionType,
+  t: (key: string) => string
+): TransactionStepDefinition[] => {
+  const stepKeys = getStepLabelKeys(type);
+  const stepLabels = stepKeys.map((key) => t(key));
 
   switch (type) {
     case "loan":
       return [
-        {
-          stepId: "eligibility",
-          label: stepLabels[0],
-          component: EligibilityStep,
-        },
-        {
-          stepId: "loan-amount",
-          label: stepLabels[1],
-          component: LoanAmountStep,
-        },
-        {
-          stepId: "repayment-terms",
-          label: stepLabels[2],
-          component: RepaymentTermsStep,
-        },
-        {
-          stepId: "review-submit",
-          label: stepLabels[3],
-          component: ReviewStep,
-        },
+        { stepId: "eligibility", label: stepLabels[0], component: EligibilityStep },
+        { stepId: "loan-amount", label: stepLabels[1], component: LoanAmountStep },
+        { stepId: "repayment-terms", label: stepLabels[2], component: RepaymentTermsStep },
+        { stepId: "review-submit", label: stepLabels[3], component: ReviewStep },
       ];
     case "withdrawal":
     case "distribution":
     case "rollover":
     case "transfer":
     case "rebalance":
-      // Use placeholder steps for other transaction types
       return stepLabels.map((label, index) => ({
         stepId: `step-${index}`,
         label,
@@ -70,18 +58,18 @@ export const TransactionApplicationRouter = () => {
     transactionType: TransactionType;
     transactionId?: string;
   }>();
+  const { t } = useTranslation("transactions");
 
   if (!transactionType) {
     return <Navigate to="/transactions" replace />;
   }
 
-  // Validate transaction type
   const validTypes: TransactionType[] = ["loan", "withdrawal", "distribution", "rollover", "transfer", "rebalance"];
   if (!validTypes.includes(transactionType)) {
     return <Navigate to="/transactions" replace />;
   }
 
-  const steps = getStepDefinitions(transactionType);
+  const steps = getStepDefinitions(transactionType, t);
 
   // Handle "start" route - create draft and redirect
   if (!transactionId || transactionId === "start") {

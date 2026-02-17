@@ -1,6 +1,7 @@
 import { memo, useMemo } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { transactionStore } from "../../../data/transactionStore";
+import { SectionHeader } from "../../../components/dashboard/shared/SectionHeader";
 import { TransactionCard } from "./TransactionCard";
 import type { Transaction } from "../../../types/transactions";
 import type { ActivityItem } from "../types";
@@ -39,9 +40,7 @@ export const TransactionTimeline = memo(function TransactionTimeline() {
       transition={{ duration: 0.25, ease: "easeOut" }}
       className="space-y-4"
     >
-      <h2 className="text-sm font-semibold" style={{ color: "var(--color-text)" }}>
-        Activity timeline
-      </h2>
+      <SectionHeader title="Activity intelligence timeline" subtitle="This week, this month, earlier" />
       <div className="space-y-6">
         <AnimatePresence mode="wait">
           {grouped.map(({ key, items }) => (
@@ -57,6 +56,8 @@ export const TransactionTimeline = memo(function TransactionTimeline() {
                       lifecycleStatus={(t as ActivityItem).lifecycleStatus}
                       planName={(t as ActivityItem).planName}
                       taxType={(t as ActivityItem).taxType}
+                      settlementDate={(t as ActivityItem).settlementDate}
+                      estimatedRetirementImpact={(t as ActivityItem).estimatedRetirementImpact}
                     />
                   </li>
                 ))}

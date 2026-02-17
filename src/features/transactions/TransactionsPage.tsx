@@ -7,9 +7,8 @@ import { ActivityHero } from "./components/ActivityHero";
 import { ActivityInsights } from "./components/ActivityInsights";
 import { ActionHub } from "./components/ActionHub";
 import { StatusTracker } from "./components/StatusTracker";
-import { MonthlySummary } from "./components/MonthlySummary";
 import { TransactionTimeline } from "./components/TransactionTimeline";
-import { TaxImpactPanel } from "./components/TaxImpactPanel";
+import { ImpactPanel } from "./components/ImpactPanel";
 import { useMultiPlanFilter } from "./hooks/useMultiPlanFilter";
 import { useTransactionSummary } from "./hooks/useTransactionSummary";
 import { useActivityInsights } from "./hooks/useActivityInsights";
@@ -37,8 +36,8 @@ const sectionVariants = {
 };
 
 /**
- * Retirement Activity Intelligence Center
- * Enterprise transaction hub with multi-plan support, insights, and status lifecycle.
+ * Premium Retirement Activity Command Center
+ * Flow: Awareness → Understanding → Action → Monitoring → History
  */
 export const TransactionsPage = memo(function TransactionsPage() {
   const reduced = !!useReducedMotion();
@@ -55,12 +54,13 @@ export const TransactionsPage = memo(function TransactionsPage() {
         animate="visible"
         custom={reduced}
       >
+        {/* 1. Plan context */}
         <motion.header className="mb-6" variants={sectionVariants} custom={reduced}>
           <h1 className="text-xl font-semibold md:text-2xl" style={{ color: "var(--color-text)" }}>
             Retirement Activity
           </h1>
           <p className="mt-0.5 text-sm" style={{ color: "var(--color-text-secondary)" }}>
-            Your retirement activity and transaction intelligence.
+            How your retirement activity is shaping your future.
           </p>
           {hasMultiplePlans && (
             <div className="mt-4">
@@ -74,38 +74,43 @@ export const TransactionsPage = memo(function TransactionsPage() {
           )}
         </motion.header>
 
+        {/* 2. Financial activity hero (emotional entry) */}
         <motion.div variants={sectionVariants} custom={reduced} className="mb-6">
           <ActivityHero
             totalBalance={summary.totalBalance}
             ytdReturnPercent={summary.ytdReturnPercent}
             netFlowThisMonth={summary.netFlowThisMonth}
+            totalContributionsThisYear={summary.totalContributionsThisYear}
+            withdrawalsThisYear={summary.withdrawalsThisYear}
             chartData={summary.chartData}
           />
         </motion.div>
 
+        {/* 3. Smart activity insights */}
         <motion.div variants={sectionVariants} custom={reduced} className="mb-6">
           <ActivityInsights insights={insights} />
         </motion.div>
 
+        {/* 4. Action hub (context-aware) */}
         <motion.div variants={sectionVariants} custom={reduced} className="mb-6">
           <ActionHub />
         </motion.div>
 
+        {/* 5. In-progress / status tracker */}
+        <motion.div variants={sectionVariants} custom={reduced} className="mb-6">
+          <StatusTracker />
+        </motion.div>
+
+        {/* 6 & 7. Timeline (left) + Impact (right) — 8/4 grid */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
           <div className="space-y-6 lg:col-span-8">
             <motion.div variants={sectionVariants} custom={reduced}>
               <TransactionTimeline />
             </motion.div>
-            <motion.div variants={sectionVariants} custom={reduced}>
-              <MonthlySummary rows={summary.monthlyBreakdown} />
-            </motion.div>
           </div>
           <div className="space-y-6 lg:col-span-4">
             <motion.div variants={sectionVariants} custom={reduced}>
-              <StatusTracker />
-            </motion.div>
-            <motion.div variants={sectionVariants} custom={reduced}>
-              <TaxImpactPanel />
+              <ImpactPanel monthlyBreakdown={summary.monthlyBreakdown} />
             </motion.div>
           </div>
         </div>

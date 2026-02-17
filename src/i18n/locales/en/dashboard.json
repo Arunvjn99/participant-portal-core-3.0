@@ -1,0 +1,29 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "enrollment": "Enrollment",
+    "profile": "Profile",
+    "transactions": "Transactions",
+    "accountStatements": "Account Statements"
+  },
+  "demo": {
+    "badge": "Demo",
+    "scenario": "{{scenario}}",
+    "scenarios": {
+      "pre_enrollment": "Pre-Enrollment",
+      "new_enrollee": "New Enrollee",
+      "young_accumulator": "Young Accumulator",
+      "mid_career": "Mid-Career",
+      "pre_retiree": "Pre-Retiree",
+      "at_risk": "At Risk",
+      "loan_active": "Loan Active",
+      "retired": "Retired"
+    }
+  },
+  "insights": {
+    "title": "Insights",
+    "subtitle": "Personalized from your recent activity",
+    "empty": "No insights yet."
+  },
+  "transactionNotFound": "Transaction not found."
+}

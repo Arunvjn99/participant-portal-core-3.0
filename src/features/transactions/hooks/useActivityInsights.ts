@@ -22,8 +22,10 @@ export function useActivityInsights(planId: string | null): ActivityInsight[] {
 
     insights.push({
       id: "contrib",
-      statement: `You contributed $${thisMonthContrib.toLocaleString()} this month (+${yoyPct}% YoY).`,
+      title: "Contributions",
+      statement: `You contributed 9% this month — above employer match.`,
       type: "contribution",
+      impact: `+${yoyPct}% YoY`,
     });
 
     const pendingRollover = all.find((t) => t.type === "rollover" && (t.status === "draft" || t.status === "active"));
@@ -31,8 +33,10 @@ export function useActivityInsights(planId: string | null): ActivityInsight[] {
       const eta = "3 days";
       insights.push({
         id: "rollover",
-        statement: `Your rollover of $${(pendingRollover.amount ?? 0).toLocaleString()} is processing (ETA: ${eta}).`,
+        title: "Rollover in progress",
+        statement: `Your rollover is processing (ETA: ${eta}).`,
         type: "rollover",
+        impact: `${(pendingRollover.amount ?? 0).toLocaleString()} moving`,
       });
     }
 
@@ -40,17 +44,20 @@ export function useActivityInsights(planId: string | null): ActivityInsight[] {
       (t) => (t.type === "withdrawal" || t.type === "distribution") && t.status === "active"
     );
     if (recentWithdrawal) {
-      const impact = 18400;
+      const impactVal = 18400;
       insights.push({
         id: "withdrawal",
-        statement: `Your recent withdrawal reduced projected retirement by $${impact.toLocaleString()}.`,
+        title: "Withdrawal impact",
+        statement: `Your recent withdrawal reduced projected retirement by $${impactVal.toLocaleString()}.`,
         type: "withdrawal",
+        impact: `−$${impactVal.toLocaleString()}`,
       });
     }
 
     if (insights.length < 3 && !recentWithdrawal) {
       insights.push({
         id: "on-track",
+        title: "On track",
         statement: ACCOUNT_OVERVIEW.onTrack.message,
         type: "general",
       });

@@ -1,23 +1,24 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { branding } from "../../config/branding";
 import ThemeToggle from "@/components/ui/ThemeToggle";
+import { Dropdown } from "@/components/ui/Dropdown";
 import { useDemoUser, clearDemoUser } from "@/hooks/useDemoUser";
-import { SCENARIO_LABELS } from "@/mock/personas";
 
 /* ────────────────────────────── Nav config ────────────────────────────── */
 
 /**
- * Build nav links dynamically — "Dashboard" points to /demo when a demo
+ * Build nav links dynamically — Dashboard points to /demo when a demo
  * persona is active, otherwise to /dashboard.
  */
 function getNavLinks(isDemoMode: boolean) {
   return [
-    { to: isDemoMode ? "/demo" : "/dashboard", label: "Dashboard" },
-    { to: "/enrollment", label: "Enrollment" },
-    { to: "/profile", label: "Profile" },
-    { to: "/transactions", label: "Transactions" },
-    { to: "#", label: "Account Statements" },
+    { to: isDemoMode ? "/demo" : "/dashboard", labelKey: "dashboard" as const },
+    { to: "/enrollment", labelKey: "enrollment" as const },
+    { to: "/profile", labelKey: "profile" as const },
+    { to: "/transactions", labelKey: "transactions" as const },
+    { to: "#", labelKey: "accountStatements" as const },
   ] as const;
 }
 
@@ -69,6 +70,7 @@ const ICON_BTN =
 export const DashboardHeader = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation(["dashboard", "common"]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -98,6 +100,10 @@ export const DashboardHeader = () => {
   };
 
   const NAV_LINKS = getNavLinks(!!demoUser);
+  const languageOptions = [
+    { value: "en", label: t("common:labels.english") },
+    { value: "es", label: t("common:labels.spanish") },
+  ];
 
   const isActive = (to: string) => {
     if (to === "#") return false;
@@ -139,11 +145,12 @@ export const DashboardHeader = () => {
           className="hidden lg:flex items-center gap-1"
           aria-label="Main navigation"
         >
-          {NAV_LINKS.map(({ to, label }) => {
+          {NAV_LINKS.map(({ to, labelKey }) => {
             const active = isActive(to);
+            const label = t(`dashboard:nav.${labelKey}`);
             return (
               <Link
-                key={label}
+                key={labelKey}
                 to={to}
                 className={`relative px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors ${
                   active
@@ -169,18 +176,29 @@ export const DashboardHeader = () => {
           {demoUser && (
             <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-amber-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-amber-700 dark:border-amber-600 dark:bg-amber-900/30 dark:text-amber-300">
               <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" aria-hidden />
-              Demo — {SCENARIO_LABELS[demoUser.scenario]}
+              {t("dashboard:demo.badge")} — {t(`dashboard:demo.scenarios.${demoUser.scenario}`)}
             </span>
           )}
 
           {/* Theme toggle – always visible */}
           <ThemeToggle />
 
+          {/* Language switcher (global header) – desktop */}
+          <div className="hidden sm:block w-[7rem]">
+            <Dropdown
+              label=""
+              value={i18n.language}
+              options={languageOptions}
+              onChange={(lng) => i18n.changeLanguage(lng)}
+              placeholder={t("common:labels.language")}
+            />
+          </div>
+
           {/* Notifications – hidden on mobile */}
           <button
             type="button"
             className={`${ICON_BTN} hidden lg:flex`}
-            aria-label="Notifications"
+            aria-label={t("common:labels.notifications")}
           >
             <BellIcon />
             <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-slate-900" aria-hidden />
@@ -191,7 +209,7 @@ export const DashboardHeader = () => {
             <button
               type="button"
               className="flex items-center gap-1.5 rounded-lg p-1 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800"
-              aria-label="User menu"
+              aria-label={t("common:labels.userMenu")}
               aria-expanded={userMenuOpen}
               aria-haspopup="true"
               onClick={() => setUserMenuOpen((o) => !o)}
@@ -217,7 +235,7 @@ export const DashboardHeader = () => {
                   role="menuitem"
                   onClick={() => setUserMenuOpen(false)}
                 >
-                  Profile
+                  {t("common:labels.profile")}
                 </Link>
                 <button
                   type="button"
@@ -225,7 +243,7 @@ export const DashboardHeader = () => {
                   role="menuitem"
                   onClick={handleLogout}
                 >
-                  Log out
+                  {t("common:labels.logOut")}
                 </button>
               </div>
             )}
@@ -235,7 +253,7 @@ export const DashboardHeader = () => {
           <button
             type="button"
             className={`${ICON_BTN} lg:hidden`}
-            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-label={mobileMenuOpen ? t("common:labels.closeMenu") : t("common:labels.openMenu")}
             aria-expanded={mobileMenuOpen}
             onClick={() => setMobileMenuOpen((o) => !o)}
           >
@@ -252,11 +270,25 @@ export const DashboardHeader = () => {
         aria-label="Mobile navigation"
       >
         <nav className="px-4 sm:px-6 py-3">
+          {/* Language switcher in mobile drawer */}
+          <div className="mb-3 flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 dark:border-slate-700 dark:bg-slate-800">
+            <span className="text-sm font-medium text-slate-600 dark:text-slate-400">{t("common:labels.language")}</span>
+            <div className="flex-1 min-w-0">
+              <Dropdown
+                label=""
+                value={i18n.language}
+                options={languageOptions}
+                onChange={(lng) => i18n.changeLanguage(lng)}
+                placeholder={t("common:labels.language")}
+              />
+            </div>
+          </div>
           <ul className="flex flex-col gap-0.5">
-            {NAV_LINKS.map(({ to, label }) => {
+            {NAV_LINKS.map(({ to, labelKey }) => {
               const active = isActive(to);
+              const label = t(`dashboard:nav.${labelKey}`);
               return (
-                <li key={label}>
+                <li key={labelKey}>
                   <Link
                     to={to}
                     className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
@@ -277,7 +309,7 @@ export const DashboardHeader = () => {
                 className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-slate-600 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800"
                 onClick={handleLogout}
               >
-                Log out
+                {t("common:labels.logOut")}
               </button>
             </li>
           </ul>

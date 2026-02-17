@@ -1,7 +1,11 @@
 import { memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
+import { Card, CardContent } from "../../../components/ui/card";
+import { SectionHeader } from "../../../components/dashboard/shared/SectionHeader";
+import { StatusBadge } from "../../../components/dashboard/shared/StatusBadge";
 import type { ActionTileConfig } from "../types";
+
 const formatCurrency = (n: number) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
 
@@ -32,7 +36,7 @@ const TILES: ActionTileConfig[] = [
   {
     type: "rollover",
     title: "Start Rollover",
-    subtext: `${formatCurrency(129500)} eligible`,
+    subtext: `${formatCurrency(129500)} eligible from previous plan`,
     statusBadge: "Eligible",
     route: "/transactions/rollover/start",
     icon: (
@@ -44,7 +48,7 @@ const TILES: ActionTileConfig[] = [
   {
     type: "transfer",
     title: "Adjust Contributions",
-    subtext: "Currently 9%",
+    subtext: "Currently contributing 9%",
     route: "/enrollment/contribution",
     icon: (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -59,45 +63,46 @@ export const ActionHub = memo(function ActionHub() {
   const reduced = !!useReducedMotion();
 
   return (
-    <section className="space-y-2">
-      <h2 className="text-sm font-semibold" style={{ color: "var(--color-text-secondary)" }}>
-        Quick actions
-      </h2>
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+    <section className="space-y-4">
+      <SectionHeader title="Action hub" subtitle="Context-aware next steps" />
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         {TILES.map((tile, i) => (
-          <motion.button
+          <motion.div
             key={tile.type}
-            type="button"
-            onClick={() => navigate(tile.route)}
             initial={reduced ? false : { opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.25, delay: i * 0.05, ease: "easeOut" }}
-            whileHover={reduced ? undefined : { scale: 1.01 }}
-            style={{ transition: "box-shadow 0.2s ease" }}
-            className="flex flex-col items-start gap-2 rounded-[var(--radius-lg)] border border-[var(--color-border)] p-[var(--spacing-4)] text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
-            style={{
-              background: "var(--color-surface)",
-              boxShadow: "var(--shadow-sm)",
-            }}
           >
-            <span className="flex h-9 w-9 items-center justify-center rounded-[var(--radius-md)]" style={{ background: "var(--color-background-secondary)", color: "var(--color-primary)" }}>
-              {tile.icon}
-            </span>
-            <span className="text-sm font-semibold" style={{ color: "var(--color-text)" }}>
-              {tile.title}
-            </span>
-            <span className="text-xs" style={{ color: "var(--color-text-secondary)" }}>
-              {tile.subtext}
-            </span>
-            {tile.statusBadge && (
-              <span
-                className="rounded-[var(--radius-sm)] px-1.5 py-0.5 text-[10px] font-medium"
-                style={{ background: "var(--color-success-light)", color: "var(--color-success)" }}
-              >
-                {tile.statusBadge}
-              </span>
-            )}
-          </motion.button>
+            <Card
+              className="cursor-pointer transition-shadow hover:shadow-[var(--shadow-md)] h-full"
+              style={{ boxShadow: "var(--shadow-sm)" }}
+              onClick={() => navigate(tile.route)}
+            >
+              <CardContent className="p-4">
+                <motion.div
+                  className="flex flex-col items-start gap-3"
+                  whileHover={reduced ? undefined : { scale: 1.01 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                >
+                  <span
+                    className="flex h-10 w-10 items-center justify-center rounded-[var(--radius-lg)]"
+                    style={{ background: "var(--color-background-secondary)", color: "var(--color-primary)" }}
+                  >
+                    {tile.icon}
+                  </span>
+                  <span className="text-sm font-semibold" style={{ color: "var(--color-text)" }}>
+                    {tile.title}
+                  </span>
+                  <span className="text-xs leading-snug" style={{ color: "var(--color-text-secondary)" }}>
+                    {tile.subtext}
+                  </span>
+                  {tile.statusBadge && (
+                    <StatusBadge label={tile.statusBadge} variant="success" />
+                  )}
+                </motion.div>
+              </CardContent>
+            </Card>
+          </motion.div>
         ))}
       </div>
     </section>

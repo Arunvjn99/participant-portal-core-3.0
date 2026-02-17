@@ -21,6 +21,7 @@
     },
 
     /* Linting */
+    "resolveJsonModule": true,
     "strict": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,

@@ -1,0 +1,29 @@
+{
+  "nav": {
+    "dashboard": "Panel",
+    "enrollment": "Inscripción",
+    "profile": "Perfil",
+    "transactions": "Transacciones",
+    "accountStatements": "Estados de cuenta"
+  },
+  "demo": {
+    "badge": "Demo",
+    "scenario": "{{scenario}}",
+    "scenarios": {
+      "pre_enrollment": "Pre-inscripción",
+      "new_enrollee": "Nuevo inscrito",
+      "young_accumulator": "Acumulador joven",
+      "mid_career": "Mediana carrera",
+      "pre_retiree": "Prejubilación",
+      "at_risk": "En riesgo",
+      "loan_active": "Préstamo activo",
+      "retired": "Jubilado"
+    }
+  },
+  "insights": {
+    "title": "Información",
+    "subtitle": "Personalizado según tu actividad reciente",
+    "empty": "Aún no hay información."
+  },
+  "transactionNotFound": "Transacción no encontrada."
+}

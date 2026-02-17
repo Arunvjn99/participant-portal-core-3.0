@@ -1,99 +1,136 @@
 import { memo, useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import { Card, CardContent } from "../../../components/ui/card";
 
 interface ActivityHeroProps {
   totalBalance: number;
   ytdReturnPercent: number;
   netFlowThisMonth: number;
+  totalContributionsThisYear: number;
+  withdrawalsThisYear: number;
   chartData: { month: string; value: number }[];
 }
 
 const formatCurrency = (n: number) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
 
-export const ActivityHero = memo(function ActivityHero({
-  totalBalance,
-  ytdReturnPercent,
-  netFlowThisMonth,
-  chartData,
-}: ActivityHeroProps) {
+function AnimatedCounter({ value, duration = 500 }: { value: number; duration?: number }) {
   const reduced = !!useReducedMotion();
-  const [count, setCount] = useState(0);
-
+  const [count, setCount] = useState(value);
   useEffect(() => {
     if (reduced) {
-      setCount(totalBalance);
+      setCount(value);
       return;
     }
-    const duration = 600;
     const start = performance.now();
     const startVal = count;
     const raf = (now: number) => {
       const t = Math.min((now - start) / duration, 1);
       const eased = 1 - (1 - t) * (1 - t);
-      setCount(startVal + (totalBalance - startVal) * eased);
+      setCount(Math.round(startVal + (value - startVal) * eased));
       if (t < 1) requestAnimationFrame(raf);
     };
     requestAnimationFrame(raf);
-  }, [totalBalance, reduced]);
+  }, [value, reduced, duration]);
+  return <>{formatCurrency(count)}</>;
+}
 
+export const ActivityHero = memo(function ActivityHero({
+  totalBalance,
+  ytdReturnPercent,
+  netFlowThisMonth,
+  totalContributionsThisYear,
+  withdrawalsThisYear,
+  chartData,
+}: ActivityHeroProps) {
+  const reduced = !!useReducedMotion();
   const minVal = Math.min(...chartData.map((d) => d.value));
   const maxVal = Math.max(...chartData.map((d) => d.value));
   const range = maxVal - minVal || 1;
 
   return (
-    <motion.section
+    <motion.div
       initial={reduced ? false : { opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className="grid grid-cols-1 gap-4 rounded-[var(--radius-lg)] border border-[var(--color-border)] p-[var(--spacing-6)] md:grid-cols-2"
-      style={{
-        background: "var(--color-surface)",
-        boxShadow: "var(--shadow-sm)",
-      }}
     >
-      <div className="flex flex-col justify-center gap-3">
-        <p className="text-sm font-medium" style={{ color: "var(--color-text-secondary)" }}>
-          Total Balance
-        </p>
-        <p className="text-2xl font-bold tracking-tight md:text-3xl" style={{ color: "var(--color-text)" }}>
-          {formatCurrency(count)}
-        </p>
-        <div className="flex flex-wrap items-center gap-3">
-          <span
-            className="inline-flex items-center rounded-[var(--radius-md)] px-2 py-0.5 text-xs font-medium"
-            style={{ background: "var(--color-success-light)", color: "var(--color-success)" }}
-          >
-            {ytdReturnPercent}% YTD
-          </span>
-          <span
-            className="text-sm font-medium"
-            style={{ color: netFlowThisMonth >= 0 ? "var(--color-success)" : "var(--color-danger)" }}
-          >
-            {netFlowThisMonth >= 0 ? "+" : ""}
-            {formatCurrency(netFlowThisMonth)} this month
-          </span>
+      <Card className="grid grid-cols-1 gap-6 p-6 md:grid-cols-2 md:gap-8 md:p-8">
+        <CardContent className="flex flex-col justify-center gap-6 p-0">
+          <div>
+            <motion.p
+              initial={reduced ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              className="text-xl font-semibold md:text-2xl"
+              style={{ color: "var(--color-text)" }}
+            >
+              Your retirement is moving forward.
+            </motion.p>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wide" style={{ color: "var(--color-text-secondary)" }}>
+                Net flow this month
+              </p>
+              <p className="mt-0.5 text-lg font-semibold" style={{ color: netFlowThisMonth >= 0 ? "var(--color-success)" : "var(--color-danger)" }}>
+                {netFlowThisMonth >= 0 ? "+" : ""}
+                <AnimatedCounter value={netFlowThisMonth} duration={600} />
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wide" style={{ color: "var(--color-text-secondary)" }}>
+                Contributions this year
+              </p>
+              <p className="mt-0.5 text-lg font-semibold" style={{ color: "var(--color-text)" }}>
+                <AnimatedCounter value={totalContributionsThisYear} duration={600} />
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wide" style={{ color: "var(--color-text-secondary)" }}>
+                Withdrawals this year
+              </p>
+              <p className="mt-0.5 text-lg font-semibold" style={{ color: withdrawalsThisYear > 0 ? "var(--color-danger)" : "var(--color-text)" }}>
+                <AnimatedCounter value={withdrawalsThisYear} duration={600} />
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wide" style={{ color: "var(--color-text-secondary)" }}>
+                Balance
+              </p>
+              <p className="mt-0.5 text-lg font-semibold" style={{ color: "var(--color-text)" }}>
+                <AnimatedCounter value={totalBalance} duration={700} />
+              </p>
+            </div>
+          </div>
+          <p className="text-sm font-medium" style={{ color: "var(--color-success)" }}>
+            {ytdReturnPercent}% YTD return
+          </p>
+        </CardContent>
+        <div className="flex flex-col justify-end">
+          <p className="mb-3 text-xs font-medium" style={{ color: "var(--color-text-secondary)" }}>
+            6-month activity
+          </p>
+          <div className="flex items-end gap-0.5" style={{ minHeight: 80 }}>
+            {chartData.map((d, i) => (
+              <motion.div
+                key={d.month}
+                initial={reduced ? false : { scaleY: 0 }}
+                animate={{ scaleY: 1 }}
+                transition={{ duration: 0.35, delay: i * 0.04, ease: "easeOut" }}
+                style={{
+                  transformOrigin: "bottom",
+                  height: 64,
+                  flex: 1,
+                  borderRadius: "var(--radius-sm)",
+                  background: "var(--color-primary)",
+                  opacity: 0.5 + (d.value - minVal) / range * 0.5,
+                }}
+                title={`${d.month}: ${formatCurrency(d.value)}`}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-      <div className="flex items-end gap-0.5">
-        {chartData.map((d, i) => (
-          <motion.div
-            key={d.month}
-            initial={reduced ? false : { scaleY: 0 }}
-            animate={{ scaleY: 1 }}
-            transition={{ duration: 0.35, delay: i * 0.04, ease: "easeOut" }}
-            style={{
-              transformOrigin: "bottom",
-              height: 48,
-              flex: 1,
-              borderRadius: "var(--radius-sm)",
-              background: "var(--color-primary)",
-              opacity: 0.6 + (d.value - minVal) / range * 0.4,
-            }}
-            title={`${d.month}: ${formatCurrency(d.value)}`}
-          />
-        ))}
-      </div>
-    </motion.section>
+      </Card>
+    </motion.div>
   );
 });

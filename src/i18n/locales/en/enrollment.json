@@ -1,0 +1,25 @@
+{
+  "stepper": {
+    "plan": "Plan",
+    "contribution": "Contribution",
+    "autoIncrease": "Auto Increase",
+    "investment": "Investment",
+    "review": "Review"
+  },
+  "plan": {
+    "title": "Choose your plan",
+    "subtitle": "Select the plan that fits your goals."
+  },
+  "contribution": {
+    "title": "Contribution",
+    "subtitle": "Set your contribution amount."
+  },
+  "review": {
+    "title": "Review",
+    "subtitle": "Review your selections."
+  },
+  "buttons": {
+    "continue": "Continue",
+    "back": "Back"
+  }
+}

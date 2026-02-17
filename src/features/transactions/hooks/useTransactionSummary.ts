@@ -7,6 +7,10 @@ export interface TransactionSummary {
   totalBalance: number;
   ytdReturnPercent: number;
   netFlowThisMonth: number;
+  /** Total contributions this year (YTD) */
+  totalContributionsThisYear: number;
+  /** Total withdrawals this year (YTD) */
+  withdrawalsThisYear: number;
   monthlyBreakdown: MonthlySummaryRow[];
   chartData: { month: string; value: number }[];
 }
@@ -30,10 +34,22 @@ export function useTransactionSummary(planId: string | null): TransactionSummary
     let fees = 0;
     let loanPayments = 0;
     let withdrawals = 0;
+    let ytdContributions = 0;
+    let ytdWithdrawals = 0;
 
     filtered.forEach((t) => {
       const d = new Date(t.dateInitiated);
-      if (d.getMonth() !== thisMonth || d.getFullYear() !== thisYear) return;
+      const sameYear = d.getFullYear() === thisYear;
+      const sameMonth = d.getMonth() === thisMonth && sameYear;
+      if (sameYear) {
+        if (t.type === "withdrawal" || t.type === "distribution") {
+          ytdWithdrawals += t.netAmount ?? t.amount ?? 0;
+        } else if (t.type === "rollover" || t.type === "transfer" || t.type === "loan") {
+          if (t.type === "loan") ytdContributions += 0;
+          else ytdContributions += t.amount ?? 0;
+        }
+      }
+      if (!sameMonth) return;
       switch (t.type) {
         case "loan":
           loanPayments += t.amount ?? 0;
@@ -52,6 +68,7 @@ export function useTransactionSummary(planId: string | null): TransactionSummary
       if (t.fees) fees += t.fees;
     });
 
+    if (ytdContributions === 0) ytdContributions = ACCOUNT_OVERVIEW.ytdContribution;
     // Mock some contributions/dividends for demo when none this month
     if (contributions === 0 && filtered.length === 0) {
       contributions = Math.round(ACCOUNT_OVERVIEW.ytdContribution / 12);
@@ -86,6 +103,8 @@ export function useTransactionSummary(planId: string | null): TransactionSummary
       totalBalance: ACCOUNT_OVERVIEW.totalBalance,
       ytdReturnPercent: ACCOUNT_OVERVIEW.ytdPercent,
       netFlowThisMonth: netFlow,
+      totalContributionsThisYear: ytdContributions,
+      withdrawalsThisYear: ytdWithdrawals,
       monthlyBreakdown,
       chartData,
     };

@@ -1,0 +1,25 @@
+{
+  "stepper": {
+    "plan": "Plan",
+    "contribution": "Aportación",
+    "autoIncrease": "Aumento automático",
+    "investment": "Inversión",
+    "review": "Revisión"
+  },
+  "plan": {
+    "title": "Elija su plan",
+    "subtitle": "Seleccione el plan que se adapte a sus objetivos."
+  },
+  "contribution": {
+    "title": "Aportación",
+    "subtitle": "Establezca el monto de su aportación."
+  },
+  "review": {
+    "title": "Revisión",
+    "subtitle": "Revise sus selecciones."
+  },
+  "buttons": {
+    "continue": "Continuar",
+    "back": "Atrás"
+  }
+}

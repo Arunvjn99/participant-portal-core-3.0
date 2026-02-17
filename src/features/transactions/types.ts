@@ -47,6 +47,14 @@ export interface ActivityInsight {
   id: string;
   statement: string;
   type: "contribution" | "withdrawal" | "rollover" | "general" | "warning";
+  /** Optional short title for InsightCard */
+  title?: string;
+  /** Optional impact value for InsightCard (e.g. "$18,400") */
+  impact?: string;
+  /** Optional CTA label */
+  actionLabel?: string;
+  /** Optional CTA route (InsightCard onAction can navigate) */
+  actionRoute?: string;
 }
 
 export interface ActionTileConfig {

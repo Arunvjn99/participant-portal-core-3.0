@@ -2,13 +2,16 @@ import { memo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import type { Transaction, TransactionType } from "../../../types/transactions";
-import type { TransactionLifecycleStatus } from "../types";
+import type { TransactionLifecycleStatus, ActivityItem } from "../types";
+import { StatusBadge } from "../../../components/dashboard/shared/StatusBadge";
 
 interface TransactionCardProps {
   transaction: Transaction;
   lifecycleStatus?: TransactionLifecycleStatus;
   planName?: string;
   taxType?: string;
+  settlementDate?: string;
+  estimatedRetirementImpact?: number;
 }
 
 const typeLabel: Record<TransactionType, string> = {
@@ -28,6 +31,14 @@ const statusLabel: Record<TransactionLifecycleStatus, string> = {
   scheduled: "Scheduled",
 };
 
+const statusVariant: Record<TransactionLifecycleStatus, "success" | "warning" | "danger" | "neutral" | "primary"> = {
+  pending: "neutral",
+  processing: "primary",
+  completed: "success",
+  failed: "danger",
+  scheduled: "warning",
+};
+
 const formatCurrency = (n: number) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
 
@@ -39,6 +50,8 @@ export const TransactionCard = memo(function TransactionCard({
   lifecycleStatus,
   planName,
   taxType,
+  settlementDate,
+  estimatedRetirementImpact,
 }: TransactionCardProps) {
   const navigate = useNavigate();
   const reduced = !!useReducedMotion();
@@ -47,6 +60,8 @@ export const TransactionCard = memo(function TransactionCard({
   const displayName = transaction.displayName ?? typeLabel[transaction.type];
   const amount = transaction.amount ?? 0;
   const isNegative = transaction.amountNegative ?? ["withdrawal", "distribution", "loan"].includes(transaction.type);
+  const impact = estimatedRetirementImpact ?? (transaction as ActivityItem).estimatedRetirementImpact;
+  const settle = settlementDate ?? (transaction as ActivityItem).settlementDate ?? transaction.dateCompleted;
 
   const handleRowClick = () => {
     if (transaction.status === "draft" || transaction.status === "active") {
@@ -92,15 +107,7 @@ export const TransactionCard = memo(function TransactionCard({
             {planName ?? transaction.accountType ?? "—"} {taxType ? `· ${taxType}` : ""}
           </p>
         </div>
-        <span
-          className="shrink-0 rounded-[var(--radius-sm)] px-2 py-0.5 text-[10px] font-medium"
-          style={{
-            background: status === "completed" ? "var(--color-success-light)" : status === "failed" ? "var(--color-danger)" : "var(--color-background-secondary)",
-            color: status === "completed" ? "var(--color-success)" : status === "failed" ? "var(--color-text-inverse)" : "var(--color-text-secondary)",
-          }}
-        >
-          {statusLabel[status]}
-        </span>
+        <StatusBadge label={statusLabel[status]} variant={statusVariant[status]} />
         <span
           className="shrink-0 text-sm font-semibold"
           style={{ color: isNegative ? "var(--color-danger)" : "var(--color-success)" }}
@@ -130,15 +137,26 @@ export const TransactionCard = memo(function TransactionCard({
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="border-t border-[var(--color-border)] px-[var(--spacing-4)] py-3"
+            className="border-t border-[var(--color-border)] px-[var(--spacing-4)] py-3 space-y-2"
             style={{ background: "var(--color-background-secondary)" }}
           >
+            {settle && (
+              <p className="text-xs" style={{ color: "var(--color-text-secondary)" }}>
+                Settlement date: {settle}
+              </p>
+            )}
             <p className="text-xs" style={{ color: "var(--color-text-secondary)" }}>
-              Tax: {taxType ?? "—"} · Impact: {transaction.retirementImpact?.rationale ?? "—"}
+              Tax classification: {taxType ?? "—"}
+            </p>
+            <p className="text-xs" style={{ color: "var(--color-text-secondary)" }}>
+              Impact on retirement: {transaction.retirementImpact?.rationale ?? (impact != null ? `$${impact.toLocaleString()}` : "—")}
+            </p>
+            <p className="text-xs" style={{ color: "var(--color-text-secondary)" }}>
+              Plan: {planName ?? transaction.accountType ?? "—"}
             </p>
             <button
               type="button"
-              className="mt-2 text-xs font-medium"
+              className="text-xs font-medium"
               style={{ color: "var(--color-primary)" }}
             >
               Download confirmation

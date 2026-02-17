@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { DashboardLayout } from "../../layouts/DashboardLayout";
 import { DashboardHeader } from "../dashboard/DashboardHeader";
 import { EnrollmentStepper } from "../enrollment/EnrollmentStepper";
@@ -56,6 +57,7 @@ export const TransactionApplication = ({
 }: TransactionApplicationProps) => {
   const { transactionId } = useParams<{ transactionId: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation(["dashboard", "common", "transactions"]);
   const [currentStep, setCurrentStep] = useState(0);
   const [stepData, setStepData] = useState<any>(initialData || {});
 
@@ -72,7 +74,7 @@ export const TransactionApplication = ({
     return (
       <DashboardLayout header={<DashboardHeader />}>
         <div className="mx-auto max-w-7xl px-4 py-8" style={{ color: "var(--enroll-text-primary)" }}>
-          <p>Transaction not found.</p>
+          <p>{t("dashboard:transactionNotFound")}</p>
         </div>
       </DashboardLayout>
     );
@@ -165,15 +167,15 @@ export const TransactionApplication = ({
               onClick={() => navigate("/transactions")}
               className="mb-2 text-sm font-medium hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
               style={{ color: "var(--enroll-brand)" }}
-              aria-label="Back to transactions"
+              aria-label={t("common:buttons.backToTransactions")}
             >
-              ← Back to Transactions
+              ← {t("common:buttons.backToTransactions")}
             </button>
             <h1
               className="text-xl font-semibold md:text-2xl"
               style={{ color: "var(--enroll-text-primary)" }}
             >
-              {getTransactionTypeLabel(transactionType)} Application
+              {t(`transactions:applications.${transactionType}`)}
             </h1>
             <div className="mt-4">
               <EnrollmentStepper
@@ -201,16 +203,16 @@ export const TransactionApplication = ({
                   }}
                 >
                   <span className="font-semibold">
-                    {transaction.status === "completed" ? "View Only" : "Read Only"}
+                    {transaction.status === "completed" ? t("transactions:shared.viewOnly") : t("transactions:shared.readOnly")}
                   </span>
                   {transaction.status === "active" && (
                     <p className="mt-1 text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
-                      This transaction is being processed. You can view details but cannot make changes.
+                      {t("transactions:shared.readOnlyNote")}
                     </p>
                   )}
                   {transaction.status === "completed" && (
                     <p className="mt-1 text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
-                      This transaction has been completed. You can view details and documents.
+                      {t("transactions:shared.completedNote")}
                     </p>
                   )}
                 </div>
@@ -227,9 +229,9 @@ export const TransactionApplication = ({
 
             {isLoan && (
               <aside className="lg:col-span-4">
-                <DashboardCard title="Loan summary">
+                <DashboardCard title={t("transactions:loan.sections.summary")}>
                   <p className="text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
-                    Your loan details and projected payments will appear here as you complete each step.
+                    {t("transactions:shared.summaryPlaceholder")}
                   </p>
                 </DashboardCard>
               </aside>
@@ -257,9 +259,9 @@ export const TransactionApplication = ({
                 background: "var(--enroll-card-bg)",
                 color: "var(--enroll-text-primary)",
               }}
-              aria-label="Previous step"
+              aria-label={t("common:labels.previousStep")}
             >
-              Back
+              {t("common:buttons.back")}
             </button>
             <div className="flex gap-3">
               {!readOnly && (
@@ -272,9 +274,9 @@ export const TransactionApplication = ({
                     background: "var(--enroll-card-bg)",
                     color: "var(--enroll-text-primary)",
                   }}
-                  aria-label="Save and exit"
+                  aria-label={t("common:buttons.saveAndExit")}
                 >
-                  Save & Exit
+                  {t("common:buttons.saveAndExit")}
                 </button>
               )}
               {readOnly ? (
@@ -283,9 +285,9 @@ export const TransactionApplication = ({
                   onClick={() => navigate("/transactions")}
                   className="rounded-xl px-6 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
                   style={{ background: "var(--enroll-brand)" }}
-                  aria-label="Back to transactions"
+                  aria-label={t("common:buttons.backToTransactions")}
                 >
-                  Back to Transactions
+                  {t("common:buttons.backToTransactions")}
                 </button>
               ) : (
                 <button
@@ -293,9 +295,9 @@ export const TransactionApplication = ({
                   onClick={handleNext}
                   className="rounded-xl px-6 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
                   style={{ background: "var(--enroll-brand)" }}
-                  aria-label={isLastStep ? "Submit" : "Next step"}
+                  aria-label={isLastStep ? t("common:buttons.submit") : t("common:labels.nextStep")}
                 >
-                  {isLastStep ? "Submit" : "Next"}
+                  {isLastStep ? t("common:buttons.submit") : t("common:buttons.next")}
                 </button>
               )}
             </div>
@@ -304,23 +306,4 @@ export const TransactionApplication = ({
       </div>
     </DashboardLayout>
   );
-};
-
-const getTransactionTypeLabel = (type: TransactionType): string => {
-  switch (type) {
-    case "loan":
-      return "401(k) Loan";
-    case "withdrawal":
-      return "Hardship Withdrawal";
-    case "distribution":
-      return "Distribution";
-    case "rollover":
-      return "Rollover";
-    case "transfer":
-      return "Transfer Investments";
-    case "rebalance":
-      return "Rebalance Portfolio";
-    default:
-      return "Transaction";
-  }
 };

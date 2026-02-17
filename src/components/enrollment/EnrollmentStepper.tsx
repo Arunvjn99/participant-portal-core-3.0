@@ -1,7 +1,17 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { Check, Target, PiggyBank, TrendingUp, BarChart2, FileCheck, type LucideIcon } from "lucide-react";
 
-/** Default enrollment steps: Plan → Contribution → Auto Increase → Investment → Review */
+/** Default enrollment step keys (enrollment namespace). Used when stepLabels not provided. */
+export const ENROLLMENT_STEP_KEYS = [
+  "stepper.plan",
+  "stepper.contribution",
+  "stepper.autoIncrease",
+  "stepper.investment",
+  "stepper.review",
+] as const;
+
+/** @deprecated Use ENROLLMENT_STEP_KEYS with t() for i18n */
 export const ENROLLMENT_STEP_LABELS = [
   "Plan",
   "Contribution",
@@ -45,16 +55,22 @@ export interface EnrollmentStepperProps {
 export function EnrollmentStepper({
   currentStep,
   totalSteps,
-  stepLabels = ENROLLMENT_STEP_LABELS,
+  stepLabels: stepLabelsProp,
   stepIcons = DEFAULT_ICONS,
   compact = false,
   className,
   title: _title,
   subtitle: _subtitle,
 }: EnrollmentStepperProps) {
-  const labels = stepLabels as string[];
+  const { t } = useTranslation(["enrollment", "common"]);
+  const defaultLabels = React.useMemo(
+    () => ENROLLMENT_STEP_KEYS.map((key) => t(key)),
+    [t]
+  );
+  const labels = (stepLabelsProp?.length ? stepLabelsProp : defaultLabels) as string[];
   const stepsCount = totalSteps ?? labels.length;
   const safeActive = Math.min(Math.max(currentStep, 0), stepsCount - 1);
+  const stepAriaLabel = t("common:labels.stepOf", { current: safeActive + 1, total: stepsCount });
 
   if (compact) {
     return (
@@ -64,10 +80,10 @@ export function EnrollmentStepper({
         aria-valuenow={safeActive + 1}
         aria-valuemin={1}
         aria-valuemax={stepsCount}
-        aria-label={`Step ${safeActive + 1} of ${stepsCount}`}
+        aria-label={stepAriaLabel}
       >
         <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
-          Step {safeActive + 1} of {stepsCount}
+          {stepAriaLabel}
         </span>
       </div>
     );
@@ -80,7 +96,7 @@ export function EnrollmentStepper({
       aria-valuenow={safeActive + 1}
       aria-valuemin={1}
       aria-valuemax={stepsCount}
-      aria-label={`Step ${safeActive + 1} of ${stepsCount}`}
+      aria-label={stepAriaLabel}
     >
       <div className="flex items-center justify-between w-full">
         {labels.slice(0, stepsCount).map((label, index) => {

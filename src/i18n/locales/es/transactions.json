@@ -1,0 +1,173 @@
+{
+  "applications": {
+    "loan": "Solicitud de préstamo 401(k)",
+    "withdrawal": "Solicitud de retiro",
+    "distribution": "Solicitud de distribución",
+    "rollover": "Solicitud de traspaso",
+    "transfer": "Solicitud de transferencia",
+    "rebalance": "Solicitud de rebalanceo",
+    "generic": "Solicitud de transacción"
+  },
+  "loan": {
+    "title": "Solicitud de préstamo 401(k)",
+    "steps": {
+      "eligibility": "Elegibilidad",
+      "loanAmount": "Monto del préstamo",
+      "repaymentTerms": "Condiciones de pago",
+      "reviewSubmit": "Revisar y enviar"
+    },
+    "guidance": {
+      "eligibility": "Personalice su préstamo para equilibrar necesidades inmediatas con el crecimiento a largo plazo.",
+      "loanAmount": "Elija cómo desea recibir sus fondos de forma segura.",
+      "repaymentTerms": "Revise los avisos legales antes de continuar.",
+      "review": "Confirme sus selecciones y comprenda el impacto a largo plazo."
+    },
+    "sections": {
+      "eligibility": "Elegibilidad",
+      "loanAmount": "Monto del préstamo",
+      "repaymentTerm": "Plazo de pago",
+      "firstPaymentDate": "Fecha del primer pago",
+      "paymentFrequency": "Frecuencia de pago",
+      "loanPurpose": "Propósito del préstamo (opcional)",
+      "summary": "Resumen del préstamo",
+      "paymentSetup": "Configuración de pago (ACH)",
+      "investmentSource": "Fuente de inversión",
+      "allocation": "Asignación",
+      "documents": "Documentos",
+      "complianceAcknowledgments": "Confirmaciones de cumplimiento",
+      "reviewSubmit": "Revisar y enviar",
+      "reviewConfirm": "Revisar y confirmar"
+    },
+    "ineligible": {
+      "title": "No reúne los requisitos para un préstamo en este momento",
+      "reason": "Según su cuenta y las reglas del plan, no pudimos aprobar su solicitud. Motivos:",
+      "backToTransactions": "Volver a transacciones"
+    },
+    "confirmation": {
+      "title": "Solicitud de préstamo enviada",
+      "subtitle": "Recibirá un correo de confirmación con los próximos pasos.",
+      "loanAmount": "Monto del préstamo",
+      "netDisbursement": "Desembolso neto",
+      "firstPaymentDate": "Fecha del primer pago",
+      "paymentFrequency": "Frecuencia de pago",
+      "term": "Plazo",
+      "payoffDate": "Fecha de pago total",
+      "downloadPdf": "Descargar PDF"
+    },
+    "validation": {
+      "amountTooHigh": "El monto supera el máximo permitido.",
+      "amountTooLow": "El monto es inferior al mínimo.",
+      "invalidDate": "Fecha no válida."
+    }
+  },
+  "withdrawal": {
+    "steps": {
+      "eligibility": "Elegibilidad",
+      "withdrawalAmount": "Monto del retiro",
+      "taxInformation": "Información fiscal",
+      "reviewSubmit": "Revisar y enviar"
+    },
+    "guidance": {
+      "eligibility": "Confirme su elegibilidad para un retiro por dificultades antes de continuar.",
+      "amount": "Elija cómo desea recibir sus fondos y el monto.",
+      "tax": "Revise las implicaciones fiscales y las opciones de retención.",
+      "review": "Confirme sus selecciones y comprenda el impacto en sus ahorros para el retiro."
+    },
+    "validation": {
+      "exceedsVested": "El monto supera el saldo adquirido."
+    }
+  },
+  "rollover": {
+    "steps": {
+      "eligibility": "Elegibilidad",
+      "rolloverAmount": "Monto del traspaso",
+      "destinationAccount": "Cuenta de destino",
+      "reviewSubmit": "Revisar y enviar"
+    },
+    "guidance": {
+      "eligibility": "Confirme su elegibilidad y comprenda las reglas de traspaso.",
+      "amount": "Elija el monto y la fuente de fondos a traspasar.",
+      "destination": "Ingrese los datos de la cuenta de destino para un traspaso directo.",
+      "review": "Confirme sus selecciones y comprenda el tratamiento fiscal."
+    }
+  },
+  "transfer": {
+    "steps": {
+      "eligibility": "Elegibilidad",
+      "transferDetails": "Detalles de la transferencia",
+      "investmentSelection": "Selección de inversión",
+      "reviewSubmit": "Revisar y enviar"
+    },
+    "guidance": {
+      "eligibility": "Confirme su elegibilidad para transferir entre opciones de inversión.",
+      "details": "Especifique los detalles de la transferencia y la fecha efectiva.",
+      "investment": "Elija las inversiones destino del monto transferido.",
+      "review": "Confirme sus selecciones y envíe la transferencia."
+    }
+  },
+  "distribution": {
+    "steps": {
+      "eligibility": "Elegibilidad",
+      "distributionAmount": "Monto de la distribución",
+      "taxWithholding": "Retención de impuestos",
+      "reviewSubmit": "Revisar y enviar"
+    },
+    "guidance": {
+      "eligibility": "Confirme su elegibilidad para una distribución.",
+      "amount": "Seleccione el monto y el método de distribución.",
+      "tax": "Revise las opciones de retención e informe de impuestos.",
+      "review": "Confirme sus selecciones y envíe su solicitud."
+    }
+  },
+  "rebalance": {
+    "steps": {
+      "eligibility": "Elegibilidad",
+      "currentAllocation": "Asignación actual",
+      "targetAllocation": "Asignación objetivo",
+      "reviewSubmit": "Revisar y enviar"
+    },
+    "guidance": {
+      "eligibility": "Revise su asignación actual y los objetivos de rebalanceo.",
+      "current": "Vea cómo están asignadas sus inversiones actuales.",
+      "target": "Establezca su asignación objetivo entre fondos.",
+      "review": "Confirme sus selecciones y envíe el rebalanceo."
+    }
+  },
+  "shared": {
+    "readOnly": "Solo lectura",
+    "viewOnly": "Solo ver",
+    "readOnlyNote": "Esta transacción está en proceso. Puede ver los detalles pero no puede hacer cambios.",
+    "completedNote": "Esta transacción ha sido completada. Puede ver los detalles y documentos.",
+    "irreversibleWarning": "Acción irreversible",
+    "irreversibleMessage": "Esta transacción no se puede deshacer una vez enviada. Revise todos los detalles con cuidado.",
+    "summaryPlaceholder": "El resumen y las advertencias se mostrarán aquí.",
+    "confirmCheckbox": "Confirmo que he revisado todos los detalles y entiendo los términos de esta transacción.",
+    "submittedNote": "Esta transacción ha sido enviada para procesamiento.",
+    "completedStatus": "completada"
+  },
+  "placeholder": {
+    "loanEligibility": "La verificación de elegibilidad se implementará aquí.",
+    "loanAmount": "La selección del monto se implementará aquí.",
+    "repaymentTerms": "La selección de condiciones de pago se implementará aquí.",
+    "withdrawalEligibility": "La verificación de elegibilidad de retiro se implementará aquí.",
+    "withdrawalAmount": "La selección del monto de retiro se implementará aquí.",
+    "taxInfo": "La información fiscal se implementará aquí.",
+    "rolloverEligibility": "La verificación de elegibilidad de traspaso se implementará aquí.",
+    "rolloverAmount": "La selección del monto de traspaso se implementará aquí.",
+    "destinationAccount": "La selección de cuenta de destino se implementará aquí.",
+    "transferEligibility": "La verificación de elegibilidad de transferencia se implementará aquí.",
+    "transferDetails": "Los detalles de transferencia se implementarán aquí.",
+    "investmentSelection": "La selección de inversión se implementará aquí.",
+    "reviewWithdrawal": "Revise los detalles de su retiro y envíe su solicitud.",
+    "reviewRollover": "Revise los detalles de su traspaso y envíe su solicitud.",
+    "reviewTransfer": "Revise los detalles de su transferencia y envíe su solicitud.",
+    "reviewDistribution": "Revise los detalles de su distribución y envíe su solicitud.",
+    "reviewRebalance": "Revise los detalles de su rebalanceo y envíe su solicitud.",
+    "distributionEligibility": "La verificación de elegibilidad de distribución se implementará aquí.",
+    "distributionAmount": "La selección del monto de distribución se implementará aquí.",
+    "rebalanceEligibility": "La verificación de elegibilidad de rebalanceo se implementará aquí.",
+    "currentAllocation": "La revisión de asignación actual se implementará aquí.",
+    "targetAllocation": "La selección de asignación objetivo se implementará aquí.",
+    "stepImplemented": "El paso {{stepLabel}} se implementará aquí."
+  }
+}
