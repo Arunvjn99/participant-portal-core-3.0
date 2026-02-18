@@ -24,7 +24,7 @@ function LearningHubCard({ item }: { item: LearningResource }) {
   return (
     <div className="ped-learning__card">
       <div className="ped-learning__card-thumb">
-        <img src={src} alt="" className="h-full w-full object-cover" onError={() => setImgError(true)} />
+        <img src={src} alt={item.title} decoding="async" loading="lazy" className="h-full w-full object-cover" onError={() => setImgError(true)} />
       </div>
       <span className="ped-learning__card-badge">{item.badge}</span>
       <span className="ped-learning__card-title">{item.title}</span>

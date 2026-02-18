@@ -1,4 +1,5 @@
 import type { Advisor, LearningResource } from "./types";
+import { thumbnails as learningThumbnails } from "../../assets/learning";
 
 export const ADVISORS: Advisor[] = [
   {
@@ -30,27 +31,27 @@ export const RESOURCES: LearningResource[] = [
     title: "The Magic of Compound Interest",
     duration: "2 min read",
     category: "Basics",
-    thumbnail: "https://picsum.photos/400/300?random=4",
+    thumbnail: learningThumbnails.learning401k,
   },
   {
     id: "2",
     title: "Roth vs. Traditional: A Simple Guide",
     duration: "3 min read",
     category: "Comparison",
-    thumbnail: "https://picsum.photos/400/300?random=5",
+    thumbnail: learningThumbnails.learningRothVsTraditional,
   },
   {
     id: "3",
     title: "How Much is Enough?",
     duration: "4 min read",
     category: "Planning",
-    thumbnail: "https://picsum.photos/400/300?random=6",
+    thumbnail: learningThumbnails.learningMatch,
   },
   {
     id: "4",
     title: "Sustainable Investing 101",
     duration: "2 min read",
     category: "Impact",
-    thumbnail: "https://picsum.photos/400/300?random=7",
+    thumbnail: learningThumbnails.learningInvestment,
   },
 ];

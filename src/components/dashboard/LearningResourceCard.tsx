@@ -58,7 +58,9 @@ export const LearningResourceCard = ({
         <div className="relative aspect-video w-full shrink-0 overflow-hidden bg-slate-100 dark:bg-slate-700">
           <img
             src={src}
-            alt=""
+            alt={title}
+            decoding="async"
+            loading="lazy"
             className={`h-full w-full object-cover transition-transform duration-200 ${canHover && !reduced ? "group-hover/card:scale-105" : ""}`}
             onError={() => setImgError(true)}
           />

@@ -9,6 +9,7 @@ import { PreEnrollment } from "../pages/dashboard/PreEnrollment";
 import { Dashboard } from "../pages/dashboard/Dashboard";
 import { PostEnrollmentDashboard } from "../pages/dashboard/PostEnrollmentDashboard";
 import { DemoDashboard } from "../pages/dashboard/DemoDashboard";
+import { InvestmentPortfolioPage } from "../pages/dashboard/InvestmentPortfolioPage";
 import { Profile } from "../pages/profile/Profile";
 import { EnrollmentManagement } from "../pages/enrollment/EnrollmentManagement";
 import { PlanDetailManagement } from "../pages/enrollment/PlanDetailManagement";
@@ -75,6 +76,10 @@ export const router = createBrowserRouter([
       {
         path: "/dashboard/post-enrollment",
         element: <PostEnrollmentDashboard />,
+      },
+      {
+        path: "/dashboard/investment-portfolio",
+        element: <InvestmentPortfolioPage />,
       },
       {
         path: "/profile",

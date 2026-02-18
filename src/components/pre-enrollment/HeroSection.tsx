@@ -109,12 +109,12 @@ export const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
         >
-          {/* Desktop floating cards */}
-          <div className="hidden lg:block w-full h-[520px] xl:h-[600px] relative">
+          {/* Floating cards: visible from md (768px) up with responsive layout */}
+          <div className="hidden md:block w-full min-h-[380px] md:h-[480px] lg:h-[520px] xl:h-[600px] relative">
             <FloatingCards />
           </div>
-          {/* Mobile/Tablet fallback */}
-          <div className="lg:hidden w-full max-w-[260px] sm:max-w-[320px] aspect-square bg-gradient-to-br from-brand-100 to-indigo-50 dark:from-brand-900/40 dark:to-indigo-900/30 rounded-2xl sm:rounded-3xl flex items-center justify-center relative overflow-hidden shadow-lg dark:shadow-black/20 mx-auto">
+          {/* Mobile-only fallback (below md) */}
+          <div className="md:hidden w-full max-w-[260px] sm:max-w-[320px] aspect-square bg-gradient-to-br from-brand-100 to-indigo-50 dark:from-brand-900/40 dark:to-indigo-900/30 rounded-2xl sm:rounded-3xl flex items-center justify-center relative overflow-hidden shadow-lg dark:shadow-black/20 mx-auto">
             <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" />
             <div className="text-center p-6 sm:p-8">
               <h3 className="text-2xl sm:text-3xl font-bold text-brand-900 dark:text-brand-200 mb-2">$1.2M</h3>

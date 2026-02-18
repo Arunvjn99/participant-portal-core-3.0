@@ -15,12 +15,12 @@ import { ValuePropGrid } from "../../components/dashboard/ValuePropGrid";
 import { ValuePropCard } from "../../components/dashboard/ValuePropCard";
 
 export const Dashboard = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <DashboardLayout header={<DashboardHeader />}>
       <SaveToast />
-      <div key={i18n.language}>
+      <div>
       <HeroEnrollmentCard
         greeting={t("dashboard.greeting", { name: "Brian" })}
         headline={t("dashboard.heroTitle")}

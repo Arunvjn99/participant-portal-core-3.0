@@ -7244,7 +7244,83 @@ button {
   line-height: 1.5;
 }
 
-/* Investment Portfolio Styles */
+/* Investment Portfolio (Plan Performance) – uses global theme tokens.
+ * No page-level background: uses DashboardLayout bg-background full screen (same as PreEnrollment, PostEnrollmentDashboard).
+ * Card shadow matches dashboard cards (shadow-sm). */
+.investment-portfolio-page {
+  color: var(--color-text);
+  min-height: 100%;
+  padding-bottom: var(--spacing-20);
+}
+
+.investment-portfolio-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-6);
+}
+
+.investment-portfolio-card__title {
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.investment-portfolio-card__subtitle {
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+}
+
+.investment-portfolio-segment-group {
+  background-color: var(--color-background-secondary);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-1);
+}
+
+.investment-portfolio-segment-group [data-selected="true"] {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+}
+
+.investment-portfolio-pill--primary {
+  background-color: var(--color-primary);
+  color: var(--color-text-inverse);
+  border-color: var(--color-primary);
+}
+
+.investment-portfolio-pill--primary:hover {
+  background-color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+}
+
+.investment-portfolio-footer {
+  margin-top: var(--spacing-8);
+  padding-top: var(--spacing-8);
+  padding-bottom: var(--spacing-8);
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  border-top: 1px solid var(--color-border);
+}
+
+.investment-portfolio-ai-panel {
+  background: var(--banner-gradient);
+  border-radius: var(--radius-2xl);
+  padding: var(--spacing-6);
+  color: var(--color-text-inverse);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--spacing-8);
+  overflow: hidden;
+  position: relative;
+}
+
+.dark .investment-portfolio-ai-panel {
+  background: var(--banner-gradient-dark);
+}
+
+/* Investments Layout (enrollment / strategy builder) */
 .investments-layout {
   display: flex;
   flex-direction: column;

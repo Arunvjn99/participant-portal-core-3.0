@@ -57,7 +57,7 @@ export function DemoDashboard() {
 
   return (
     <DashboardLayout header={<DashboardHeader />}>
-      <div key={i18n.language}>{scenarioContent}</div>
+      <div>{scenarioContent}</div>
     </DashboardLayout>
   );
 }

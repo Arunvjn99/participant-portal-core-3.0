@@ -1,0 +1,24 @@
+<svg viewBox="0 0 400 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgInv" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.08"/>
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.1"/>
+    </linearGradient>
+    <linearGradient id="chartFill" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.35"/>
+      <stop offset="100%" style="stop-color:#10b981;stop-opacity:0"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="220" fill="url(#bgInv)"/>
+  <rect x="32" y="32" width="336" height="156" rx="12" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+  <!-- Chart area -->
+  <path d="M60 160 L100 140 L140 150 L180 120 L220 130 L260 95 L300 110 L340 80 L380 90 L380 160 Z" fill="url(#chartFill)"/>
+  <path d="M60 160 L100 140 L140 150 L180 120 L220 130 L260 95 L300 110 L340 80 L380 90" stroke="#10b981" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Candlesticks -->
+  <line x1="120" y1="145" x2="120" y2="125" stroke="#10b981" stroke-width="4" stroke-linecap="round"/>
+  <line x1="200" y1="155" x2="200" y2="115" stroke="#3b82f6" stroke-width="4" stroke-linecap="round"/>
+  <line x1="280" y1="135" x2="280" y2="90" stroke="#10b981" stroke-width="4" stroke-linecap="round"/>
+  <!-- Portfolio/diversity icon -->
+  <circle cx="320" cy="55" r="25" fill="#f0fdf4" stroke="#10b981"/>
+  <path d="M312 55 L318 61 L332 47" stroke="#10b981" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

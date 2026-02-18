@@ -44,7 +44,6 @@ export function DashboardShell({ data }: DashboardShellProps) {
   return (
     <DashboardLayout header={<DashboardHeader />}>
       <div
-        key={i18n.language}
         className="w-full min-w-0 space-y-6"
         role="region"
         aria-label={t("dashboard.shellAriaRegion")}

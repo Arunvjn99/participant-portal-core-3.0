@@ -18,7 +18,7 @@ function getNavLinks(isDemoMode: boolean) {
     { to: "/enrollment", labelKey: "nav.enrollment" as const },
     { to: "/profile", labelKey: "nav.profile" as const },
     { to: "/transactions", labelKey: "nav.transactions" as const },
-    { to: "#", labelKey: "nav.accountStatements" as const },
+    { to: "/dashboard/investment-portfolio", labelKey: "nav.investmentPortfolio" as const },
   ] as const;
 }
 
@@ -102,7 +102,8 @@ export const DashboardHeader = () => {
   const NAV_LINKS = getNavLinks(!!demoUser);
 
   const isActive = (to: string) => {
-    if (to === "#") return false;
+    if (to === "/dashboard/investment-portfolio")
+      return location.pathname === "/dashboard/investment-portfolio";
     if (to === "/dashboard" || to === "/demo")
       return location.pathname === "/dashboard" || location.pathname === "/demo" || location.pathname === "/dashboard/classic" || location.pathname === "/dashboard/post-enrollment";
     if (to === "/transactions") return location.pathname.startsWith("/transactions");
@@ -114,7 +115,7 @@ export const DashboardHeader = () => {
 
   return (
     <>
-      <div key={i18n.language}>
+      <div>
       {/*
         Main header bar.
         Padding matches DashboardLayout content: px-4 → sm:px-6 → lg:px-8
