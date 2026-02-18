@@ -402,7 +402,7 @@ export const Contribution = () => {
                 onClick={() => setSourcesExpanded(!sourcesExpanded)}
                 className="flex w-full items-center justify-between px-5 py-4 text-left transition-colors hover:opacity-80"
               >
-                <span className="text-sm font-semibold" style={{ color: "var(--enroll-text-primary)" }}>{t("enrollment.customizeTaxStrategy")}</span>
+                <span className="text-sm font-semibold" style={{ color: "var(--enroll-text-primary)" }}>{t("enrollment.adjustContributionAllocation")}</span>
                 <motion.span
                   animate={{ rotate: sourcesExpanded ? 180 : 0 }}
                   transition={{ duration: 0.2 }}

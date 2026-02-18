@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
@@ -36,20 +35,8 @@ function getRiskColor(risk: number): string {
 
 export const AllocationSummary = ({ variant = "dashboard" }: AllocationSummaryProps) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const {
-    weightedSummary,
-    chartAllocations,
-    canConfirmAllocation,
-    confirmAllocation,
-  } = useInvestment();
+  const { weightedSummary, chartAllocations } = useInvestment();
   const [showAdvisorWizard, setShowAdvisorWizard] = useState(false);
-
-  const handleConfirmClick = () => {
-    if (!canConfirmAllocation) return;
-    confirmAllocation();
-    navigate("/enrollment/review");
-  };
 
   const riskPercent = Math.min(100, (weightedSummary.riskLevel / 10) * 100);
   const riskLabel = t(getRiskLevelKey(weightedSummary.riskLevel));
@@ -59,11 +46,50 @@ export const AllocationSummary = ({ variant = "dashboard" }: AllocationSummaryPr
   return (
     <>
       <div className="space-y-6">
-        {/* Main summary card */}
+        {/* Advisor help card — first */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, delay: 0.1 }}
+          className="p-5"
+          style={{
+            ...cardStyle,
+            background: "rgb(var(--enroll-brand-rgb) / 0.04)",
+            border: "1px solid rgb(var(--enroll-brand-rgb) / 0.1)",
+          }}
+        >
+          <div className="flex items-center gap-3 mb-3">
+            <div
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+              style={{ background: "rgb(var(--enroll-brand-rgb) / 0.1)", color: "var(--enroll-brand)" }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </div>
+            <h4 className="text-sm font-bold" style={{ color: "var(--enroll-text-primary)" }}>
+              {t("enrollment.needHelpChoosing")}
+            </h4>
+          </div>
+          <p className="text-xs leading-relaxed mb-3" style={{ color: "var(--enroll-text-secondary)" }}>
+            {t("enrollment.advisorHelpDesc")}
+          </p>
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full text-sm"
+            onClick={() => setShowAdvisorWizard(true)}
+          >
+            {t("enrollment.getAdvisorHelp")}
+          </Button>
+        </motion.div>
+
+        {/* Allocation summary widget — second */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: 0.2 }}
           className="p-6"
           style={cardStyle}
         >
@@ -101,55 +127,6 @@ export const AllocationSummary = ({ variant = "dashboard" }: AllocationSummaryPr
               {t("enrollment.riskLevelLabel", { level: riskLabel })}
             </p>
           </div>
-
-          {/* CTA */}
-          <Button
-            onClick={handleConfirmClick}
-            disabled={!canConfirmAllocation}
-            className="w-full mt-5"
-            type="button"
-          >
-            {t("enrollment.confirmAllocation")}
-          </Button>
-        </motion.div>
-
-        {/* Advisor help card */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, delay: 0.2 }}
-          className="p-5"
-          style={{
-            ...cardStyle,
-            background: "rgb(var(--enroll-brand-rgb) / 0.04)",
-            border: "1px solid rgb(var(--enroll-brand-rgb) / 0.1)",
-          }}
-        >
-          <div className="flex items-center gap-3 mb-3">
-            <div
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
-              style={{ background: "rgb(var(--enroll-brand-rgb) / 0.1)", color: "var(--enroll-brand)" }}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-            </div>
-            <h4 className="text-sm font-bold" style={{ color: "var(--enroll-text-primary)" }}>
-              {t("enrollment.needHelpChoosing")}
-            </h4>
-          </div>
-          <p className="text-xs leading-relaxed mb-3" style={{ color: "var(--enroll-text-secondary)" }}>
-            {t("enrollment.advisorHelpDesc")}
-          </p>
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full text-sm"
-            onClick={() => setShowAdvisorWizard(true)}
-          >
-            {t("enrollment.getAdvisorHelp")}
-          </Button>
         </motion.div>
       </div>
 

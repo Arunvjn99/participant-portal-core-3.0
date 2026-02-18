@@ -128,7 +128,7 @@ export const Review = () => {
   const enrollment = useEnrollment();
   const investment = useInvestment();
 
-  const [acknowledgements, setAcknowledgements] = useState({ feeDisclosure: false, qdefault: false });
+  const [acknowledgements, setAcknowledgements] = useState({ termsAccepted: false });
   const [showAdvisorModal, setShowAdvisorModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
@@ -189,7 +189,7 @@ export const Review = () => {
   const yearsToRetirement = (enrollment.state.retirementAge ?? 67) - (enrollment.state.currentAge ?? 40);
   const annualReturn = weightedSummary.expectedReturn ?? 7;
 
-  const canEnroll = prerequisites.allMet && investment.canConfirmAllocation && acknowledgements.feeDisclosure && acknowledgements.qdefault;
+  const canEnroll = prerequisites.allMet && investment.canConfirmAllocation && acknowledgements.termsAccepted;
 
   const formatContributionPct = (pct: number) => (pct % 1 === 0 ? `${pct}%` : `${pct.toFixed(1)}%`);
 
@@ -451,7 +451,7 @@ export const Review = () => {
               {(() => {
                 const ai = enrollment.state.autoIncrease;
                 const hasAny = (ai.preTaxIncrease ?? 0) > 0 || (ai.rothIncrease ?? 0) > 0 || (ai.afterTaxIncrease ?? 0) > 0;
-                if (!hasAny) {
+                if (!ai.enabled || !hasAny) {
                   return (
                     <p className="text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
                       {t("enrollment.autoIncreaseNotConfigured")}
@@ -487,6 +487,25 @@ export const Review = () => {
                           <p className="text-[10px]" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.perYear")}</p>
                         </div>
                       ))}
+                    </div>
+                    {/* Auto-Increase Settings: annual %, stop at, minimum floor */}
+                    <div className="mt-4 pt-4 space-y-2" style={{ borderTop: "1px solid var(--enroll-card-border)" }}>
+                      <div className="flex justify-between text-sm">
+                        <span style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.annualIncreaseLabel")}</span>
+                        <span style={{ color: "var(--enroll-text-primary)", fontWeight: 600 }}>{ai.percentage}%</span>
+                      </div>
+                      {ai.maxPercentage > 0 && (
+                        <div className="flex justify-between text-sm">
+                          <span style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.reviewStopAt")}</span>
+                          <span style={{ color: "var(--enroll-text-primary)", fontWeight: 600 }}>{ai.maxPercentage}%</span>
+                        </div>
+                      )}
+                      {ai.minimumFloor !== undefined && ai.minimumFloor >= 0 && (
+                        <div className="flex justify-between text-sm">
+                          <span style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.reviewMinimumFloor")}</span>
+                          <span style={{ color: "var(--enroll-text-primary)", fontWeight: 600 }}>{ai.minimumFloor}%</span>
+                        </div>
+                      )}
                     </div>
                   </>
                 );
@@ -579,57 +598,6 @@ export const Review = () => {
               </div>
             </motion.div>
 
-            {/* Terms and Conditions */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, delay: 0.25 }}
-              className="p-6"
-              style={cardStyle}
-            >
-              <div className="flex items-center gap-2 mb-3">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--enroll-text-muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" /></svg>
-                <p className="text-sm font-bold" style={{ color: "var(--enroll-text-primary)" }}>{t("enrollment.termsAndConditions")}</p>
-              </div>
-              <p className="text-xs mb-3" style={{ color: "var(--enroll-text-muted)" }}>
-                {t("enrollment.acceptTerms")}
-              </p>
-              <div className="space-y-2">
-                {[
-                  { key: "feeDisclosure" as const, labelKey: "enrollment.feeDisclosureStatement" },
-                  { key: "qdefault" as const, labelKey: "enrollment.qualifiedDefaultNotice" },
-                ].map(({ key, labelKey }) => (
-                  <label
-                    key={key}
-                    className="flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors"
-                    style={{
-                      background: acknowledgements[key] ? "rgb(var(--enroll-accent-rgb) / 0.04)" : "var(--enroll-soft-bg)",
-                      border: acknowledgements[key] ? "1px solid rgb(var(--enroll-accent-rgb) / 0.2)" : "1px solid var(--enroll-card-border)",
-                    }}
-                  >
-                    <div
-                      className="flex h-5 w-5 items-center justify-center rounded-md shrink-0 transition-colors"
-                      style={{
-                        background: acknowledgements[key] ? "var(--enroll-accent)" : "var(--enroll-card-bg)",
-                        border: acknowledgements[key] ? "none" : "1.5px solid var(--enroll-card-border)",
-                      }}
-                    >
-                      {acknowledgements[key] && (
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
-                      )}
-                    </div>
-                    <input
-                      type="checkbox"
-                      checked={acknowledgements[key]}
-                      onChange={(e) => setAcknowledgements((p) => ({ ...p, [key]: e.target.checked }))}
-                      className="sr-only"
-                    />
-                    <span className="text-sm font-medium" style={{ color: "var(--enroll-text-primary)" }}>{t(labelKey)}</span>
-                  </label>
-                ))}
-              </div>
-            </motion.div>
-
             {/* What Happens Next */}
             <motion.div
               initial={{ opacity: 0, y: 12 }}
@@ -686,6 +654,51 @@ export const Review = () => {
                 </button>
               ))}
             </div>
+
+            {/* Terms and Conditions — last section */}
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, delay: 0.3 }}
+              className="p-6 mt-6"
+              style={cardStyle}
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--enroll-text-muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" /></svg>
+                <p className="text-sm font-bold" style={{ color: "var(--enroll-text-primary)" }}>{t("enrollment.termsAndConditions")}</p>
+              </div>
+              <p className="text-sm mb-4 leading-relaxed" style={{ color: "var(--enroll-text-secondary)" }}>
+                {t("enrollment.termsAndConditionsAgree")}
+              </p>
+              <label
+                className="flex items-start gap-3 p-3 rounded-xl cursor-pointer transition-colors"
+                style={{
+                  background: acknowledgements.termsAccepted ? "rgb(var(--enroll-accent-rgb) / 0.04)" : "var(--enroll-soft-bg)",
+                  border: acknowledgements.termsAccepted ? "1px solid rgb(var(--enroll-accent-rgb) / 0.2)" : "1px solid var(--enroll-card-border)",
+                }}
+              >
+                <div
+                  className="flex h-5 w-5 items-center justify-center rounded-md shrink-0 mt-0.5 transition-colors"
+                  style={{
+                    background: acknowledgements.termsAccepted ? "var(--enroll-accent)" : "var(--enroll-card-bg)",
+                    border: acknowledgements.termsAccepted ? "none" : "1.5px solid var(--enroll-card-border)",
+                  }}
+                >
+                  {acknowledgements.termsAccepted && (
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                  )}
+                </div>
+                <input
+                  type="checkbox"
+                  checked={acknowledgements.termsAccepted}
+                  onChange={(e) => setAcknowledgements((p) => ({ ...p, termsAccepted: e.target.checked }))}
+                  className="sr-only"
+                />
+                <span className="text-sm font-medium" style={{ color: "var(--enroll-text-primary)" }}>
+                  {t("enrollment.acceptTermsCheckbox")}
+                </span>
+              </label>
+            </motion.div>
           </div>
 
           {/* ── RIGHT COLUMN (1 col, sticky) ── */}
@@ -816,45 +829,13 @@ export const Review = () => {
                 <p className="text-[10px] mt-3" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.insightsFromPlanData")}</p>
               </div>
 
-              {/* Activation CTA */}
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.35, delay: 0.3 }}
-                className="p-5"
-                style={{
-                  ...cardStyle,
-                  background: canEnroll
-                    ? "linear-gradient(135deg, var(--enroll-card-bg) 0%, rgb(var(--enroll-accent-rgb) / 0.04) 100%)"
-                    : "var(--enroll-card-bg)",
-                }}
-              >
-                <button
-                  type="button"
-                  disabled={!canEnroll}
-                  onClick={() => { if (canEnroll) setShowSuccessModal(true); }}
-                  className="w-full py-3 rounded-xl text-sm font-bold border-none cursor-pointer transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{
-                    background: canEnroll ? "var(--enroll-brand)" : "var(--enroll-card-border)",
-                    color: canEnroll ? "white" : "var(--enroll-text-muted)",
-                    boxShadow: canEnroll ? "0 4px 12px rgb(var(--enroll-brand-rgb) / 0.25)" : "none",
-                  }}
-                >
-                  {t("enrollment.activateMyPlan")}
-                </button>
-                <p className="text-[11px] text-center mt-2.5 leading-relaxed" style={{ color: "var(--enroll-text-muted)" }}>
-                  {canEnroll
-                    ? t("enrollment.contributionsBeginNextPaycheck")
-                    : t("enrollment.completeAllSections")}
-                </p>
-              </motion.div>
             </div>
           </motion.div>
         </div>
 
         <EnrollmentFooter
           step={4}
-          primaryLabel={t("enrollment.activateMyPlan")}
+          primaryLabel={t("enrollment.submit")}
           primaryDisabled={!canEnroll}
           onPrimary={() => { if (canEnroll) setShowSuccessModal(true); }}
           summaryText={!isAllocationValid ? t("enrollment.allocationMustTotal") : t("enrollment.readyToSubmit")}

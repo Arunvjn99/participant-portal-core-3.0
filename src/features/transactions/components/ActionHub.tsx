@@ -23,7 +23,7 @@ const TILE_CONFIGS: { type: ActionTileConfig["type"]; titleKey: string; subtextK
   },
   {
     type: "withdrawal",
-    titleKey: "transactions.withdrawal",
+    titleKey: "transactions.withdrawalTitle",
     subtextKey: "transactions.hardshipAndRegular",
     eligibilityAmount: 32000,
     route: "/transactions/withdrawal/start",

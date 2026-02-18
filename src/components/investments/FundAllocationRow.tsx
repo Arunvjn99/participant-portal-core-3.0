@@ -76,12 +76,12 @@ export const FundAllocationRow = ({
               {fund.ticker}
             </span>
           </div>
-          <div className="flex items-center gap-3 mt-1">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
             <span className="text-[11px]" style={{ color: "var(--enroll-text-muted)" }}>
               {getAssetClassShort(fund.assetClass)}
             </span>
             <span className="text-[11px]" style={{ color: "var(--enroll-text-muted)" }}>
-              Exp: {fund.expenseRatio.toFixed(2)}%
+              Expected return: {fund.expectedReturn.toFixed(1)}%
             </span>
             <span className="flex items-center gap-1 text-[11px]" style={{ color: "var(--enroll-text-muted)" }}>
               Risk:

@@ -68,7 +68,10 @@ export type IncrementCycle = "calendar_year" | "plan_enroll_date" | "plan_year";
 export interface AutoIncreaseSettings {
   enabled: boolean;
   percentage: number; // Annual increase percentage (e.g., 2 = 2% per year)
-  maxPercentage: number; // Maximum contribution percentage cap
+  /** Stop increasing at this contribution % (cap). Used in projection. */
+  maxPercentage: number;
+  /** Optional minimum contribution floor; contribution will not go below this %. */
+  minimumFloor?: number;
   incrementCycle: IncrementCycle;
   /** Per-source increase (2 = 2% or $2/mo depending on view mode) */
   preTaxIncrease: number;

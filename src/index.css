@@ -5807,6 +5807,24 @@ button {
   margin-top: var(--spacing-4);
 }
 
+/* Secondary button for Start Auto Increase */
+.auto-increase-panel__btn--secondary {
+  background-color: transparent;
+  color: var(--enroll-text-secondary, var(--color-text-secondary));
+  border: 1px solid var(--enroll-card-border, var(--color-border));
+}
+
+.auto-increase-panel__btn--secondary:hover:not(:disabled) {
+  background-color: var(--enroll-soft-bg, var(--color-background-secondary));
+  color: var(--enroll-text-primary, var(--color-text));
+  border-color: var(--enroll-card-border, var(--color-border));
+}
+
+.auto-increase-panel__btn--secondary:focus-visible {
+  outline: 2px solid var(--enroll-accent);
+  outline-offset: 2px;
+}
+
 .auto-increase-panel__toggle-label {
   display: flex;
   align-items: center;

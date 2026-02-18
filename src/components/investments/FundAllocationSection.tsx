@@ -246,9 +246,9 @@ export function FundAllocationSection() {
       </h2>
 
       <div className="p-5 space-y-5" style={cardStyle}>
-        {/* Edit toggle */}
+        {/* Edit allocation — secondary CTA */}
         <div
-          className="flex items-center justify-between gap-3 p-4 rounded-xl"
+          className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 rounded-xl"
           style={{ background: "var(--enroll-soft-bg)", border: "1px solid var(--enroll-card-border)" }}
         >
           <div className="flex items-center gap-3">
@@ -272,19 +272,10 @@ export function FundAllocationSection() {
           </div>
           <button
             type="button"
-            role="switch"
-            aria-checked={editAllocationEnabled}
             onClick={() => setEditAllocationEnabled(!editAllocationEnabled)}
-            className="relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1"
-            style={{
-              background: editAllocationEnabled ? "var(--enroll-brand)" : "var(--enroll-card-border)",
-              borderColor: editAllocationEnabled ? "var(--enroll-brand)" : "var(--enroll-card-border)",
-            }}
+            className="auto-increase-panel__btn--secondary inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold rounded-lg shrink-0 transition-colors focus:outline-none"
           >
-            <span
-              className="inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform duration-200"
-              style={{ transform: editAllocationEnabled ? "translateX(20px)" : "translateX(2px)" }}
-            />
+            {editAllocationEnabled ? t("enrollment.save") : t("enrollment.edit")}
           </button>
         </div>
 
