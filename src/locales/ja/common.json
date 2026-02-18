@@ -22,6 +22,8 @@
     "advisor1Desc": "シンプルでパーソナライズされたガイダンスで、自信を持った退職の判断をサポートします。",
     "advisor2Role": "認定プランナー",
     "advisor2Desc": "経験豊富なCFPが、多忙な方に合わせた明確なアドバイスを提供します。",
+    "advisor3Role": "ウェルスストラテジスト",
+    "advisor3Desc": "長期的な成長と税効率の高い戦略で、退職目標の達成をサポートします。",
     "heroOnTrack": "順調",
     "heroYourProgress": "退職の進捗",
     "heroProjectedAt": "{{age}}歳時点の予測：",

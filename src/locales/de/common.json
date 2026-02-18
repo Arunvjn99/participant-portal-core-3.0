@@ -22,6 +22,8 @@
     "advisor1Desc": "Unterstützung bei sicheren Ruhestandsentscheidungen mit einfacher, persönlicher Beratung.",
     "advisor2Role": "Zertifizierter Planer",
     "advisor2Desc": "Erfahrener CFP mit klaren Empfehlungen für Berufstätige.",
+    "advisor3Role": "Vermögensstratege",
+    "advisor3Desc": "Fokus auf langfristiges Wachstum und steuereffiziente Strategien für Ihre Ruhestandsziele.",
     "heroOnTrack": "im Plan",
     "heroYourProgress": "Ihr Ruhestandsfortschritt",
     "heroProjectedAt": "Prognose mit {{age}}:",

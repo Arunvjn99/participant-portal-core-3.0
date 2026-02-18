@@ -22,6 +22,8 @@
     "advisor1Desc": "以简单、个性化的指导帮助员工做出有把握的退休决策。",
     "advisor2Role": "认证规划师",
     "advisor2Desc": "经验丰富的 CFP，为忙碌人士提供清晰建议。",
+    "advisor3Role": "财富策略师",
+    "advisor3Desc": "专注于长期增长和税务高效策略，助您实现退休目标。",
     "heroOnTrack": "按计划",
     "heroYourProgress": "您的退休进度",
     "heroProjectedAt": "预计在 {{age}} 岁：",

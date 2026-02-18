@@ -225,8 +225,13 @@ export const FutureContributions = () => {
             transition={{ duration: 0.35 }}
             className="lg:col-span-2 space-y-6"
           >
-            {/* Enable auto increase card — description first, then CTA */}
+            {/* Auto increase card — when off: CTA "Start Auto Increase"; when on: pause + settings */}
             <div className="p-6" style={cardStyle}>
+              {!ai.enabled ? (
+                <h3 className="text-base font-semibold mb-2" style={{ color: "var(--enroll-text-primary)" }}>
+                  {t("enrollment.startAutoIncrease")}
+                </h3>
+              ) : null}
               <p className="text-sm" style={{ color: "var(--enroll-text-secondary)" }}>
                 {t("enrollment.enableAutoIncreaseDesc")}
               </p>
@@ -253,7 +258,12 @@ export const FutureContributions = () => {
                         maxPercentage: Math.max(ai.maxPercentage || 15, Math.ceil(contributionPct)),
                       })
                     }
-                    className="auto-increase-panel__btn--secondary inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold rounded-lg shrink-0 transition-colors focus:outline-none"
+                    className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold rounded-lg shrink-0 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                    style={{
+                      backgroundColor: "var(--enroll-brand)",
+                      color: "var(--color-text-on-primary)",
+                      boxShadow: "var(--enroll-elevation-2)",
+                    }}
                   >
                     {t("enrollment.startAutoIncrease")}
                   </button>

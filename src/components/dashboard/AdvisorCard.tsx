@@ -39,6 +39,7 @@ export const AdvisorCard = ({
           <img
             src={avatarUrl}
             alt=""
+            aria-hidden="true"
             className="h-16 w-16 rounded-full object-cover ring-2 ring-slate-200 dark:ring-slate-600"
             onError={(e) => {
               (e.target as HTMLImageElement).src = FALLBACK_AVATAR;

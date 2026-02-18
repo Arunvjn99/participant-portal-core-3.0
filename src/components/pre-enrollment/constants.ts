@@ -1,5 +1,6 @@
 import type { Advisor, LearningResource } from "./types";
 import { thumbnails as learningThumbnails } from "../../assets/learning";
+import { advisorAvatars } from "../../assets/avatars";
 
 export const ADVISORS: Advisor[] = [
   {
@@ -7,21 +8,21 @@ export const ADVISORS: Advisor[] = [
     name: "Sarah Chen",
     role: "Financial Wellness Guide",
     bio: "I help people translate their life goals into financial plans. Coffee enthusiast.",
-    image: "https://picsum.photos/200/200?random=1",
+    image: advisorAvatars.maya,
   },
   {
     id: "2",
     name: "Marcus Thorne",
     role: "Retirement Strategist",
     bio: "Specializing in sustainable investing and long-term growth strategies.",
-    image: "https://picsum.photos/200/200?random=2",
+    image: advisorAvatars.jordan,
   },
   {
     id: "3",
     name: "Elena Rodriguez",
     role: "Plan Specialist",
     bio: "Here to simplify the complex terms and get you set up in minutes.",
-    image: "https://picsum.photos/200/200?random=3",
+    image: advisorAvatars.alex,
   },
 ];
 

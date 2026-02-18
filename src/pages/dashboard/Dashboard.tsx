@@ -70,6 +70,12 @@ export const Dashboard = () => {
             description={t("dashboard.advisor2Desc")}
             avatarSrc={advisorAvatars.maya}
           />
+          <AdvisorCard
+            name="Jordan Lee"
+            role={t("dashboard.advisor3Role")}
+            description={t("dashboard.advisor3Desc")}
+            avatarSrc={advisorAvatars.jordan}
+          />
         </AdvisorList>
       </DashboardSection>
       <DashboardSection title={t("dashboard.whyChoosePlan")}>

@@ -22,6 +22,8 @@
     "advisor1Desc": "Helping employees make confident retirement decisions with simple, personalized guidance.",
     "advisor2Role": "Certified Planner",
     "advisor2Desc": "Experienced CFP providing clear recommendations tailored for busy professionals.",
+    "advisor3Role": "Wealth Strategist",
+    "advisor3Desc": "Focused on long-term growth and tax-efficient strategies for your retirement goals.",
     "heroOnTrack": "on track",
     "heroYourProgress": "Your Retirement Progress",
     "heroProjectedAt": "Projected at {{age}}:",

@@ -22,6 +22,8 @@
     "advisor1Desc": "Ayudamos a los empleados a tomar decisiones de jubilación con orientación simple y personalizada.",
     "advisor2Role": "Planificador certificado",
     "advisor2Desc": "CFP con experiencia que ofrece recomendaciones claras para profesionales ocupados.",
+    "advisor3Role": "Estratega patrimonial",
+    "advisor3Desc": "Enfocado en crecimiento a largo plazo y estrategias fiscales eficientes para sus objetivos de jubilación.",
     "heroOnTrack": "en camino",
     "heroYourProgress": "Tu progreso de jubilación",
     "heroProjectedAt": "Proyectado a los {{age}} años:",
