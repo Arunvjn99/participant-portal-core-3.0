@@ -285,10 +285,9 @@ export const Contribution = () => {
                 value={Math.min(SLIDER_MAX, Math.max(SLIDER_MIN, contributionPct))}
                 onChange={handleSliderChange}
                 aria-label={t("enrollment.contributionPercentageAria")}
-                className="w-full h-2 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:cursor-pointer"
+                className="contribution-page-slider"
                 style={{
                   background: `linear-gradient(to right, var(--enroll-brand) 0%, var(--enroll-brand) ${sliderPct}%, var(--enroll-soft-bg) ${sliderPct}%, var(--enroll-soft-bg) 100%)`,
-                  ["--tw-shadow" as string]: "var(--enroll-elevation-1)",
                 } as React.CSSProperties}
               />
             </div>
