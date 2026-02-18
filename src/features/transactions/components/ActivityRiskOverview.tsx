@@ -62,7 +62,7 @@ export const ActivityRiskOverview = memo(function ActivityRiskOverview() {
                     {t("transactions.riskOverview.pendingWithdrawal")}
                   </span>
                   <span className="text-xs" style={{ color: "var(--color-text-secondary)" }}>
-                    Hardship Request #W992
+                    {t("transactions.riskOverview.hardshipRequestRef", { ref: "W992" })}
                   </span>
                 </div>
                 <div

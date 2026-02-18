@@ -235,7 +235,7 @@ export const EligibilityStep = ({ transaction, initialData, onDataChange, readOn
             {isCustomTerm && (
               <div className="mt-3 flex items-center gap-3">
                 <label htmlFor="custom-term-years" className="text-sm font-medium" style={{ color: "var(--enroll-text-secondary)" }}>
-                  {t("transactions.loan.custom")} (years)
+                  {t("transactions.loan.custom")} ({t("transactions.loan.yearsLabel")})
                 </label>
                 <input
                   id="custom-term-years"
@@ -251,7 +251,7 @@ export const EligibilityStep = ({ transaction, initialData, onDataChange, readOn
                     color: "var(--enroll-text-primary)",
                   }}
                 />
-                <span className="text-sm" style={{ color: "var(--enroll-text-muted)" }}>years</span>
+                <span className="text-sm" style={{ color: "var(--enroll-text-muted)" }}>{t("transactions.loan.yearsLabel")}</span>
               </div>
             )}
           </div>

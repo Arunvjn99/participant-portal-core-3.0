@@ -1,4 +1,5 @@
 import { memo, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   ComposedChart,
@@ -47,6 +48,7 @@ export const ActivityHero = memo(function ActivityHero({
   chartData,
   momentumChartData,
 }: ActivityHeroProps) {
+  const { t } = useTranslation();
   const reduced = !!useReducedMotion();
   const [mounted, setMounted] = useState(false);
 
@@ -82,12 +84,12 @@ export const ActivityHero = memo(function ActivityHero({
         </p>
         <div className="space-y-1 text-xs">
           <p className="flex justify-between gap-4" style={{ color: "var(--enroll-brand)" }}>
-            <span>Balance</span>
+            <span>{t("transactions.overview.balance")}</span>
             <span className="font-medium">{p ? formatCurrency(p.balance) : formatCurrency(payload[0]?.value ?? 0)}</span>
           </p>
           {p && (
             <p className="flex justify-between gap-4" style={{ color: "var(--color-success)" }}>
-              <span>Inflow</span>
+              <span>{t("transactions.overview.inflow")}</span>
               <span className="font-medium">+{formatCurrency(p.inflow)}</span>
             </p>
           )}
@@ -127,23 +129,23 @@ export const ActivityHero = memo(function ActivityHero({
                 className="inline-flex items-center justify-center rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider"
                 style={{ background: "var(--txn-brand-soft)", color: "var(--enroll-brand)" }}
               >
-                Momentum
+                {t("transactions.overview.momentum")}
               </span>
               <span className="text-xs font-medium" style={{ color: "var(--color-text-secondary)" }}>
-                Live Projection
+                {t("transactions.overview.liveProjection")}
               </span>
             </div>
             <h2 className="text-2xl font-light leading-tight tracking-tight lg:text-3xl" style={{ color: "var(--color-text)" }}>
-              Your wealth is <span className="font-semibold" style={{ color: "var(--enroll-brand)" }}>compounding</span>.
+              {t("transactions.overview.wealthCompounding")}
             </h2>
             <p className="mt-2 max-w-sm text-sm" style={{ color: "var(--color-text-secondary)" }}>
-              Based on current activity, you are projected to hit your 2025 milestone 2 months early.
+              {t("transactions.overview.milestoneProjection")}
             </p>
           </div>
 
           <div className="mt-6">
             <p className="mb-1 text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--color-text-tertiary)" }}>
-              Total Balance
+              {t("transactions.overview.totalBalance")}
             </p>
             <div className="mb-6 flex items-baseline gap-2">
               <AnimatedNumber
@@ -161,7 +163,7 @@ export const ActivityHero = memo(function ActivityHero({
                 <div className="mb-1 flex items-center gap-1.5">
                   <TrendingUp className="h-3.5 w-3.5" style={{ color: isPositive ? "var(--color-success)" : "var(--color-text-tertiary)" }} />
                   <p className="text-xs font-medium" style={{ color: "var(--color-text-secondary)" }}>
-                    Net Flow (this month)
+                    {t("transactions.overview.netFlowThisMonth")}
                   </p>
                 </div>
                 <p className="text-lg font-semibold" style={{ color: isPositive ? "var(--color-success)" : "var(--color-text-secondary)" }}>
@@ -173,7 +175,7 @@ export const ActivityHero = memo(function ActivityHero({
                 <div className="mb-1 flex items-center gap-1.5">
                   <Target className="h-3.5 w-3.5" style={{ color: "var(--enroll-brand)" }} />
                   <p className="text-xs font-medium" style={{ color: "var(--color-text-secondary)" }}>
-                    12-Mo Impact
+                    {t("transactions.overview.twelveMoImpact")}
                   </p>
                 </div>
                 <p className="text-lg font-semibold" style={{ color: "var(--enroll-brand)" }}>
@@ -192,16 +194,16 @@ export const ActivityHero = memo(function ActivityHero({
           <div className="mb-6 flex items-center justify-between">
             <h3 className="flex items-center gap-2 text-sm font-semibold" style={{ color: "var(--color-text)" }}>
               <Wallet className="h-4 w-4" style={{ color: "var(--color-text-tertiary)" }} />
-              Growth & Contribution Analysis
+              {t("transactions.overview.growthContributionAnalysis")}
             </h3>
             <div className="flex gap-4">
               <div className="flex items-center gap-1.5">
                 <span className="h-2 w-2 rounded-full" style={{ background: "var(--enroll-brand)" }} />
-                <span className="text-xs" style={{ color: "var(--color-text-secondary)" }}>Balance</span>
+                <span className="text-xs" style={{ color: "var(--color-text-secondary)" }}>{t("transactions.overview.balance")}</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="h-2 w-2 rounded-full" style={{ background: "var(--color-success)" }} />
-                <span className="text-xs" style={{ color: "var(--color-text-secondary)" }}>Inflow</span>
+                <span className="text-xs" style={{ color: "var(--color-text-secondary)" }}>{t("transactions.overview.inflow")}</span>
               </div>
             </div>
           </div>

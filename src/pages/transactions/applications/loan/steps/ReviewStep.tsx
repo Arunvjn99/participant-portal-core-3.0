@@ -82,8 +82,8 @@ export const ReviewStep = ({ transaction, initialData, onDataChange, readOnly }:
               <dd className="font-semibold" style={{ color: "var(--enroll-text-primary)" }}>{formatCurrency(calc.paymentPerPeriod)}</dd>
             </div>
             <div className="flex justify-between py-2">
-              <dt style={{ color: "var(--enroll-text-secondary)" }}>Term</dt>
-              <dd className="font-semibold" style={{ color: "var(--enroll-text-primary)" }}>{tenureYears} years</dd>
+              <dt style={{ color: "var(--enroll-text-secondary)" }}>{t("transactions.analysis.term")}</dt>
+              <dd className="font-semibold" style={{ color: "var(--enroll-text-primary)" }}>{tenureYears} {t("transactions.loan.yearsLabel")}</dd>
             </div>
           </dl>
 
@@ -98,14 +98,14 @@ export const ReviewStep = ({ transaction, initialData, onDataChange, readOnly }:
               }}
             >
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm" role="table" aria-label="Amortization schedule">
+                <table className="w-full text-left text-sm" role="table" aria-label={t("transactions.loan.amortizationSchedule")}>
                   <thead>
                     <tr style={{ borderBottom: "1px solid var(--enroll-card-border)", background: "var(--enroll-soft-bg)" }}>
                       <th className="px-4 py-3 font-medium" style={{ color: "var(--enroll-text-primary)" }}>#</th>
-                      <th className="px-4 py-3 font-medium" style={{ color: "var(--enroll-text-primary)" }}>Payment</th>
-                      <th className="px-4 py-3 font-medium" style={{ color: "var(--enroll-text-primary)" }}>Principal</th>
-                      <th className="px-4 py-3 font-medium" style={{ color: "var(--enroll-text-primary)" }}>Interest</th>
-                      <th className="px-4 py-3 font-medium" style={{ color: "var(--enroll-text-primary)" }}>Balance</th>
+                      <th className="px-4 py-3 font-medium" style={{ color: "var(--enroll-text-primary)" }}>{t("transactions.loan.payment")}</th>
+                      <th className="px-4 py-3 font-medium" style={{ color: "var(--enroll-text-primary)" }}>{t("transactions.loan.principal")}</th>
+                      <th className="px-4 py-3 font-medium" style={{ color: "var(--enroll-text-primary)" }}>{t("transactions.loan.interest")}</th>
+                      <th className="px-4 py-3 font-medium" style={{ color: "var(--enroll-text-primary)" }}>{t("transactions.loan.balance")}</th>
                     </tr>
                   </thead>
                   <tbody>

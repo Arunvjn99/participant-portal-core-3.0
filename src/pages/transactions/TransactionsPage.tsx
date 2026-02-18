@@ -44,7 +44,7 @@ export const TransactionsPage = memo(function TransactionsPage() {
   const location = useLocation();
   const { plans, selectedPlanId, setPlan, hasMultiplePlans } = useMultiPlanFilter();
   const summary = useTransactionSummary(selectedPlanId);
-  const insights = useActivityInsights(selectedPlanId);
+  const insights = useActivityInsights(selectedPlanId, t);
 
   const pageVariants = {
     hidden: { opacity: 0 },

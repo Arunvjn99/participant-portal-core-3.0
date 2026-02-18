@@ -35,7 +35,7 @@ export function TransactionFlowFooter({
     <footer
       className="transaction-flow-footer"
       role="contentinfo"
-      aria-label="Transaction step actions"
+      aria-label={t("transactions.footerStepActionsAria")}
     >
       <div className="transaction-flow-footer__inner">
         <div className="transaction-flow-footer__left">

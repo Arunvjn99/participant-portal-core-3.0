@@ -1,9 +1,27 @@
 import { memo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { StatusBadge } from "../../../components/dashboard/shared/StatusBadge";
 import type { Transaction, TransactionType } from "../../../types/transactions";
 import type { TransactionLifecycleStatus } from "../types";
+
+const TYPE_KEYS: Record<TransactionType, string> = {
+  loan: "transactions.card.typeLoan",
+  withdrawal: "transactions.card.typeWithdrawal",
+  distribution: "transactions.card.typeDistribution",
+  rollover: "transactions.card.typeRollover",
+  transfer: "transactions.card.typeTransfer",
+  rebalance: "transactions.card.typeRebalance",
+};
+
+const STATUS_KEYS: Record<TransactionLifecycleStatus, string> = {
+  pending: "transactions.card.statusPending",
+  processing: "transactions.card.statusProcessing",
+  completed: "transactions.card.statusCompleted",
+  failed: "transactions.card.statusFailed",
+  scheduled: "transactions.card.statusScheduled",
+};
 
 interface TransactionCardProps {
   transaction: Transaction;
@@ -11,23 +29,6 @@ interface TransactionCardProps {
   planName?: string;
   taxType?: string;
 }
-
-const typeLabel: Record<TransactionType, string> = {
-  loan: "Loan",
-  withdrawal: "Withdrawal",
-  distribution: "Distribution",
-  rollover: "Rollover",
-  transfer: "Transfer",
-  rebalance: "Rebalance",
-};
-
-const statusLabel: Record<TransactionLifecycleStatus, string> = {
-  pending: "Pending",
-  processing: "Processing",
-  completed: "Completed",
-  failed: "Failed",
-  scheduled: "Scheduled",
-};
 
 const formatCurrency = (n: number) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
@@ -41,11 +42,12 @@ export const TransactionCard = memo(function TransactionCard({
   planName,
   taxType,
 }: TransactionCardProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const reduced = !!useReducedMotion();
   const [expanded, setExpanded] = useState(false);
   const status = lifecycleStatus ?? mapStatus(transaction.status);
-  const displayName = transaction.displayName ?? typeLabel[transaction.type];
+  const displayName = transaction.displayName ?? t(TYPE_KEYS[transaction.type]);
   const amount = transaction.amount ?? 0;
   const isNegative = transaction.amountNegative ?? ["withdrawal", "distribution", "loan"].includes(transaction.type);
 
@@ -94,7 +96,7 @@ export const TransactionCard = memo(function TransactionCard({
           </p>
         </div>
         <StatusBadge
-          label={statusLabel[status]}
+          label={t(STATUS_KEYS[status])}
           variant={
             status === "completed"
               ? "success"
@@ -124,7 +126,7 @@ export const TransactionCard = memo(function TransactionCard({
           className="shrink-0 rounded-[var(--radius-md)] p-1 text-xs font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
           style={{ color: "var(--color-primary)" }}
         >
-          {expanded ? "Less" : "Details"}
+          {expanded ? t("transactions.card.less") : t("transactions.card.details")}
         </button>
       </div>
       <AnimatePresence>
@@ -139,20 +141,20 @@ export const TransactionCard = memo(function TransactionCard({
           >
             <dl className="space-y-1.5 text-xs" style={{ color: "var(--color-text-secondary)" }}>
               <div>
-                <dt className="font-medium" style={{ color: "var(--color-text)" }}>Settlement date</dt>
+                <dt className="font-medium" style={{ color: "var(--color-text)" }}>{t("transactions.card.settlementDate")}</dt>
                 <dd>{transaction.dateCompleted ?? transaction.dateInitiated ?? "—"}</dd>
               </div>
               <div>
-                <dt className="font-medium" style={{ color: "var(--color-text)" }}>Tax classification</dt>
+                <dt className="font-medium" style={{ color: "var(--color-text)" }}>{t("transactions.card.taxClassification")}</dt>
                 <dd>{taxType ?? "—"}</dd>
               </div>
               <div>
-                <dt className="font-medium" style={{ color: "var(--color-text)" }}>Impact on retirement projection</dt>
+                <dt className="font-medium" style={{ color: "var(--color-text)" }}>{t("transactions.card.impactOnRetirement")}</dt>
                 <dd>{transaction.retirementImpact?.rationale ?? "—"}</dd>
               </div>
               {planName && (
                 <div>
-                  <dt className="font-medium" style={{ color: "var(--color-text)" }}>Related plan</dt>
+                  <dt className="font-medium" style={{ color: "var(--color-text)" }}>{t("transactions.card.relatedPlan")}</dt>
                   <dd>{planName}</dd>
                 </div>
               )}
@@ -162,7 +164,7 @@ export const TransactionCard = memo(function TransactionCard({
               className="mt-3 text-xs font-medium"
               style={{ color: "var(--color-primary)" }}
             >
-              Download confirmation
+              {t("transactions.card.downloadConfirmation")}
             </button>
           </motion.div>
         )}

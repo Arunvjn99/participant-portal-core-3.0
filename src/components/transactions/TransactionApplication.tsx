@@ -113,7 +113,7 @@ export const TransactionApplication = ({
       if (currentStepDefinition.validate) {
         const isValid = await currentStepDefinition.validate(stepData);
         if (!isValid) {
-          setValidationError("Please confirm the terms above");
+          setValidationError(t("transactions.validationConfirmTerms"));
           return;
         }
       }
@@ -134,7 +134,7 @@ export const TransactionApplication = ({
       if (currentStepDefinition.validate) {
         const isValid = await currentStepDefinition.validate(stepData);
         if (!isValid) {
-          setValidationError(isLastStep ? "Please confirm the terms above" : "Please complete all required fields");
+          setValidationError(isLastStep ? t("transactions.validationConfirmTerms") : t("transactions.validationCompleteRequired"));
           return;
         }
       }
@@ -221,7 +221,7 @@ export const TransactionApplication = ({
         <TransactionFlowFooter
           currentStep={currentStep}
           totalSteps={totalSteps}
-          primaryLabel={readOnly ? "Back to Transactions" : isLastStep ? "Submit" : "Next"}
+          primaryLabel={readOnly ? t("transactions.backToTransactions") : isLastStep ? t("transactions.submit") : t("transactions.next")}
           primaryDisabled={false}
           onPrimary={readOnly ? () => navigate("/transactions") : handleNext}
           onBack={handleBack}

@@ -1,4 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -9,11 +10,19 @@ interface SuccessState {
   amount?: number;
 }
 
+const SUCCESS_TYPE_KEYS: Record<SuccessType, string> = {
+  Loan: "transactions.success.typeLoan",
+  Withdrawal: "transactions.success.typeWithdrawal",
+  Transfer: "transactions.success.typeTransfer",
+  Rollover: "transactions.success.typeRollover",
+};
+
 /**
  * Success screen shown after completing a transaction flow.
  * Uses enrollment/transaction design tokens only.
  */
 export function TransactionSuccessScreen() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const state = location.state as { success?: SuccessState } | null;
@@ -27,18 +36,21 @@ export function TransactionSuccessScreen() {
     navigate("/transactions", { replace: true, state: {} });
   };
 
+  const amountFormatted = amount ? amount.toLocaleString(undefined, { style: "currency", currency: "USD" }) : "";
+  const amountInterp = amountFormatted ? t("transactions.success.amountFor", { amount: amountFormatted }) : "";
+  const base = t("transactions.success.requestReceivedBase", { amount: amountInterp });
   const getMessage = () => {
-    const amountText = amount ? ` for ${amount.toLocaleString("en-US", { style: "currency", currency: "USD" })}` : "";
-    const base = `Your request${amountText} has been securely received.`;
     switch (type) {
       case "Transfer":
-        return `${base} Your portfolio will be rebalanced at the next market close (4:00 PM ET).`;
+        return `${base} ${t("transactions.success.transferMessage")}`;
       case "Rollover":
-        return `${base} We are awaiting funds from your external provider.`;
+        return `${base} ${t("transactions.success.rolloverMessage")}`;
       default:
-        return `${base} Admin will review and get back to you.`;
+        return `${base} ${t("transactions.success.defaultMessage")}`;
     }
   };
+
+  const typeLabel = t(SUCCESS_TYPE_KEYS[type]);
 
   return (
     <AnimatePresence>
@@ -56,7 +68,7 @@ export function TransactionSuccessScreen() {
           <CheckCircle2 className="h-10 w-10" style={{ color: "var(--color-success)" }} />
         </div>
         <h2 className="mb-2 text-3xl font-bold" style={{ color: "var(--color-text)" }}>
-          {type} Request Submitted
+          {t("transactions.success.titleSubmitted", { type: typeLabel })}
         </h2>
         <p className="mb-8 text-[var(--color-text-secondary)]">{getMessage()}</p>
         <button
@@ -65,7 +77,7 @@ export function TransactionSuccessScreen() {
           className="rounded-lg px-8 py-3 font-semibold text-white transition-colors hover:opacity-90"
           style={{ background: "var(--enroll-brand)" }}
         >
-          Return to Dashboard
+          {t("transactions.success.returnToDashboard")}
         </button>
       </motion.div>
     </AnimatePresence>

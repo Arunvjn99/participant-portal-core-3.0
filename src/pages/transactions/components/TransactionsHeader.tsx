@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 import { SectionHeader } from "../../../components/dashboard/shared/SectionHeader";
 import type { PlanOption } from "../../../features/transactions/types";
 import { PlanSwitcher } from "../../../features/transactions/components/PlanSwitcher";
@@ -17,13 +18,16 @@ interface TransactionsHeaderProps {
  * Uses global design tokens and shared SectionHeader.
  */
 export const TransactionsHeader = memo(function TransactionsHeader({
-  title = "Retirement Activity",
-  subtitle = "Your retirement activity and transaction intelligence.",
+  title: titleProp,
+  subtitle: subtitleProp,
   plans = [],
   selectedPlanId,
   onPlanSelect,
   hasMultiplePlans,
 }: TransactionsHeaderProps) {
+  const { t } = useTranslation();
+  const title = titleProp ?? t("transactions.title");
+  const subtitle = subtitleProp ?? t("transactions.subtitle");
   return (
     <header className="mb-6 space-y-4">
       <div>
