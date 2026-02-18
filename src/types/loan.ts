@@ -14,6 +14,8 @@ export interface LoanPlanConfig {
   minLoanAmount: number;
   termYearsMin: number;
   termYearsMax: number;
+  /** Max years when "Custom" term is selected (e.g. 15 for residential) */
+  termYearsMaxCustom?: number;
   defaultAnnualRate: number;
   originationFeePct: number;
   allowedPayrollFrequencies: PayrollFrequency[];

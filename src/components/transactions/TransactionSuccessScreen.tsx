@@ -36,7 +36,7 @@ export function TransactionSuccessScreen() {
       case "Rollover":
         return `${base} We are awaiting funds from your external provider.`;
       default:
-        return `${base} Funds typically arrive in 2-3 business days.`;
+        return `${base} Admin will review and get back to you.`;
     }
   };
 

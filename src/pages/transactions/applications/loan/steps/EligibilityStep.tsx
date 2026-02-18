@@ -43,6 +43,7 @@ const generateAmortizationSchedule = (amount: number, rateAnnual: number, years:
 const PURPOSE_OPTIONS = ["General", "Residential", "Hardship", "Education"] as const;
 const PURPOSE_KEYS = ["transactions.loan.purposeGeneral", "transactions.loan.purposeResidential", "transactions.loan.purposeHardship", "transactions.loan.purposeEducation"] as const;
 const TERM_YEARS = [1, 2, 3, 4, 5] as const;
+const CUSTOM_TERM_MAX = DEFAULT_LOAN_PLAN_CONFIG.termYearsMaxCustom ?? 15;
 
 export const EligibilityStep = ({ transaction, initialData, onDataChange, readOnly }: TransactionStepProps) => {
   const { t } = useTranslation();
@@ -58,6 +59,7 @@ export const EligibilityStep = ({ transaction, initialData, onDataChange, readOn
   const tenureYears = initialData?.tenureYears ?? DEFAULT_LOAN_PLAN_CONFIG.termYearsMax;
   const purpose = initialData?.purpose ?? "General";
   const frequency = initialData?.frequency ?? "monthly";
+  const isCustomTerm = tenureYears > DEFAULT_LOAN_PLAN_CONFIG.termYearsMax;
 
   const clampedAmount = Math.min(maxLoan, Math.max(DEFAULT_LOAN_PLAN_CONFIG.minLoanAmount, amount));
   const [amortOpen, setAmortOpen] = useState(false);
@@ -98,6 +100,13 @@ export const EligibilityStep = ({ transaction, initialData, onDataChange, readOn
     [maxLoan, onDataChange]
   );
   const handleTenureChange = useCallback((years: number) => onDataChange?.({ tenureYears: years }), [onDataChange]);
+  const handleCustomTermChange = useCallback(
+    (value: number) => {
+      const years = Math.round(Math.max(DEFAULT_LOAN_PLAN_CONFIG.termYearsMin, Math.min(CUSTOM_TERM_MAX, value)));
+      onDataChange?.({ tenureYears: years });
+    },
+    [onDataChange]
+  );
   const handlePurposeChange = useCallback((p: string) => onDataChange?.({ purpose: p }), [onDataChange]);
 
   if (readOnly) {
@@ -202,15 +211,49 @@ export const EligibilityStep = ({ transaction, initialData, onDataChange, readOn
                   onClick={() => handleTenureChange(y)}
                   className="px-4 py-2.5 rounded-[var(--radius-lg)] border text-sm font-bold transition-colors"
                   style={{
-                    background: tenureYears === y ? "var(--enroll-brand)" : "var(--enroll-soft-bg)",
-                    borderColor: tenureYears === y ? "var(--enroll-brand)" : "var(--enroll-card-border)",
-                    color: tenureYears === y ? "var(--color-text-inverse)" : "var(--enroll-text-secondary)",
+                    background: !isCustomTerm && tenureYears === y ? "var(--enroll-brand)" : "var(--enroll-soft-bg)",
+                    borderColor: !isCustomTerm && tenureYears === y ? "var(--enroll-brand)" : "var(--enroll-card-border)",
+                    color: !isCustomTerm && tenureYears === y ? "var(--color-text-inverse)" : "var(--enroll-text-secondary)",
                   }}
                 >
                   {y}Y
                 </button>
               ))}
+              <button
+                type="button"
+                onClick={() => handleTenureChange(isCustomTerm ? tenureYears : 6)}
+                className="px-4 py-2.5 rounded-[var(--radius-lg)] border text-sm font-bold transition-colors"
+                style={{
+                  background: isCustomTerm ? "var(--enroll-brand)" : "var(--enroll-soft-bg)",
+                  borderColor: isCustomTerm ? "var(--enroll-brand)" : "var(--enroll-card-border)",
+                  color: isCustomTerm ? "var(--color-text-inverse)" : "var(--enroll-text-secondary)",
+                }}
+              >
+                {t("transactions.loan.custom")}
+              </button>
             </div>
+            {isCustomTerm && (
+              <div className="mt-3 flex items-center gap-3">
+                <label htmlFor="custom-term-years" className="text-sm font-medium" style={{ color: "var(--enroll-text-secondary)" }}>
+                  {t("transactions.loan.custom")} (years)
+                </label>
+                <input
+                  id="custom-term-years"
+                  type="number"
+                  min={DEFAULT_LOAN_PLAN_CONFIG.termYearsMin}
+                  max={CUSTOM_TERM_MAX}
+                  value={tenureYears}
+                  onChange={(e) => handleCustomTermChange(parseFloat(e.target.value) || DEFAULT_LOAN_PLAN_CONFIG.termYearsMin)}
+                  className="w-20 px-3 py-2 rounded-[var(--radius-lg)] border text-sm font-bold text-right"
+                  style={{
+                    background: "var(--enroll-card-bg)",
+                    borderColor: "var(--enroll-card-border)",
+                    color: "var(--enroll-text-primary)",
+                  }}
+                />
+                <span className="text-sm" style={{ color: "var(--enroll-text-muted)" }}>years</span>
+              </div>
+            )}
           </div>
 
           {/* TenureInsights */}

@@ -10,6 +10,7 @@ export const DEFAULT_LOAN_PLAN_CONFIG: LoanPlanConfig = {
   minLoanAmount: 1_000,
   termYearsMin: 1,
   termYearsMax: 5,
+  termYearsMaxCustom: 15,
   defaultAnnualRate: 0.085,
   originationFeePct: 0.01,
   allowedPayrollFrequencies: ["monthly", "biweekly", "semimonthly"],
