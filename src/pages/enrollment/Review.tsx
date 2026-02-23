@@ -133,9 +133,19 @@ export const Review = () => {
   const [showAdvisorModal, setShowAdvisorModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showEnrollmentFeedback, setShowEnrollmentFeedback] = useState(false);
+  const [pendingFeedback, setPendingFeedback] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
   const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [expandedInsight, setExpandedInsight] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!pendingFeedback || showSuccessModal) return;
+    const timer = setTimeout(() => {
+      setPendingFeedback(false);
+      setShowEnrollmentFeedback(true);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [pendingFeedback, showSuccessModal]);
 
   const showFeedback = useCallback((msg: string) => {
     if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current);
@@ -853,7 +863,7 @@ export const Review = () => {
           setShowSuccessModal(false);
           if (!sessionStorage.getItem("enrollment_feedback_shown")) {
             sessionStorage.setItem("enrollment_feedback_shown", "1");
-            setTimeout(() => setShowEnrollmentFeedback(true), 350);
+            setPendingFeedback(true);
           } else {
             navigate("/dashboard/post-enrollment");
           }
@@ -862,7 +872,7 @@ export const Review = () => {
           setShowSuccessModal(false);
           if (!sessionStorage.getItem("enrollment_feedback_shown")) {
             sessionStorage.setItem("enrollment_feedback_shown", "1");
-            setTimeout(() => setShowEnrollmentFeedback(true), 350);
+            setPendingFeedback(true);
           } else {
             navigate("/dashboard/post-enrollment");
           }
