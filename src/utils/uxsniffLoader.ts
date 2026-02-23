@@ -6,6 +6,7 @@ export function loadUXsniff(): void {
   const script = document.createElement("script");
   script.id = "uxsniff-script";
   script.async = true;
+  script.defer = true;
   script.src = "https://api.uxsniff.com/cdn/js/uxsnf_track.js";
   document.head.appendChild(script);
 }
