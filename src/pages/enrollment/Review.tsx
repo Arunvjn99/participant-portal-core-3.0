@@ -853,7 +853,7 @@ export const Review = () => {
           setShowSuccessModal(false);
           if (!sessionStorage.getItem("enrollment_feedback_shown")) {
             sessionStorage.setItem("enrollment_feedback_shown", "1");
-            setShowEnrollmentFeedback(true);
+            setTimeout(() => setShowEnrollmentFeedback(true), 350);
           } else {
             navigate("/dashboard/post-enrollment");
           }
@@ -862,7 +862,7 @@ export const Review = () => {
           setShowSuccessModal(false);
           if (!sessionStorage.getItem("enrollment_feedback_shown")) {
             sessionStorage.setItem("enrollment_feedback_shown", "1");
-            setShowEnrollmentFeedback(true);
+            setTimeout(() => setShowEnrollmentFeedback(true), 350);
           } else {
             navigate("/dashboard/post-enrollment");
           }
