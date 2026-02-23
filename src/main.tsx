@@ -29,11 +29,11 @@ function RootWithLanguageKey() {
   return (
     <AuthProvider>
       <OtpProvider>
-        <UserProvider>
-          <ThemeProvider>
+        <ThemeProvider>
+          <UserProvider>
             <RouterProvider key={i18nInstance.language || "en"} router={router} />
-          </ThemeProvider>
-        </UserProvider>
+          </UserProvider>
+        </ThemeProvider>
       </OtpProvider>
     </AuthProvider>
   );

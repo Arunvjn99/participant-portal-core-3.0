@@ -38,7 +38,8 @@ export class RouteErrorBoundary extends Component<Props, State> {
             <div className="mt-6 flex gap-3">
               <Link
                 to="/dashboard"
-                className="rounded-lg bg-[#0b5fff] px-4 py-2 text-sm font-medium text-white hover:bg-[#0047ba] focus:outline-none focus:ring-2 focus:ring-[#0b5fff] focus:ring-offset-2"
+                className="rounded-lg px-4 py-2 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2"
+                style={{ backgroundColor: "var(--color-primary, #0b5fff)" }}
               >
                 Go to Dashboard
               </Link>

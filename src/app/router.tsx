@@ -30,6 +30,7 @@ import { EnrollmentInvestmentsContent } from "../components/enrollment/Enrollmen
 import { EnrollmentReviewContent } from "../components/enrollment/EnrollmentReviewContent";
 import { RootLayout } from "../layouts/RootLayout";
 import { ProtectedRoute } from "../components/auth/ProtectedRoute";
+import { ThemeSettings } from "../pages/settings/ThemeSettings";
 
 /**
  * Router configuration using createBrowserRouter (React Router v6+)
@@ -148,6 +149,10 @@ export const router = createBrowserRouter([
       {
         path: "/transactions/:transactionId",
         element: <ProtectedRoute><TransactionAnalysis /></ProtectedRoute>,
+      },
+      {
+        path: "/settings/theme",
+        element: <ProtectedRoute><ThemeSettings /></ProtectedRoute>,
       },
       {
         path: "/investments",

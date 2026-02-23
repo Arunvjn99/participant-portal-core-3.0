@@ -115,7 +115,7 @@ export const Login = () => {
         <div className="flex justify-end">
           <a
             href="#"
-            className="text-sm text-blue-600 no-underline transition-colors hover:underline dark:text-blue-400"
+            className="text-sm text-primary no-underline transition-colors hover:underline dark:text-blue-400"
             onClick={(e) => {
               e.preventDefault();
               handleForgotPassword();
@@ -158,7 +158,7 @@ export const Login = () => {
         Don&apos;t have an account?{" "}
         <Link
           to="/signup"
-          className="text-blue-600 no-underline hover:underline dark:text-blue-400"
+          className="text-primary no-underline hover:underline dark:text-blue-400"
         >
           Sign up
         </Link>
@@ -168,7 +168,7 @@ export const Login = () => {
         {t("auth.stillNeedHelp")}{" "}
         <a
           href="#"
-          className="text-blue-600 no-underline hover:underline dark:text-blue-400"
+          className="text-primary no-underline hover:underline dark:text-blue-400"
           onClick={(e) => {
             e.preventDefault();
             handleHelpCenter();

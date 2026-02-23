@@ -1,10 +1,10 @@
 import * as React from "react";
 
 /* Figma 662-582: active = blue fill, upcoming = grey outline, connector = dashed grey / solid blue */
-const BLUE_ACTIVE = "#2563eb";
-const GREY_LINE = "#e0e0e0";
-const GREY_LABEL = "#9e9e9e";
-const GREY_LABEL_ACTIVE = "#424242";
+const BLUE_ACTIVE = "var(--color-primary, #2563eb)";
+const GREY_LINE = "var(--color-border, #e0e0e0)";
+const GREY_LABEL = "var(--color-text-secondary, #9e9e9e)";
+const GREY_LABEL_ACTIVE = "var(--color-text, #424242)";
 
 export interface CustomStepperProps {
   steps: string[];

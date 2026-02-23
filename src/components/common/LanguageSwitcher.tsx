@@ -73,7 +73,8 @@ export default function LanguageSwitcher() {
               type="button"
               onClick={() => handleChange(code)}
               role="menuitem"
-              className={`w-full text-left px-3 py-2 text-sm hover:bg-slate-50 dark:hover:bg-slate-700 dark:text-slate-200 ${currentLang === code ? "font-medium text-[#0b5fff] dark:text-blue-400" : ""}`}
+              className={`w-full text-left px-3 py-2 text-sm hover:bg-slate-50 dark:hover:bg-slate-700 dark:text-slate-200 ${currentLang === code ? "font-medium dark:text-blue-400" : ""}`}
+              style={currentLang === code ? { color: "var(--color-primary)" } : undefined}
             >
               {t(labelKey)}
             </button>

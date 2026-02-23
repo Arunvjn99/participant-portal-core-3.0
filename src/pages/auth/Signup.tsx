@@ -1,4 +1,4 @@
-import { useState, useEffect, type FormEvent } from "react";
+import { useState, useEffect, useRef, useMemo, type FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import * as Label from "@radix-ui/react-label";
 import {
@@ -12,6 +12,7 @@ import { Logo } from "../../components/brand/Logo";
 import { useAuth } from "../../context/AuthContext";
 import { useOtp } from "../../context/OtpContext";
 import { supabase } from "../../lib/supabase";
+import { US_STATES } from "../../constants/usStates";
 
 interface Company {
   id: string;
@@ -29,7 +30,7 @@ interface FormErrors {
 
 function validate(
   name: string,
-  location: string,
+  selectedState: string | null,
   companyId: string,
   email: string,
   password: string,
@@ -37,7 +38,7 @@ function validate(
 ): FormErrors {
   const errors: FormErrors = {};
   if (!name.trim()) errors.name = "Name is required.";
-  if (!location.trim()) errors.location = "Location is required.";
+  if (!selectedState) errors.location = "Please select a state.";
   if (!companyId) errors.companyId = "Please select a company.";
   if (!email.trim()) errors.email = "Email is required.";
   if (password.length < 6) errors.password = "Password must be at least 6 characters.";
@@ -51,7 +52,12 @@ export const Signup = () => {
   const { resetOtp } = useOtp();
 
   const [name, setName] = useState("");
-  const [location, setLocation] = useState("");
+  const [selectedState, setSelectedState] = useState<string | null>(null);
+  const [stateSearchQuery, setStateSearchQuery] = useState("");
+  const [stateDropdownOpen, setStateDropdownOpen] = useState(false);
+  const [stateHighlightIndex, setStateHighlightIndex] = useState(0);
+  const stateDropdownRef = useRef<HTMLDivElement>(null);
+
   const [companyId, setCompanyId] = useState("");
   const [companies, setCompanies] = useState<Company[]>([]);
   const [companiesLoading, setCompaniesLoading] = useState(true);
@@ -63,6 +69,16 @@ export const Signup = () => {
   const [serverError, setServerError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const filteredStates = useMemo(() => {
+    const q = stateSearchQuery.trim().toLowerCase();
+    if (!q) return US_STATES;
+    return US_STATES.filter((s) => s.name.toLowerCase().includes(q));
+  }, [stateSearchQuery]);
+
+  const selectedStateName = selectedState
+    ? US_STATES.find((s) => s.code === selectedState)?.name ?? ""
+    : "";
 
   useEffect(() => {
     let cancelled = false;
@@ -85,12 +101,27 @@ export const Signup = () => {
     return () => { cancelled = true; };
   }, []);
 
+  useEffect(() => {
+    if (!stateDropdownOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (stateDropdownRef.current && !stateDropdownRef.current.contains(e.target as Node)) {
+        setStateDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [stateDropdownOpen]);
+
+  useEffect(() => {
+    setStateHighlightIndex(0);
+  }, [stateSearchQuery, stateDropdownOpen]);
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setServerError(null);
     setSuccessMessage(null);
 
-    const fieldErrors = validate(name, location, companyId, email, password, confirmPassword);
+    const fieldErrors = validate(name, selectedState, companyId, email, password, confirmPassword);
     setErrors(fieldErrors);
     if (Object.keys(fieldErrors).length > 0) return;
 
@@ -99,7 +130,7 @@ export const Signup = () => {
       await signUp(email, password, {
         name: name.trim(),
         company_id: companyId,
-        location: location.trim(),
+        location: selectedState ?? "",
       });
 
       await supabase.auth.signOut();
@@ -147,16 +178,129 @@ export const Signup = () => {
         error={errors.name}
       />
 
-      <AuthInput
-        label="Location"
-        type="text"
-        name="location"
-        id="signup-location"
-        placeholder="City, State"
-        value={location}
-        onChange={(e) => setLocation(e.target.value)}
-        error={errors.location}
-      />
+      <div className="flex w-full flex-col gap-2" ref={stateDropdownRef}>
+        <Label.Root
+          htmlFor="signup-state"
+          className="text-sm font-medium text-slate-900 dark:text-slate-100"
+        >
+          State
+        </Label.Root>
+        <div className="relative">
+          <input
+            id="signup-state"
+            type="text"
+            autoComplete="off"
+            role="combobox"
+            aria-expanded={stateDropdownOpen}
+            aria-haspopup="listbox"
+            aria-controls="signup-state-listbox"
+            aria-activedescendant={
+              stateDropdownOpen && filteredStates[stateHighlightIndex]
+                ? `signup-state-option-${filteredStates[stateHighlightIndex].code}`
+                : undefined
+            }
+            aria-autocomplete="list"
+            aria-invalid={errors.location ? true : undefined}
+            aria-describedby={errors.location ? "signup-state-error" : undefined}
+            placeholder="Search or select state"
+            value={stateDropdownOpen ? stateSearchQuery : selectedStateName}
+            onChange={(e) => {
+              setStateSearchQuery(e.target.value);
+              setStateDropdownOpen(true);
+            }}
+            onFocus={() => setStateDropdownOpen(true)}
+            onKeyDown={(e) => {
+              if (!stateDropdownOpen) {
+                if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown") {
+                  e.preventDefault();
+                  setStateDropdownOpen(true);
+                }
+                return;
+              }
+              if (e.key === "ArrowDown") {
+                e.preventDefault();
+                setStateHighlightIndex((i) =>
+                  i < filteredStates.length - 1 ? i + 1 : 0
+                );
+                return;
+              }
+              if (e.key === "ArrowUp") {
+                e.preventDefault();
+                setStateHighlightIndex((i) =>
+                  i > 0 ? i - 1 : filteredStates.length - 1
+                );
+                return;
+              }
+              if (e.key === "Enter") {
+                e.preventDefault();
+                const option = filteredStates[stateHighlightIndex];
+                if (option) {
+                  setSelectedState(option.code);
+                  setStateSearchQuery("");
+                  setStateDropdownOpen(false);
+                  setErrors((prev) => ({ ...prev, location: undefined }));
+                }
+                return;
+              }
+              if (e.key === "Escape") {
+                e.preventDefault();
+                setStateDropdownOpen(false);
+                setStateSearchQuery("");
+              }
+            }}
+            className={`w-full rounded-lg border bg-white px-4 py-3 text-base transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:bg-slate-800 dark:focus:border-blue-400 dark:focus:ring-blue-400/20 ${
+              selectedStateName
+                ? "text-slate-900 dark:text-slate-100"
+                : "text-slate-500 dark:text-slate-400"
+            } ${
+              errors.location
+                ? "border-red-500 focus:border-red-500 focus:ring-red-500/20 dark:border-red-500"
+                : "border-slate-200 dark:border-slate-600"
+            }`}
+          />
+          {stateDropdownOpen && (
+            <ul
+              id="signup-state-listbox"
+              role="listbox"
+              className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 shadow-lg dark:border-slate-600 dark:bg-slate-800"
+            >
+              {filteredStates.length === 0 ? (
+                <li className="px-4 py-3 text-sm text-slate-500 dark:text-slate-400">
+                  No matching state
+                </li>
+              ) : (
+                filteredStates.map((state, index) => (
+                  <li
+                    key={state.code}
+                    id={`signup-state-option-${state.code}`}
+                    role="option"
+                    aria-selected={selectedState === state.code}
+                    className={`cursor-pointer px-4 py-2.5 text-sm ${
+                      index === stateHighlightIndex
+                        ? "bg-blue-50 text-blue-900 dark:bg-blue-900/30 dark:text-blue-100"
+                        : "text-slate-900 dark:text-slate-100"
+                    }`}
+                    onMouseEnter={() => setStateHighlightIndex(index)}
+                    onClick={() => {
+                      setSelectedState(state.code);
+                      setStateSearchQuery("");
+                      setStateDropdownOpen(false);
+                      setErrors((prev) => ({ ...prev, location: undefined }));
+                    }}
+                  >
+                    {state.name}
+                  </li>
+                ))
+              )}
+            </ul>
+          )}
+        </div>
+        {errors.location && (
+          <span id="signup-state-error" className="text-sm text-red-500" role="alert">
+            {errors.location}
+          </span>
+        )}
+      </div>
 
       <div className="flex w-full flex-col gap-2">
         <Label.Root
@@ -230,7 +374,11 @@ export const Signup = () => {
         error={errors.confirmPassword}
       />
 
-      <AuthButton type="submit" disabled={loading || companiesLoading} className="w-full">
+      <AuthButton
+        type="submit"
+        disabled={loading || companiesLoading || selectedState === null}
+        className="w-full"
+      >
         {loading ? "Creating account…" : "Sign Up"}
       </AuthButton>
 
@@ -238,7 +386,7 @@ export const Signup = () => {
         Already have an account?{" "}
         <Link
           to="/"
-          className="text-blue-600 no-underline hover:underline dark:text-blue-400"
+          className="text-primary no-underline hover:underline dark:text-blue-400"
         >
           Sign in
         </Link>

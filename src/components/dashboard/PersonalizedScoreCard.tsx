@@ -30,7 +30,7 @@ export const PersonalizedScoreCard = () => {
     >
       {/* Icon: one-time pulse on first card hover */}
       <motion.div
-        className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border border-sky-200 bg-white text-blue-600 shadow-md dark:border-sky-800 dark:bg-slate-800 dark:text-blue-400"
+        className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border border-sky-200 bg-white text-primary shadow-md dark:border-sky-800 dark:bg-slate-800 dark:text-blue-400"
         aria-hidden
         animate={
           canHover && !reduced && hasPulsed
@@ -53,7 +53,7 @@ export const PersonalizedScoreCard = () => {
 
       {/* CTAs - primary: color shift only, secondary: border + background tint */}
       <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
-        <Button className="w-full rounded-lg bg-blue-600 px-6 py-2.5 font-semibold text-white shadow-md transition-colors hover:bg-blue-700 hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus-visible:ring-blue-400 sm:w-auto">
+        <Button className="w-full rounded-lg bg-primary px-6 py-2.5 font-semibold text-white shadow-md transition-colors hover:bg-blue-700 hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus-visible:ring-blue-400 sm:w-auto">
           {t("dashboard.enrolNow")}
         </Button>
         <a

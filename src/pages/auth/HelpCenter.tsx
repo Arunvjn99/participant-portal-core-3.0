@@ -27,7 +27,7 @@ export const HelpCenter = () => {
           </div>
           <a
             href="tel:1-800-555-0199"
-            className="text-base text-blue-600 no-underline hover:underline dark:text-blue-400"
+            className="text-base text-primary no-underline hover:underline dark:text-blue-400"
           >
             1-800-555-0199
           </a>
@@ -38,7 +38,7 @@ export const HelpCenter = () => {
           </div>
           <a
             href="mailto:support@example.com"
-            className="text-base text-blue-600 no-underline hover:underline dark:text-blue-400"
+            className="text-base text-primary no-underline hover:underline dark:text-blue-400"
           >
             support@example.com
           </a>
@@ -46,7 +46,7 @@ export const HelpCenter = () => {
       </div>
       <a
         href="#"
-        className="text-center text-sm text-blue-600 no-underline hover:underline dark:text-blue-400"
+        className="text-center text-sm text-primary no-underline hover:underline dark:text-blue-400"
         onClick={(e) => {
           e.preventDefault();
           handleBackToSignIn();

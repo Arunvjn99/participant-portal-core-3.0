@@ -104,8 +104,8 @@ export const PlanOverviewCard = ({
           >
             <defs>
               <linearGradient id="ped-plan-chart-grad" x1="0" y1="1" x2="0" y2="0">
-                <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.2" />
-                <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
+                <stop offset="0%" stopColor="var(--color-primary, #3b82f6)" stopOpacity="0.2" />
+                <stop offset="100%" stopColor="var(--color-primary, #3b82f6)" stopOpacity="0" />
               </linearGradient>
             </defs>
             {(() => {
@@ -118,7 +118,7 @@ export const PlanOverviewCard = ({
               return (
                 <>
                   <path d={areaPath} fill="url(#ped-plan-chart-grad)" />
-                  <path d={linePath} fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d={linePath} fill="none" stroke="var(--color-primary, #2563eb)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </>
               );
             })()}

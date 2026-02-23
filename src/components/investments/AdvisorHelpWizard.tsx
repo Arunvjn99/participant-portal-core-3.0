@@ -126,10 +126,10 @@ export const AdvisorHelpWizard = ({
         </button>
 
         {/* Left panel - RetireReady AI branding */}
-        <div className="w-64 shrink-0 bg-[#2563eb] flex flex-col justify-between p-6 rounded-l-2xl">
+        <div className="w-64 shrink-0 flex flex-col justify-between p-6 rounded-l-2xl" style={{ backgroundColor: "var(--color-primary)" }}>
           <div>
             <div className="w-14 h-14 rounded-xl bg-white flex items-center justify-center mb-4">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2" aria-hidden="true">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary, #2563eb)" strokeWidth="2" aria-hidden="true">
                 <path d="M12 2a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" />
                 <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
                   <line x1="12" y1="19" x2="12" y2="23" />
@@ -158,7 +158,7 @@ export const AdvisorHelpWizard = ({
                 <div
                   className={`max-w-[85%] rounded-2xl px-4 py-3 ${
                     m.role === "user"
-                      ? "bg-blue-600 text-white"
+                      ? "bg-primary text-white"
                       : "bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100"
                   }`}
                 >
@@ -182,7 +182,7 @@ export const AdvisorHelpWizard = ({
               <button
                 type="button"
                 onClick={() => handleSend()}
-                className="shrink-0 w-12 h-12 rounded-xl bg-blue-600 hover:bg-blue-700 flex items-center justify-center text-white transition-colors"
+                className="shrink-0 w-12 h-12 rounded-xl bg-primary hover:opacity-90 flex items-center justify-center text-white transition-colors"
                 aria-label="Send"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

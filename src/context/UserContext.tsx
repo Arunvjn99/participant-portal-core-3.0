@@ -7,6 +7,7 @@ import {
 } from "react";
 import type { User } from "@supabase/supabase-js";
 import { useAuth } from "./AuthContext";
+import { useTheme } from "./ThemeContext";
 import { supabase } from "../lib/supabase";
 
 export interface Profile {
@@ -21,6 +22,7 @@ export interface Company {
   name: string;
   brand_primary: string | null;
   brand_secondary: string | null;
+  style_config?: string | null;
 }
 
 interface UserContextValue {
@@ -34,6 +36,7 @@ const UserContext = createContext<UserContextValue | null>(null);
 
 export function UserProvider({ children }: { children: ReactNode }) {
   const { user: authUser, loading: authLoading } = useAuth();
+  const { setCompanyBranding } = useTheme();
 
   const [profile, setProfile] = useState<Profile | null>(null);
   const [company, setCompany] = useState<Company | null>(null);
@@ -72,19 +75,25 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
       const { data: companyData } = await supabase
         .from("companies")
-        .select("id, name, brand_primary, brand_secondary")
+        .select("id, name, brand_primary, brand_secondary, style_config")
         .eq("id", profileData.company_id)
         .single();
 
       if (cancelled) return;
 
-      setCompany(companyData ?? null);
+      const company = companyData as Company | null;
+      setCompany(company);
+
+      if (company?.name) {
+        setCompanyBranding(company.name, company.style_config);
+      }
+
       setProfileLoading(false);
     };
 
     fetchUserData();
     return () => { cancelled = true; };
-  }, [authUser, authLoading]);
+  }, [authUser, authLoading, setCompanyBranding]);
 
   const loading = authLoading || profileLoading;
 

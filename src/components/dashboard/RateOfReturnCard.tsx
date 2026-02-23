@@ -96,8 +96,8 @@ export const RateOfReturnCard = ({ confidencePct, message, timeRange: initialRan
         >
           <defs>
             <linearGradient id="ror-area-fill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#22c55e" stopOpacity="0.2" />
-              <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.05" />
+              <stop offset="0%" stopColor="var(--color-success, #22c55e)" stopOpacity="0.2" />
+              <stop offset="100%" stopColor="var(--color-primary, #3b82f6)" stopOpacity="0.05" />
             </linearGradient>
           </defs>
           {/* Grid lines */}
@@ -159,14 +159,14 @@ export const RateOfReturnCard = ({ confidencePct, message, timeRange: initialRan
           {/* Shaded area between lines */}
           <path d={areaPath} fill="url(#ror-area-fill)" />
           {/* Blue line */}
-          <path d={bluePath} fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d={bluePath} fill="none" stroke="var(--color-primary, #2563eb)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           {BLUE_LINE.map((v, i) => (
-            <circle key={`b-${i}`} cx={xScale(i)} cy={yScale(v)} r="4" fill="#2563eb" />
+            <circle key={`b-${i}`} cx={xScale(i)} cy={yScale(v)} r="4" fill="var(--color-primary, #2563eb)" />
           ))}
           {/* Green line */}
-          <path d={greenPath} fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d={greenPath} fill="none" stroke="var(--color-success, #22c55e)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           {GREEN_LINE.map((v, i) => (
-            <circle key={`g-${i}`} cx={xScale(i)} cy={yScale(v)} r="4" fill="#22c55e" />
+            <circle key={`g-${i}`} cx={xScale(i)} cy={yScale(v)} r="4" fill="var(--color-success, #22c55e)" />
           ))}
         </svg>
         {tooltip && (
@@ -183,7 +183,7 @@ export const RateOfReturnCard = ({ confidencePct, message, timeRange: initialRan
 
       {/* Confidence Indicator - light green section */}
       <div className="ped-ror__confidence flex flex-wrap items-center gap-2 rounded-lg bg-emerald-50 px-4 py-3 dark:bg-emerald-950/30 dark:border dark:border-emerald-800/30 mb-4">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" className="shrink-0" aria-hidden>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success, #22c55e)" strokeWidth="2" className="shrink-0" aria-hidden>
           <path d="M 0 20 L 4 16 L 8 20 L 16 12 L 24 20" />
         </svg>
         <div className="flex-1 min-w-0">

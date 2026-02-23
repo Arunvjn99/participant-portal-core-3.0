@@ -2,11 +2,11 @@ import * as React from "react";
 
 const STEPS = ["Plan", "Contribution", "Auto Increase", "Investment", "Review"];
 
-const GREEN = "#10b981";
+const GREEN = "var(--color-success, #10b981)";
 const PRIMARY = "var(--color-primary, #2563eb)";
-const GREY_LINE = "#e5e7eb";
-const GREY_LABEL = "#6b7280";
-const LABEL_ACTIVE = "#111827";
+const GREY_LINE = "var(--color-border, #e5e7eb)";
+const GREY_LABEL = "var(--color-text-secondary, #6b7280)";
+const LABEL_ACTIVE = "var(--color-text, #111827)";
 
 export interface HeaderStepperProps {
   /** Current step index (0-based). */

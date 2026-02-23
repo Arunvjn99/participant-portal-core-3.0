@@ -114,11 +114,12 @@ export const EnrollmentManagement = () => {
               type="button"
               onClick={() => setFilter(f.value)}
               aria-pressed={filter === f.value}
-              className={`rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900 ${
+              className={`rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-900 ${
                 filter === f.value
-                  ? "border-blue-600 bg-blue-600 text-white dark:border-blue-500 dark:bg-blue-600"
+                  ? "text-white"
                   : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:bg-slate-700"
               }`}
+              style={filter === f.value ? { backgroundColor: "var(--color-primary)", borderColor: "var(--color-primary)" } : undefined}
               whileHover={reducedMotion ? undefined : { scale: 1.02 }}
               whileTap={reducedMotion ? undefined : { scale: 0.98 }}
               transition={{ duration: 0.15, ease: "easeOut" }}

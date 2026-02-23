@@ -33,9 +33,8 @@ export const PlanSelectionCard = ({
     return (
       <DashboardCard
         isSelected={isSelected}
-        className={cn(
-          "plan-selection-card--standard-wrapper border-2 border-[#00bba7] bg-white p-5 md:p-6 dark:border-[#00bba7]/70 dark:bg-slate-800"
-        )}
+        className="plan-selection-card--standard-wrapper border-2 bg-white p-5 md:p-6 dark:bg-slate-800"
+        style={{ borderColor: "var(--color-accent, #00bba7)" }}
       >
         <div
           className="flex flex-col gap-4"
@@ -47,11 +46,18 @@ export const PlanSelectionCard = ({
             <div className="plan-selection-card__header-left">
               <div className="mb-2 flex items-center gap-3">
                 {fitPercentage !== undefined && (
-                  <span className="inline-flex h-[30px] items-center rounded-full border border-[#a4f4cf] bg-[#ecfdf5] px-[13px] text-[12px] font-semibold leading-4 text-[#007a55]">
+                  <span
+                    className="inline-flex h-[30px] items-center rounded-full border px-[13px] text-[12px] font-semibold leading-4"
+                    style={{
+                      borderColor: "var(--color-success, #a4f4cf)",
+                      backgroundColor: "var(--color-success, #16a34a)1a",
+                      color: "var(--color-success, #007a55)",
+                    }}
+                  >
                     {fitPercentage}% Fit
                   </span>
                 )}
-                <span className="text-[12px] leading-4 text-[#62748e]">Based on your input</span>
+                <span className="text-[12px] leading-4" style={{ color: "var(--color-text-secondary)" }}>Based on your input</span>
               </div>
               <h3 className="plan-selection-card__title">{planName}</h3>
               <p className="plan-selection-card__match-info">{matchInfo}</p>

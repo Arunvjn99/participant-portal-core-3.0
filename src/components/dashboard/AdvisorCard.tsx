@@ -53,7 +53,7 @@ export const AdvisorCard = ({
             {description}
           </p>
           <div className="mt-4">
-            <Button className="rounded-lg bg-blue-600 px-5 py-2.5 font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-400">
+            <Button className="rounded-lg bg-primary px-5 py-2.5 font-medium text-white hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-blue-400">
               Contact
             </Button>
           </div>

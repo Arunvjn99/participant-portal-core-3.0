@@ -11,11 +11,11 @@ interface AuthButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<AuthButtonVariant, string> = {
   primary:
-    "bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 focus:ring-blue-500 dark:bg-blue-500 dark:hover:bg-blue-600 dark:active:bg-blue-700 dark:focus:ring-blue-400",
+    "bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] active:bg-[var(--color-primary-active)] focus:ring-[var(--color-primary)]",
   secondary:
-    "border border-slate-200 bg-transparent text-slate-900 hover:bg-slate-50 focus:ring-blue-500 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-700 dark:focus:ring-blue-400",
+    "border border-slate-200 bg-transparent text-slate-900 hover:bg-slate-50 focus:ring-[var(--color-primary)] dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-700",
   ghost:
-    "bg-transparent text-slate-900 hover:bg-slate-50 focus:ring-blue-500 dark:text-slate-100 dark:hover:bg-slate-700 dark:focus:ring-blue-400",
+    "bg-transparent text-slate-900 hover:bg-slate-50 focus:ring-[var(--color-primary)] dark:text-slate-100 dark:hover:bg-slate-700",
 };
 
 export const AuthButton = ({

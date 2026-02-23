@@ -48,7 +48,7 @@ export const VerifyCode = () => {
       <div className="flex flex-col items-center gap-3">
         <a
           href="#"
-          className="text-sm text-blue-600 no-underline hover:underline dark:text-blue-400"
+          className="text-sm text-primary no-underline hover:underline dark:text-blue-400"
           onClick={(e) => e.preventDefault()}
           aria-label={t("auth.resendCode")}
         >
@@ -56,7 +56,7 @@ export const VerifyCode = () => {
         </a>
         <a
           href="#"
-          className="text-sm text-blue-600 no-underline hover:underline dark:text-blue-400"
+          className="text-sm text-primary no-underline hover:underline dark:text-blue-400"
           onClick={(e) => {
             e.preventDefault();
             handleBackToSignIn();

@@ -102,10 +102,11 @@ export function EnrollmentStepper({
                       isCompleted
                         ? "bg-emerald-500 text-white scale-100"
                         : isCurrent
-                          ? "bg-indigo-600 text-white shadow-[0_0_0_4px_rgba(99,102,241,0.1)] scale-110 dark:bg-indigo-500"
+                          ? "text-white scale-110"
                           : "bg-white border-2 border-slate-200 text-slate-400 scale-100 dark:bg-slate-800 dark:border-slate-600"
                     }
                   `}
+                  style={isCurrent ? { backgroundColor: "var(--color-primary)" } : undefined}
                 >
                   {isCompleted ? (
                     <Check size={14} strokeWidth={3} />

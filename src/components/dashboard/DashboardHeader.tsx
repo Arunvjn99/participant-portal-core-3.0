@@ -8,6 +8,7 @@ import { useDemoUser, clearDemoUser } from "@/hooks/useDemoUser";
 import { useAuth } from "@/context/AuthContext";
 import { useOtp } from "@/context/OtpContext";
 import { useUser } from "@/context/UserContext";
+import { useTheme } from "@/context/ThemeContext";
 
 /* ────────────────────────────── Nav config ────────────────────────────── */
 
@@ -119,7 +120,9 @@ export const DashboardHeader = () => {
     return location.pathname === to;
   };
 
-  const { logo, footer } = branding;
+  const { footer } = branding;
+  const { currentColors } = useTheme();
+  const companyLogo = currentColors.logo || branding.logo.src;
 
   return (
     <>
@@ -134,14 +137,15 @@ export const DashboardHeader = () => {
         {/* ── Left: Logos ── */}
         <div className="flex items-center gap-3 shrink-0">
           <img
-            src={footer.core.src}
-            alt={footer.core.label}
+            src={companyLogo}
+            alt="Company Logo"
             className="h-7 w-auto object-contain sm:h-8"
+            onError={(e) => { (e.target as HTMLImageElement).src = branding.logo.src; }}
           />
           <span className="hidden sm:block h-5 w-px shrink-0 bg-slate-200 dark:bg-slate-600" aria-hidden />
           <img
-            src={logo.src}
-            alt={logo.alt}
+            src={footer.core.src}
+            alt={footer.core.label}
             className="hidden sm:block h-7 w-auto object-contain sm:h-8"
           />
         </div>
@@ -159,14 +163,14 @@ export const DashboardHeader = () => {
                 to={to}
                 className={`relative px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors ${
                   active
-                    ? "text-[#0b5fff] font-semibold"
+                    ? "text-[var(--color-primary)] font-semibold"
                     : "text-slate-500 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800"
                 }`}
               >
                 {t(labelKey)}
                 {active && (
                   <span
-                    className="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 w-8 rounded-full bg-[#0b5fff]"
+                    className="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 w-8 rounded-full bg-[var(--color-primary)]"
                     aria-hidden
                   />
                 )}
@@ -211,7 +215,7 @@ export const DashboardHeader = () => {
             >
               <span
                 className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold text-white shadow-sm"
-                style={{ background: "linear-gradient(135deg, #0b5fff 0%, #00b37e 100%)" }}
+                style={{ background: "var(--banner-gradient)" }}
                 aria-hidden
               >
                 {demoUser?.name?.charAt(0) ?? profile?.name?.charAt(0) ?? "U"}
@@ -274,7 +278,7 @@ export const DashboardHeader = () => {
                     to={to}
                     className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                       active
-                        ? "text-[#0b5fff] bg-blue-50 dark:bg-blue-500/10"
+                        ? "text-[var(--color-primary)] bg-blue-50 dark:bg-blue-500/10"
                         : "text-slate-600 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800"
                     }`}
                     onClick={() => setMobileMenuOpen(false)}
