@@ -10,6 +10,7 @@ import {
 } from "../../components/auth";
 import { Logo } from "../../components/brand/Logo";
 import { useAuth } from "../../context/AuthContext";
+import { useOtp } from "../../context/OtpContext";
 import { personas, SCENARIO_LABELS } from "@/mock/personas";
 import { setDemoUser } from "@/hooks/useDemoUser";
 import type { PersonaProfile } from "@/mock/personas";
@@ -33,6 +34,7 @@ export const Login = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, loading: authLoading, signIn } = useAuth();
+  const { isOtpVerified } = useOtp();
   const [showDemoPanel, setShowDemoPanel] = useState(false);
 
   const [email, setEmail] = useState("");
@@ -42,10 +44,10 @@ export const Login = () => {
 
   useEffect(() => {
     if (authLoading) return;
-    if (user) {
+    if (user && isOtpVerified) {
       navigate("/dashboard", { replace: true });
     }
-  }, [authLoading, user, navigate]);
+  }, [authLoading, user, isOtpVerified, navigate]);
 
   const handleLogin = async () => {
     setError(null);
@@ -56,7 +58,7 @@ export const Login = () => {
     setSubmitting(true);
     try {
       await signIn(email, password);
-      navigate("/dashboard", { replace: true });
+      navigate("/verify?mode=login", { replace: true });
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Login failed. Please try again.");
     } finally {

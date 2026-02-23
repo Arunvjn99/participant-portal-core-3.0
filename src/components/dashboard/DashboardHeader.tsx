@@ -6,6 +6,7 @@ import LanguageSwitcher from "@/components/common/LanguageSwitcher";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import { useDemoUser, clearDemoUser } from "@/hooks/useDemoUser";
 import { useAuth } from "@/context/AuthContext";
+import { useOtp } from "@/context/OtpContext";
 import { useUser } from "@/context/UserContext";
 
 /* ────────────────────────────── Nav config ────────────────────────────── */
@@ -78,6 +79,7 @@ export const DashboardHeader = () => {
   const userMenuRef = useRef<HTMLDivElement>(null);
   const demoUser = useDemoUser();
   const { signOut } = useAuth();
+  const { resetOtp } = useOtp();
   const { profile } = useUser();
 
   /* Close user menu on outside click */
@@ -100,6 +102,7 @@ export const DashboardHeader = () => {
     setUserMenuOpen(false);
     setMobileMenuOpen(false);
     clearDemoUser();
+    resetOtp();
     await signOut();
     navigate("/");
   };

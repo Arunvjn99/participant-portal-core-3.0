@@ -10,6 +10,7 @@ import {
 } from "../../components/auth";
 import { Logo } from "../../components/brand/Logo";
 import { useAuth } from "../../context/AuthContext";
+import { useOtp } from "../../context/OtpContext";
 import { supabase } from "../../lib/supabase";
 
 interface Company {
@@ -46,7 +47,8 @@ function validate(
 
 export const Signup = () => {
   const navigate = useNavigate();
-  const { signUp, user: authUser, loading: authLoading } = useAuth();
+  const { signUp } = useAuth();
+  const { resetOtp } = useOtp();
 
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
@@ -61,13 +63,6 @@ export const Signup = () => {
   const [serverError, setServerError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (authLoading) return;
-    if (authUser) {
-      navigate("/dashboard", { replace: true });
-    }
-  }, [authLoading, authUser, navigate]);
 
   useEffect(() => {
     let cancelled = false;
@@ -101,18 +96,15 @@ export const Signup = () => {
 
     setLoading(true);
     try {
-      const { session: newSession } = await signUp(email, password, {
+      await signUp(email, password, {
         name: name.trim(),
         company_id: companyId,
         location: location.trim(),
       });
 
-      if (newSession) {
-        navigate("/dashboard", { replace: true });
-      } else {
-        setSuccessMessage("Account created! Please sign in.");
-        setTimeout(() => navigate("/", { replace: true }), 2000);
-      }
+      await supabase.auth.signOut();
+      resetOtp();
+      navigate("/verify?mode=signup", { replace: true });
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : "Signup failed. Please try again.";

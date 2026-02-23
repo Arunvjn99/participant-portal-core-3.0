@@ -1,4 +1,5 @@
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   AuthLayout,
@@ -7,31 +8,43 @@ import {
   AuthButton,
 } from "../../components/auth";
 import { Logo } from "../../components/brand/Logo";
+import { useOtp } from "../../context/OtpContext";
 
 export const VerifyCode = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { setOtpVerified } = useOtp();
 
-  const handleOTPComplete = () => {
-    navigate("/dashboard");
-  };
+  const mode = searchParams.get("mode"); // "signup" | "login"
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleVerify = () => {
-    navigate("/dashboard");
+    if (mode === "signup") {
+      setShowSuccessModal(true);
+    } else {
+      setOtpVerified(true);
+      navigate("/dashboard", { replace: true });
+    }
+  };
+
+  const handleSuccessClose = () => {
+    setShowSuccessModal(false);
+    navigate("/", { replace: true });
   };
 
   const handleBackToSignIn = () => {
     navigate("/");
   };
 
-  const headerSlot = (
-    <Logo className="h-10 w-auto" />
-  );
+  const headerSlot = <Logo className="h-10 w-auto" />;
 
   const bodySlot = (
     <>
-      <AuthOTPInput onComplete={handleOTPComplete} />
-      <AuthButton onClick={handleVerify}>{t("auth.verifyContinue")}</AuthButton>
+      <AuthOTPInput onComplete={handleVerify} />
+      <AuthButton onClick={handleVerify}>
+        {t("auth.verifyContinue")}
+      </AuthButton>
       <div className="flex flex-col items-center gap-3">
         <a
           href="#"
@@ -56,13 +69,37 @@ export const VerifyCode = () => {
   );
 
   return (
-    <AuthLayout>
-      <AuthFormShell
-        headerSlot={headerSlot}
-        title={t("auth.verificationCode")}
-        description={t("auth.verificationCodeDesc")}
-        bodySlot={bodySlot}
-      />
-    </AuthLayout>
+    <>
+      <AuthLayout>
+        <AuthFormShell
+          headerSlot={headerSlot}
+          title={t("auth.verificationCode")}
+          description={t("auth.verificationCodeDesc")}
+          bodySlot={bodySlot}
+        />
+      </AuthLayout>
+
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" aria-hidden />
+          <div className="relative z-10 w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-2xl dark:border-slate-700 dark:bg-slate-900">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-green-600 dark:text-green-400" aria-hidden>
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            </div>
+            <h2 className="mb-2 text-xl font-bold text-slate-900 dark:text-slate-100">
+              Account Created!
+            </h2>
+            <p className="mb-6 text-sm text-slate-500 dark:text-slate-400">
+              Your account has been successfully created. Please sign in to continue.
+            </p>
+            <AuthButton onClick={handleSuccessClose} className="w-full">
+              Go to Login
+            </AuthButton>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
