@@ -346,13 +346,13 @@ button {
   }
 }
 
-/* Core AI FAB — gradient + glow pulse */
+/* Core AI FAB — uses brand primary via CSS variable */
 .core-ai-fab-btn {
-  background: linear-gradient(135deg, #2dd4bf 0%, #14b8a6 40%, #0d9488 100%);
+  background: var(--banner-gradient, linear-gradient(135deg, #2dd4bf 0%, #14b8a6 40%, #0d9488 100%));
 }
 .core-ai-fab-btn:hover {
   transform: scale(1.06);
-  box-shadow: 0 6px 24px rgba(20, 184, 166, 0.35), 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 24px rgb(var(--color-primary-rgb, 20 184 166) / 0.35), 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 .core-ai-fab-btn:active {
   transform: scale(0.96);
@@ -361,11 +361,11 @@ button {
 @keyframes core-ai-glow {
   0%, 100% {
     opacity: 0;
-    box-shadow: 0 0 0 0 rgba(20, 184, 166, 0);
+    box-shadow: 0 0 0 0 rgb(var(--color-primary-rgb, 20 184 166) / 0);
   }
   50% {
     opacity: 1;
-    box-shadow: 0 0 0 8px rgba(20, 184, 166, 0.18);
+    box-shadow: 0 0 0 8px rgb(var(--color-primary-rgb, 20 184 166) / 0.18);
   }
 }
 

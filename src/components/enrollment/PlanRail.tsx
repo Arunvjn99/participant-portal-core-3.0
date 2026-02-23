@@ -106,7 +106,7 @@ const HorizontalTile: React.FC<{
               className={`
                 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider shadow-sm border w-fit transition-all duration-300
                 ${isRecommended && isEligible
-                  ? "bg-indigo-600 border-indigo-600 text-white shadow-indigo-500/30 dark:bg-indigo-500"
+                  ? "bg-primary border-primary text-white shadow-primary/30"
                   : !isEligible
                     ? "bg-slate-100 border-slate-200 text-slate-400 dark:bg-slate-700 dark:border-slate-600"
                     : "bg-white border-slate-200 text-slate-500 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300"}

@@ -6,7 +6,7 @@ import type { CompanyTheme, ThemeColors } from "./utils";
  * ThemeManager – data-driven, scalable theme resolution.
  *
  * Resolution order:
- *   1. Theme JSON from DB (company.style_config column)
+ *   1. Theme JSON from DB (company.branding_json column, jsonb)
  *   2. Hardcoded map in defaultThemes.ts  (Phase 1)
  *   3. Fallback generic theme
  *
@@ -17,10 +17,11 @@ export const themeManager = {
   /**
    * Resolve a full CompanyTheme for a company.
    * Accepts the company name (matched case-insensitively) and an optional
-   * raw JSON string from the database.
+   * theme from the database (jsonb column returns a parsed object; text
+   * column returns a string — both are handled).
    */
-  getTheme(companyName: string, dbJson?: string | null): CompanyTheme {
-    if (dbJson) {
+  getTheme(companyName: string, dbJson?: unknown): CompanyTheme {
+    if (dbJson != null) {
       const parsed = themeManager.parseThemeJSON(dbJson);
       if (parsed) return parsed;
     }
@@ -30,14 +31,17 @@ export const themeManager = {
   },
 
   /**
-   * Parse a raw JSON string into a CompanyTheme.
+   * Parse a theme value into a CompanyTheme.
+   * Accepts either a pre-parsed object (from jsonb) or a raw JSON string.
    * Auto-generates dark theme if only light is provided.
-   * Returns null if parsing fails.
+   * Returns null if parsing/validation fails.
    */
-  parseThemeJSON(raw: string): CompanyTheme | null {
+  parseThemeJSON(raw: unknown): CompanyTheme | null {
     try {
-      const obj = JSON.parse(raw);
-      if (!obj?.light) return null;
+      const obj: Record<string, unknown> =
+        typeof raw === "string" ? JSON.parse(raw) : (raw as Record<string, unknown>);
+
+      if (!obj?.light || typeof obj.light !== "object") return null;
 
       const light = obj.light as ThemeColors;
       const requiredKeys: (keyof ThemeColors)[] = [
@@ -62,8 +66,8 @@ export const themeManager = {
       light.logo = light.logo || "";
 
       const dark: ThemeColors =
-        obj.dark && Object.keys(obj.dark).length > 2
-          ? { ...generateDarkTheme(light), ...obj.dark }
+        obj.dark && typeof obj.dark === "object" && Object.keys(obj.dark).length > 2
+          ? { ...generateDarkTheme(light), ...(obj.dark as ThemeColors) }
           : generateDarkTheme(light);
 
       return { light, dark };

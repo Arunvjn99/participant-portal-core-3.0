@@ -20,9 +20,10 @@ export interface Profile {
 export interface Company {
   id: string;
   name: string;
-  brand_primary: string | null;
-  brand_secondary: string | null;
-  style_config?: string | null;
+  primary_color: string | null;
+  secondary_color: string | null;
+  branding_json?: Record<string, unknown> | null;
+  logo_url?: string | null;
 }
 
 interface UserContextValue {
@@ -75,7 +76,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
       const { data: companyData } = await supabase
         .from("companies")
-        .select("id, name, brand_primary, brand_secondary, style_config")
+        .select("id, name, primary_color, secondary_color, branding_json, logo_url")
         .eq("id", profileData.company_id)
         .single();
 
@@ -85,7 +86,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       setCompany(company);
 
       if (company?.name) {
-        setCompanyBranding(company.name, company.style_config);
+        setCompanyBranding(company.name, company.branding_json, company.logo_url);
       }
 
       setProfileLoading(false);

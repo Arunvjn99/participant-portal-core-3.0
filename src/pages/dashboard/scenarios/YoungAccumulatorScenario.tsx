@@ -39,7 +39,7 @@ export function YoungAccumulatorScenario({ user }: { user: PersonaProfile }) {
           </p>
           <button
             type="button"
-            className="mt-4 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+            className="mt-4 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover"
           >
             Increase Contribution
           </button>

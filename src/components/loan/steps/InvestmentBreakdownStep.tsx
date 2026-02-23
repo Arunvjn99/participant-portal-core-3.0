@@ -102,7 +102,7 @@ export function InvestmentBreakdownStep({ data, onDataChange }: InvestmentBreakd
               onClick={handleSetProRata}
               className={`rounded-lg px-4 py-2 text-sm font-medium ${
                 investment.allocationMode === "proRata"
-                  ? "bg-blue-600 text-white dark:bg-blue-500"
+                  ? "bg-primary text-white"
                   : "bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300"
               }`}
               aria-pressed={investment.allocationMode === "proRata"}
@@ -123,7 +123,7 @@ export function InvestmentBreakdownStep({ data, onDataChange }: InvestmentBreakd
               }
               className={`rounded-lg px-4 py-2 text-sm font-medium ${
                 investment.allocationMode === "custom"
-                  ? "bg-blue-600 text-white dark:bg-blue-500"
+                  ? "bg-primary text-white"
                   : "bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300"
               }`}
               aria-pressed={investment.allocationMode === "custom"}

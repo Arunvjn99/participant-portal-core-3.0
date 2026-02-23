@@ -20,7 +20,7 @@ interface ThemeContextValue {
   setMode: (m: Mode) => void;
   companyTheme: CompanyTheme;
   currentColors: ThemeColors;
-  setCompanyBranding: (companyName: string, dbJson?: string | null) => void;
+  setCompanyBranding: (companyName: string, dbJson?: unknown, logoUrl?: string | null) => void;
   /** Backwards-compatible alias */
   theme: Mode;
 }
@@ -69,9 +69,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const setCompanyBranding = useCallback(
-    (companyName: string, dbJson?: string | null) => {
+    (companyName: string, dbJson?: unknown, logoUrl?: string | null) => {
       const resolved = themeManager.getTheme(companyName, dbJson);
-      setCompanyTheme(resolved);
+      const dbLogo = logoUrl?.trim() || "";
+      const jsonLogo = resolved.light.logo?.trim() || "";
+      const effectiveLogo = dbLogo || jsonLogo;
+      resolved.light = { ...resolved.light, logo: effectiveLogo };
+      resolved.dark = { ...resolved.dark, logo: effectiveLogo };
+      setCompanyTheme({ ...resolved });
     },
     [],
   );

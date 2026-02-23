@@ -90,7 +90,7 @@ export function SummaryCard({ title, rows, actions, status }: SummaryCardProps) 
               className={`
                 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200
                 ${action.variant === "primary"
-                  ? "bg-teal-600 text-white hover:bg-teal-500"
+                  ? "bg-primary text-white hover:bg-primary-hover"
                   : "border border-slate-400 text-slate-600 hover:bg-slate-200 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white"
                 }
               `}

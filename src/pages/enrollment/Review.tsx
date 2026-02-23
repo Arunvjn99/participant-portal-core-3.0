@@ -10,6 +10,7 @@ import { EnrollmentFooter } from "../../components/enrollment/EnrollmentFooter";
 import { EnrollmentPageContent } from "../../components/enrollment/EnrollmentPageContent";
 import { AIAdvisorModal } from "../../components/enrollment/AIAdvisorModal";
 import { SuccessEnrollmentModal } from "../../components/enrollment/SuccessEnrollmentModal";
+import { FeedbackModal } from "../../components/feedback/FeedbackModal";
 import type { SelectedPlanId } from "../../enrollment/context/EnrollmentContext";
 import type { ContributionSource, IncrementCycle } from "../../enrollment/logic/types";
 
@@ -131,6 +132,7 @@ export const Review = () => {
   const [acknowledgements, setAcknowledgements] = useState({ termsAccepted: false });
   const [showAdvisorModal, setShowAdvisorModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showEnrollmentFeedback, setShowEnrollmentFeedback] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
   const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [expandedInsight, setExpandedInsight] = useState<number | null>(null);
@@ -847,8 +849,32 @@ export const Review = () => {
       <AIAdvisorModal open={showAdvisorModal} onClose={() => setShowAdvisorModal(false)} />
       <SuccessEnrollmentModal
         open={showSuccessModal}
-        onClose={() => { setShowSuccessModal(false); navigate("/dashboard/post-enrollment"); }}
-        onViewPlanDetails={() => { setShowSuccessModal(false); navigate("/dashboard/post-enrollment"); }}
+        onClose={() => {
+          setShowSuccessModal(false);
+          if (!sessionStorage.getItem("enrollment_feedback_shown")) {
+            sessionStorage.setItem("enrollment_feedback_shown", "1");
+            setShowEnrollmentFeedback(true);
+          } else {
+            navigate("/dashboard/post-enrollment");
+          }
+        }}
+        onViewPlanDetails={() => {
+          setShowSuccessModal(false);
+          if (!sessionStorage.getItem("enrollment_feedback_shown")) {
+            sessionStorage.setItem("enrollment_feedback_shown", "1");
+            setShowEnrollmentFeedback(true);
+          } else {
+            navigate("/dashboard/post-enrollment");
+          }
+        }}
+      />
+      <FeedbackModal
+        isOpen={showEnrollmentFeedback}
+        onClose={() => {
+          setShowEnrollmentFeedback(false);
+          navigate("/dashboard/post-enrollment");
+        }}
+        workflowType="enrollment_flow"
       />
     </>
   );

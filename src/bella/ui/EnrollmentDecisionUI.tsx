@@ -36,7 +36,7 @@ export function PlanSelectionCards({
   onSelect: (value: string) => void;
 }) {
   const base =
-    "flex-1 min-w-0 rounded-xl border-2 p-4 sm:p-5 text-left transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-transparent";
+    "flex-1 min-w-0 rounded-xl border-2 p-4 sm:p-5 text-left transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-transparent";
   const unselected = isDarkMode
     ? "border-gray-600 bg-gray-800/50 text-gray-200 hover:border-gray-500 hover:bg-gray-700/50"
     : "border-gray-200 bg-white/80 text-gray-800 hover:border-gray-300 hover:bg-white shadow-sm";
@@ -116,8 +116,8 @@ export function ContributionSelector({
             onClick={() => handlePreset(p)}
             className={
               isDarkMode
-                ? "px-4 py-2 rounded-lg text-sm font-medium bg-gray-700 text-gray-200 hover:bg-gray-600 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                : "px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 text-gray-800 hover:bg-gray-200 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                ? "px-4 py-2 rounded-lg text-sm font-medium bg-gray-700 text-gray-200 hover:bg-gray-600 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary"
+                : "px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 text-gray-800 hover:bg-gray-200 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary"
             }
             aria-label={`Contribute ${p} percent`}
           >
@@ -172,7 +172,7 @@ export function InvestmentStrategySelector({
   ];
 
   const btn =
-    "flex-1 min-w-0 rounded-lg border-2 py-3 px-3 text-center text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2";
+    "flex-1 min-w-0 rounded-lg border-2 py-3 px-3 text-center text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2";
   const unselected = isDarkMode
     ? "border-gray-600 bg-gray-800/50 text-gray-200 hover:border-gray-500"
     : "border-gray-200 bg-white/80 text-gray-800 hover:border-gray-300";
@@ -411,7 +411,7 @@ export function EnrollmentReviewSummaryCard(props: EnrollmentReviewSummaryCardPr
               ${isDarkMode
                 ? "border border-gray-600 text-gray-300 hover:bg-gray-700/50"
                 : "border border-gray-300 text-gray-700 hover:bg-gray-50"}
-              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+              focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
             `}
           >
             Edit selection
@@ -419,7 +419,7 @@ export function EnrollmentReviewSummaryCard(props: EnrollmentReviewSummaryCardPr
           <button
             type="button"
             onClick={onConfirm}
-            className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-sm font-medium bg-primary text-white hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
             Confirm & submit enrollment
           </button>

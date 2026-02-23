@@ -166,7 +166,7 @@ function Step1Combined({
           <button
             type="button"
             onClick={onDoneEditing}
-            className="rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white hover:opacity-90 dark:bg-blue-500 dark:hover:bg-blue-600"
+            className="rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white hover:opacity-90"
           >
             {t("preEnrollment.wizardDone")}
           </button>
@@ -190,7 +190,7 @@ function Step1Combined({
             <button
               type="button"
               onClick={onEdit}
-              className="shrink-0 inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-white transition-colors hover:opacity-90 dark:bg-blue-500 dark:hover:bg-blue-600"
+              className="shrink-0 inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-white transition-colors hover:opacity-90"
             >
               <svg
                 width="14"

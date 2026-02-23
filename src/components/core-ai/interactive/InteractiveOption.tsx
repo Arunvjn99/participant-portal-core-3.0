@@ -36,9 +36,9 @@ export function InteractiveOption({
       transition={{ duration: 0.2, delay: index * 0.05 }}
       className={`
         w-full rounded-lg border-2 p-3 text-left transition-all duration-200
-        focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-800
+        focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-800
         ${selected
-          ? "border-teal-500 bg-teal-50 text-teal-800 ring-1 ring-teal-500/30 dark:bg-teal-500/10 dark:text-white"
+          ? "border-primary bg-primary/10 text-primary ring-1 ring-primary/30 dark:text-white"
           : "border-slate-300 bg-slate-100 text-slate-700 hover:border-slate-400 hover:bg-slate-200 dark:border-slate-600/60 dark:bg-slate-700/40 dark:text-slate-200 dark:hover:border-slate-500 dark:hover:bg-slate-700/70"
         }
       `}
@@ -51,7 +51,7 @@ export function InteractiveOption({
           {hint && <span className="block text-[11px] text-slate-500 mt-0.5 dark:text-slate-400">{hint}</span>}
         </div>
         {badge && (
-          <span className="shrink-0 rounded-full bg-teal-100 border border-teal-400/50 px-2 py-0.5 text-[10px] font-medium text-teal-700 dark:bg-teal-500/20 dark:border-teal-500/30 dark:text-teal-300">
+          <span className="shrink-0 rounded-full bg-primary/10 border border-primary/30 px-2 py-0.5 text-[10px] font-medium text-primary">
             {badge}
           </span>
         )}

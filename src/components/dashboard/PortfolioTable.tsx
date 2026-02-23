@@ -34,7 +34,7 @@ export const PortfolioTable = ({ rows, employerMatchLabel = "100% up to 6% Match
 
       {/* Tabs — wraps on mobile */}
       <div className="mb-4 flex flex-wrap gap-2">
-        <button type="button" className="rounded-md border border-blue-600 bg-blue-600 px-3 py-2 text-xs font-medium text-white sm:text-sm">
+        <button type="button" className="rounded-md border border-primary bg-primary px-3 py-2 text-xs font-medium text-white sm:text-sm">
           Pre-tax contributions
         </button>
         <button type="button" className="rounded-md border border-slate-300 px-3 py-2 text-xs font-medium text-slate-600 dark:border-slate-600 dark:text-slate-400 sm:text-sm">
@@ -124,7 +124,7 @@ export const PortfolioTable = ({ rows, employerMatchLabel = "100% up to 6% Match
         </button>
         <button
           type="button"
-          className="w-full rounded-md border-none bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 sm:w-auto"
+          className="w-full rounded-md border-none bg-primary px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-hover sm:w-auto"
           onClick={() => navigate("/enrollment/investments")}
         >
           Manage Investments

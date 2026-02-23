@@ -84,7 +84,7 @@ export function AmountSlider({
             initial={reduced ? false : { scale: 1.08 }}
             animate={{ scale: 1 }}
             transition={{ duration: 0.15 }}
-            className="text-sm font-semibold tabular-nums text-teal-600 dark:text-teal-400"
+            className="text-sm font-semibold tabular-nums text-primary"
           >
             {display}
           </motion.span>
@@ -99,11 +99,11 @@ export function AmountSlider({
           onChange={(e) => setValue(Number(e.target.value))}
           onMouseUp={commitSlider}
           onTouchEnd={commitSlider}
-          className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-slate-300 accent-teal-500 dark:bg-slate-700
+          className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-slate-300 accent-primary dark:bg-slate-700
             [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4
             [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:cursor-pointer
-            [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-teal-500
-            [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-teal-500/20"
+            [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary
+            [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-primary/20"
           aria-label={label}
           aria-valuemin={min}
           aria-valuemax={max}

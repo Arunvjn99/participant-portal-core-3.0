@@ -75,7 +75,7 @@ export function MessageInput({
               ? "bg-red-500 text-white shadow-lg shadow-red-500/25"
               : isProcessing
                 ? "bg-amber-500/80 text-white"
-                : "text-slate-500 hover:text-teal-600 hover:bg-slate-200 dark:text-slate-400 dark:hover:text-teal-400 dark:hover:bg-slate-700"
+                : "text-slate-500 hover:text-primary hover:bg-slate-200 dark:text-slate-400 dark:hover:text-primary dark:hover:bg-slate-700"
           }`}
           aria-label={
             isListening
@@ -149,7 +149,7 @@ export function MessageInput({
         <button
           type="submit"
           disabled={!value.trim() || disabled || micBusy}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-teal-600 text-white transition-all hover:bg-teal-500 disabled:opacity-30 disabled:cursor-not-allowed dark:bg-teal-600 dark:hover:bg-teal-500"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-white transition-all hover:bg-primary-hover disabled:opacity-30 disabled:cursor-not-allowed"
           aria-label={t("coreAi.ariaSend")}
           title={t("coreAi.titleSend")}
         >

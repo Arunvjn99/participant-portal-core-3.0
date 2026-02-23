@@ -20,23 +20,23 @@ const congruentLight: ThemeColors = {
   warning: "#F59E0B",
   danger: "#DC2626",
   font: "Inter",
-  logo: "/image/ascend-logo.png",
+  logo: "/logos/congruent-solutions.png",
 };
 
 const lincolnLight: ThemeColors = {
-  primary: "#00594C",
-  secondary: "#E0F2EF",
-  accent: "#00897B",
+  primary: "#6B1D4A",
+  secondary: "#F5EDF1",
+  accent: "#E87722",
   background: "#FFFFFF",
-  surface: "#F7FAF9",
+  surface: "#FAF7F9",
   textPrimary: "#1A1A1A",
   textSecondary: "#5F6368",
-  border: "#D6E4E1",
+  border: "#E0D6DB",
   success: "#2E7D32",
   warning: "#EF6C00",
   danger: "#C62828",
   font: "Georgia",
-  logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Lincoln_National_Corporation_logo.svg/512px-Lincoln_National_Corporation_logo.svg.png",
+  logo: "/logos/lincoln-financial.png",
 };
 
 const johnHancockLight: ThemeColors = {
@@ -52,7 +52,7 @@ const johnHancockLight: ThemeColors = {
   warning: "#F9A825",
   danger: "#B71C1C",
   font: "Inter",
-  logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/John_Hancock_Insurance_logo.svg/512px-John_Hancock_Insurance_logo.svg.png",
+  logo: "/logos/john-hancock.png",
 };
 
 const transamericaLight: ThemeColors = {
@@ -68,7 +68,7 @@ const transamericaLight: ThemeColors = {
   warning: "#F57C00",
   danger: "#C62828",
   font: "Inter",
-  logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Transamerica_logo.svg/512px-Transamerica_logo.svg.png",
+  logo: "/logos/transamerica.png",
 };
 
 const defaultThemeMap: Record<string, CompanyTheme> = {

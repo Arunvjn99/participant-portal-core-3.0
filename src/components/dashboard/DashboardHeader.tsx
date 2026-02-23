@@ -1,7 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { branding } from "../../config/branding";
 import LanguageSwitcher from "@/components/common/LanguageSwitcher";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import { useDemoUser, clearDemoUser } from "@/hooks/useDemoUser";
@@ -9,6 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useOtp } from "@/context/OtpContext";
 import { useUser } from "@/context/UserContext";
 import { useTheme } from "@/context/ThemeContext";
+import { FeedbackModal } from "@/components/feedback/FeedbackModal";
 
 /* ────────────────────────────── Nav config ────────────────────────────── */
 
@@ -99,14 +99,25 @@ export const DashboardHeader = () => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
-  const handleLogout = async () => {
-    setUserMenuOpen(false);
-    setMobileMenuOpen(false);
+  const [showLogoutFeedback, setShowLogoutFeedback] = useState(false);
+
+  const performLogout = useCallback(async () => {
     clearDemoUser();
     resetOtp();
     await signOut();
     navigate("/");
+  }, [resetOtp, signOut, navigate]);
+
+  const handleLogoutClick = () => {
+    setUserMenuOpen(false);
+    setMobileMenuOpen(false);
+    setShowLogoutFeedback(true);
   };
+
+  const handleFeedbackClose = useCallback(() => {
+    setShowLogoutFeedback(false);
+    performLogout();
+  }, [performLogout]);
 
   const NAV_LINKS = getNavLinks(!!demoUser);
 
@@ -120,32 +131,45 @@ export const DashboardHeader = () => {
     return location.pathname === to;
   };
 
-  const { footer } = branding;
   const { currentColors } = useTheme();
-  const companyLogo = currentColors.logo || branding.logo.src;
+  const { company } = useUser();
+  const companyLogo = currentColors.logo;
+  const [logoError, setLogoError] = useState(false);
+
+  useEffect(() => {
+    setLogoError(false);
+  }, [companyLogo]);
+
+  const showLogoImg = companyLogo && !logoError;
 
   return (
     <>
       <div>
-      {/*
-        Main header bar.
-        Padding matches DashboardLayout content: px-4 → sm:px-6 → lg:px-8
-        Nav shows at lg (1024px) where 5 links fit comfortably.
-        Height: h-14 (56px) → lg:h-16 (64px).
-      */}
       <div className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:h-16 lg:px-8">
-        {/* ── Left: Logos ── */}
+        {/* ── Left: Company brand → divider → CORE platform logo ── */}
         <div className="flex items-center gap-3 shrink-0">
-          <img
-            src={companyLogo}
-            alt="Company Logo"
-            className="h-7 w-auto object-contain sm:h-8"
-            onError={(e) => { (e.target as HTMLImageElement).src = branding.logo.src; }}
-          />
+          {/* Dynamic company brand — changes per tenant */}
+          {showLogoImg ? (
+            <img
+              key={companyLogo}
+              src={companyLogo}
+              alt={company?.name ?? "Company"}
+              className="h-7 w-auto max-w-[160px] object-contain sm:h-8"
+              onError={() => setLogoError(true)}
+            />
+          ) : (
+            <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+              {company?.name ?? ""}
+            </span>
+          )}
+
+          {/* Divider */}
           <span className="hidden sm:block h-5 w-px shrink-0 bg-slate-200 dark:bg-slate-600" aria-hidden />
+
+          {/* Static CORE platform logo — never changes */}
           <img
-            src={footer.core.src}
-            alt={footer.core.label}
+            src="/image/core-logo.png"
+            alt="CORE"
             className="hidden sm:block h-7 w-auto object-contain sm:h-8"
           />
         </div>
@@ -240,7 +264,7 @@ export const DashboardHeader = () => {
                   type="button"
                   className="block w-full px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700"
                   role="menuitem"
-                  onClick={handleLogout}
+                  onClick={handleLogoutClick}
                 >
                   {t("nav.logOut")}
                 </button>
@@ -292,7 +316,7 @@ export const DashboardHeader = () => {
               <button
                 type="button"
                 className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-slate-600 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800"
-                onClick={handleLogout}
+                onClick={handleLogoutClick}
               >
                 {t("nav.logOut")}
               </button>
@@ -302,6 +326,13 @@ export const DashboardHeader = () => {
       </div>
       )}
       </div>
+
+      {/* Logout feedback modal */}
+      <FeedbackModal
+        isOpen={showLogoutFeedback}
+        onClose={handleFeedbackClose}
+        workflowType="overall_experience"
+      />
     </>
   );
 };

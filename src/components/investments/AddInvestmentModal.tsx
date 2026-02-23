@@ -218,7 +218,7 @@ function FundRow({ fund, isAdded, onAdd }: FundRowProps) {
           type="button"
           onClick={onAdd}
           disabled={isAdded}
-          className="min-h-[44px] min-w-[80px] rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-blue-600 dark:hover:bg-blue-700"
+          className="min-h-[44px] min-w-[80px] rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isAdded ? "Added" : "Add"}
         </button>

@@ -1547,7 +1547,7 @@ Focus ONLY on US retirement topics.`
                   className={`
                     w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center
                     transition-all duration-200 flex-shrink-0 touch-manipulation
-                    ${listening ? "bg-red-500 hover:bg-red-600 active:bg-red-700 text-white animate-pulse ring-2 ring-red-300 ring-offset-2" : "bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white"}
+                    ${listening ? "bg-red-500 hover:bg-red-600 active:bg-red-700 text-white animate-pulse ring-2 ring-red-300 ring-offset-2" : "bg-primary hover:bg-primary-hover active:bg-primary-active text-white"}
                     disabled:opacity-50 disabled:cursor-not-allowed
                   `}
                   aria-label={listening ? "Stop listening" : "Start voice input"}
@@ -1585,7 +1585,7 @@ Focus ONLY on US retirement topics.`
                 <button
                   onClick={() => handleSubmit()}
                   disabled={!userText.trim()}
-                  className="px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2.5 text-sm sm:text-base md:text-lg rounded-full bg-blue-600 text-white font-medium hover:bg-blue-700 active:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0 touch-manipulation min-w-[44px]"
+                  className="px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2.5 text-sm sm:text-base md:text-lg rounded-full bg-primary text-white font-medium hover:bg-primary-hover active:bg-primary-active disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0 touch-manipulation min-w-[44px]"
                   aria-label="Send message"
                   title="Send message"
                 >
@@ -1599,7 +1599,7 @@ Focus ONLY on US retirement topics.`
       {/* Mode indicators: fixed (fullpage) or relative (embedded) */}
       {isEnrolling && enrollmentState && (
         <div className={variant === "fullpage" ? "fixed top-2 left-2 sm:top-4 sm:left-4 md:top-6 md:left-6 z-50" : "relative z-10 shrink-0"}>
-          <div className={`px-3 py-2 rounded-full backdrop-blur-md text-sm font-medium ${isDarkMode ? "bg-blue-600/80 text-white border border-blue-500/30" : "bg-blue-600/80 text-white border border-blue-500/30"}`} style={{ backdropFilter: "blur(10px) saturate(180%)", WebkitBackdropFilter: "blur(10px) saturate(180%)" }}>
+          <div className="px-3 py-2 rounded-full backdrop-blur-md text-sm font-medium text-white border border-white/20" style={{ backgroundColor: "color-mix(in srgb, var(--color-primary) 80%, transparent)", backdropFilter: "blur(10px) saturate(180%)", WebkitBackdropFilter: "blur(10px) saturate(180%)" }}>
             {getEnrollmentPhaseLabel(enrollmentState.step)}
           </div>
         </div>
@@ -1678,8 +1678,8 @@ Focus ONLY on US retirement topics.`
                       max-w-[85%] sm:max-w-[80%] md:max-w-[75%] lg:max-w-[70%] rounded-2xl px-2.5 py-1.5 sm:px-3 sm:py-2 md:px-4 md:py-3 backdrop-blur-md
                       ${message.role === 'user'
                         ? isDarkMode
-                          ? 'bg-blue-600/80 text-white rounded-br-md border border-blue-500/30'
-                          : 'bg-blue-600/80 text-white rounded-br-md border border-blue-500/30'
+                          ? 'bg-primary/80 text-white rounded-br-md border border-white/15'
+                          : 'bg-primary/80 text-white rounded-br-md border border-white/20'
                         : isDarkMode
                           ? 'bg-slate-900/55 text-slate-100 rounded-bl-md border border-slate-700/60'
                           : 'bg-white/75 text-slate-900 rounded-bl-md border border-slate-200/70'
@@ -1824,8 +1824,8 @@ Focus ONLY on US retirement topics.`
                           type="button"
                           onClick={() => handleUserInput("yes", "chip")}
                           className={isDarkMode
-                            ? "px-4 py-2 rounded-xl text-sm font-medium bg-blue-600 text-white hover:bg-blue-700"
-                            : "px-4 py-2 rounded-xl text-sm font-medium bg-blue-600 text-white hover:bg-blue-700"}
+                            ? "px-4 py-2 rounded-xl text-sm font-medium bg-primary text-white hover:bg-primary-hover"
+                            : "px-4 py-2 rounded-xl text-sm font-medium bg-primary text-white hover:bg-primary-hover"}
                         >
                           Continue
                         </button>
@@ -2134,7 +2134,7 @@ Focus ONLY on US retirement topics.`
                         <button
                           type="button"
                           onClick={() => handleLoanChoice(`${loanTermDraft} years`, `${loanTermDraft} years`)}
-                          className="w-full px-4 py-2.5 rounded-xl text-sm font-medium bg-blue-600 text-white hover:bg-blue-700"
+                          className="w-full px-4 py-2.5 rounded-xl text-sm font-medium bg-primary text-white hover:bg-primary-hover"
                         >
                           Continue
                         </button>
@@ -2226,7 +2226,7 @@ Focus ONLY on US retirement topics.`
                           <button
                             type="button"
                             onClick={() => handleLoanChoice('yes', 'Submit')}
-                            className="px-4 py-2.5 rounded-xl text-sm font-medium bg-blue-600 text-white hover:bg-blue-700"
+                            className="px-4 py-2.5 rounded-xl text-sm font-medium bg-primary text-white hover:bg-primary-hover"
                           >
                             Submit
                           </button>
@@ -2313,7 +2313,7 @@ Focus ONLY on US retirement topics.`
                       <button
                         type="button"
                         onClick={() => handleUserInput("continue", "chip")}
-                        className="px-4 py-2 rounded-xl text-sm font-medium bg-blue-600 text-white hover:bg-blue-700"
+                        className="px-4 py-2 rounded-xl text-sm font-medium bg-primary text-white hover:bg-primary-hover"
                       >
                         Continue
                       </button>
@@ -2336,7 +2336,7 @@ Focus ONLY on US retirement topics.`
                       <button
                         type="button"
                         onClick={() => handleUserInput("continue", "chip")}
-                        className="px-4 py-2 rounded-xl text-sm font-medium bg-blue-600 text-white hover:bg-blue-700"
+                        className="px-4 py-2 rounded-xl text-sm font-medium bg-primary text-white hover:bg-primary-hover"
                       >
                         Continue
                       </button>
@@ -2371,7 +2371,7 @@ Focus ONLY on US retirement topics.`
                           <button
                             type="button"
                             onClick={() => handleUserInput("continue", "chip")}
-                            className="w-full px-4 py-2.5 rounded-xl text-sm font-medium bg-blue-600 text-white hover:bg-blue-700"
+                            className="w-full px-4 py-2.5 rounded-xl text-sm font-medium bg-primary text-white hover:bg-primary-hover"
                           >
                             Continue
                           </button>
@@ -2488,7 +2488,7 @@ Focus ONLY on US retirement topics.`
                         <button
                           type="button"
                           onClick={() => handleUserInput(`amount:${Math.round(withdrawalAmountDraft)}`, "chip")}
-                          className="w-full px-4 py-2.5 rounded-xl text-sm font-medium bg-blue-600 text-white hover:bg-blue-700"
+                          className="w-full px-4 py-2.5 rounded-xl text-sm font-medium bg-primary text-white hover:bg-primary-hover"
                         >
                           Continue
                         </button>
@@ -2520,7 +2520,7 @@ Focus ONLY on US retirement topics.`
                         <button
                           type="button"
                           onClick={() => handleUserInput("continue", "chip")}
-                          className="w-full mt-2 px-4 py-2.5 rounded-xl text-sm font-medium bg-blue-600 text-white hover:bg-blue-700"
+                          className="w-full mt-2 px-4 py-2.5 rounded-xl text-sm font-medium bg-primary text-white hover:bg-primary-hover"
                         >
                           Continue
                         </button>
@@ -2576,7 +2576,7 @@ Focus ONLY on US retirement topics.`
                             onClick={() => {
                               handleUserInput("submit", "chip");
                             }}
-                            className="px-4 py-2.5 rounded-xl text-sm font-medium bg-blue-600 text-white hover:bg-blue-700"
+                            className="px-4 py-2.5 rounded-xl text-sm font-medium bg-primary text-white hover:bg-primary-hover"
                           >
                             Submit withdrawal request
                           </button>
@@ -2685,7 +2685,7 @@ Focus ONLY on US retirement topics.`
                       <button
                         type="button"
                         onClick={() => handleUserInput("done", "chip")}
-                        className="px-4 py-2.5 rounded-xl text-sm font-medium bg-blue-600 text-white hover:bg-blue-700"
+                        className="px-4 py-2.5 rounded-xl text-sm font-medium bg-primary text-white hover:bg-primary-hover"
                       >
                         Done
                       </button>
@@ -2799,7 +2799,7 @@ Focus ONLY on US retirement topics.`
                           setLoanCompleteState(null);
                           setShowLoanCompleteDetails(false);
                         }}
-                        className="px-4 py-2.5 rounded-xl text-sm font-medium bg-blue-600 text-white hover:bg-blue-700"
+                        className="px-4 py-2.5 rounded-xl text-sm font-medium bg-primary text-white hover:bg-primary-hover"
                       >
                         Done
                       </button>
@@ -2943,7 +2943,7 @@ Focus ONLY on US retirement topics.`
                           setEnrollmentCompleteState(null);
                           setShowEnrollmentCompleteDetails(false);
                         }}
-                        className="px-4 py-2.5 rounded-xl text-sm font-medium bg-blue-600 text-white hover:bg-blue-700"
+                        className="px-4 py-2.5 rounded-xl text-sm font-medium bg-primary text-white hover:bg-primary-hover"
                       >
                         Done
                       </button>

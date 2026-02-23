@@ -101,7 +101,7 @@ export function MessageActions({ messageId, text, isSpeaking, onPlay }: MessageA
         onClick={() => onPlay(messageId)}
         className={`p-1.5 rounded-md transition-colors ${
           isSpeaking
-            ? "text-teal-600 bg-teal-400/15 dark:text-teal-400 dark:bg-teal-400/10"
+            ? "text-primary bg-primary/15"
             : "text-slate-500 hover:text-slate-700 hover:bg-slate-200 dark:text-slate-500 dark:hover:text-slate-300 dark:hover:bg-slate-700/50"
         }`}
         aria-label={isSpeaking ? "Stop audio" : "Play audio"}

@@ -19,12 +19,12 @@ export const ScoreUnlockCard = () => {
           Enroll in the plan to see your projected retirement income and earn badges.
         </p>
         <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-          <Button className="w-fit rounded-lg bg-blue-600 px-5 py-2.5 font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-400">
+          <Button className="w-fit rounded-lg bg-primary px-5 py-2.5 font-medium text-white hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
             Enroll Now
           </Button>
           <a
             href="#"
-            className="inline-flex w-fit items-center rounded-lg border border-blue-600 px-5 py-2.5 text-sm font-medium text-blue-600 no-underline transition-colors hover:bg-blue-50 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-900/30 dark:focus:ring-blue-400"
+            className="inline-flex w-fit items-center rounded-lg border border-primary px-5 py-2.5 text-sm font-medium text-primary no-underline transition-colors hover:bg-primary/10 hover:underline focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
             Learn more
           </a>

@@ -20,7 +20,7 @@ export const AscendLogo = ({ className = "", variant = "full" }: AscendLogoProps
       {useHeaderStyle ? (
         <>
           {/* Header variant: blue square with white star */}
-          <span className="flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-md bg-blue-600 dark:bg-blue-500">
+          <span className="flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-md bg-primary">
             <svg viewBox="0 0 24 24" className="h-3 w-3 sm:h-4 sm:w-4 text-white" aria-hidden>
               <path
                 d="M12 2 L14.5 9.5 L22 12 L14.5 14.5 L12 22 L9.5 14.5 L2 12 L9.5 9.5 Z"

@@ -24,7 +24,7 @@ export const ValuePropCard = ({ icon = "dollar", title, description }: ValueProp
           className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${
             icon === "shield"
               ? "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-400"
-              : "bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400"
+              : "bg-primary/10 text-primary"
           }`}
           aria-hidden="true"
         >

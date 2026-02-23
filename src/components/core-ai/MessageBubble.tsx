@@ -55,7 +55,7 @@ export function MessageBubble({ message, speakingId, onPlay, onAction, onSuggest
       <div
         className={`max-w-[85%] sm:max-w-[80%] ${
           isUser
-            ? "rounded-2xl rounded-br-md bg-teal-600 px-4 py-2.5 text-white"
+            ? "rounded-2xl rounded-br-md bg-primary px-4 py-2.5 text-white"
             : "space-y-1 w-full max-w-[85%] sm:max-w-[80%]"
         }`}
       >
@@ -69,7 +69,7 @@ export function MessageBubble({ message, speakingId, onPlay, onAction, onSuggest
           <>
             {/* Avatar + name */}
             <div className="flex items-center gap-2 mb-1.5">
-              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-teal-500 to-teal-700">
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full" style={{ background: "var(--banner-gradient)" }}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M12 2L2 7l10 5 10-5-10-5z" />
                   <path d="M2 17l10 5 10-5" />
@@ -97,7 +97,7 @@ export function MessageBubble({ message, speakingId, onPlay, onAction, onSuggest
           <>
             {/* Avatar + name */}
             <div className="flex items-center gap-2 mb-1">
-              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-teal-500 to-teal-700">
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full" style={{ background: "var(--banner-gradient)" }}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M12 2L2 7l10 5 10-5-10-5z" />
                   <path d="M2 17l10 5 10-5" />
@@ -135,7 +135,7 @@ export function MessageBubble({ message, speakingId, onPlay, onAction, onSuggest
                     <button
                       type="button"
                       onClick={() => onAction(message.primaryAction!.route)}
-                      className="px-3 py-1.5 rounded-lg bg-teal-600 text-white text-xs font-medium hover:bg-teal-500 transition-colors"
+                      className="px-3 py-1.5 rounded-lg bg-primary text-white text-xs font-medium hover:bg-primary-hover transition-colors"
                     >
                       {message.primaryAction.label}
                     </button>

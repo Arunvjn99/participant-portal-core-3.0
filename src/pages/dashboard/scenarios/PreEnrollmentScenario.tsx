@@ -40,7 +40,7 @@ export function PreEnrollmentScenario({ user }: { user: PersonaProfile }) {
         </p>
         <button
           type="button"
-          className="mt-4 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-700"
+          className="mt-4 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-hover"
         >
           {t("demo.startEnrollmentButton")}
         </button>

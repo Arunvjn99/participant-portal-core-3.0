@@ -105,7 +105,7 @@ export function LoanBasicsStep({ data, onDataChange, planConfig, userContext }: 
                 onClick={() => onDataChange({ basics: { ...basics, tenureYears: y } })}
                 className={`rounded-lg px-4 py-2 text-sm font-medium ${
                   basics.tenureYears === y
-                    ? "bg-blue-600 text-white dark:bg-blue-500"
+                    ? "bg-primary text-white"
                     : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
                 }`}
                 aria-pressed={basics.tenureYears === y}
@@ -142,7 +142,7 @@ export function LoanBasicsStep({ data, onDataChange, planConfig, userContext }: 
                 onClick={() => onDataChange({ basics: { ...basics, payrollFrequency: o.value } })}
                 className={`rounded-lg px-4 py-2 text-sm font-medium ${
                   basics.payrollFrequency === o.value
-                    ? "bg-blue-600 text-white dark:bg-blue-500"
+                    ? "bg-primary text-white"
                     : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
                 }`}
                 aria-pressed={basics.payrollFrequency === o.value}
@@ -164,7 +164,7 @@ export function LoanBasicsStep({ data, onDataChange, planConfig, userContext }: 
                 onClick={() => onDataChange({ basics: { ...basics, loanPurpose: p } })}
                 className={`rounded-lg px-4 py-2 text-sm font-medium ${
                   basics.loanPurpose === p
-                    ? "bg-blue-600 text-white dark:bg-blue-500"
+                    ? "bg-primary text-white"
                     : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
                 }`}
                 aria-pressed={basics.loanPurpose === p}

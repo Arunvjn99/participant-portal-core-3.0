@@ -102,7 +102,7 @@ export function DemoSwitcher() {
                       onClick={() => handleSelect(persona)}
                       className={`flex w-full items-start gap-3 rounded-xl border-2 p-4 text-left transition-all ${
                         isActive
-                          ? "border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-500/10"
+                          ? "border-primary bg-primary/10"
                           : "border-transparent hover:border-slate-200 hover:bg-slate-50 dark:hover:border-slate-700 dark:hover:bg-slate-800"
                       }`}
                     >
