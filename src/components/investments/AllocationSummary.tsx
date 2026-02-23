@@ -5,6 +5,7 @@ import Button from "../ui/Button";
 import { AllocationChart } from "./AllocationChart";
 import { useInvestment } from "../../context/InvestmentContext";
 import { AdvisorHelpWizard } from "./AdvisorHelpWizard";
+import { useUser } from "../../context/UserContext";
 
 type AllocationSummaryVariant = "enrollment" | "dashboard";
 
@@ -36,6 +37,7 @@ function getRiskColor(risk: number): string {
 export const AllocationSummary = ({ variant = "dashboard" }: AllocationSummaryProps) => {
   const { t } = useTranslation();
   const { weightedSummary, chartAllocations } = useInvestment();
+  const { profile } = useUser();
   const [showAdvisorWizard, setShowAdvisorWizard] = useState(false);
 
   const riskPercent = Math.min(100, (weightedSummary.riskLevel / 10) * 100);
@@ -133,7 +135,7 @@ export const AllocationSummary = ({ variant = "dashboard" }: AllocationSummaryPr
       <AdvisorHelpWizard
         open={showAdvisorWizard}
         onClose={() => setShowAdvisorWizard(false)}
-        userName="Satish"
+        userName={profile?.name ?? "there"}
       />
     </>
   );
