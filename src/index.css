@@ -336,6 +336,50 @@ button {
   color: var(--color-text);
 }
 
+/* ScrollIndicator — subtle bounce for hero (2.5s ease-in-out) */
+@keyframes scroll-indicator-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(6px);
+  }
+}
+
+/* Core AI FAB — gradient + glow pulse */
+.core-ai-fab-btn {
+  background: linear-gradient(135deg, #2dd4bf 0%, #14b8a6 40%, #0d9488 100%);
+}
+.core-ai-fab-btn:hover {
+  transform: scale(1.06);
+  box-shadow: 0 6px 24px rgba(20, 184, 166, 0.35), 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.core-ai-fab-btn:active {
+  transform: scale(0.96);
+}
+
+@keyframes core-ai-glow {
+  0%, 100% {
+    opacity: 0;
+    box-shadow: 0 0 0 0 rgba(20, 184, 166, 0);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 0 8px rgba(20, 184, 166, 0.18);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .core-ai-fab-btn,
+  .core-ai-fab-btn:hover,
+  .core-ai-fab-btn:active {
+    transform: none !important;
+  }
+  @keyframes core-ai-glow {
+    0%, 100% { opacity: 0; box-shadow: none; }
+  }
+}
+
 /* HeroEnrollmentCard Styles */
 .hero-enrollment-card {
   display: flex;

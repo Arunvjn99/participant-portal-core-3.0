@@ -10,7 +10,7 @@ import {
   type EnrollmentDraft,
 } from "../../enrollment/enrollmentDraftStore";
 
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 3;
 
 /* ──────────────────────── Shared helpers ──────────────────────── */
 
@@ -94,9 +94,7 @@ function ProgressBar({ step }: { step: number }) {
               style={{ width: filled ? 66 : 43 }}
               initial={false}
               animate={{
-                backgroundColor: filled
-                  ? "var(--color-primary)"
-                  : "var(--color-background-tertiary)",
+                backgroundColor: filled ? "#5147ef" : "#e1e8f1",
                 width: filled ? 66 : 43,
               }}
               transition={{ duration: 0.25 }}
@@ -111,16 +109,33 @@ function ProgressBar({ step }: { step: number }) {
   );
 }
 
-/* ──────────────────────── Step 1: Current Age ─────────────────── */
+/* ──────────────────── Step 1: Age + Retirement Age (combined) ──── */
 
-function Step1CurrentAge({
+function Step1Combined({
   currentAge,
+  retirementAge,
+  yearsToRetire,
+  editingAge,
   onEdit,
+  onDoneEditing,
+  onCurrentAgeChange,
+  onRetirementAgeChange,
 }: {
   currentAge: number;
+  retirementAge: number;
+  yearsToRetire: number;
+  editingAge: boolean;
   onEdit: () => void;
+  onDoneEditing: () => void;
+  onCurrentAgeChange: (v: number) => void;
+  onRetirementAgeChange: (v: number) => void;
 }) {
   const { t } = useTranslation();
+  const max = 75;
+  const min = Math.min(max, Math.max(22, currentAge + 1));
+  const sliderValue = Math.min(max, Math.max(min, retirementAge));
+  const isRangeLocked = min === max;
+
   return (
     <motion.div
       key="step1"
@@ -129,78 +144,75 @@ function Step1CurrentAge({
       animate="center"
       exit="exit"
       transition={stepTransition}
+      className="space-y-7"
     >
-      <div className="rounded-2xl border border-blue-200 bg-blue-50/50 p-4 sm:p-5 dark:border-blue-800 dark:bg-blue-900/20">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex flex-col gap-2 min-w-0">
-            <div className="flex flex-col gap-0.5">
-              <span className="text-sm font-semibold text-blue-700 dark:text-blue-400">
-                {t("preEnrollment.wizardYourCurrentAge")}
-              </span>
-              <p className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-slate-100">
-                {t("preEnrollment.wizardWeBelieveAge", { age: currentAge })}
-              </p>
-            </div>
-            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
-              {t("preEnrollment.wizardUpdateHint")}
-            </p>
-          </div>
+      {/* Age info card */}
+      {editingAge ? (
+        <div className="space-y-3">
+          <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
+            {t("preEnrollment.wizardCurrentAgeLabel")}
+          </label>
+          <input
+            type="number"
+            min={18}
+            max={75}
+            value={currentAge}
+            onChange={(e) => {
+              const v = parseInt(e.target.value, 10);
+              if (!isNaN(v)) onCurrentAgeChange(Math.min(75, Math.max(18, v)));
+            }}
+            className="h-12 max-w-[8rem] w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-base font-semibold text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 focus:border-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+          />
           <button
             type="button"
-            onClick={onEdit}
-            className="shrink-0 inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+            onClick={onDoneEditing}
+            className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
           >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden
-            >
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-            </svg>
-            {t("preEnrollment.wizardEdit")}
+            {t("preEnrollment.wizardDone")}
           </button>
         </div>
-      </div>
-    </motion.div>
-  );
-}
+      ) : (
+        <div className="rounded-2xl border border-blue-200 bg-blue-50/60 p-4 sm:p-[17px] dark:border-blue-800 dark:bg-blue-900/20">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex flex-col gap-2 min-w-0">
+              <p className="text-base sm:text-lg font-semibold">
+                <span className="text-slate-800 dark:text-slate-200">
+                  {t("preEnrollment.wizardAgeIntro")}{" "}
+                </span>
+                <span className="text-blue-700 dark:text-blue-400">
+                  {t("preEnrollment.wizardAgeAndDob", { age: currentAge, dob: "04/16/1999" })}
+                </span>
+              </p>
+              <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                {t("preEnrollment.wizardUpdateHint")}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={onEdit}
+              className="shrink-0 inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+              >
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+              </svg>
+              {t("preEnrollment.wizardEdit")}
+            </button>
+          </div>
+        </div>
+      )}
 
-/* ──────────────────────── Step 2: Retirement Age ──────────────── */
-
-function Step2RetirementAge({
-  currentAge,
-  retirementAge,
-  yearsToRetire,
-  onRetirementAgeChange,
-}: {
-  currentAge: number;
-  retirementAge: number;
-  yearsToRetire: number;
-  onRetirementAgeChange: (v: number) => void;
-}) {
-  const max = 75;
-  const min = Math.min(max, Math.max(22, currentAge + 1));
-  const value = Math.min(max, Math.max(min, retirementAge));
-  const isRangeLocked = min === max;
-
-  const { t } = useTranslation();
-  return (
-    <motion.div
-      key="step2"
-      variants={stepVariants}
-      initial="enter"
-      animate="center"
-      exit="exit"
-      transition={stepTransition}
-      className="space-y-5"
-    >
+      {/* Retirement age question + slider */}
       <div>
         <h3 className="text-xl sm:text-2xl font-bold leading-7 text-slate-900 dark:text-slate-100">
           {t("preEnrollment.wizardRetireAgeQuestion")}
@@ -209,37 +221,37 @@ function Step2RetirementAge({
           {t("preEnrollment.wizardRetireAgeHint")}
         </p>
       </div>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_160px] sm:items-center">
+
+      <div className="flex items-center gap-2.5">
         <input
           type="range"
           min={min}
           max={max}
-          value={value}
+          value={sliderValue}
           disabled={isRangeLocked}
-          onChange={(e) =>
-            onRetirementAgeChange(parseInt(e.target.value, 10))
-          }
+          onChange={(e) => onRetirementAgeChange(parseInt(e.target.value, 10))}
           aria-label={t("preEnrollment.wizardRetireAgeAria")}
-          className="personalize-plan-slider block min-w-0"
+          className="personalize-plan-slider block min-w-0 flex-1"
         />
         <input
           type="number"
           min={min}
           max={max}
-          value={value}
+          value={sliderValue}
           onChange={(e) => {
             const v = parseInt(e.target.value, 10);
-            if (!isNaN(v))
-              onRetirementAgeChange(Math.min(max, Math.max(min, v)));
+            if (!isNaN(v)) onRetirementAgeChange(Math.min(max, Math.max(min, v)));
           }}
-          className="h-[42px] w-full rounded-lg border border-blue-500 bg-white px-3 py-1.5 text-center text-sm font-medium text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 dark:border-blue-500 dark:bg-slate-800 dark:text-blue-400"
+          className="h-[42px] w-[166px] shrink-0 rounded-lg border border-blue-500 bg-white px-3 py-1.5 text-center text-sm font-medium text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 dark:border-blue-500 dark:bg-slate-800 dark:text-blue-400"
         />
       </div>
+
+      {/* Years-from-now banner — blue style matching Figma */}
       <motion.div
         key={yearsToRetire}
         initial={{ opacity: 0, y: 4 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-center dark:border-slate-700 dark:bg-slate-800/50"
+        className="rounded-lg border border-blue-200 bg-blue-50/60 px-4 py-3 text-center text-sm font-semibold text-blue-800 dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-300"
       >
         {t("preEnrollment.wizardYearsFromNow", { years: yearsToRetire })}
       </motion.div>
@@ -619,72 +631,28 @@ export const PersonalizePlanModal = ({
 
           <AnimatePresence mode="wait">
             {step === 1 && (
-              <motion.div
-                key="step1-wrap"
-                variants={stepVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={stepTransition}
-              >
-                {editingAge ? (
-                  <div className="space-y-3">
-                    <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
-                      {t("preEnrollment.wizardCurrentAgeLabel")}
-                    </label>
-                    <input
-                      type="number"
-                      min={18}
-                      max={75}
-                      value={state.currentAge}
-                      onChange={(e) => {
-                        const v = parseInt(e.target.value, 10);
-                        if (!isNaN(v))
-                          update(
-                            "currentAge",
-                            Math.min(75, Math.max(18, v))
-                          );
-                      }}
-                      className="h-12 max-w-[8rem] w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-base font-semibold text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 focus:border-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setEditingAge(false)}
-                      className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
-                    >
-                      {t("preEnrollment.wizardDone")}
-                    </button>
-                  </div>
-                ) : (
-                  <Step1CurrentAge
-                    currentAge={state.currentAge}
-                    onEdit={() => setEditingAge(true)}
-                  />
-                )}
-              </motion.div>
-            )}
-            {step === 2 && (
-              <Step2RetirementAge
-                key="step2"
+              <Step1Combined
+                key="step1"
                 currentAge={state.currentAge}
                 retirementAge={state.retirementAge}
-                yearsToRetire={Math.max(
-                  0,
-                  state.retirementAge - state.currentAge
-                )}
+                yearsToRetire={Math.max(0, state.retirementAge - state.currentAge)}
+                editingAge={editingAge}
+                onEdit={() => setEditingAge(true)}
+                onDoneEditing={() => setEditingAge(false)}
+                onCurrentAgeChange={(v) => update("currentAge", v)}
                 onRetirementAgeChange={(v) => update("retirementAge", v)}
               />
             )}
-            {step === 3 && (
+            {step === 2 && (
               <Step3Location
-                key="step3"
+                key="step2"
                 value={state.retirementLocation}
                 onChange={(v) => update("retirementLocation", v)}
               />
             )}
-            {step === 4 && (
+            {step === 3 && (
               <Step4Savings
-                key="step4"
+                key="step3"
                 value={state.savingsAmount}
                 onChange={(v) => update("savingsAmount", v)}
               />
@@ -702,27 +670,31 @@ export const PersonalizePlanModal = ({
               className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
             >
               <SaveIcon />
-              <span className="hidden sm:inline whitespace-nowrap">
+              <span className="whitespace-nowrap">
                 {t("preEnrollment.wizardSaveAndExit")}
               </span>
             </button>
 
             {/* Right side: Previous + Next */}
             <div className="flex items-center gap-2 sm:gap-3">
-              {!isFirstStep && (
-                <button
-                  type="button"
-                  onClick={handlePrevious}
-                  className="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 sm:px-5 py-2 text-sm font-medium text-slate-500 transition-colors hover:border-slate-400 hover:text-slate-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-400 dark:hover:border-slate-500 dark:hover:text-slate-300"
-                >
-                  <ChevronLeftIcon />
-                  <span className="hidden xs:inline">{t("preEnrollment.wizardPrevious")}</span>
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={handlePrevious}
+                disabled={isFirstStep}
+                className={cn(
+                  "inline-flex items-center gap-1 rounded-lg border px-3 sm:px-5 py-2 text-sm font-medium transition-colors",
+                  isFirstStep
+                    ? "border-slate-200 bg-white text-slate-400 cursor-default dark:border-slate-700 dark:bg-slate-800 dark:text-slate-600"
+                    : "border-slate-300 bg-white text-slate-500 hover:border-slate-400 hover:text-slate-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-400 dark:hover:border-slate-500 dark:hover:text-slate-300"
+                )}
+              >
+                <ChevronLeftIcon />
+                <span>{t("preEnrollment.wizardPrevious")}</span>
+              </button>
               <button
                 type="button"
                 onClick={handleNext}
-                className="inline-flex items-center gap-1 rounded-lg bg-blue-600 px-4 sm:px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 whitespace-nowrap dark:bg-blue-500 dark:hover:bg-blue-600"
+                className="inline-flex items-center gap-1 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-4 sm:px-5 py-2 text-sm font-medium text-white transition-all hover:from-blue-700 hover:to-blue-800 whitespace-nowrap dark:from-blue-500 dark:to-blue-600 dark:hover:from-blue-600 dark:hover:to-blue-700"
               >
                 {isLastStep ? t("preEnrollment.wizardFinish") : t("preEnrollment.wizardNextStep")}
                 <ChevronRightIcon />

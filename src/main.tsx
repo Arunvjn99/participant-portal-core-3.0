@@ -10,8 +10,10 @@ import "./theme/dark.css";
 import "./theme/enrollment-dark.css";
 import "./index.css";
 import { loadUXtweak } from "./utils/uxtweakLoader";
+import { loadUXsniff } from "./utils/uxsniffLoader";
 import { router } from "./app/router.tsx";
 import { ThemeProvider } from "./context/ThemeContext";
+import { AuthProvider } from "./context/AuthContext";
 
 // Initialize theme from localStorage before first paint (avoids flash)
 const savedTheme = localStorage.getItem("theme");
@@ -23,13 +25,16 @@ document.documentElement.classList.add(isDark ? "dark" : "light");
 function RootWithLanguageKey() {
   const { i18n: i18nInstance } = useTranslation();
   return (
-    <ThemeProvider>
-      <RouterProvider key={i18nInstance.language || "en"} router={router} />
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider>
+        <RouterProvider key={i18nInstance.language || "en"} router={router} />
+      </ThemeProvider>
+    </AuthProvider>
   );
 }
 
 loadUXtweak();
+loadUXsniff();
 
 createRoot(document.getElementById("root")!).render(
   <I18nextProvider i18n={i18n}>

@@ -13,6 +13,7 @@ import { AdvisorList } from "../../components/dashboard/AdvisorList";
 import { AdvisorCard } from "../../components/dashboard/AdvisorCard";
 import { ValuePropGrid } from "../../components/dashboard/ValuePropGrid";
 import { ValuePropCard } from "../../components/dashboard/ValuePropCard";
+import { ScrollIndicator } from "../../components/ui/ScrollIndicator";
 
 export const Dashboard = () => {
   const { t } = useTranslation();
@@ -21,13 +22,16 @@ export const Dashboard = () => {
     <DashboardLayout header={<DashboardHeader />}>
       <SaveToast />
       <div>
-      <HeroEnrollmentCard
-        greeting={t("dashboard.greeting", { name: "Brian" })}
-        headline={t("dashboard.heroTitle")}
-        description={t("dashboard.heroSubtitle")}
-        enrollmentBadge={t("dashboard.enrollmentOpen")}
-        primaryCtaLabel={t("dashboard.startEnrollment")}
-      />
+      <div className="relative" data-hero-section>
+        <HeroEnrollmentCard
+          greeting={t("dashboard.greeting", { name: "Brian" })}
+          headline={t("dashboard.heroTitle")}
+          description={t("dashboard.heroSubtitle")}
+          enrollmentBadge={t("dashboard.enrollmentOpen")}
+          primaryCtaLabel={t("dashboard.startEnrollment")}
+        />
+        <ScrollIndicator />
+      </div>
 
       {/* Learning Resources (left) + Personalized Score (right) - canonical grid like Plans */}
       <section className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_400px] 2xl:grid-cols-[minmax(0,1fr)_420px] lg:items-start">

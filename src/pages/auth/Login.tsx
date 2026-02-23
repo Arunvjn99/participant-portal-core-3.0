@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -9,6 +9,7 @@ import {
   AuthButton,
 } from "../../components/auth";
 import { Logo } from "../../components/brand/Logo";
+import { useAuth } from "../../context/AuthContext";
 import { personas, SCENARIO_LABELS } from "@/mock/personas";
 import { setDemoUser } from "@/hooks/useDemoUser";
 import type { PersonaProfile } from "@/mock/personas";
@@ -31,7 +32,15 @@ const SCENARIO_COLORS: Record<string, string> = {
 export const Login = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { user, loading } = useAuth();
   const [showDemoPanel, setShowDemoPanel] = useState(false);
+
+  useEffect(() => {
+    if (loading) return;
+    if (user) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [loading, user, navigate]);
 
   /* ── Normal login (unchanged) ── */
   const handleLogin = () => {

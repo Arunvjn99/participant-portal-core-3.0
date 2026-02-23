@@ -5,6 +5,7 @@ import { ForgotPassword } from "../pages/auth/ForgotPassword";
 import { ForgotPasswordVerify } from "../pages/auth/ForgotPasswordVerify";
 import { ResetPassword } from "../pages/auth/ResetPassword";
 import { HelpCenter } from "../pages/auth/HelpCenter";
+import { Signup } from "../pages/auth/Signup";
 import { PreEnrollment } from "../pages/dashboard/PreEnrollment";
 import { Dashboard } from "../pages/dashboard/Dashboard";
 import { PostEnrollmentDashboard } from "../pages/dashboard/PostEnrollmentDashboard";
@@ -60,6 +61,10 @@ export const router = createBrowserRouter([
       {
         path: "/help",
         element: <HelpCenter />,
+      },
+      {
+        path: "/signup",
+        element: <Signup />,
       },
       {
         path: "/dashboard",
