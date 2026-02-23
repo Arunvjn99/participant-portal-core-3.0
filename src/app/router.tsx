@@ -29,6 +29,7 @@ import { EnrollmentInvestmentsGuard } from "../components/enrollment/EnrollmentI
 import { EnrollmentInvestmentsContent } from "../components/enrollment/EnrollmentInvestmentsContent";
 import { EnrollmentReviewContent } from "../components/enrollment/EnrollmentReviewContent";
 import { RootLayout } from "../layouts/RootLayout";
+import { ProtectedRoute } from "../components/auth/ProtectedRoute";
 
 /**
  * Router configuration using createBrowserRouter (React Router v6+)
@@ -68,7 +69,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/dashboard",
-        element: <PreEnrollment />,
+        element: <ProtectedRoute><PreEnrollment /></ProtectedRoute>,
       },
       {
         path: "/demo",
@@ -76,23 +77,23 @@ export const router = createBrowserRouter([
       },
       {
         path: "/dashboard/classic",
-        element: <Dashboard />,
+        element: <ProtectedRoute><Dashboard /></ProtectedRoute>,
       },
       {
         path: "/dashboard/post-enrollment",
-        element: <PostEnrollmentDashboard />,
+        element: <ProtectedRoute><PostEnrollmentDashboard /></ProtectedRoute>,
       },
       {
         path: "/dashboard/investment-portfolio",
-        element: <InvestmentPortfolioPage />,
+        element: <ProtectedRoute><InvestmentPortfolioPage /></ProtectedRoute>,
       },
       {
         path: "/profile",
-        element: <Profile />,
+        element: <ProtectedRoute><Profile /></ProtectedRoute>,
       },
       {
         path: "/enrollment",
-        element: <EnrollmentLayout />,
+        element: <ProtectedRoute><EnrollmentLayout /></ProtectedRoute>,
         children: [
           {
             index: true,
@@ -134,28 +135,30 @@ export const router = createBrowserRouter([
       },
       {
         path: "/transactions",
-        element: <TransactionsPage />,
+        element: <ProtectedRoute><TransactionsPage /></ProtectedRoute>,
       },
       {
         path: "/transactions/:transactionType/start",
-        element: <TransactionApplicationRouter />,
+        element: <ProtectedRoute><TransactionApplicationRouter /></ProtectedRoute>,
       },
       {
         path: "/transactions/:transactionType/:transactionId",
-        element: <TransactionApplicationRouter />,
+        element: <ProtectedRoute><TransactionApplicationRouter /></ProtectedRoute>,
       },
       {
         path: "/transactions/:transactionId",
-        element: <TransactionAnalysis />,
+        element: <ProtectedRoute><TransactionAnalysis /></ProtectedRoute>,
       },
       {
         path: "/investments",
         element: (
-          <InvestmentProvider>
-            <InvestmentsLayout>
-              <InvestmentsPage />
-            </InvestmentsLayout>
-          </InvestmentProvider>
+          <ProtectedRoute>
+            <InvestmentProvider>
+              <InvestmentsLayout>
+                <InvestmentsPage />
+              </InvestmentsLayout>
+            </InvestmentProvider>
+          </ProtectedRoute>
         ),
       },
     ],

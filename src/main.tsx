@@ -14,6 +14,7 @@ import { loadUXsniff } from "./utils/uxsniffLoader";
 import { router } from "./app/router.tsx";
 import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider } from "./context/AuthContext";
+import { UserProvider } from "./context/UserContext";
 
 // Initialize theme from localStorage before first paint (avoids flash)
 const savedTheme = localStorage.getItem("theme");
@@ -26,9 +27,11 @@ function RootWithLanguageKey() {
   const { i18n: i18nInstance } = useTranslation();
   return (
     <AuthProvider>
-      <ThemeProvider>
-        <RouterProvider key={i18nInstance.language || "en"} router={router} />
-      </ThemeProvider>
+      <UserProvider>
+        <ThemeProvider>
+          <RouterProvider key={i18nInstance.language || "en"} router={router} />
+        </ThemeProvider>
+      </UserProvider>
     </AuthProvider>
   );
 }

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Compass } from "lucide-react";
 import { FloatingCards } from "./FloatingCards";
 import { PersonalizePlanModal } from "../enrollment/PersonalizePlanModal";
+import { useUser } from "../../context/UserContext";
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -19,7 +20,9 @@ const staggerContainer = {
 
 export const HeroSection = () => {
   const { t } = useTranslation();
+  const { profile } = useUser();
   const [isWizardOpen, setIsWizardOpen] = useState(false);
+  const displayName = profile?.name || "there";
 
   return (
     <>
@@ -53,7 +56,7 @@ export const HeroSection = () => {
             variants={fadeUp}
             className="text-xl md:text-2xl font-medium text-slate-500 dark:text-slate-400 mb-3"
           >
-            {t("dashboard.greeting", { name: "Brian" })}
+            {t("dashboard.greeting", { name: displayName })}
           </motion.h2>
 
           <motion.h1
@@ -127,7 +130,7 @@ export const HeroSection = () => {
     <PersonalizePlanModal
       isOpen={isWizardOpen}
       onClose={() => setIsWizardOpen(false)}
-      userName="Brian"
+      userName={displayName}
     />
     </>
   );

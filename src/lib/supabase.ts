@@ -13,4 +13,24 @@ if (!supabaseUrl || !supabaseAnonKey) {
   );
 }
 
+const PLACEHOLDER_PATTERNS = [
+  "your-project",
+  "YOUR_PROJECT_ID",
+  "your-anon-key",
+  "YOUR_ANON_KEY",
+  "PASTE_REAL_ANON_KEY_HERE",
+];
+
+if (
+  PLACEHOLDER_PATTERNS.some(
+    (p) => supabaseUrl.includes(p) || supabaseAnonKey.includes(p),
+  )
+) {
+  throw new Error(
+    "Supabase environment variables contain placeholder values. " +
+      "Replace VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your .env with real credentials " +
+      "from your Supabase project dashboard (Settings → API).",
+  );
+}
+
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);

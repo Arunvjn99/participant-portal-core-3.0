@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   AuthLayout,
@@ -32,19 +32,36 @@ const SCENARIO_COLORS: Record<string, string> = {
 export const Login = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user, loading } = useAuth();
+  const { user, loading: authLoading, signIn } = useAuth();
   const [showDemoPanel, setShowDemoPanel] = useState(false);
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
   useEffect(() => {
-    if (loading) return;
+    if (authLoading) return;
     if (user) {
       navigate("/dashboard", { replace: true });
     }
-  }, [loading, user, navigate]);
+  }, [authLoading, user, navigate]);
 
-  /* ── Normal login (unchanged) ── */
-  const handleLogin = () => {
-    navigate("/verify");
+  const handleLogin = async () => {
+    setError(null);
+    if (!email.trim() || !password) {
+      setError("Please enter your email and password.");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await signIn(email, password);
+      navigate("/dashboard", { replace: true });
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Login failed. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleForgotPassword = () => {
@@ -66,12 +83,23 @@ export const Login = () => {
   /* ── Standard login form body ── */
   const standardBody = (
     <>
+      {error && (
+        <div
+          role="alert"
+          className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/30 dark:text-red-400"
+        >
+          {error}
+        </div>
+      )}
+
       <AuthInput
         label={t("auth.email")}
-        type="text"
+        type="email"
         name="email"
         id="email"
         placeholder={t("auth.enterEmail")}
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
       />
       <div className="flex flex-col gap-2">
         <AuthPasswordInput
@@ -79,6 +107,8 @@ export const Login = () => {
           name="password"
           id="password"
           placeholder={t("auth.enterPassword")}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
         <div className="flex justify-end">
           <a
@@ -93,8 +123,8 @@ export const Login = () => {
           </a>
         </div>
       </div>
-      <AuthButton onClick={handleLogin} className="w-full">
-        {t("auth.login")}
+      <AuthButton onClick={handleLogin} disabled={submitting} className="w-full">
+        {submitting ? t("auth.loggingIn", "Logging in…") : t("auth.login")}
       </AuthButton>
 
       {/* ── Divider ── */}
@@ -121,6 +151,16 @@ export const Login = () => {
           {personas.length} {t("auth.personas")}
         </span>
       </button>
+
+      <p className="text-center text-sm text-slate-500 dark:text-slate-400">
+        Don&apos;t have an account?{" "}
+        <Link
+          to="/signup"
+          className="text-blue-600 no-underline hover:underline dark:text-blue-400"
+        >
+          Sign up
+        </Link>
+      </p>
 
       <p className="text-center text-sm text-slate-500 dark:text-slate-400">
         {t("auth.stillNeedHelp")}{" "}

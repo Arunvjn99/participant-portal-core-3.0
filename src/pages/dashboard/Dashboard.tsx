@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { DashboardLayout } from "../../layouts/DashboardLayout";
 import { DashboardHeader } from "../../components/dashboard/DashboardHeader";
+import { useUser } from "../../context/UserContext";
 import { SaveToast } from "../../components/ui/SaveToast";
 import { SHARED_LEARNING_RESOURCES } from "../../assets/learning";
 import { advisorAvatars } from "../../assets/avatars";
@@ -17,6 +18,7 @@ import { ScrollIndicator } from "../../components/ui/ScrollIndicator";
 
 export const Dashboard = () => {
   const { t } = useTranslation();
+  const { profile } = useUser();
 
   return (
     <DashboardLayout header={<DashboardHeader />}>
@@ -24,7 +26,7 @@ export const Dashboard = () => {
       <div>
       <div className="relative" data-hero-section>
         <HeroEnrollmentCard
-          greeting={t("dashboard.greeting", { name: "Brian" })}
+          greeting={t("dashboard.greeting", { name: profile?.name || "there" })}
           headline={t("dashboard.heroTitle")}
           description={t("dashboard.heroSubtitle")}
           enrollmentBadge={t("dashboard.enrollmentOpen")}

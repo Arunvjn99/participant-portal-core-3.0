@@ -5,6 +5,8 @@ import { branding } from "../../config/branding";
 import LanguageSwitcher from "@/components/common/LanguageSwitcher";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import { useDemoUser, clearDemoUser } from "@/hooks/useDemoUser";
+import { useAuth } from "@/context/AuthContext";
+import { useUser } from "@/context/UserContext";
 
 /* ────────────────────────────── Nav config ────────────────────────────── */
 
@@ -75,6 +77,8 @@ export const DashboardHeader = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const demoUser = useDemoUser();
+  const { signOut } = useAuth();
+  const { profile } = useUser();
 
   /* Close user menu on outside click */
   useEffect(() => {
@@ -92,10 +96,11 @@ export const DashboardHeader = () => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setUserMenuOpen(false);
     setMobileMenuOpen(false);
     clearDemoUser();
+    await signOut();
     navigate("/");
   };
 
@@ -206,7 +211,7 @@ export const DashboardHeader = () => {
                 style={{ background: "linear-gradient(135deg, #0b5fff 0%, #00b37e 100%)" }}
                 aria-hidden
               >
-                {demoUser?.name?.charAt(0) ?? "B"}
+                {demoUser?.name?.charAt(0) ?? profile?.name?.charAt(0) ?? "U"}
               </span>
               <ChevronDownIcon className="text-slate-400" />
             </button>
