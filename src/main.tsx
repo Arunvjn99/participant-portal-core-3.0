@@ -9,6 +9,7 @@ import "./theme/light.css";
 import "./theme/dark.css";
 import "./theme/enrollment-dark.css";
 import "./index.css";
+import { loadUXtweak } from "./utils/uxtweakLoader";
 import { router } from "./app/router.tsx";
 import { ThemeProvider } from "./context/ThemeContext";
 
@@ -27,6 +28,8 @@ function RootWithLanguageKey() {
     </ThemeProvider>
   );
 }
+
+loadUXtweak();
 
 createRoot(document.getElementById("root")!).render(
   <I18nextProvider i18n={i18n}>
