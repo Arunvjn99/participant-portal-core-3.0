@@ -20,9 +20,6 @@ interface DropdownProps {
   size?: "default" | "compact";
 }
 
-/**
- * HeroUI-inspired Select/Dropdown (v3.heroui.com). Rounded-lg, clear border, focus ring.
- */
 export const Dropdown = ({
   label = "",
   placeholder = "Select an option",
@@ -107,7 +104,7 @@ export const Dropdown = ({
   return (
     <div className="w-full">
       {label ? (
-        <label htmlFor={inputId} className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
+        <label htmlFor={inputId} className="mb-1.5 block text-sm font-medium text-[var(--color-text)]">
           {label}
         </label>
       ) : null}
@@ -115,11 +112,11 @@ export const Dropdown = ({
         ref={dropdownRef}
         className={cn(
           "relative w-full rounded-lg border-2 bg-transparent text-left outline-none transition-[border-color,box-shadow] duration-200",
-          "focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 dark:focus-within:ring-primary/30",
+          "focus-within:border-[var(--color-primary)] focus-within:ring-2 focus-within:ring-[var(--color-primary)]/20",
           size === "default" ? "min-h-[40px] py-2 pl-3 pr-10" : "min-h-[32px] py-1.5 pl-2.5 pr-8 text-sm",
-          !isOpen && "border-slate-200 dark:border-slate-600",
-          isOpen && "border-primary ring-2 ring-primary/20 dark:ring-primary/30",
-          error && "border-red-500 focus-within:border-red-500 focus-within:ring-red-500/20",
+          !isOpen && "border-[var(--color-border)]",
+          isOpen && "border-[var(--color-primary)] ring-2 ring-[var(--color-primary)]/20",
+          error && "border-[var(--color-danger)] focus-within:border-[var(--color-danger)] focus-within:ring-[var(--color-danger)]/20",
           disabled && "cursor-not-allowed opacity-50"
         )}
         role="combobox"
@@ -139,13 +136,13 @@ export const Dropdown = ({
         >
           <span
             className={cn(
-              "truncate text-slate-900 dark:text-slate-100",
-              !selectedOption && "text-slate-500 dark:text-slate-400"
+              "truncate text-[var(--color-text)]",
+              !selectedOption && "text-[var(--color-textSecondary)]"
             )}
           >
             {selectedOption ? selectedOption.label : placeholder}
           </span>
-          <span className="pointer-events-none shrink-0 text-slate-400 dark:text-slate-500" aria-hidden>
+          <span className="pointer-events-none shrink-0 text-[var(--color-textSecondary)]" aria-hidden>
             <svg className="h-4 w-4 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M6 9l6 6 6-6" />
             </svg>
@@ -154,7 +151,7 @@ export const Dropdown = ({
         {isOpen && (
           <ul
             id={`${inputId}-listbox`}
-            className="absolute left-0 right-0 top-full z-50 mt-1 max-h-[280px] overflow-auto rounded-lg border border-slate-200 bg-white py-1 shadow-lg dark:border-slate-700 dark:bg-slate-800"
+            className="absolute left-0 right-0 top-full z-50 mt-1 max-h-[280px] overflow-auto rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] py-1 shadow-lg"
             role="listbox"
             aria-label={label}
           >
@@ -162,10 +159,10 @@ export const Dropdown = ({
               <li
                 key={option.value}
                 className={cn(
-                  "cursor-pointer px-3 py-2 text-sm text-slate-900 dark:text-slate-100 transition-colors",
-                  option.value === value && "bg-primary/10 font-medium text-primary dark:text-primary",
-                  index === focusedIndex && option.value !== value && "bg-slate-100 dark:bg-slate-700",
-                  "hover:bg-slate-100 dark:hover:bg-slate-700"
+                  "cursor-pointer px-3 py-2 text-sm text-[var(--color-text)] transition-colors",
+                  option.value === value && "bg-[var(--color-primary)]/10 font-medium text-[var(--color-primary)]",
+                  index === focusedIndex && option.value !== value && "bg-[var(--color-surface)]",
+                  "hover:bg-[var(--color-background)]"
                 )}
                 role="option"
                 aria-selected={option.value === value}
@@ -179,7 +176,7 @@ export const Dropdown = ({
         )}
       </div>
       {error ? (
-        <p id={errorId} className="mt-1.5 text-sm text-red-600 dark:text-red-400" role="alert">
+        <p id={errorId} className="mt-1.5 text-sm text-[var(--color-danger)]" role="alert">
           {error}
         </p>
       ) : null}

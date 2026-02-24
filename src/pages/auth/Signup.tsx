@@ -152,7 +152,7 @@ export const Signup = () => {
       {serverError && (
         <div
           role="alert"
-          className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/30 dark:text-red-400"
+          className="rounded-lg border border-[var(--color-danger)]/20 bg-[var(--color-danger)]/5 px-4 py-3 text-sm text-[var(--color-danger)]"
         >
           {serverError}
         </div>
@@ -161,7 +161,7 @@ export const Signup = () => {
       {successMessage && (
         <div
           role="status"
-          className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700 dark:border-green-800 dark:bg-green-900/30 dark:text-green-400"
+          className="rounded-lg border border-[var(--color-success)]/20 bg-[var(--color-success)]/5 px-4 py-3 text-sm text-[var(--color-success)]"
         >
           {successMessage}
         </div>
@@ -181,7 +181,7 @@ export const Signup = () => {
       <div className="flex w-full flex-col gap-2" ref={stateDropdownRef}>
         <Label.Root
           htmlFor="signup-state"
-          className="text-sm font-medium text-slate-900 dark:text-slate-100"
+          className="text-sm font-medium text-[var(--color-text)]"
         >
           State
         </Label.Root>
@@ -248,24 +248,24 @@ export const Signup = () => {
                 setStateSearchQuery("");
               }
             }}
-            className={`w-full rounded-lg border bg-white px-4 py-3 text-base transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:bg-slate-800 dark:focus:border-blue-400 dark:focus:ring-blue-400/20 ${
+            className={`w-full rounded-lg border bg-[var(--color-surface)] px-4 py-3 text-base transition-colors focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 ${
               selectedStateName
-                ? "text-slate-900 dark:text-slate-100"
-                : "text-slate-500 dark:text-slate-400"
+                ? "text-[var(--color-text)]"
+                : "text-[var(--color-textSecondary)]"
             } ${
               errors.location
-                ? "border-red-500 focus:border-red-500 focus:ring-red-500/20 dark:border-red-500"
-                : "border-slate-200 dark:border-slate-600"
+                ? "border-[var(--color-danger)] focus:border-[var(--color-danger)] focus:ring-[var(--color-danger)]/20"
+                : "border-[var(--color-border)]"
             }`}
           />
           {stateDropdownOpen && (
             <ul
               id="signup-state-listbox"
               role="listbox"
-              className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 shadow-lg dark:border-slate-600 dark:bg-slate-800"
+              className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] py-1 shadow-lg"
             >
               {filteredStates.length === 0 ? (
-                <li className="px-4 py-3 text-sm text-slate-500 dark:text-slate-400">
+                <li className="px-4 py-3 text-sm text-[var(--color-textSecondary)]">
                   No matching state
                 </li>
               ) : (
@@ -277,8 +277,8 @@ export const Signup = () => {
                     aria-selected={selectedState === state.code}
                     className={`cursor-pointer px-4 py-2.5 text-sm ${
                       index === stateHighlightIndex
-                        ? "bg-blue-50 text-blue-900 dark:bg-blue-900/30 dark:text-blue-100"
-                        : "text-slate-900 dark:text-slate-100"
+                        ? "bg-[var(--color-primary)]/10 text-[var(--color-primary)]"
+                        : "text-[var(--color-text)]"
                     }`}
                     onMouseEnter={() => setStateHighlightIndex(index)}
                     onClick={() => {
@@ -296,7 +296,7 @@ export const Signup = () => {
           )}
         </div>
         {errors.location && (
-          <span id="signup-state-error" className="text-sm text-red-500" role="alert">
+          <span id="signup-state-error" className="text-sm text-[var(--color-danger)]" role="alert">
             {errors.location}
           </span>
         )}
@@ -305,7 +305,7 @@ export const Signup = () => {
       <div className="flex w-full flex-col gap-2">
         <Label.Root
           htmlFor="signup-company"
-          className="text-sm font-medium text-slate-900 dark:text-slate-100"
+          className="text-sm font-medium text-[var(--color-text)]"
         >
           Company
         </Label.Root>
@@ -317,14 +317,14 @@ export const Signup = () => {
           disabled={companiesLoading}
           aria-invalid={errors.companyId ? true : undefined}
           aria-describedby={errors.companyId ? "signup-company-error" : undefined}
-          className={`w-full rounded-lg border bg-white px-4 py-3 text-base transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:bg-slate-800 dark:focus:border-blue-400 dark:focus:ring-blue-400/20 ${
+          className={`w-full rounded-lg border bg-[var(--color-surface)] px-4 py-3 text-base transition-colors focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 ${
             companyId
-              ? "text-slate-900 dark:text-slate-100"
-              : "text-slate-500 dark:text-slate-400"
+              ? "text-[var(--color-text)]"
+              : "text-[var(--color-textSecondary)]"
           } ${
             errors.companyId
-              ? "border-red-500 focus:border-red-500 focus:ring-red-500/20 dark:border-red-500"
-              : "border-slate-200 dark:border-slate-600"
+              ? "border-[var(--color-danger)] focus:border-[var(--color-danger)] focus:ring-[var(--color-danger)]/20"
+              : "border-[var(--color-border)]"
           }`}
         >
           <option value="">
@@ -337,7 +337,7 @@ export const Signup = () => {
           ))}
         </select>
         {errors.companyId && (
-          <span id="signup-company-error" className="text-sm text-red-500" role="alert">
+          <span id="signup-company-error" className="text-sm text-[var(--color-danger)]" role="alert">
             {errors.companyId}
           </span>
         )}
@@ -382,11 +382,11 @@ export const Signup = () => {
         {loading ? "Creating account…" : "Sign Up"}
       </AuthButton>
 
-      <p className="text-center text-sm text-slate-500 dark:text-slate-400">
+      <p className="text-center text-sm text-[var(--color-textSecondary)]">
         Already have an account?{" "}
         <Link
           to="/"
-          className="text-primary no-underline hover:underline dark:text-blue-400"
+          className="text-[var(--color-primary)] no-underline hover:underline"
         >
           Sign in
         </Link>

@@ -78,7 +78,7 @@ export const AIInsightsPanel: React.FC<Props> = ({ data, plans }) => {
 
             <div className="relative space-y-3">
               <div className="absolute -left-4 top-0 bottom-0 hidden w-px bg-white/20 md:block" />
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-emerald-300">
+              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--color-success)]">
                 <Lightbulb size={14} />
                 {t("investmentPortfolio.actionableInsight")}
               </div>

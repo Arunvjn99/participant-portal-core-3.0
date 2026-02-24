@@ -546,7 +546,7 @@ export const Contribution = () => {
                                   min="0"
                                   max={state.sourcesViewMode === "percent" ? "100" : undefined}
                                   disabled={state.sourceAllocation[opt.key] === 0 || !state.sourcesEditMode}
-                                  className="min-w-0 flex-1 border-0 bg-transparent px-3 py-2 text-sm font-medium placeholder-slate-400 focus:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:opacity-60 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                  className="min-w-0 flex-1 border-0 bg-transparent px-3 py-2 text-sm font-medium placeholder-[var(--color-textSecondary)] focus:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:opacity-60 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                   style={{ color: "var(--enroll-text-primary)" }}
                                 />
                                 <span
@@ -561,7 +561,7 @@ export const Contribution = () => {
                         })}
                       </div>
                       {sourceTotal !== 100 && (
-                        <p className="mt-2 text-sm text-red-600">{t("enrollment.totalMustEqual100")}</p>
+                        <p className="mt-2 text-sm text-[var(--color-danger)]">{t("enrollment.totalMustEqual100")}</p>
                       )}
                     </div>
                   </motion.div>

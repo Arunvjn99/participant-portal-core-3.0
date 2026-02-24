@@ -101,7 +101,7 @@ function buildStepComponent(
             <button
               type="button"
               onClick={() => respond("skip")}
-              className="text-[11px] text-slate-500 hover:text-slate-700 transition-colors dark:hover:text-slate-300"
+              className="text-[11px] text-[var(--color-textSecondary)] hover:text-[var(--color-text)] transition-colors"
             >
               Skip this step
             </button>

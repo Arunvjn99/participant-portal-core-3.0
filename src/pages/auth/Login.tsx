@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -11,9 +11,12 @@ import {
 import { Logo } from "../../components/brand/Logo";
 import { useAuth } from "../../context/AuthContext";
 import { useOtp } from "../../context/OtpContext";
+import { supabase } from "../../lib/supabase";
 import { personas, SCENARIO_LABELS } from "@/mock/personas";
 import { setDemoUser } from "@/hooks/useDemoUser";
 import type { PersonaProfile } from "@/mock/personas";
+
+const DOMAIN_LOOKUP_DEBOUNCE_MS = 500;
 
 /* ─────────────────────────────────────────────────────────────────────────
    Scenario colors for the demo persona picker
@@ -41,6 +44,8 @@ export const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [detectedLogo, setDetectedLogo] = useState<string | null>(null);
+  const domainLookupTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (authLoading) return;
@@ -48,6 +53,41 @@ export const Login = () => {
       navigate("/dashboard", { replace: true });
     }
   }, [authLoading, user, isOtpVerified, navigate]);
+
+  /* ── Email domain → company logo preview (debounced; no theme change) ── */
+  useEffect(() => {
+    const domain = email.trim().split("@")[1];
+    if (!domain) {
+      setDetectedLogo(null);
+      return;
+    }
+    if (domainLookupTimeoutRef.current) {
+      clearTimeout(domainLookupTimeoutRef.current);
+      domainLookupTimeoutRef.current = null;
+    }
+    domainLookupTimeoutRef.current = setTimeout(async () => {
+      domainLookupTimeoutRef.current = null;
+      try {
+        const { data } = await supabase
+          .from("companies")
+          .select("logo_url")
+          .eq("domain", domain.toLowerCase())
+          .maybeSingle();
+        if (data?.logo_url) {
+          setDetectedLogo(typeof data.logo_url === "string" ? data.logo_url.trim() : null);
+        } else {
+          setDetectedLogo(null);
+        }
+      } catch {
+        setDetectedLogo(null);
+      }
+    }, DOMAIN_LOOKUP_DEBOUNCE_MS);
+    return () => {
+      if (domainLookupTimeoutRef.current) {
+        clearTimeout(domainLookupTimeoutRef.current);
+      }
+    };
+  }, [email]);
 
   const handleLogin = async () => {
     setError(null);
@@ -80,15 +120,25 @@ export const Login = () => {
     navigate("/demo");
   };
 
-  const headerSlot = <Logo className="h-10 w-auto" />;
+  /* ── CORE product branding (pre-auth only; tenant logo shown after login) ── */
+  const headerSlot = <Logo />;
 
   /* ── Standard login form body ── */
   const standardBody = (
     <>
+      {detectedLogo && (
+        <div className="flex justify-center mb-4">
+          <img
+            src={detectedLogo}
+            alt="Company Preview"
+            className="h-10 w-auto object-contain transition-opacity duration-300"
+          />
+        </div>
+      )}
       {error && (
         <div
           role="alert"
-          className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/30 dark:text-red-400"
+          className="rounded-lg border border-[var(--color-danger)]/20 bg-[var(--color-danger)]/5 px-4 py-3 text-sm text-[var(--color-danger)]"
         >
           {error}
         </div>
@@ -115,7 +165,7 @@ export const Login = () => {
         <div className="flex justify-end">
           <a
             href="#"
-            className="text-sm text-primary no-underline transition-colors hover:underline dark:text-blue-400"
+            className="text-sm text-[var(--color-primary)] no-underline transition-colors hover:underline"
             onClick={(e) => {
               e.preventDefault();
               handleForgotPassword();
@@ -131,16 +181,16 @@ export const Login = () => {
 
       {/* ── Divider ── */}
       <div className="relative flex items-center py-1">
-        <div className="flex-1 border-t border-slate-200 dark:border-slate-700" />
-        <span className="mx-3 text-xs font-medium text-slate-400 dark:text-slate-500">{t("auth.or")}</span>
-        <div className="flex-1 border-t border-slate-200 dark:border-slate-700" />
+        <div className="flex-1 border-t border-[var(--color-border)]" />
+        <span className="mx-3 text-xs font-medium text-[var(--color-textSecondary)]">{t("auth.or")}</span>
+        <div className="flex-1 border-t border-[var(--color-border)]" />
       </div>
 
       {/* ── Explore Scenarios CTA ── */}
       <button
         type="button"
         onClick={() => setShowDemoPanel(true)}
-        className="group flex w-full items-center justify-center gap-2.5 rounded-lg border-2 border-dashed border-indigo-300 bg-indigo-50/50 px-5 py-3.5 text-sm font-semibold text-indigo-600 transition-all hover:border-indigo-400 hover:bg-indigo-50 dark:border-indigo-600 dark:bg-indigo-500/5 dark:text-indigo-400 dark:hover:border-indigo-500 dark:hover:bg-indigo-500/10"
+        className="group flex w-full items-center justify-center gap-2.5 rounded-lg border-2 border-dashed border-[var(--color-primary)]/30 bg-[var(--color-primary)]/5 px-5 py-3.5 text-sm font-semibold text-[var(--color-primary)] transition-all hover:border-[var(--color-primary)]/50 hover:bg-[var(--color-primary)]/10"
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0" aria-hidden>
           <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -149,26 +199,26 @@ export const Login = () => {
           <line x1="23" y1="11" x2="17" y2="11" />
         </svg>
         {t("auth.exploreDemoScenarios")}
-        <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-bold text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300">
+        <span className="rounded-full bg-[var(--color-primary)]/10 px-2 py-0.5 text-[10px] font-bold text-[var(--color-primary)]">
           {personas.length} {t("auth.personas")}
         </span>
       </button>
 
-      <p className="text-center text-sm text-slate-500 dark:text-slate-400">
+      <p className="text-center text-sm text-[var(--color-textSecondary)]">
         Don&apos;t have an account?{" "}
         <Link
           to="/signup"
-          className="text-primary no-underline hover:underline dark:text-blue-400"
+          className="text-[var(--color-primary)] no-underline hover:underline"
         >
           Sign up
         </Link>
       </p>
 
-      <p className="text-center text-sm text-slate-500 dark:text-slate-400">
+      <p className="text-center text-sm text-[var(--color-textSecondary)]">
         {t("auth.stillNeedHelp")}{" "}
         <a
           href="#"
-          className="text-primary no-underline hover:underline dark:text-blue-400"
+          className="text-[var(--color-primary)] no-underline hover:underline"
           onClick={(e) => {
             e.preventDefault();
             handleHelpCenter();
@@ -199,21 +249,21 @@ export const Login = () => {
           />
 
           {/* Panel */}
-          <div className="relative z-10 w-full max-w-md rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900">
+          <div className="relative z-10 w-full max-w-md rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-2xl">
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 dark:border-slate-800">
+            <div className="flex items-center justify-between border-b border-[var(--color-border)] px-5 py-4">
               <div>
-                <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">
+                <h2 className="text-lg font-bold text-[var(--color-text)]">
                   {t("auth.exploreScenarios")}
                 </h2>
-                <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">
+                <p className="mt-0.5 text-sm text-[var(--color-textSecondary)]">
                   {t("auth.pickPersona")}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setShowDemoPanel(false)}
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--color-textSecondary)] transition-colors hover:bg-[var(--color-background)] hover:text-[var(--color-text)]"
                 aria-label={t("auth.close")}
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -235,7 +285,7 @@ export const Login = () => {
                       key={persona.id}
                       type="button"
                       onClick={() => handleDemoLogin(persona)}
-                      className="flex w-full items-center gap-3 rounded-xl border-2 border-transparent p-4 text-left transition-all hover:border-slate-200 hover:bg-slate-50 dark:hover:border-slate-700 dark:hover:bg-slate-800"
+                      className="flex w-full items-center gap-3 rounded-xl border-2 border-transparent p-4 text-left transition-all hover:border-[var(--color-border)] hover:bg-[var(--color-background)]"
                     >
                       {/* Avatar */}
                       <span
@@ -248,7 +298,7 @@ export const Login = () => {
                       {/* Info */}
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
-                          <span className="font-semibold text-slate-900 dark:text-slate-100">
+                          <span className="font-semibold text-[var(--color-text)]">
                             {persona.name}
                           </span>
                           <span
@@ -258,13 +308,13 @@ export const Login = () => {
                             {SCENARIO_LABELS[persona.scenario]}
                           </span>
                         </div>
-                        <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                        <p className="mt-0.5 text-xs text-[var(--color-textSecondary)]">
                           Age {persona.age} · {fmt.format(persona.balance)} · Score {persona.retirementScore}
                         </p>
                       </div>
 
                       {/* Arrow */}
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-slate-300 dark:text-slate-600" aria-hidden>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-[var(--color-border)]" aria-hidden>
                         <path d="M9 18l6-6-6-6" />
                       </svg>
                     </button>
@@ -274,8 +324,8 @@ export const Login = () => {
             </div>
 
             {/* Footer */}
-            <div className="border-t border-slate-100 px-5 py-3 dark:border-slate-800">
-              <p className="text-center text-xs text-slate-400">
+            <div className="border-t border-[var(--color-border)] px-5 py-3">
+              <p className="text-center text-xs text-[var(--color-textSecondary)]">
                 No password required — click any persona to explore instantly.
               </p>
             </div>

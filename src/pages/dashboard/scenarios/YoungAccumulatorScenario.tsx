@@ -17,23 +17,23 @@ export function YoungAccumulatorScenario({ user }: { user: PersonaProfile }) {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-5 dark:border-emerald-800 dark:bg-emerald-900/20">
-          <h3 className="font-semibold text-emerald-900 dark:text-emerald-200">Growth Trajectory</h3>
-          <p className="mt-2 text-sm text-emerald-700 dark:text-emerald-300">
+        <div className="rounded-xl border border-[var(--color-success)]/20 bg-[var(--color-success)]/10 p-5">
+          <h3 className="font-semibold text-[var(--color-success)]">Growth Trajectory</h3>
+          <p className="mt-2 text-sm text-[var(--color-success)]">
             With {yearsToRetire} years of compound growth at 7% average annual returns,
             your current {fmt.format(user.balance)} could grow to {fmt.format(projectedBalance)}.
           </p>
-          <div className="mt-4 h-2 rounded-full bg-emerald-200 dark:bg-emerald-800">
+          <div className="mt-4 h-2 rounded-full bg-[var(--color-success)]/20">
             <div
-              className="h-2 rounded-full bg-emerald-500 transition-all"
+              className="h-2 rounded-full bg-[var(--color-success)] transition-all"
               style={{ width: `${Math.min((user.balance / projectedBalance) * 100, 100)}%` }}
             />
           </div>
         </div>
 
-        <div className="rounded-xl border border-blue-200 bg-blue-50 p-5 dark:border-blue-800 dark:bg-blue-900/20">
-          <h3 className="font-semibold text-blue-900 dark:text-blue-200">Recommendation</h3>
-          <p className="mt-2 text-sm text-blue-700 dark:text-blue-300">
+        <div className="rounded-xl border border-[var(--color-primary)]/20 bg-[var(--color-primary)]/10 p-5">
+          <h3 className="font-semibold text-[var(--color-primary)]">Recommendation</h3>
+          <p className="mt-2 text-sm text-[var(--color-primary)]">
             You're on a great start! Consider increasing your contribution rate by 1% each year
             to maximize your employer match and accelerate your retirement savings.
           </p>
@@ -51,8 +51,8 @@ export function YoungAccumulatorScenario({ user }: { user: PersonaProfile }) {
 
 function StatCard({ label, value, color }: { label: string; value: string; color: string }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
-      <p className="text-xs font-medium uppercase tracking-wider text-slate-400">{label}</p>
+    <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
+      <p className="text-xs font-medium uppercase tracking-wider text-[var(--color-textSecondary)]">{label}</p>
       <p className="mt-1 text-2xl font-bold" style={{ color }}>{value}</p>
     </div>
   );

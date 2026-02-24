@@ -57,8 +57,8 @@ export function RiskComfortSelector({
   const btn =
     "flex-1 min-w-0 rounded-xl border-2 p-4 text-left transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2";
   const unselected = isDarkMode
-    ? "border-gray-600 bg-gray-800/50 text-gray-200 hover:border-gray-500"
-    : "border-gray-200 bg-white/80 text-gray-800 hover:border-gray-300 hover:bg-white";
+    ? "border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:border-[var(--color-border)]"
+    : "border-[var(--color-border)] bg-[var(--color-surface)]/80 text-[var(--color-text)] hover:border-[var(--color-border)] hover:bg-[var(--color-surface)]";
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3" role="group" aria-label="Risk comfort">
@@ -71,7 +71,7 @@ export function RiskComfortSelector({
           aria-label={`${opt.label}: ${opt.hint}`}
         >
           <span className="block font-semibold text-sm">{opt.label}</span>
-          <span className={isDarkMode ? "text-gray-400 text-xs mt-0.5" : "text-gray-500 text-xs mt-0.5"}>
+          <span className={isDarkMode ? "text-[var(--color-textSecondary)] text-xs mt-0.5" : "text-[var(--color-textSecondary)] text-xs mt-0.5"}>
             {opt.hint}
           </span>
         </button>
@@ -106,11 +106,11 @@ export function FundCards({
   const card =
     "rounded-xl border-2 p-3 sm:p-4 text-left transition-all focus:outline-none focus:ring-2 focus:ring-primary";
   const unselected = isDarkMode
-    ? "border-gray-600 bg-gray-800/50 text-gray-200 hover:border-gray-500"
-    : "border-gray-200 bg-white/80 text-gray-800 hover:border-gray-300";
+    ? "border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:border-[var(--color-border)]"
+    : "border-[var(--color-border)] bg-[var(--color-surface)]/80 text-[var(--color-text)] hover:border-[var(--color-border)]";
   const selected = isDarkMode
-    ? "border-blue-400 bg-blue-900/40 text-blue-100 ring-2 ring-blue-400/30"
-    : "border-blue-500 bg-blue-50 text-blue-900 ring-2 ring-blue-500/30";
+    ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10 text-[var(--color-primary)] ring-2 ring-[var(--color-primary)]/30"
+    : "border-[var(--color-primary)] bg-[var(--color-primary)]/10 text-[var(--color-primary)] ring-2 ring-[var(--color-primary)]/30";
 
   return (
     <div className="space-y-4" role="region" aria-label="Fund selection by category">
@@ -121,9 +121,7 @@ export function FundCards({
           <div key={cat}>
             <p
               className={
-                isDarkMode
-                  ? "text-gray-300 text-sm font-medium mb-2"
-                  : "text-gray-700 text-sm font-medium mb-2"
+                "text-[var(--color-text)] text-sm font-medium mb-2"
               }
             >
               {cat}
@@ -139,7 +137,7 @@ export function FundCards({
                   aria-label={`${f.name}, 1Y return ${f.return1y}, fee ${f.expenseRatio}. ${selectedById[f.id] ? "Selected" : "Select"}`}
                 >
                   <span className="block font-semibold text-sm">{f.name}</span>
-                  <span className={isDarkMode ? "text-gray-400 text-xs mt-1" : "text-gray-500 text-xs mt-1"}>
+                  <span className={isDarkMode ? "text-[var(--color-textSecondary)] text-xs mt-1" : "text-[var(--color-textSecondary)] text-xs mt-1"}>
                     {f.return1y} · {f.expenseRatio}
                   </span>
                 </button>
@@ -156,7 +154,7 @@ export function FundCards({
           className={
             canContinue
               ? "w-full py-2.5 rounded-xl font-medium bg-primary text-white hover:bg-primary-hover focus:ring-2 focus:ring-primary focus:ring-offset-2"
-              : "w-full py-2.5 rounded-xl font-medium bg-gray-300 text-gray-500 cursor-not-allowed"
+              : "w-full py-2.5 rounded-xl font-medium bg-[var(--color-background)] text-[var(--color-textSecondary)] cursor-not-allowed"
           }
           aria-disabled={!canContinue}
         >
@@ -182,7 +180,7 @@ export function AllocationSliders({
 }) {
   const total = Object.values(allocations).reduce((a, b) => a + b, 0);
   const isValid = Math.abs(total - 100) < 0.5;
-  const hintClass = isDarkMode ? "text-gray-400" : "text-gray-500";
+  const hintClass = "text-[var(--color-textSecondary)]";
 
   return (
     <div className="space-y-4" role="region" aria-label="Allocation percentages">
@@ -193,7 +191,7 @@ export function AllocationSliders({
               {f.name}
             </label>
             <span
-              className={`tabular-nums text-sm font-semibold ${isDarkMode ? "text-gray-200" : "text-gray-800"}`}
+              className={`tabular-nums text-sm font-semibold ${"text-[var(--color-text)]"}`}
             >
               {allocations[f.id] ?? 0}%
             </span>
@@ -205,7 +203,7 @@ export function AllocationSliders({
             max={100}
             value={allocations[f.id] ?? 0}
             onChange={(e) => onChange(f.id, Number(e.target.value))}
-            className="w-full h-2 rounded-full accent-blue-600 cursor-pointer"
+            className="w-full h-2 rounded-full accent-[var(--color-primary)] cursor-pointer"
             aria-valuenow={allocations[f.id] ?? 0}
             aria-valuetext={`${allocations[f.id] ?? 0} percent`}
           />
@@ -215,7 +213,7 @@ export function AllocationSliders({
       <div
         role="status"
         aria-live="polite"
-        className={`text-sm ${isValid ? hintClass : "text-amber-600 font-medium"}`}
+        className={`text-sm ${isValid ? hintClass : "text-[var(--color-warning)] font-medium"}`}
       >
         {isValid ? (
           <>Total: 100%</>
@@ -230,7 +228,7 @@ export function AllocationSliders({
         className={
           isValid
             ? "w-full py-2.5 rounded-xl font-medium bg-primary text-white hover:bg-primary-hover focus:ring-2 focus:ring-primary focus:ring-offset-2"
-            : "w-full py-2.5 rounded-xl font-medium bg-gray-300 text-gray-500 cursor-not-allowed"
+            : "w-full py-2.5 rounded-xl font-medium bg-[var(--color-background)] text-[var(--color-textSecondary)] cursor-not-allowed"
         }
         aria-disabled={!isValid}
       >
@@ -280,14 +278,12 @@ export function ManualReviewSummaryCard(props: ManualReviewSummaryCardProps) {
   );
 
   const total = Object.values(allocations).reduce((a, b) => a + b, 0);
-  const card = isDarkMode
-    ? "rounded-2xl border border-gray-600 bg-gray-800/90 shadow-xl overflow-hidden"
-    : "rounded-2xl border border-gray-200 bg-white shadow-xl overflow-hidden";
-  const head = isDarkMode ? "bg-gray-700/80 text-gray-100" : "bg-gray-50 text-gray-800";
-  const row = isDarkMode ? "border-gray-700" : "border-gray-100";
-  const labelClass = isDarkMode ? "text-gray-400" : "text-gray-500";
-  const valueClass = isDarkMode ? "text-gray-100" : "text-gray-900";
-  const sectionClass = isDarkMode ? "text-gray-300" : "text-gray-700";
+  const card = "rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-xl overflow-hidden";
+  const head = "bg-[var(--color-background)] text-[var(--color-text)]";
+  const row = "border-[var(--color-border)]";
+  const labelClass = "text-[var(--color-textSecondary)]";
+  const valueClass = "text-[var(--color-text)]";
+  const sectionClass = "text-[var(--color-text)]";
 
   return (
     <div className={`${card} mt-4`} role="region" aria-labelledby="manual-review-heading">
@@ -324,8 +320,8 @@ export function ManualReviewSummaryCard(props: ManualReviewSummaryCardProps) {
             {breakdown.length ? (
               breakdown.map(({ id, name, pct }) => (
                 <li key={id} className="flex justify-between items-center px-3 py-2 sm:py-2.5 text-sm">
-                  <span className={isDarkMode ? "text-gray-200" : "text-gray-800"}>{name}</span>
-                  <span className={`font-medium tabular-nums ${isDarkMode ? "text-gray-100" : "text-gray-900"}`}>
+                  <span className={"text-[var(--color-text)]"}>{name}</span>
+                  <span className={`font-medium tabular-nums ${"text-[var(--color-text)]"}`}>
                     {pct}%
                   </span>
                 </li>
@@ -342,9 +338,7 @@ export function ManualReviewSummaryCard(props: ManualReviewSummaryCardProps) {
             onClick={onEdit}
             className={`
               flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-sm font-medium
-              ${isDarkMode
-                ? "border border-gray-600 text-gray-300 hover:bg-gray-700/50"
-                : "border border-gray-300 text-gray-700 hover:bg-gray-50"}
+              ${"border border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-background)]"}
               focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
             `}
           >
@@ -458,16 +452,14 @@ export function ManualInvestmentBlock(props: ManualInvestmentBlockProps) {
     if (Math.abs(total - 100) < 0.5) onAllocationContinue(localAlloc);
   };
 
-  const container = isDarkMode
-    ? "rounded-2xl border border-gray-700/50 bg-gray-800/40 backdrop-blur-md p-4 sm:p-5 mt-2"
-    : "rounded-2xl border border-gray-200 bg-white/60 backdrop-blur-md p-4 sm:p-5 mt-2 shadow-sm";
+  const container = "rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]/60 backdrop-blur-md p-4 sm:p-5 mt-2 shadow-sm";
 
   return (
     <div className={container} role="region" aria-labelledby={hideFraming ? undefined : "manual-invest-heading"}>
       {!hideFraming && framing && (
         <p
           id="manual-invest-heading"
-          className={isDarkMode ? "text-gray-200 font-medium text-sm sm:text-base mb-4" : "text-gray-800 font-medium text-sm sm:text-base mb-4"}
+          className={"text-[var(--color-text)] font-medium text-sm sm:text-base mb-4"}
         >
           {framing}
         </p>

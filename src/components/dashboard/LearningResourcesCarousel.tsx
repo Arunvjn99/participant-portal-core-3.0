@@ -17,19 +17,19 @@ interface LearningResourcesCarouselProps {
 }
 
 const ArrowLeft = () => (
-  <svg className="h-5 w-5 text-slate-600 dark:text-slate-300" viewBox="0 0 20 20" fill="currentColor" aria-hidden>
+  <svg className="h-5 w-5 text-[var(--color-textSecondary)]" viewBox="0 0 20 20" fill="currentColor" aria-hidden>
     <path fillRule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clipRule="evenodd" />
   </svg>
 );
 
 const ArrowRight = () => (
-  <svg className="h-5 w-5 text-slate-600 dark:text-slate-300" viewBox="0 0 20 20" fill="currentColor" aria-hidden>
+  <svg className="h-5 w-5 text-[var(--color-textSecondary)]" viewBox="0 0 20 20" fill="currentColor" aria-hidden>
     <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
   </svg>
 );
 
 const arrowBaseClass =
-  "absolute top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white shadow-md transition-opacity duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:border-slate-600 dark:bg-slate-800 dark:focus-visible:ring-offset-slate-900 md:flex";
+  "absolute top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 shrink-0 items-center justify-center rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] shadow-md transition-opacity duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 md:flex";
 
 export const LearningResourcesCarousel = ({ children }: LearningResourcesCarouselProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);

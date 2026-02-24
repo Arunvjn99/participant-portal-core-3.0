@@ -31,7 +31,7 @@ export function BankDetailsForm({
       transition={{ duration: 0.2 }}
     >
       <div>
-        <label htmlFor="loan-routing" className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
+        <label htmlFor="loan-routing" className="mb-1 block text-sm font-medium text-[var(--color-text)]">
           Routing number
         </label>
         <input
@@ -42,19 +42,19 @@ export function BankDetailsForm({
           value={routing}
           onChange={(e) => onChange({ routingNumber: e.target.value.replace(/\D/g, "").slice(0, 9) })}
           disabled={disabled}
-          className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+          className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-[var(--color-text)]"
           aria-label="Routing number (9 digits)"
           aria-invalid={!!errors.routingNumber}
           aria-describedby={errors.routingNumber ? "loan-routing-error" : undefined}
         />
         {errors.routingNumber && (
-          <p id="loan-routing-error" className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert">
+          <p id="loan-routing-error" className="mt-1 text-sm text-[var(--color-danger)]" role="alert">
             {errors.routingNumber}
           </p>
         )}
       </div>
       <div>
-        <label htmlFor="loan-account" className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
+        <label htmlFor="loan-account" className="mb-1 block text-sm font-medium text-[var(--color-text)]">
           Account number
         </label>
         <input
@@ -65,20 +65,20 @@ export function BankDetailsForm({
           value={account}
           onChange={(e) => onChange({ accountNumber: e.target.value.replace(/\D/g, "").slice(0, 17) })}
           disabled={disabled}
-          className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+          className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-[var(--color-text)]"
           aria-label="Account number"
           aria-invalid={!!errors.accountNumber}
           aria-describedby={errors.accountNumber ? "loan-account-error" : undefined}
         />
         {errors.accountNumber && (
-          <p id="loan-account-error" className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert">
+          <p id="loan-account-error" className="mt-1 text-sm text-[var(--color-danger)]" role="alert">
             {errors.accountNumber}
           </p>
         )}
       </div>
       <div>
         <fieldset className="space-y-2" aria-label="Account type">
-          <legend className="text-sm font-medium text-slate-700 dark:text-slate-300">Account type</legend>
+          <legend className="text-sm font-medium text-[var(--color-text)]">Account type</legend>
           <label className="flex items-center gap-2">
             <input
               type="radio"
@@ -87,10 +87,10 @@ export function BankDetailsForm({
               checked={accountType === "checking"}
               onChange={() => onChange({ accountType: "checking" })}
               disabled={disabled}
-              className="rounded-full border-slate-300 text-blue-600 focus:ring-blue-500"
+              className="rounded-full border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
               aria-label="Checking"
             />
-            <span className="text-sm text-slate-700 dark:text-slate-300">Checking</span>
+            <span className="text-sm text-[var(--color-text)]">Checking</span>
           </label>
           <label className="flex items-center gap-2">
             <input
@@ -100,10 +100,10 @@ export function BankDetailsForm({
               checked={accountType === "savings"}
               onChange={() => onChange({ accountType: "savings" })}
               disabled={disabled}
-              className="rounded-full border-slate-300 text-blue-600 focus:ring-blue-500"
+              className="rounded-full border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
               aria-label="Savings"
             />
-            <span className="text-sm text-slate-700 dark:text-slate-300">Savings</span>
+            <span className="text-sm text-[var(--color-text)]">Savings</span>
           </label>
         </fieldset>
       </div>

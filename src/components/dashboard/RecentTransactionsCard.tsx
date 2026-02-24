@@ -74,15 +74,15 @@ export const RecentTransactionsCard = ({ transactions }: RecentTransactionsCardP
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return (
-    <article className="ped-transactions bg-card rounded-xl border border-slate-200 p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800 min-h-fit w-full min-w-0">
+    <article className="ped-transactions bg-card rounded-xl border border-[var(--color-border)] p-6 shadow-sm min-h-fit w-full min-w-0">
       <div className="flex items-start justify-between gap-4 mb-2">
         <div>
-          <h2 className="m-0 text-lg font-semibold text-slate-900 dark:text-slate-100">Recent Transactions</h2>
-          <p className="m-0 mt-1 text-sm text-slate-500 dark:text-slate-400">Your latest account activity</p>
+          <h2 className="m-0 text-lg font-semibold text-[var(--color-text)]">Recent Transactions</h2>
+          <p className="m-0 mt-1 text-sm text-[var(--color-textSecondary)]">Your latest account activity</p>
         </div>
         <button
           type="button"
-          className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-400"
+          className="text-sm font-medium text-[var(--color-primary)] hover:underline"
           onClick={() => navigate("/transactions")}
         >
           See all
@@ -90,41 +90,41 @@ export const RecentTransactionsCard = ({ transactions }: RecentTransactionsCardP
       </div>
       <div className="flex gap-2 mb-4">
         <div className="flex-1 min-w-0 relative">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-textSecondary)] pointer-events-none">
             <circle cx="11" cy="11" r="8" />
             <path d="M21 21l-4.35-4.35" />
           </svg>
           <input
             type="search"
             placeholder="Search transactions..."
-            className="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg bg-white dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+            className="w-full pl-9 pr-3 py-2 text-sm border border-[var(--color-border)] rounded-lg bg-[var(--color-surface)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
         <select
-          className="ped-transactions__select px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+          className="ped-transactions__select px-3 py-2 text-sm border border-[var(--color-border)] rounded-lg bg-[var(--color-surface)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
         >
           <option value="all">Category: All</option>
         </select>
       </div>
-      <div className="flex flex-col divide-y divide-slate-200 dark:divide-slate-600">
+      <div className="flex flex-col divide-y divide-[var(--color-border)]">
         {filtered.map((t) => (
           <div key={t.id} className="flex items-center gap-3 py-4 first:pt-0">
             <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ped-transactions__icon--${TYPE_COLORS[t.type]}`}>
               {TYPE_ICONS[t.type]}
             </span>
             <div className="flex-1 min-w-0">
-              <span className="block font-medium text-slate-900 dark:text-slate-100">{TYPE_LABELS[t.type]}</span>
-              <span className="block text-xs text-slate-500 dark:text-slate-400">{formatDate(t.date)}</span>
+              <span className="block font-medium text-[var(--color-text)]">{TYPE_LABELS[t.type]}</span>
+              <span className="block text-xs text-[var(--color-textSecondary)]">{formatDate(t.date)}</span>
             </div>
-            <span className={`shrink-0 font-semibold ${t.amount >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-slate-900 dark:text-slate-100"}`}>
+            <span className={`shrink-0 font-semibold ${t.amount >= 0 ? "text-[var(--color-success)]" : "text-[var(--color-text)]"}`}>
               {t.amount >= 0 ? "+" : "-"}{formatCurrency(t.amount)}
             </span>
             {t.account && (
-              <span className="hidden sm:block shrink-0 text-xs text-slate-500 dark:text-slate-400 max-w-[120px] truncate">
+              <span className="hidden sm:block shrink-0 text-xs text-[var(--color-textSecondary)] max-w-[120px] truncate">
                 {t.account}
               </span>
             )}

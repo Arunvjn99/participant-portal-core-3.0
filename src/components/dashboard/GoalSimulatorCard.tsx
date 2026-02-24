@@ -62,17 +62,17 @@ export const GoalSimulatorCard = ({ data }: GoalSimulatorCardProps) => {
         </svg>
         {tooltip && (
           <div
-            className="pointer-events-none absolute z-10 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm shadow-lg dark:border-slate-600 dark:bg-slate-800 dark:shadow-black/50"
+            className="pointer-events-none absolute z-10 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm shadow-lg"
             style={{
               left: tooltip.x + 12,
               top: tooltip.y + 12,
               transform: "translate(0, -50%)",
             }}
           >
-            <div className="font-medium text-slate-900 dark:text-slate-100">
+            <div className="font-medium text-[var(--color-text)]">
               {data.percentOnTrack}% On Track
             </div>
-            <div className="text-sm text-slate-500 dark:text-slate-400">
+            <div className="text-sm text-[var(--color-textSecondary)]">
               Projected: {formatCurrency(data.projectedBalance)} at age {data.retirementAge}
             </div>
           </div>

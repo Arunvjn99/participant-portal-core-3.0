@@ -12,9 +12,6 @@ export interface SwitchProps {
   className?: string;
 }
 
-/**
- * HeroUI-inspired Switch / Toggle (v3.heroui.com). Smooth track + thumb transition.
- */
 export const Switch = ({
   checked,
   onCheckedChange,
@@ -45,10 +42,10 @@ export const Switch = ({
           aria-label={ariaLabel ?? label ?? "Toggle"}
           aria-describedby={description ? `${id}-desc` : undefined}
           className={cn(
-            "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-slate-900",
+            "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-2",
             checked
-              ? "bg-primary dark:bg-primary"
-              : "bg-slate-200 dark:bg-slate-600",
+              ? "bg-[var(--color-primary)]"
+              : "bg-[var(--color-border)]",
             disabled && "cursor-not-allowed opacity-50"
           )}
           onClick={() => !disabled && onCheckedChange(!checked)}
@@ -71,12 +68,12 @@ export const Switch = ({
         {(label || description) && (
           <span className="flex flex-col gap-0.5">
             {label && (
-              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+              <span className="text-sm font-medium text-[var(--color-text)]">
                 {label}
               </span>
             )}
             {description && (
-              <span id={`${id}-desc`} className="text-xs text-slate-500 dark:text-slate-400">
+              <span id={`${id}-desc`} className="text-xs text-[var(--color-textSecondary)]">
                 {description}
               </span>
             )}

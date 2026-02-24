@@ -77,24 +77,24 @@ const HorizontalTile: React.FC<{
       {/* Best-fit styling */}
       {isRecommended && isEligible && (
         <>
-          <div className={`absolute inset-0 bg-gradient-to-br from-indigo-50/60 via-white to-purple-50/40 pointer-events-none transition-opacity duration-500 dark:from-indigo-950/30 dark:via-slate-800 dark:to-purple-950/20 ${isSelected ? "opacity-100" : "opacity-60"}`} />
-          <div className="absolute inset-0 pointer-events-none opacity-[0.4] mix-blend-multiply dark:opacity-30">
+          <div className={`absolute inset-0 bg-gradient-to-br from-[var(--color-primary)]/5 via-[var(--color-surface)] to-[var(--color-primary)]/3 pointer-events-none transition-opacity duration-500 ${isSelected ? "opacity-100" : "opacity-60"}`} />
+          <div className="absolute inset-0 pointer-events-none opacity-[0.4] mix-blend-multiply">
             <svg width="100%" height="100%" className="absolute inset-0">
               <defs>
                 <pattern id="grid-pattern-rail" width="40" height="40" patternUnits="userSpaceOnUse">
-                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-indigo-200/50 dark:text-indigo-800/50" />
+                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-[var(--color-primary)]/20" />
                 </pattern>
                 <pattern id="dot-pattern-rail" width="20" height="20" patternUnits="userSpaceOnUse">
-                  <circle cx="1" cy="1" r="1" className="text-indigo-300/30 dark:text-indigo-700/30" fill="currentColor" />
+                  <circle cx="1" cy="1" r="1" className="text-[var(--color-primary)]/15" fill="currentColor" />
                 </pattern>
               </defs>
               <rect width="100%" height="100%" fill="url(#grid-pattern-rail)" />
               <rect width="100%" height="100%" fill="url(#dot-pattern-rail)" />
             </svg>
           </div>
-          <div className={`absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-bl from-indigo-500/10 via-purple-500/5 to-transparent rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none transition-all duration-700 ${isSelected ? "opacity-100 scale-110" : "opacity-50 scale-100"}`} />
+          <div className={`absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-bl from-[var(--color-primary)]/10 via-[var(--color-primary)]/5 to-transparent rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none transition-all duration-700 ${isSelected ? "opacity-100 scale-110" : "opacity-50 scale-100"}`} />
           {isSelected && (
-            <div className="absolute inset-0 border-2 border-indigo-500/20 rounded-2xl animate-pulse pointer-events-none" aria-hidden />
+            <div className="absolute inset-0 border-2 border-[var(--color-primary)]/20 rounded-2xl animate-pulse pointer-events-none" aria-hidden />
           )}
         </>
       )}
@@ -108,15 +108,15 @@ const HorizontalTile: React.FC<{
                 ${isRecommended && isEligible
                   ? "bg-primary border-primary text-white shadow-primary/30"
                   : !isEligible
-                    ? "bg-slate-100 border-slate-200 text-slate-400 dark:bg-slate-700 dark:border-slate-600"
-                    : "bg-white border-slate-200 text-slate-500 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300"}
+                    ? "bg-[var(--color-background)] border-[var(--color-border)] text-[var(--color-textSecondary)]"
+                    : "bg-[var(--color-surface)] border-[var(--color-border)] text-[var(--color-textSecondary)]"}
               `}
             >
-              {isRecommended && isEligible ? <Trophy size={11} className="text-yellow-300 fill-yellow-300" /> : null}
+              {isRecommended && isEligible ? <Trophy size={11} className="text-[var(--color-warning)] fill-[var(--color-warning)]" /> : null}
               {isEligible ? t("enrollment.fitLabel", { percent: confidenceScore }) : t("enrollment.locked")}
             </div>
             {isRecommended && isEligible && (
-              <span className="text-[11px] font-medium text-indigo-600/80 dark:text-indigo-400 flex items-center gap-1">
+              <span className="text-[11px] font-medium text-[var(--color-primary)]/80 flex items-center gap-1">
                 <Sparkles size={10} />
                 {t("enrollment.aiRecommendedStrategy")}
               </span>
@@ -125,8 +125,8 @@ const HorizontalTile: React.FC<{
 
           <div className={`transition-all duration-300 transform ${isSelected ? "translate-x-0 opacity-100" : "translate-x-4 opacity-0 hidden sm:block"}`}>
             {isSelected && (
-              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 text-white text-[10px] font-bold uppercase tracking-wide shadow-md dark:bg-slate-100 dark:text-slate-900">
-                <CheckCircle2 size={12} className="text-emerald-400 dark:text-emerald-600" />
+              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--color-text)] text-[var(--color-surface)] text-[10px] font-bold uppercase tracking-wide shadow-md">
+                <CheckCircle2 size={12} className="text-[var(--color-success)]" />
                 {t("enrollment.selected")}
               </div>
             )}
@@ -136,9 +136,8 @@ const HorizontalTile: React.FC<{
             <button
               type="button"
               className={`
-                px-4 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 border border-slate-200 text-slate-500 hover:border-slate-300 hover:bg-slate-50
-                dark:border-slate-600 dark:text-slate-400 dark:hover:bg-slate-700
-                ${isRecommended ? "hover:border-indigo-200 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:border-indigo-700 dark:hover:text-indigo-300 dark:hover:bg-indigo-950/30" : ""}
+                px-4 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 border border-[var(--color-border)] text-[var(--color-textSecondary)] hover:border-[var(--color-border)] hover:bg-[var(--color-background)]
+                ${isRecommended ? "hover:border-[var(--color-primary)]/30 hover:text-[var(--color-primary)] hover:bg-[var(--color-primary)]/5" : ""}
               `}
               onClick={(e) => {
                 e.stopPropagation();
@@ -152,16 +151,16 @@ const HorizontalTile: React.FC<{
 
         <div>
           <div className="mb-2">
-            <h3 className={`text-xl md:text-2xl font-bold tracking-tight ${!isEligible ? "text-slate-400" : "text-slate-900 dark:text-slate-100"}`}>
+            <h3 className={`text-xl md:text-2xl font-bold tracking-tight ${!isEligible ? "text-[var(--color-textSecondary)]" : "text-[var(--color-text)]"}`}>
               {plan.title}
             </h3>
-            <p className="text-sm font-medium text-slate-500 mt-1 flex items-center gap-2 dark:text-slate-400">
-              <span className={isRecommended && isEligible ? "text-indigo-600 font-semibold dark:text-indigo-400" : "text-slate-500"}>{plan.matchInfo}</span>
-              <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600" aria-hidden />
-              <span className="text-slate-400 font-normal dark:text-slate-500">{plan.description.slice(0, 50)}…</span>
+            <p className="text-sm font-medium text-[var(--color-textSecondary)] mt-1 flex items-center gap-2">
+              <span className={isRecommended && isEligible ? "text-[var(--color-primary)] font-semibold" : "text-[var(--color-textSecondary)]"}>{plan.matchInfo}</span>
+              <span className="w-1 h-1 rounded-full bg-[var(--color-border)]" aria-hidden />
+              <span className="text-[var(--color-textSecondary)] font-normal">{plan.description.slice(0, 50)}…</span>
             </p>
           </div>
-          <p className="text-sm text-slate-600 leading-relaxed max-w-2xl dark:text-slate-300">
+          <p className="text-sm text-[var(--color-textSecondary)] leading-relaxed max-w-2xl">
             {plan.description}
           </p>
         </div>
@@ -174,9 +173,9 @@ const HorizontalTile: React.FC<{
                 px-3 py-1.5 rounded-md border text-[10px] font-semibold transition-colors duration-300
                 ${isSelected
                   ? isRecommended
-                    ? "bg-indigo-50/80 border-indigo-200 text-indigo-700 dark:bg-indigo-950/50 dark:border-indigo-800 dark:text-indigo-300"
-                    : "bg-slate-50 border-slate-200 text-slate-700 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300"
-                  : "bg-slate-50/50 border-slate-100 text-slate-500 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-400"}
+                    ? "bg-[var(--color-primary)]/10 border-[var(--color-primary)]/30 text-[var(--color-primary)]"
+                    : "bg-[var(--color-background)] border-[var(--color-border)] text-[var(--color-text)]"
+                  : "bg-[var(--color-background)]/50 border-[var(--color-border)] text-[var(--color-textSecondary)]"}
               `}
             >
               <span className="opacity-70 font-normal mr-1">{t("enrollment.benefitLabel")}</span>
@@ -184,7 +183,7 @@ const HorizontalTile: React.FC<{
             </div>
           ))}
           {isRecommended && isEligible && (
-            <div className="px-3 py-1.5 rounded-md border border-emerald-100 bg-emerald-50/50 text-emerald-700 text-[10px] font-semibold flex items-center gap-1 dark:border-emerald-900 dark:bg-emerald-950/30 dark:text-emerald-400">
+            <div className="px-3 py-1.5 rounded-md border border-[var(--color-success)]/20 bg-[var(--color-success)]/10 text-[var(--color-success)] text-[10px] font-semibold flex items-center gap-1">
               {t("enrollment.taxFreeGrowth")}
             </div>
           )}
@@ -192,7 +191,7 @@ const HorizontalTile: React.FC<{
       </div>
 
       {!isEligible && (
-        <div className="absolute top-6 right-6 text-slate-300 dark:text-slate-600" aria-hidden>
+        <div className="absolute top-6 right-6 text-[var(--color-textSecondary)]" aria-hidden>
           <Lock size={20} />
         </div>
       )}

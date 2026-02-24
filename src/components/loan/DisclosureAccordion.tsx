@@ -26,12 +26,12 @@ export function DisclosureAccordion({ items, className = "" }: DisclosureAccordi
         return (
           <div
             key={item.id}
-            className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800"
+            className="overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-sm"
           >
             <button
               type="button"
               onClick={() => setOpenId(isOpen ? null : item.id)}
-              className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium text-slate-900 dark:text-slate-100"
+              className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium text-[var(--color-text)]"
               aria-expanded={isOpen}
               aria-controls={`accordion-content-${item.id}`}
               id={`accordion-heading-${item.id}`}
@@ -55,9 +55,9 @@ export function DisclosureAccordion({ items, className = "" }: DisclosureAccordi
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.25, ease: "easeOut" }}
-                  className="border-t border-slate-200 dark:border-slate-700"
+                  className="border-t border-[var(--color-border)]"
                 >
-                  <div className="px-4 py-3 text-sm text-slate-600 dark:text-slate-400">{item.content}</div>
+                  <div className="px-4 py-3 text-sm text-[var(--color-textSecondary)]">{item.content}</div>
                 </motion.div>
               )}
             </AnimatePresence>

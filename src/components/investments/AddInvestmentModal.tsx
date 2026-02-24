@@ -91,32 +91,32 @@ export const AddInvestmentModal = ({
   return (
     <Dialog.Root open={open} onOpenChange={handleOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm dark:bg-black/50" />
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm" />
         <Dialog.Content
-          className="add-investment-modal fixed left-1/2 top-1/2 z-50 flex min-h-[50vh] max-h-[90vh] w-[90vw] max-w-[560px] -translate-x-1/2 -translate-y-1/2 flex-col rounded-xl border border-border bg-background shadow-xl focus:outline-none dark:border-slate-700 dark:bg-slate-900"
+          className="add-investment-modal fixed left-1/2 top-1/2 z-50 flex min-h-[50vh] max-h-[90vh] w-[90vw] max-w-[560px] -translate-x-1/2 -translate-y-1/2 flex-col rounded-xl border border-border bg-background shadow-xl focus:outline-none"
           aria-labelledby="add-investment-title"
           aria-describedby="add-investment-description"
           onEscapeKeyDown={onClose}
           onPointerDownOutside={onClose}
         >
           {/* Sticky Header */}
-          <header className="sticky top-0 z-10 flex shrink-0 items-start justify-between gap-4 border-b border-border bg-background px-6 py-4 dark:border-slate-700 dark:bg-slate-900">
+          <header className="sticky top-0 z-10 flex shrink-0 items-start justify-between gap-4 border-b border-border bg-background px-6 py-4">
             <div>
               <Dialog.Title
                 id="add-investment-title"
-                className="text-xl font-semibold text-foreground dark:text-slate-100"
+                className="text-xl font-semibold text-foreground"
               >
                 Add Investment
               </Dialog.Title>
               <Dialog.Description
                 id="add-investment-description"
-                className="mt-1 text-sm text-muted-foreground dark:text-slate-400"
+                className="mt-1 text-sm text-muted-foreground"
               >
                 Search and select a fund to add. You can assign allocation after adding.
               </Dialog.Description>
             </div>
             <Dialog.Close
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-background-secondary hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-background-secondary hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
               aria-label="Close"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -141,7 +141,7 @@ export const AddInvestmentModal = ({
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder="Search by fund name, ticker, or asset class"
                 autoComplete="off"
-                className="w-full rounded-lg border border-border bg-surface py-3 pl-10 pr-4 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
+                className="w-full rounded-lg border border-border bg-surface py-3 pl-10 pr-4 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                 aria-label="Search funds"
               />
             </div>
@@ -155,7 +155,7 @@ export const AddInvestmentModal = ({
             aria-label="Available funds"
           >
             {displayedFunds.length === 0 ? (
-              <p className="py-8 text-center text-sm text-muted-foreground dark:text-slate-400" role="status">
+              <p className="py-8 text-center text-sm text-muted-foreground" role="status">
                 {debouncedSearch
                   ? `No funds found matching "${debouncedSearch}"`
                   : "No funds available."}
@@ -175,11 +175,11 @@ export const AddInvestmentModal = ({
           </div>
 
           {/* Footer — pinned to bottom of modal */}
-          <footer className="mt-auto flex shrink-0 justify-end border-t border-border bg-background px-6 py-4 dark:border-slate-700 dark:bg-slate-900">
+          <footer className="mt-auto flex shrink-0 justify-end border-t border-border bg-background px-6 py-4">
             <button
               type="button"
               onClick={onClose}
-              className="min-h-[44px] min-w-[100px] rounded-lg border border-border bg-transparent px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-background-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-50 dark:border-slate-700 dark:text-slate-100 dark:hover:bg-slate-800"
+              className="min-h-[44px] min-w-[100px] rounded-lg border border-border bg-transparent px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-background-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-50"
             >
               Cancel
             </button>
@@ -199,17 +199,17 @@ interface FundRowProps {
 function FundRow({ fund, isAdded, onAdd }: FundRowProps) {
   return (
     <li
-      className="flex flex-col gap-2 rounded-lg border border-border bg-surface p-4 transition-colors sm:flex-row sm:items-center sm:justify-between sm:gap-4 dark:border-slate-700 dark:bg-slate-800"
+      className="flex flex-col gap-2 rounded-lg border border-border bg-surface p-4 transition-colors sm:flex-row sm:items-center sm:justify-between sm:gap-4"
       role="option"
     >
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="font-semibold text-foreground dark:text-slate-100">{fund.name}</span>
-          <span className="rounded bg-background-secondary px-2 py-0.5 text-xs font-medium text-muted-foreground dark:bg-slate-700 dark:text-slate-400">
+          <span className="font-semibold text-foreground">{fund.name}</span>
+          <span className="rounded bg-background-secondary px-2 py-0.5 text-xs font-medium text-muted-foreground">
             {fund.ticker}
           </span>
         </div>
-        <p className="mt-1 text-sm text-muted-foreground dark:text-slate-400">
+        <p className="mt-1 text-sm text-muted-foreground">
           {fund.assetClass} · {fund.expenseRatio.toFixed(2)}% exp · Risk {fund.riskLevel}/10
         </p>
       </div>

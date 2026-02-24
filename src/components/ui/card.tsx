@@ -1,16 +1,12 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-/**
- * HeroUI-inspired Card (v3.heroui.com). Rounded-xl, shadow-sm, subtle border.
- * Beautiful by default, customizable by design.
- */
 function Card({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card"
       className={cn(
-        "bg-card text-card-foreground flex flex-col gap-4 sm:gap-6 rounded-xl border border-slate-200/80 dark:border-slate-700/80 py-4 sm:py-6 shadow-[var(--heroui-card-shadow)] transition-shadow duration-200",
+        "bg-[var(--color-surface)] text-[var(--color-text)] flex flex-col gap-4 sm:gap-6 rounded-xl border border-[var(--color-border)] py-4 sm:py-6 shadow-sm transition-shadow duration-200",
         className
       )}
       {...props}
@@ -35,7 +31,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-title"
-      className={cn("leading-none font-semibold text-slate-900 dark:text-slate-100", className)}
+      className={cn("leading-none font-semibold text-[var(--color-text)]", className)}
       {...props}
     />
   );
@@ -45,7 +41,7 @@ function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-description"
-      className={cn("text-sm text-slate-500 dark:text-slate-400", className)}
+      className={cn("text-sm text-[var(--color-textSecondary)]", className)}
       {...props}
     />
   );
@@ -68,7 +64,7 @@ function CardContent({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-content"
-      className={cn("px-4 sm:px-6 text-slate-700 dark:text-slate-300", className)}
+      className={cn("px-4 sm:px-6 text-[var(--color-text)]", className)}
       {...props}
     />
   );

@@ -40,20 +40,20 @@ export const AdvisorCard = ({
             src={avatarUrl}
             alt=""
             aria-hidden="true"
-            className="h-16 w-16 rounded-full object-cover ring-2 ring-slate-200 dark:ring-slate-600"
+            className="h-16 w-16 rounded-full object-cover ring-2 ring-[var(--color-border)]"
             onError={(e) => {
               (e.target as HTMLImageElement).src = FALLBACK_AVATAR;
             }}
           />
         </div>
         <div className="min-w-0 flex-1">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{name}</h3>
-          <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">{role}</p>
-          <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+          <h3 className="text-lg font-semibold text-[var(--color-text)]">{name}</h3>
+          <p className="mt-0.5 text-sm text-[var(--color-textSecondary)]">{role}</p>
+          <p className="mt-3 text-sm leading-relaxed text-[var(--color-textSecondary)]">
             {description}
           </p>
           <div className="mt-4">
-            <Button className="rounded-lg bg-primary px-5 py-2.5 font-medium text-white hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-blue-400">
+            <Button className="rounded-lg bg-[var(--color-primary)] px-5 py-2.5 font-medium text-white hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-2">
               Contact
             </Button>
           </div>

@@ -7,9 +7,6 @@ interface AuthOTPInputProps {
   className?: string;
 }
 
-/**
- * Accessible OTP input. Theme-aware. Touch-friendly on mobile.
- */
 export const AuthOTPInput = ({
   onComplete,
   length = 6,
@@ -87,7 +84,7 @@ export const AuthOTPInput = ({
           type="text"
           inputMode="numeric"
           maxLength={1}
-          className="h-12 min-h-[48px] w-12 min-w-[48px] rounded-lg border border-slate-200 bg-white p-0 text-center text-2xl font-semibold text-slate-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-blue-400 dark:focus:ring-blue-400/20"
+          className="h-12 min-h-[48px] w-12 min-w-[48px] rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-0 text-center text-2xl font-semibold text-[var(--color-text)] transition-colors focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
           onChange={(e) => handleInput(index, e)}
           onKeyDown={(e) => handleKeyDown(index, e)}
           onPaste={handlePaste}

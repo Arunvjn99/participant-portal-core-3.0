@@ -8,16 +8,16 @@ export const LearningSection = () => {
     <section className="py-8 sm:py-12 md:py-16 lg:py-20 w-full min-w-0">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3 sm:gap-4 mb-5 sm:mb-8">
         <div className="min-w-0">
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-slate-900 dark:text-slate-100 mb-1 sm:mb-2">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-[var(--color-text)] mb-1 sm:mb-2">
             {t("preEnrollment.learnAtYourPace")}
           </h2>
-          <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base md:text-lg">
+          <p className="text-[var(--color-textSecondary)] text-sm sm:text-base md:text-lg">
             {t("preEnrollment.learnSubtitle")}
           </p>
         </div>
         <button
           type="button"
-          className="hidden sm:block text-brand-600 dark:text-brand-400 font-medium hover:text-brand-800 dark:hover:text-brand-300 transition-colors rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:ring-offset-2 dark:focus:ring-offset-slate-900 py-1 shrink-0"
+          className="hidden sm:block text-brand-600 font-medium hover:text-brand-800 transition-colors rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:ring-offset-2 py-1 shrink-0"
         >
           {t("preEnrollment.viewLibrary")}
         </button>
@@ -32,7 +32,7 @@ export const LearningSection = () => {
             return (
             <div
               key={resource.id}
-              className="group relative w-56 h-64 sm:w-64 sm:h-72 md:w-72 md:h-80 rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl shadow-md dark:shadow-black/30 dark:hover:shadow-black/40 ring-1 ring-slate-200/50 dark:ring-slate-700/50 flex-shrink-0"
+              className="group relative w-56 h-64 sm:w-64 sm:h-72 md:w-72 md:h-80 rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl shadow-md ring-1 ring-slate-200/50 flex-shrink-0"
             >
               <div className="absolute inset-0">
                 <img

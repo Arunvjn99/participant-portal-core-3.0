@@ -1,9 +1,5 @@
 import { branding } from "../../config/branding";
 
-/**
- * Footer scoped to the right auth panel only.
- * Bottom-aligned, same width as auth card. Flexbox only.
- */
 export const AuthFooter = () => {
   const { copyright, privacyLink, core } = branding.footer;
 
@@ -13,12 +9,12 @@ export const AuthFooter = () => {
       role="contentinfo"
     >
       <div className="flex w-full max-w-[420px] flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-0">
-        <p className="order-1 text-center text-xs text-muted-foreground sm:text-left dark:text-slate-400">
+        <p className="order-1 text-center text-xs text-[var(--color-textSecondary)] sm:text-left">
           {copyright}
         </p>
         <a
           href={privacyLink.href}
-          className="order-2 text-center text-xs text-muted-foreground no-underline hover:underline dark:text-slate-400 dark:hover:text-slate-300"
+          className="order-2 text-center text-xs text-[var(--color-textSecondary)] no-underline hover:underline"
         >
           {privacyLink.label}
         </a>

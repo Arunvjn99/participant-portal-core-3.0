@@ -19,16 +19,16 @@ export const PortfolioTable = ({ rows, employerMatchLabel = "100% up to 6% Match
   const navigate = useNavigate();
 
   return (
-    <div className="ped-portfolio w-full min-w-0 rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:p-5 lg:p-6">
+    <div className="ped-portfolio w-full min-w-0 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-sm sm:p-5 lg:p-6">
       {/* Header — stacks on mobile */}
       <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-        <h2 className="m-0 text-lg font-semibold text-slate-900 dark:text-slate-100">Your Portfolio</h2>
-        <a href="/enrollment/plans" className="self-start text-sm font-medium text-blue-600 hover:underline dark:text-blue-400 sm:self-center">
+        <h2 className="m-0 text-lg font-semibold text-[var(--color-text)]">Your Portfolio</h2>
+        <a href="/enrollment/plans" className="self-start text-sm font-medium text-[var(--color-primary)] hover:underline sm:self-center">
           Compare All Plans →
         </a>
       </div>
-      <div className="mb-2 text-sm font-semibold text-slate-900 dark:text-slate-100">{employerMatchLabel}</div>
-      <p className="mb-4 text-xs leading-relaxed text-slate-500 dark:text-slate-400 sm:text-sm">
+      <div className="mb-2 text-sm font-semibold text-[var(--color-text)]">{employerMatchLabel}</div>
+      <p className="mb-4 text-xs leading-relaxed text-[var(--color-textSecondary)] sm:text-sm">
         Contributions are pre-tax. You pay taxes upon withdrawal in retirement.
       </p>
 
@@ -37,10 +37,10 @@ export const PortfolioTable = ({ rows, employerMatchLabel = "100% up to 6% Match
         <button type="button" className="rounded-md border border-primary bg-primary px-3 py-2 text-xs font-medium text-white sm:text-sm">
           Pre-tax contributions
         </button>
-        <button type="button" className="rounded-md border border-slate-300 px-3 py-2 text-xs font-medium text-slate-600 dark:border-slate-600 dark:text-slate-400 sm:text-sm">
+        <button type="button" className="rounded-md border border-[var(--color-border)] px-3 py-2 text-xs font-medium text-[var(--color-textSecondary)] sm:text-sm">
           Roth contributions
         </button>
-        <button type="button" className="rounded-md border border-slate-300 px-3 py-2 text-xs font-medium text-slate-600 dark:border-slate-600 dark:text-slate-400 sm:text-sm">
+        <button type="button" className="rounded-md border border-[var(--color-border)] px-3 py-2 text-xs font-medium text-[var(--color-textSecondary)] sm:text-sm">
           Employer Match
         </button>
       </div>
@@ -50,23 +50,23 @@ export const PortfolioTable = ({ rows, employerMatchLabel = "100% up to 6% Match
         {rows.map((row) => (
           <div
             key={row.fundId}
-            className="rounded-lg border border-slate-200 bg-slate-50/50 p-4 dark:border-slate-600 dark:bg-slate-700/30"
+            className="rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] p-4"
           >
-            <div className="mb-2 font-semibold text-slate-900 dark:text-slate-100">
-              {row.fundName} <span className="font-normal text-slate-500 dark:text-slate-400">({row.ticker})</span>
+            <div className="mb-2 font-semibold text-[var(--color-text)]">
+              {row.fundName} <span className="font-normal text-[var(--color-textSecondary)]">({row.ticker})</span>
             </div>
             <div className="grid grid-cols-3 gap-2 text-sm">
               <div>
-                <span className="block text-xs text-slate-500 dark:text-slate-400">Balance</span>
-                <span className="font-medium text-slate-900 dark:text-slate-100">{formatCurrency(row.balance)}</span>
+                <span className="block text-xs text-[var(--color-textSecondary)]">Balance</span>
+                <span className="font-medium text-[var(--color-text)]">{formatCurrency(row.balance)}</span>
               </div>
               <div>
-                <span className="block text-xs text-slate-500 dark:text-slate-400">Alloc</span>
-                <span className="font-medium text-slate-900 dark:text-slate-100">{row.allocationPct}%</span>
+                <span className="block text-xs text-[var(--color-textSecondary)]">Alloc</span>
+                <span className="font-medium text-[var(--color-text)]">{row.allocationPct}%</span>
               </div>
               <div>
-                <span className="block text-xs text-slate-500 dark:text-slate-400">Return</span>
-                <span className={row.returnPct >= 0 ? "font-medium text-emerald-600 dark:text-emerald-400" : "font-medium text-red-600 dark:text-red-400"}>
+                <span className="block text-xs text-[var(--color-textSecondary)]">Return</span>
+                <span className={row.returnPct >= 0 ? "font-medium text-[var(--color-success)]" : "font-medium text-[var(--color-danger)]"}>
                   {formatPct(row.returnPct)}
                 </span>
               </div>
@@ -85,25 +85,25 @@ export const PortfolioTable = ({ rows, employerMatchLabel = "100% up to 6% Match
             <col style={{ width: "22%" }} />
           </colgroup>
           <thead>
-            <tr className="border-b-2 border-slate-200 dark:border-slate-600">
-              <th className="py-3 pr-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Fund</th>
-              <th className="py-3 pr-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Balance</th>
-              <th className="py-3 pr-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Alloc</th>
-              <th className="py-3 pl-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Return</th>
+            <tr className="border-b-2 border-[var(--color-border)]">
+              <th className="py-3 pr-4 text-left text-xs font-semibold uppercase tracking-wider text-[var(--color-textSecondary)]">Fund</th>
+              <th className="py-3 pr-4 text-left text-xs font-semibold uppercase tracking-wider text-[var(--color-textSecondary)]">Balance</th>
+              <th className="py-3 pr-4 text-left text-xs font-semibold uppercase tracking-wider text-[var(--color-textSecondary)]">Alloc</th>
+              <th className="py-3 pl-4 text-left text-xs font-semibold uppercase tracking-wider text-[var(--color-textSecondary)]">Return</th>
             </tr>
           </thead>
           <tbody>
             {rows.map((row) => (
-              <tr key={row.fundId} className="border-b border-slate-200 dark:border-slate-600 last:border-b-0">
+              <tr key={row.fundId} className="border-b border-[var(--color-border)] last:border-b-0">
                 <td className="py-3 pr-4 break-words">
-                  <span className="block font-semibold text-slate-900 dark:text-slate-100">
-                    {row.fundName} <span className="font-normal text-slate-500 dark:text-slate-400">({row.ticker})</span>
+                  <span className="block font-semibold text-[var(--color-text)]">
+                    {row.fundName} <span className="font-normal text-[var(--color-textSecondary)]">({row.ticker})</span>
                   </span>
                 </td>
-                <td className="py-3 pr-4 whitespace-nowrap text-slate-900 dark:text-slate-100">{formatCurrency(row.balance)}</td>
-                <td className="py-3 pr-4 whitespace-nowrap text-slate-900 dark:text-slate-100">{row.allocationPct}%</td>
+                <td className="py-3 pr-4 whitespace-nowrap text-[var(--color-text)]">{formatCurrency(row.balance)}</td>
+                <td className="py-3 pr-4 whitespace-nowrap text-[var(--color-text)]">{row.allocationPct}%</td>
                 <td className="py-3 pl-4 whitespace-nowrap">
-                  <span className={row.returnPct >= 0 ? "font-medium text-emerald-600 dark:text-emerald-400" : "font-medium text-red-600 dark:text-red-400"}>
+                  <span className={row.returnPct >= 0 ? "font-medium text-[var(--color-success)]" : "font-medium text-[var(--color-danger)]"}>
                     {formatPct(row.returnPct)}
                   </span>
                 </td>
@@ -117,7 +117,7 @@ export const PortfolioTable = ({ rows, employerMatchLabel = "100% up to 6% Match
       <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
         <button
           type="button"
-          className="w-full rounded-md border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-900 transition-colors hover:border-blue-500 hover:text-blue-600 dark:border-slate-600 dark:text-slate-100 dark:hover:border-blue-500 dark:hover:text-blue-400 sm:w-auto"
+          className="w-full rounded-md border border-[var(--color-border)] px-4 py-2.5 text-sm font-medium text-[var(--color-text)] transition-colors hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] sm:w-auto"
           onClick={() => navigate("/enrollment/investments")}
         >
           Rebalance Portfolio

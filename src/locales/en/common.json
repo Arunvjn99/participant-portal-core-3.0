@@ -184,6 +184,7 @@
     "dashboard": "Dashboard",
     "enrollment": "Enrollment",
     "profile": "Profile",
+    "settings": "Settings",
     "transactions": "Transactions",
     "accountStatements": "Account Statements",
     "investmentPortfolio": "Investment Portfolio",
@@ -193,6 +194,50 @@
     "closeMenu": "Close menu",
     "userMenu": "User menu",
     "mobileNav": "Mobile navigation"
+  },
+  "settings": {
+    "pageTitle": "Settings",
+    "pageDescription": "Manage your preferences and account settings.",
+    "sectionsAria": "Settings sections",
+    "sections": {
+      "appearance": "Appearance & Language",
+      "aiPreferences": "AI Preferences",
+      "notifications": "Notifications",
+      "documents": "Documents & Compliance"
+    },
+    "appearance": {
+      "title": "Appearance & Language",
+      "subtitle": "Customize how the portal looks and which language you see.",
+      "themeLabel": "Theme",
+      "themeHint": "Choose light, dark, or follow your system preference.",
+      "theme": {
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+      },
+      "languageLabel": "Language",
+      "languageHint": "Select your preferred language for the portal.",
+      "accentLabel": "Accent color",
+      "accentHint": "Choose a primary accent color (coming soon).",
+      "accentPlaceholder": "Custom accent color — coming in a future update.",
+      "customizeThemeLink": "Customize company theme (advanced)"
+    },
+    "ai": {
+      "title": "AI Preferences",
+      "subtitle": "Control how AI features appear in your experience.",
+      "coreAILabel": "Enable Core AI",
+      "coreAIHint": "Show the Ask Core AI assistant button. When off, the floating button is hidden.",
+      "insightsLabel": "Enable AI Insights",
+      "insightsHint": "Show personalized AI recommendation cards on your dashboard."
+    },
+    "notifications": {
+      "comingSoon": "Coming soon"
+    },
+    "documents": {
+      "placeholder1": "Tax documents (coming soon)",
+      "placeholder2": "Statements & notices (coming soon)",
+      "placeholder3": "Compliance center (coming soon)"
+    }
   },
   "preEnrollment": {
     "learnAtYourPace": "Learn at your pace",

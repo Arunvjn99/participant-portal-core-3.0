@@ -13,9 +13,9 @@ interface ModerateInvestorChipProps {
 
 const variantClasses = {
   badge:
-    "rounded-md bg-slate-200 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-slate-800 dark:bg-slate-600 dark:text-slate-100",
+    "rounded-md bg-[var(--color-background)] px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-[var(--color-text)]",
   pill:
-    "inline-block w-fit rounded-full bg-slate-100 px-2.5 py-0.5 text-sm font-semibold text-slate-700 dark:bg-slate-700/50 dark:text-slate-200",
+    "inline-block w-fit rounded-full bg-[var(--color-background)] px-2.5 py-0.5 text-sm font-semibold text-[var(--color-text)]",
 } as const;
 
 export const ModerateInvestorChip = ({

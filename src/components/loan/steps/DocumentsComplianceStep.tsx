@@ -58,8 +58,8 @@ export function DocumentsComplianceStep({
   return (
     <LoanStepLayout sidebar={summaryRows.length > 0 ? <LoanSummaryCard title="Summary" rows={summaryRows} /> : undefined}>
       <div className="space-y-6">
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">Documents</h2>
+        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">Documents</h2>
           <div className="space-y-4">
             <DocumentUploadCard
               documentType="Loan agreement"
@@ -94,8 +94,8 @@ export function DocumentsComplianceStep({
           </div>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">Compliance acknowledgments</h2>
+        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">Compliance acknowledgments</h2>
           <DisclosureAccordion
             items={[
               {
@@ -126,7 +126,7 @@ export function DocumentsComplianceStep({
                 }
                 aria-label="I agree to the loan terms and conditions"
               />
-              <span className="text-sm text-slate-700 dark:text-slate-300">I agree to the loan terms and conditions.</span>
+              <span className="text-sm text-[var(--color-text)]">I agree to the loan terms and conditions.</span>
             </label>
             <label className="flex items-center gap-2">
               <input
@@ -142,7 +142,7 @@ export function DocumentsComplianceStep({
                 }
                 aria-label="I acknowledge the disclosure"
               />
-              <span className="text-sm text-slate-700 dark:text-slate-300">I acknowledge the disclosure.</span>
+              <span className="text-sm text-[var(--color-text)]">I acknowledge the disclosure.</span>
             </label>
           </div>
         </div>

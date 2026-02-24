@@ -20,12 +20,12 @@ export function LoanSummaryCard({ title = "Summary", rows, className = "" }: Loa
 
   return (
     <motion.article
-      className={`rounded-xl border border-slate-200 bg-slate-50/80 p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800/80 ${className}`}
+      className={`rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm ${className}`}
       initial={reduced ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.2 }}
     >
-      <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+      <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-[var(--color-textSecondary)]">
         {title}
       </h3>
       <dl className="space-y-3">
@@ -37,8 +37,8 @@ export function LoanSummaryCard({ title = "Summary", rows, className = "" }: Loa
             transition={{ delay: i * 0.05, duration: 0.2 }}
             className="flex justify-between gap-4 text-sm"
           >
-            <dt className="text-slate-600 dark:text-slate-400">{row.label}</dt>
-            <dd className="font-medium text-slate-900 dark:text-slate-100">{row.value}</dd>
+            <dt className="text-[var(--color-textSecondary)]">{row.label}</dt>
+            <dd className="font-medium text-[var(--color-text)]">{row.value}</dd>
           </motion.div>
         ))}
       </dl>

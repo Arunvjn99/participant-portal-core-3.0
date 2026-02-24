@@ -69,7 +69,7 @@ export function EnrollmentStepper({
         aria-valuemax={stepsCount}
         aria-label={stepOfLabel}
       >
-        <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
+        <span className="text-sm font-medium text-[var(--color-textSecondary)]">
           {stepOfLabel}
         </span>
       </div>
@@ -100,10 +100,10 @@ export function EnrollmentStepper({
                     flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold transition-all duration-500
                     ${
                       isCompleted
-                        ? "bg-emerald-500 text-white scale-100"
+                        ? "bg-[var(--color-success)] text-white scale-100"
                         : isCurrent
                           ? "text-white scale-110"
-                          : "bg-white border-2 border-slate-200 text-slate-400 scale-100 dark:bg-slate-800 dark:border-slate-600"
+                          : "bg-[var(--color-surface)] border-2 border-[var(--color-border)] text-[var(--color-textSecondary)] scale-100"
                     }
                   `}
                   style={isCurrent ? { backgroundColor: "var(--color-primary)" } : undefined}
@@ -119,10 +119,10 @@ export function EnrollmentStepper({
                     text-sm font-medium whitespace-nowrap transition-colors duration-300
                     ${
                       isCurrent
-                        ? "text-slate-900 font-bold block dark:text-slate-100"
+                        ? "text-[var(--color-text)] font-bold block"
                         : isCompleted
-                          ? "text-slate-700 hidden sm:block dark:text-slate-300"
-                          : "text-slate-400 hidden sm:block dark:text-slate-500"
+                          ? "text-[var(--color-text)] hidden sm:block"
+                          : "text-[var(--color-textSecondary)] hidden sm:block"
                     }
                   `}
                 >
@@ -135,8 +135,8 @@ export function EnrollmentStepper({
                     flex-1 mx-2 sm:mx-4 h-0 border-t-2 transition-all duration-500
                     ${
                       isCompleted
-                        ? "border-emerald-500 border-solid"
-                        : "border-slate-200 border-dotted dark:border-slate-600"
+                        ? "border-[var(--color-success)] border-solid"
+                        : "border-[var(--color-border)] border-dotted"
                     }
                   `}
                 />

@@ -400,8 +400,8 @@ export default function BellaScreen(props?: BellaScreenProps) {
             type="button"
             onClick={c.onClick}
             className={isDarkMode
-              ? "px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium border border-slate-700/60 text-slate-200 hover:bg-white/5"
-              : "px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium border border-slate-200 text-slate-800 hover:bg-slate-50"}
+              ? "px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-white/5"
+              : "px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-surface)]"}
           >
             {c.label}
           </button>
@@ -1359,7 +1359,7 @@ Focus ONLY on US retirement topics.`
         flex flex-col w-full items-center p-2 sm:p-4 md:p-6 lg:p-8
         transition-colors duration-300 relative isolate overflow-x-hidden justify-start antialiased
         ${variant === "embedded" ? "h-full overflow-hidden" : "min-h-screen"}
-        ${isDarkMode ? "text-[#e5e7eb]" : "text-slate-900"}
+        ${isDarkMode ? "text-[#e5e7eb]" : "text-[var(--color-text)]"}
       `}
       style={
         isDarkMode
@@ -1398,7 +1398,7 @@ Focus ONLY on US retirement topics.`
 
       {/* Scrim layer: neutral overlay to control contrast */}
       <div
-        className={`pointer-events-none absolute inset-0 z-0 ${isDarkMode ? 'bg-[#0b1020]/35' : 'bg-white/88'}`}
+        className={`pointer-events-none absolute inset-0 z-0 ${isDarkMode ? 'bg-[#0b1020]/35' : 'bg-[var(--color-surface)]/88'}`}
         aria-hidden="true"
       />
 
@@ -1409,7 +1409,7 @@ Focus ONLY on US retirement topics.`
             <div
               className={`
                 flex items-center gap-1 p-1 rounded-2xl shadow-lg backdrop-blur-xl
-                ${isDarkMode ? "bg-slate-900/60 border border-slate-700/60" : "bg-white/70 border border-slate-200/70"}
+                ${"bg-[var(--color-surface)]/70 border border-[var(--color-border)]/70"}
               `}
           style={{
             backdropFilter: 'blur(18px) saturate(140%)',
@@ -1423,8 +1423,8 @@ Focus ONLY on US retirement topics.`
               w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center
               transition-all duration-200
               ${isDarkMode
-                ? 'text-yellow-300 hover:bg-white/5 active:bg-white/10'
-                : 'text-slate-800 hover:bg-slate-900/5 active:bg-slate-900/10'
+                ? 'text-[var(--color-warning)] hover:bg-white/5 active:bg-white/10'
+                : 'text-[var(--color-text)] hover:bg-[var(--color-background)] active:bg-[var(--color-background)]'
               }
             `}
             aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
@@ -1470,8 +1470,8 @@ Focus ONLY on US retirement topics.`
               w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center
               transition-all duration-200
               ${isDarkMode
-                ? 'text-slate-200 hover:bg-white/5 active:bg-white/10'
-                : 'text-slate-800 hover:bg-slate-900/5 active:bg-slate-900/10'
+                ? 'text-[var(--color-text)] hover:bg-white/5 active:bg-white/10'
+                : 'text-[var(--color-text)] hover:bg-[var(--color-background)] active:bg-[var(--color-background)]'
               }
             `}
             aria-label="Close"
@@ -1496,13 +1496,13 @@ Focus ONLY on US retirement topics.`
         footer={
           <div
             className={variant === "fullpage"
-              ? `pt-2 pb-2 sm:pb-3 md:pb-4 ${isDarkMode ? "bg-transparent border-t border-[rgba(148,163,184,0.08)]" : "bg-white/95 border-t border-slate-200"} backdrop-blur-xl shadow-[0_-10px_30px_rgba(0,0,0,0.08)] fixed bottom-0 left-0 right-0 z-20 w-full`
-              : `shrink-0 pt-2 pb-2 sm:pb-3 md:pb-4 ${isDarkMode ? "border-t border-slate-700/50 bg-slate-900/30" : "border-t border-slate-200 bg-white/95"} backdrop-blur-xl`}
+              ? `pt-2 pb-2 sm:pb-3 md:pb-4 ${isDarkMode ? "bg-transparent border-t border-[rgba(148,163,184,0.08)]" : "bg-[var(--color-surface)]/95 border-t border-[var(--color-border)]"} backdrop-blur-xl shadow-[0_-10px_30px_rgba(0,0,0,0.08)] fixed bottom-0 left-0 right-0 z-20 w-full`
+              : `shrink-0 pt-2 pb-2 sm:pb-3 md:pb-4 ${"border-t border-[var(--color-border)] bg-[var(--color-surface)]/95"} backdrop-blur-xl`}
           >
             {!userText && (
               <div className="w-full max-w-4xl mx-auto px-2 sm:px-3 md:px-4 pb-2">
                 <div className="max-w-4xl w-full mx-auto">
-                  <p className={`text-xs sm:text-sm mb-1 sm:mb-1.5 md:mb-2 text-center ${isDarkMode ? "text-slate-300" : "text-slate-600"}`}>
+                  <p className={`text-xs sm:text-sm mb-1 sm:mb-1.5 md:mb-2 text-center ${"text-[var(--color-textSecondary)]"}`}>
                     Try asking:
                   </p>
                   <div className="flex flex-wrap justify-center gap-1 xs:gap-1.5 sm:gap-2">
@@ -1521,8 +1521,8 @@ Focus ONLY on US retirement topics.`
                           ${isDarkMode ? "backdrop-blur-md" : ""}
                           transition-all duration-200 touch-manipulation
                           ${isDarkMode
-                            ? "bg-slate-900/40 text-slate-200 border border-slate-700/50 hover:bg-slate-900/55 hover:border-slate-600/60 active:bg-slate-900/65"
-                            : "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 active:bg-slate-100 shadow-sm"}
+                            ? "bg-[var(--color-surface)] text-[var(--color-text)] border border-[var(--color-border)] hover:bg-[var(--color-surface)] hover:border-[var(--color-border)] active:bg-[var(--color-surface)]"
+                            : "bg-[var(--color-surface)] text-[var(--color-text)] border border-[var(--color-border)] hover:bg-[var(--color-surface)] active:bg-[var(--color-background)] shadow-sm"}
                         `}
                         style={isDarkMode ? { backdropFilter: "blur(10px) saturate(180%)", WebkitBackdropFilter: "blur(10px) saturate(180%)", minHeight: "28px" } : { minHeight: "28px" }}
                       >
@@ -1537,7 +1537,7 @@ Focus ONLY on US retirement topics.`
               <div
                 className={`
                   flex items-center gap-1 sm:gap-1.5 md:gap-2 rounded-2xl shadow-xl p-1.5 sm:p-2
-                  ${isDarkMode ? "bg-[rgba(15,23,42,0.9)] border border-[rgba(148,163,184,0.15)]" : "bg-white border border-slate-200 shadow-md"}
+                  ${isDarkMode ? "bg-[rgba(15,23,42,0.9)] border border-[rgba(148,163,184,0.15)]" : "bg-[var(--color-surface)] border border-[var(--color-border)] shadow-md"}
                 `}
                 style={isDarkMode ? { boxShadow: "0 10px 30px rgba(0,0,0,0.45)" } : { backdropFilter: "blur(18px) saturate(140%)", WebkitBackdropFilter: "blur(18px) saturate(140%)" }}
               >
@@ -1547,7 +1547,7 @@ Focus ONLY on US retirement topics.`
                   className={`
                     w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center
                     transition-all duration-200 flex-shrink-0 touch-manipulation
-                    ${listening ? "bg-red-500 hover:bg-red-600 active:bg-red-700 text-white animate-pulse ring-2 ring-red-300 ring-offset-2" : "bg-primary hover:bg-primary-hover active:bg-primary-active text-white"}
+                    ${listening ? "bg-[var(--color-danger)] hover:bg-[var(--color-danger)] active:bg-[var(--color-danger)] text-white animate-pulse ring-2 ring-[var(--color-danger)]/30 ring-offset-2" : "bg-primary hover:bg-primary-hover active:bg-primary-active text-white"}
                     disabled:opacity-50 disabled:cursor-not-allowed
                   `}
                   aria-label={listening ? "Stop listening" : "Start voice input"}
@@ -1569,12 +1569,12 @@ Focus ONLY on US retirement topics.`
                   onChange={(e) => setUserText(e.target.value)}
                   onKeyPress={(e) => { if (e.key === "Enter") handleSubmit(); }}
                   placeholder="Say or type your question..."
-                  className={`flex-1 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 text-sm sm:text-base md:text-lg bg-transparent border-none outline-none ${isDarkMode ? "text-gray-100 placeholder-gray-400" : "text-gray-900 placeholder-gray-400"}`}
+                  className={`flex-1 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 text-sm sm:text-base md:text-lg bg-transparent border-none outline-none ${isDarkMode ? "text-[var(--color-text)] placeholder-[var(--color-textSecondary)]" : "text-[var(--color-text)] placeholder-[var(--color-textSecondary)]"}`}
                 />
                 <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*,.pdf,.doc,.docx" className="hidden" aria-label="Attach file" />
                 <button
                   onClick={handleAttachClick}
-                  className={`w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all duration-200 flex-shrink-0 touch-manipulation ${isDarkMode ? "bg-gray-700 text-gray-300 hover:bg-gray-600 active:bg-gray-500" : "bg-gray-100 text-gray-600 hover:bg-gray-200 active:bg-gray-300"}`}
+                  className={`w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all duration-200 flex-shrink-0 touch-manipulation ${isDarkMode ? "bg-[var(--color-background)] text-[var(--color-text)] hover:bg-[var(--color-background)] active:bg-[var(--color-background)]" : "bg-[var(--color-background)] text-[var(--color-textSecondary)] hover:bg-[var(--color-background)] active:bg-[var(--color-background)]"}`}
                   aria-label="Attach file or image"
                   title="Attach file or image"
                 >
@@ -1606,14 +1606,14 @@ Focus ONLY on US retirement topics.`
       )}
       {(withdrawalState || withdrawalDemoState || withdrawalCompleteState) && (
         <div className={variant === "fullpage" ? "fixed top-2 left-2 sm:top-4 sm:left-4 md:top-6 md:left-6 z-50" : "relative z-10 shrink-0"}>
-          <div className={`px-3 py-2 rounded-full backdrop-blur-md text-sm font-medium ${isDarkMode ? "bg-amber-600/80 text-white border border-amber-500/30" : "bg-amber-600/80 text-white border border-amber-500/30"}`} style={{ backdropFilter: "blur(10px) saturate(180%)", WebkitBackdropFilter: "blur(10px) saturate(180%)" }}>
+          <div className={`px-3 py-2 rounded-full backdrop-blur-md text-sm font-medium ${isDarkMode ? "bg-[var(--color-warning)]/80 text-white border border-[var(--color-warning)]/30" : "bg-[var(--color-warning)]/80 text-white border border-[var(--color-warning)]/30"}`} style={{ backdropFilter: "blur(10px) saturate(180%)", WebkitBackdropFilter: "blur(10px) saturate(180%)" }}>
             {getWithdrawalPhaseLabel((withdrawalDemoState?.step ?? withdrawalCompleteState?.step ?? withdrawalState?.step ?? "INTENT") as string)}
           </div>
         </div>
       )}
       {isApplyingForLoan && loanState && (
         <div className={variant === "fullpage" ? "fixed top-2 left-2 sm:top-4 sm:left-4 md:top-6 md:left-6 z-50" : "relative z-10 shrink-0"}>
-          <div className={`px-3 py-2 rounded-full backdrop-blur-md text-sm font-medium ${isDarkMode ? "bg-green-600/80 text-white border border-green-500/30" : "bg-green-600/80 text-white border border-green-500/30"}`} style={{ backdropFilter: "blur(10px) saturate(180%)", WebkitBackdropFilter: "blur(10px) saturate(180%)" }}>
+          <div className={`px-3 py-2 rounded-full backdrop-blur-md text-sm font-medium ${isDarkMode ? "bg-[var(--color-success)]/80 text-white border border-[var(--color-success)]/30" : "bg-[var(--color-success)]/80 text-white border border-[var(--color-success)]/30"}`} style={{ backdropFilter: "blur(10px) saturate(180%)", WebkitBackdropFilter: "blur(10px) saturate(180%)" }}>
             💰 Loan: {(() => { const step = loanState.step; if (step === "ELIGIBILITY" || step === "RULES") return "About your account"; if (step === "AMOUNT" || step === "PURPOSE" || step === "TERM") return "Loan details"; if (step === "REVIEW") return "Review & submit"; return "In progress"; })()}
           </div>
         </div>
@@ -1626,7 +1626,7 @@ Focus ONLY on US retirement topics.`
             <div
               className={`
                 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 rounded-full
-                bg-gradient-to-br from-purple-400 via-indigo-400 to-blue-400
+                bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-primary)] to-[var(--color-primary)]
                 blur-2xl opacity-70
                 transition-all duration-500
                 ${
@@ -1640,9 +1640,9 @@ Focus ONLY on US retirement topics.`
             />
             {isSpeaking && (
               <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center gap-1 mt-2 sm:mt-4">
-                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[var(--color-primary)] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[var(--color-primary)] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[var(--color-primary)] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
               </div>
             )}
           </div>
@@ -1652,7 +1652,7 @@ Focus ONLY on US retirement topics.`
             <p
               className={`
                 text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-semibold leading-relaxed tracking-tight
-                ${isDarkMode ? 'text-[#f8fafc]' : 'text-slate-950'}
+                ${isDarkMode ? 'text-[#f8fafc]' : 'text-[var(--color-text)]'}
               `}
               style={{
                 textShadow: isDarkMode ? '0 2px 8px rgba(0,0,0,0.35)' : 'none',
@@ -1681,8 +1681,8 @@ Focus ONLY on US retirement topics.`
                           ? 'bg-primary/80 text-white rounded-br-md border border-white/15'
                           : 'bg-primary/80 text-white rounded-br-md border border-white/20'
                         : isDarkMode
-                          ? 'bg-slate-900/55 text-slate-100 rounded-bl-md border border-slate-700/60'
-                          : 'bg-white/75 text-slate-900 rounded-bl-md border border-slate-200/70'
+                          ? 'bg-[var(--color-surface)] text-[var(--color-text)] rounded-bl-md border border-[var(--color-border)]'
+                          : 'bg-[var(--color-surface)]/75 text-[var(--color-text)] rounded-bl-md border border-[var(--color-border)]/70'
                       }
                     `}
                     style={{
@@ -1722,7 +1722,7 @@ Focus ONLY on US retirement topics.`
                     <div
                       className={`
                         mt-2 rounded-xl border px-3 py-3 text-sm
-                        ${isDarkMode ? "border-slate-700/60 bg-slate-950/20 text-slate-200" : "border-slate-200 bg-slate-50 text-slate-800"}
+                        ${"border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)]"}
                       `}
                       role="note"
                     >
@@ -1745,7 +1745,7 @@ Focus ONLY on US retirement topics.`
                     <div
                       className={`
                         mt-2 rounded-xl border px-3 py-3 text-sm
-                        ${isDarkMode ? "border-slate-700/60 bg-slate-950/20 text-slate-200" : "border-slate-200 bg-slate-50 text-slate-800"}
+                        ${"border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)]"}
                       `}
                       role="note"
                     >
@@ -1772,34 +1772,34 @@ Focus ONLY on US retirement topics.`
                     <div
                       className={`
                         rounded-2xl border shadow-sm overflow-hidden
-                        ${isDarkMode ? 'bg-slate-900/55 border-slate-700/60' : 'bg-white border-slate-200'}
+                        ${"bg-[var(--color-surface)] border-[var(--color-border)]"}
                       `}
                       aria-label="Account snapshot (demo)"
                     >
-                      <div className={`${isDarkMode ? 'bg-slate-900/60' : 'bg-slate-50'} px-4 py-3`}>
-                        <div className={`text-sm font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>
+                      <div className={`${"bg-[var(--color-surface)]"} px-4 py-3`}>
+                        <div className={`text-sm font-semibold ${"text-[var(--color-text)]"}`}>
                           Account snapshot {demoParticipant.isDemo ? '(Demo)' : ''}
                         </div>
-                        <div className={`mt-0.5 text-xs ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                        <div className={`mt-0.5 text-xs ${"text-[var(--color-textSecondary)]"}`}>
                           Read-only demo values for a guided walkthrough.
                         </div>
                       </div>
                       <div className="px-4 py-4 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
                         <div>
-                          <div className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>Employment status</div>
-                          <div className={`font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>{demoParticipant.employmentStatus}</div>
+                          <div className={`text-xs ${"text-[var(--color-textSecondary)]"}`}>Employment status</div>
+                          <div className={`font-semibold ${"text-[var(--color-text)]"}`}>{demoParticipant.employmentStatus}</div>
                         </div>
                         <div>
-                          <div className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>Plan participation</div>
-                          <div className={`font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>{demoParticipant.planParticipation}</div>
+                          <div className={`text-xs ${"text-[var(--color-textSecondary)]"}`}>Plan participation</div>
+                          <div className={`font-semibold ${"text-[var(--color-text)]"}`}>{demoParticipant.planParticipation}</div>
                         </div>
                         <div>
-                          <div className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>Vested balance</div>
-                          <div className={`font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>{formatCurrency(demoParticipant.vestedBalance)}</div>
+                          <div className={`text-xs ${"text-[var(--color-textSecondary)]"}`}>Vested balance</div>
+                          <div className={`font-semibold ${"text-[var(--color-text)]"}`}>{formatCurrency(demoParticipant.vestedBalance)}</div>
                         </div>
                         <div>
-                          <div className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>Existing loan balance</div>
-                          <div className={`font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>{formatCurrency(demoParticipant.currentLoanBalance)}</div>
+                          <div className={`text-xs ${"text-[var(--color-textSecondary)]"}`}>Existing loan balance</div>
+                          <div className={`font-semibold ${"text-[var(--color-text)]"}`}>{formatCurrency(demoParticipant.currentLoanBalance)}</div>
                         </div>
                       </div>
 
@@ -1807,7 +1807,7 @@ Focus ONLY on US retirement topics.`
                       <div
                         className={`
                           px-4 pb-4 text-sm
-                          ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}
+                          ${"text-[var(--color-text)]"}
                         `}
                         role="note"
                       >
@@ -1833,8 +1833,8 @@ Focus ONLY on US retirement topics.`
                           type="button"
                           onClick={() => handleUserInput("cancel", "chip")}
                           className={isDarkMode
-                            ? "px-4 py-2 rounded-xl text-sm font-medium border border-slate-700/60 text-slate-200 hover:bg-white/5"
-                            : "px-4 py-2 rounded-xl text-sm font-medium border border-slate-200 text-slate-800 hover:bg-slate-50"}
+                            ? "px-4 py-2 rounded-xl text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-white/5"
+                            : "px-4 py-2 rounded-xl text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-surface)]"}
                         >
                           Cancel loan request
                         </button>
@@ -1850,7 +1850,7 @@ Focus ONLY on US retirement topics.`
                         <div
                           className={`
                             mt-2 rounded-xl border px-3 py-3 text-sm
-                            ${isDarkMode ? "border-slate-700/60 bg-slate-950/20 text-slate-200" : "border-slate-200 bg-slate-50 text-slate-800"}
+                            ${"border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)]"}
                           `}
                           role="note"
                         >
@@ -1865,30 +1865,30 @@ Focus ONLY on US retirement topics.`
                     <div
                       className={`
                         rounded-2xl border shadow-sm overflow-hidden
-                        ${isDarkMode ? 'bg-slate-900/55 border-slate-700/60' : 'bg-white border-slate-200'}
+                        ${"bg-[var(--color-surface)] border-[var(--color-border)]"}
                       `}
                       aria-label="Loan basics"
                     >
-                      <div className={`${isDarkMode ? 'bg-slate-900/60' : 'bg-slate-50'} px-4 py-3`}>
-                        <div className={`text-sm font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>
+                      <div className={`${"bg-[var(--color-surface)]"} px-4 py-3`}>
+                        <div className={`text-sm font-semibold ${"text-[var(--color-text)]"}`}>
                           Loan availability
                         </div>
-                        <div className={`mt-0.5 text-xs ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                        <div className={`mt-0.5 text-xs ${"text-[var(--color-textSecondary)]"}`}>
                           Based on demo account info, you may be able to borrow up to about {formatCurrency(loanState.maxLoan)}. This is an estimate.
                         </div>
                       </div>
                       <div className="px-4 py-4">
-                        <ul className={`text-sm space-y-1.5 ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                        <ul className={`text-sm space-y-1.5 ${"text-[var(--color-text)]"}`}>
                           <li className="flex items-start gap-2">
-                            <span className={`mt-[6px] h-1.5 w-1.5 rounded-full ${isDarkMode ? 'bg-slate-500' : 'bg-slate-400'}`} />
+                            <span className={`mt-[6px] h-1.5 w-1.5 rounded-full ${"bg-[var(--color-textSecondary)]"}`} />
                             <span>Maximum is based on your vested balance.</span>
                           </li>
                           <li className="flex items-start gap-2">
-                            <span className={`mt-[6px] h-1.5 w-1.5 rounded-full ${isDarkMode ? 'bg-slate-500' : 'bg-slate-400'}`} />
+                            <span className={`mt-[6px] h-1.5 w-1.5 rounded-full ${"bg-[var(--color-textSecondary)]"}`} />
                             <span>Repayment is typically through payroll deductions.</span>
                           </li>
                           <li className="flex items-start gap-2">
-                            <span className={`mt-[6px] h-1.5 w-1.5 rounded-full ${isDarkMode ? 'bg-slate-500' : 'bg-slate-400'}`} />
+                            <span className={`mt-[6px] h-1.5 w-1.5 rounded-full ${"bg-[var(--color-textSecondary)]"}`} />
                             <span>Interest is paid back into your account.</span>
                           </li>
                         </ul>
@@ -1903,15 +1903,15 @@ Focus ONLY on US retirement topics.`
                       <div
                         className={`
                           rounded-2xl border shadow-sm overflow-hidden
-                          ${isDarkMode ? 'bg-slate-900/55 border-slate-700/60' : 'bg-white border-slate-200'}
+                          ${"bg-[var(--color-surface)] border-[var(--color-border)]"}
                         `}
                         aria-label="Loan availability"
                       >
-                        <div className={`${isDarkMode ? 'bg-slate-900/60' : 'bg-slate-50'} px-4 py-3`}>
-                          <div className={`text-sm font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>
+                        <div className={`${"bg-[var(--color-surface)]"} px-4 py-3`}>
+                          <div className={`text-sm font-semibold ${"text-[var(--color-text)]"}`}>
                             Loan availability
                           </div>
-                          <div className={`mt-0.5 text-xs ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                          <div className={`mt-0.5 text-xs ${"text-[var(--color-textSecondary)]"}`}>
                             Based on your account, you may be able to borrow up to about {formatCurrency(loanState.maxLoan)}. This is an estimate.
                           </div>
                         </div>
@@ -1923,8 +1923,8 @@ Focus ONLY on US retirement topics.`
                                 type="button"
                                 onClick={() => handleLoanChoice(formatCurrency(amt), formatCurrency(amt))}
                                 className={isDarkMode
-                                  ? "px-3 py-2 rounded-xl text-sm font-medium border border-slate-700/60 text-slate-200 hover:bg-white/5"
-                                  : "px-3 py-2 rounded-xl text-sm font-medium border border-slate-200 text-slate-800 hover:bg-slate-50"}
+                                  ? "px-3 py-2 rounded-xl text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-white/5"
+                                  : "px-3 py-2 rounded-xl text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-surface)]"}
                               >
                                 {formatCurrency(amt)}
                               </button>
@@ -1933,8 +1933,8 @@ Focus ONLY on US retirement topics.`
                               type="button"
                               onClick={() => handleLoanChoice(formatCurrency(loanState.maxLoan), "Max")}
                               className={isDarkMode
-                                ? "px-3 py-2 rounded-xl text-sm font-medium border border-indigo-400/40 text-indigo-200 hover:bg-indigo-500/10"
-                                : "px-3 py-2 rounded-xl text-sm font-medium border border-blue-200 text-blue-700 hover:bg-blue-50"}
+                                ? "px-3 py-2 rounded-xl text-sm font-medium border border-[var(--color-primary)]/40 text-[var(--color-primary)] hover:bg-[var(--color-primary)]/10"
+                                : "px-3 py-2 rounded-xl text-sm font-medium border border-[var(--color-primary)]/20 text-[var(--color-primary)] hover:bg-[var(--color-primary)]/10"}
                             >
                               Max
                             </button>
@@ -1952,9 +1952,9 @@ Focus ONLY on US retirement topics.`
                               onChange={(e) => setLoanAmountDraft(Number(e.target.value))}
                               onMouseUp={() => handleLoanChoice(formatCurrency(loanAmountDraft), formatCurrency(loanAmountDraft))}
                               onTouchEnd={() => handleLoanChoice(formatCurrency(loanAmountDraft), formatCurrency(loanAmountDraft))}
-                              className={`flex-1 h-2 rounded-full ${isDarkMode ? 'bg-slate-700' : 'bg-slate-200'} accent-blue-600 cursor-pointer`}
+                              className={`flex-1 h-2 rounded-full ${isDarkMode ? 'bg-[var(--color-background)]' : 'bg-[var(--color-background)]'} accent-[var(--color-primary)] cursor-pointer`}
                             />
-                            <span className={`text-sm font-semibold tabular-nums ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>
+                            <span className={`text-sm font-semibold tabular-nums ${"text-[var(--color-text)]"}`}>
                               {formatCurrency(loanAmountDraft)}
                             </span>
                           </div>
@@ -1963,7 +1963,7 @@ Focus ONLY on US retirement topics.`
                           <div
                             className={`
                               rounded-xl border px-3 py-2.5 text-xs sm:text-sm
-                              ${isDarkMode ? 'border-slate-700/60 bg-slate-950/20 text-slate-300' : 'border-slate-200 bg-slate-50 text-slate-700'}
+                              ${"border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)]"}
                             `}
                             role="note"
                           >
@@ -1990,7 +1990,7 @@ Focus ONLY on US retirement topics.`
                             <div
                               className={`
                                 mt-2 rounded-xl border px-3 py-3 text-sm
-                                ${isDarkMode ? "border-slate-700/60 bg-slate-950/20 text-slate-200" : "border-slate-200 bg-slate-50 text-slate-800"}
+                                ${"border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)]"}
                               `}
                               role="note"
                             >
@@ -2016,15 +2016,15 @@ Focus ONLY on US retirement topics.`
                     <div
                       className={`
                         rounded-2xl border shadow-sm overflow-hidden
-                        ${isDarkMode ? 'bg-slate-900/55 border-slate-700/60' : 'bg-white border-slate-200'}
+                        ${"bg-[var(--color-surface)] border-[var(--color-border)]"}
                       `}
                       aria-label="Loan purpose (optional)"
                     >
-                      <div className={`${isDarkMode ? 'bg-slate-900/60' : 'bg-slate-50'} px-4 py-3`}>
-                        <div className={`text-sm font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>
+                      <div className={`${"bg-[var(--color-surface)]"} px-4 py-3`}>
+                        <div className={`text-sm font-semibold ${"text-[var(--color-text)]"}`}>
                           Loan purpose (optional)
                         </div>
-                        <div className={`mt-0.5 text-xs ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                        <div className={`mt-0.5 text-xs ${"text-[var(--color-textSecondary)]"}`}>
                           You can skip this if you prefer.
                         </div>
                       </div>
@@ -2035,8 +2035,8 @@ Focus ONLY on US retirement topics.`
                             type="button"
                             onClick={() => handleLoanChoice(p, p)}
                             className={isDarkMode
-                              ? "px-3 py-2 rounded-xl text-sm font-medium border border-slate-700/60 text-slate-200 hover:bg-white/5"
-                              : "px-3 py-2 rounded-xl text-sm font-medium border border-slate-200 text-slate-800 hover:bg-slate-50"}
+                              ? "px-3 py-2 rounded-xl text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-white/5"
+                              : "px-3 py-2 rounded-xl text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-surface)]"}
                           >
                             {p}
                           </button>
@@ -2045,8 +2045,8 @@ Focus ONLY on US retirement topics.`
                           type="button"
                           onClick={() => handleLoanChoice("skip", "Skip")}
                           className={isDarkMode
-                            ? "px-3 py-2 rounded-xl text-sm font-medium border border-slate-700/60 text-slate-200 hover:bg-white/5"
-                            : "px-3 py-2 rounded-xl text-sm font-medium border border-slate-200 text-slate-800 hover:bg-slate-50"}
+                            ? "px-3 py-2 rounded-xl text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-white/5"
+                            : "px-3 py-2 rounded-xl text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-surface)]"}
                         >
                           Skip
                         </button>
@@ -2059,15 +2059,15 @@ Focus ONLY on US retirement topics.`
                     <div
                       className={`
                         rounded-2xl border shadow-sm overflow-hidden
-                        ${isDarkMode ? 'bg-slate-900/55 border-slate-700/60' : 'bg-white border-slate-200'}
+                        ${"bg-[var(--color-surface)] border-[var(--color-border)]"}
                       `}
                       aria-label="Repayment term"
                     >
-                      <div className={`${isDarkMode ? 'bg-slate-900/60' : 'bg-slate-50'} px-4 py-3`}>
-                        <div className={`text-sm font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>
+                      <div className={`${"bg-[var(--color-surface)]"} px-4 py-3`}>
+                        <div className={`text-sm font-semibold ${"text-[var(--color-text)]"}`}>
                           Repayment term
                         </div>
-                        <div className={`mt-0.5 text-xs ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                        <div className={`mt-0.5 text-xs ${"text-[var(--color-textSecondary)]"}`}>
                           Choose 1 to 5 years.
                         </div>
                       </div>
@@ -2086,11 +2086,11 @@ Focus ONLY on US retirement topics.`
                                   px-3 py-3 rounded-xl text-sm font-semibold border transition-colors
                                   ${selected
                                     ? isDarkMode
-                                      ? 'border-indigo-400/60 bg-indigo-500/10 text-slate-50 ring-2 ring-indigo-400/30'
-                                      : 'border-blue-300 bg-blue-50 text-slate-900 ring-2 ring-blue-200'
+                                      ? 'border-[var(--color-primary)]/60 bg-[var(--color-primary)]/10 text-[var(--color-text)] ring-2 ring-[var(--color-primary)]/30'
+                                      : 'border-[var(--color-primary)]/30 bg-[var(--color-primary)]/10 text-[var(--color-text)] ring-2 ring-[var(--color-primary)]/30'
                                     : isDarkMode
-                                      ? 'border-slate-700/60 text-slate-100 hover:bg-white/5'
-                                      : 'border-slate-200 text-slate-900 hover:bg-slate-50'
+                                      ? 'border-[var(--color-border)] text-[var(--color-text)] hover:bg-white/5'
+                                      : 'border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-surface)]'
                                   }
                                 `}
                                 aria-pressed={selected}
@@ -2104,15 +2104,15 @@ Focus ONLY on US retirement topics.`
                         <div
                           className={`
                             rounded-xl border px-3 py-3 text-sm
-                            ${isDarkMode ? 'border-slate-700/60 bg-slate-950/20 text-slate-200' : 'border-slate-200 bg-slate-50 text-slate-800'}
+                            ${"border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)]"}
                           `}
                           role="status"
                           aria-live="polite"
                         >
-                          <div className={`font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>
+                          <div className={`font-semibold ${"text-[var(--color-text)]"}`}>
                             You chose a {loanTermDraft}-year repayment term.
                           </div>
-                          <div className={`mt-1 text-xs sm:text-sm ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                          <div className={`mt-1 text-xs sm:text-sm ${"text-[var(--color-text)]"}`}>
                             Longer repayment terms usually mean lower monthly payments, but more interest paid over time.
                           </div>
                           {ContextChips({
@@ -2122,11 +2122,11 @@ Focus ONLY on US retirement topics.`
                             ],
                           })}
                           {loanTermWhyShorterOpen && (
-                            <div className={`mt-2 text-xs sm:text-sm ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                            <div className={`mt-2 text-xs sm:text-sm ${"text-[var(--color-text)]"}`}>
                               Shorter terms typically reduce total interest over time, because the balance is paid down sooner. This doesn’t change your selection.
                             </div>
                           )}
-                          <div className={`mt-2 text-xs sm:text-sm ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                          <div className={`mt-2 text-xs sm:text-sm ${"text-[var(--color-text)]"}`}>
                             You can change this later.
                           </div>
                         </div>
@@ -2147,37 +2147,37 @@ Focus ONLY on US retirement topics.`
                     <div
                       className={`
                         rounded-2xl border shadow-sm overflow-hidden
-                        ${isDarkMode ? 'bg-slate-900/55 border-slate-700/60' : 'bg-white border-slate-200'}
+                        ${"bg-[var(--color-surface)] border-[var(--color-border)]"}
                       `}
                       aria-label="Review loan request"
                     >
-                      <div className={`${isDarkMode ? 'bg-slate-900/60' : 'bg-slate-50'} px-4 py-3`}>
-                        <div className={`text-sm font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>
+                      <div className={`${"bg-[var(--color-surface)]"} px-4 py-3`}>
+                        <div className={`text-sm font-semibold ${"text-[var(--color-text)]"}`}>
                           Review & submit
                         </div>
-                        <div className={`mt-0.5 text-xs ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                        <div className={`mt-0.5 text-xs ${"text-[var(--color-textSecondary)]"}`}>
                           Nothing is final yet. Review your details before submitting.
                         </div>
                       </div>
                       <div className="px-4 py-4 space-y-3 text-sm">
                         <div>
-                          <div className={`text-xs font-semibold ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>Your loan</div>
+                          <div className={`text-xs font-semibold ${"text-[var(--color-textSecondary)]"}`}>Your loan</div>
                           <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
                           <div>
-                            <div className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>Amount</div>
-                            <div className={`font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>
+                            <div className={`text-xs ${"text-[var(--color-textSecondary)]"}`}>Amount</div>
+                            <div className={`font-semibold ${"text-[var(--color-text)]"}`}>
                               {loanState.collectedData.loanAmount != null ? formatCurrency(loanState.collectedData.loanAmount) : "—"}
                             </div>
                           </div>
                           <div>
-                            <div className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>Term</div>
-                            <div className={`font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>
+                            <div className={`text-xs ${"text-[var(--color-textSecondary)]"}`}>Term</div>
+                            <div className={`font-semibold ${"text-[var(--color-text)]"}`}>
                               {loanState.collectedData.repaymentTerm != null ? `${loanState.collectedData.repaymentTerm} years` : "—"}
                             </div>
                           </div>
                           <div>
-                            <div className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>Purpose</div>
-                            <div className={`font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>
+                            <div className={`text-xs ${"text-[var(--color-textSecondary)]"}`}>Purpose</div>
+                            <div className={`font-semibold ${"text-[var(--color-text)]"}`}>
                               {loanState.collectedData.loanPurpose ?? "Not specified"}
                             </div>
                           </div>
@@ -2187,22 +2187,22 @@ Focus ONLY on US retirement topics.`
                         <div
                           className={`
                             rounded-xl border px-3 py-3
-                            ${isDarkMode ? 'border-slate-700/60 bg-slate-950/20' : 'border-slate-200 bg-slate-50'}
+                            ${"border-[var(--color-border)] bg-[var(--color-surface)]"}
                           `}
                         >
-                          <div className={`text-xs font-semibold ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>Your account (Demo)</div>
+                          <div className={`text-xs font-semibold ${"text-[var(--color-textSecondary)]"}`}>Your account (Demo)</div>
                           <div className="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <div>
-                              <div className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>Vested balance</div>
-                              <div className={`font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>{formatCurrency(demoParticipant.vestedBalance)}</div>
+                              <div className={`text-xs ${"text-[var(--color-textSecondary)]"}`}>Vested balance</div>
+                              <div className={`font-semibold ${"text-[var(--color-text)]"}`}>{formatCurrency(demoParticipant.vestedBalance)}</div>
                             </div>
                             <div>
-                              <div className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>Available loan amount</div>
-                              <div className={`font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>{formatCurrency(loanState.maxLoan)}</div>
+                              <div className={`text-xs ${"text-[var(--color-textSecondary)]"}`}>Available loan amount</div>
+                              <div className={`font-semibold ${"text-[var(--color-text)]"}`}>{formatCurrency(loanState.maxLoan)}</div>
                             </div>
                             <div>
-                              <div className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>Existing loan balance</div>
-                              <div className={`font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>{formatCurrency(demoParticipant.currentLoanBalance)}</div>
+                              <div className={`text-xs ${"text-[var(--color-textSecondary)]"}`}>Existing loan balance</div>
+                              <div className={`font-semibold ${"text-[var(--color-text)]"}`}>{formatCurrency(demoParticipant.currentLoanBalance)}</div>
                             </div>
                           </div>
                         </div>
@@ -2210,10 +2210,10 @@ Focus ONLY on US retirement topics.`
                         <div
                           className={`
                             rounded-xl border px-3 py-3
-                            ${isDarkMode ? 'border-slate-700/60 bg-slate-950/20 text-slate-300' : 'border-slate-200 bg-slate-50 text-slate-700'}
+                            ${"border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)]"}
                           `}
                         >
-                          <div className={`text-xs font-semibold ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>What happens next</div>
+                          <div className={`text-xs font-semibold ${"text-[var(--color-textSecondary)]"}`}>What happens next</div>
                           <ul className="mt-2 space-y-1 text-xs sm:text-sm">
                             <li>Submitted → Your request is sent for processing.</li>
                             <li>Being processed → Your request is reviewed and set up.</li>
@@ -2234,8 +2234,8 @@ Focus ONLY on US retirement topics.`
                             type="button"
                             onClick={() => handleLoanChoice('change amount', 'Change amount')}
                             className={isDarkMode
-                              ? "px-4 py-2.5 rounded-xl text-sm font-medium border border-slate-700/60 text-slate-200 hover:bg-white/5"
-                              : "px-4 py-2.5 rounded-xl text-sm font-medium border border-slate-200 text-slate-800 hover:bg-slate-50"}
+                              ? "px-4 py-2.5 rounded-xl text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-white/5"
+                              : "px-4 py-2.5 rounded-xl text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-surface)]"}
                           >
                             Change amount
                           </button>
@@ -2243,8 +2243,8 @@ Focus ONLY on US retirement topics.`
                             type="button"
                             onClick={() => handleLoanChoice('change term', 'Change term')}
                             className={isDarkMode
-                              ? "px-4 py-2.5 rounded-xl text-sm font-medium border border-slate-700/60 text-slate-200 hover:bg-white/5"
-                              : "px-4 py-2.5 rounded-xl text-sm font-medium border border-slate-200 text-slate-800 hover:bg-slate-50"}
+                              ? "px-4 py-2.5 rounded-xl text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-white/5"
+                              : "px-4 py-2.5 rounded-xl text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-surface)]"}
                           >
                             Change term
                           </button>
@@ -2252,8 +2252,8 @@ Focus ONLY on US retirement topics.`
                             type="button"
                             onClick={() => handleLoanChoice('change purpose', 'Change purpose')}
                             className={isDarkMode
-                              ? "px-4 py-2.5 rounded-xl text-sm font-medium border border-slate-700/60 text-slate-200 hover:bg-white/5"
-                              : "px-4 py-2.5 rounded-xl text-sm font-medium border border-slate-200 text-slate-800 hover:bg-slate-50"}
+                              ? "px-4 py-2.5 rounded-xl text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-white/5"
+                              : "px-4 py-2.5 rounded-xl text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-surface)]"}
                           >
                             Change purpose
                           </button>
@@ -2279,30 +2279,30 @@ Focus ONLY on US retirement topics.`
                   <div
                     className={`
                       rounded-2xl border shadow-sm overflow-hidden
-                      ${isDarkMode ? 'bg-slate-900/55 border-slate-700/60' : 'bg-white border-slate-200'}
+                      ${"bg-[var(--color-surface)] border-[var(--color-border)]"}
                     `}
                     aria-label="Account snapshot (demo)"
                   >
-                    <div className={`${isDarkMode ? 'bg-slate-900/60' : 'bg-slate-50'} px-4 py-3`}>
-                      <div className={`text-sm font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>
+                    <div className={`${"bg-[var(--color-surface)]"} px-4 py-3`}>
+                      <div className={`text-sm font-semibold ${"text-[var(--color-text)]"}`}>
                         Account snapshot {demoWithdrawalParticipant.isDemo ? '(Demo)' : ''}
                       </div>
-                      <div className={`mt-0.5 text-xs ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                      <div className={`mt-0.5 text-xs ${"text-[var(--color-textSecondary)]"}`}>
                         Read-only demo values for a guided walkthrough.
                       </div>
                     </div>
                     <div className="px-4 py-4 grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
                       <div>
-                        <div className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>Age</div>
-                        <div className={`font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>{demoWithdrawalParticipant.currentAge}</div>
+                        <div className={`text-xs ${"text-[var(--color-textSecondary)]"}`}>Age</div>
+                        <div className={`font-semibold ${"text-[var(--color-text)]"}`}>{demoWithdrawalParticipant.currentAge}</div>
                       </div>
                       <div>
-                        <div className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>Employment status</div>
-                        <div className={`font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>{demoWithdrawalParticipant.employmentStatus}</div>
+                        <div className={`text-xs ${"text-[var(--color-textSecondary)]"}`}>Employment status</div>
+                        <div className={`font-semibold ${"text-[var(--color-text)]"}`}>{demoWithdrawalParticipant.employmentStatus}</div>
                       </div>
                       <div>
-                        <div className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>Vested balance</div>
-                        <div className={`font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>{formatCurrency(demoWithdrawalParticipant.vestedBalance)}</div>
+                        <div className={`text-xs ${"text-[var(--color-textSecondary)]"}`}>Vested balance</div>
+                        <div className={`font-semibold ${"text-[var(--color-text)]"}`}>{formatCurrency(demoWithdrawalParticipant.vestedBalance)}</div>
                       </div>
                     </div>
                   </div>
@@ -2323,8 +2323,8 @@ Focus ONLY on US retirement topics.`
                           handleUserInput("cancel", "chip");
                         }}
                         className={isDarkMode
-                          ? "px-4 py-2 rounded-xl text-sm font-medium border border-slate-700/60 text-slate-200 hover:bg-white/5"
-                          : "px-4 py-2 rounded-xl text-sm font-medium border border-slate-200 text-slate-800 hover:bg-slate-50"}
+                          ? "px-4 py-2 rounded-xl text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-white/5"
+                          : "px-4 py-2 rounded-xl text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-surface)]"}
                       >
                         Cancel
                       </button>
@@ -2348,23 +2348,23 @@ Focus ONLY on US retirement topics.`
                     <div
                       className={`
                         rounded-2xl border shadow-sm overflow-hidden
-                        ${isDarkMode ? 'bg-slate-900/55 border-slate-700/60' : 'bg-white border-slate-200'}
+                        ${"bg-[var(--color-surface)] border-[var(--color-border)]"}
                       `}
                       aria-label="Withdrawal eligibility (demo)"
                     >
-                      <div className={`${isDarkMode ? 'bg-slate-900/60' : 'bg-slate-50'} px-4 py-3`}>
-                        <div className={`text-sm font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>
+                      <div className={`${"bg-[var(--color-surface)]"} px-4 py-3`}>
+                        <div className={`text-sm font-semibold ${"text-[var(--color-text)]"}`}>
                           Withdrawal eligibility (Demo)
                         </div>
-                        <div className={`mt-0.5 text-xs ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                        <div className={`mt-0.5 text-xs ${"text-[var(--color-textSecondary)]"}`}>
                           Based on your account and plan rules (demo), some withdrawal types may be available. This does not guarantee approval.
                         </div>
                       </div>
                       <div className="px-4 py-4 space-y-2 text-sm">
-                        <div className={`rounded-xl border px-3 py-2.5 ${isDarkMode ? 'border-slate-700/60 bg-slate-950/20 text-slate-200' : 'border-slate-200 bg-slate-50 text-slate-800'}`}>
+                        <div className={`rounded-xl border px-3 py-2.5 ${"border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)]"}`}>
                           In-service withdrawals: {demoWithdrawalParticipant.planRules.inServiceWithdrawalAllowed ? "May be available" : "Not available"}
                         </div>
-                        <div className={`rounded-xl border px-3 py-2.5 ${isDarkMode ? 'border-slate-700/60 bg-slate-950/20 text-slate-200' : 'border-slate-200 bg-slate-50 text-slate-800'}`}>
+                        <div className={`rounded-xl border px-3 py-2.5 ${"border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)]"}`}>
                           Hardship withdrawals: {demoWithdrawalParticipant.planRules.hardshipWithdrawalAllowed ? "May be available" : "Not available"}
                         </div>
                         <div className="pt-1">
@@ -2388,11 +2388,11 @@ Focus ONLY on US retirement topics.`
                           type="button"
                           onClick={() => handleUserInput("type:IN_SERVICE", "chip")}
                           className={isDarkMode
-                            ? "text-left rounded-2xl border border-slate-700/60 bg-slate-900/50 px-4 py-4 hover:bg-slate-900/60"
-                            : "text-left rounded-2xl border border-slate-200 bg-white px-4 py-4 hover:bg-slate-50"}
+                            ? "text-left rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-4 hover:bg-[var(--color-surface)]"
+                            : "text-left rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-4 hover:bg-[var(--color-surface)]"}
                         >
-                          <div className={`font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>In-service withdrawal</div>
-                          <div className={`mt-1 text-xs ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>Withdraw while still employed (if allowed)</div>
+                          <div className={`font-semibold ${"text-[var(--color-text)]"}`}>In-service withdrawal</div>
+                          <div className={`mt-1 text-xs ${"text-[var(--color-textSecondary)]"}`}>Withdraw while still employed (if allowed)</div>
                         </button>
                       )}
                       {demoWithdrawalParticipant.planRules.hardshipWithdrawalAllowed && (
@@ -2400,11 +2400,11 @@ Focus ONLY on US retirement topics.`
                           type="button"
                           onClick={() => handleUserInput("type:HARDSHIP", "chip")}
                           className={isDarkMode
-                            ? "text-left rounded-2xl border border-slate-700/60 bg-slate-900/50 px-4 py-4 hover:bg-slate-900/60"
-                            : "text-left rounded-2xl border border-slate-200 bg-white px-4 py-4 hover:bg-slate-50"}
+                            ? "text-left rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-4 hover:bg-[var(--color-surface)]"
+                            : "text-left rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-4 hover:bg-[var(--color-surface)]"}
                         >
-                          <div className={`font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>Hardship withdrawal</div>
-                          <div className={`mt-1 text-xs ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>For qualifying hardship reasons (if allowed)</div>
+                          <div className={`font-semibold ${"text-[var(--color-text)]"}`}>Hardship withdrawal</div>
+                          <div className={`mt-1 text-xs ${"text-[var(--color-textSecondary)]"}`}>For qualifying hardship reasons (if allowed)</div>
                         </button>
                       )}
                       {demoWithdrawalParticipant.employmentStatus !== "Active" && (
@@ -2412,11 +2412,11 @@ Focus ONLY on US retirement topics.`
                           type="button"
                           onClick={() => handleUserInput("type:POST_EMPLOYMENT", "chip")}
                           className={isDarkMode
-                            ? "text-left rounded-2xl border border-slate-700/60 bg-slate-900/50 px-4 py-4 hover:bg-slate-900/60"
-                            : "text-left rounded-2xl border border-slate-200 bg-white px-4 py-4 hover:bg-slate-50"}
+                            ? "text-left rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-4 hover:bg-[var(--color-surface)]"
+                            : "text-left rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-4 hover:bg-[var(--color-surface)]"}
                         >
-                          <div className={`font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>Post-employment withdrawal</div>
-                          <div className={`mt-1 text-xs ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>Withdraw after leaving employment</div>
+                          <div className={`font-semibold ${"text-[var(--color-text)]"}`}>Post-employment withdrawal</div>
+                          <div className={`mt-1 text-xs ${"text-[var(--color-textSecondary)]"}`}>Withdraw after leaving employment</div>
                         </button>
                       )}
                     </div>
@@ -2427,15 +2427,15 @@ Focus ONLY on US retirement topics.`
                     <div
                       className={`
                         rounded-2xl border shadow-sm overflow-hidden
-                        ${isDarkMode ? 'bg-slate-900/55 border-slate-700/60' : 'bg-white border-slate-200'}
+                        ${"bg-[var(--color-surface)] border-[var(--color-border)]"}
                       `}
                       aria-label="Withdrawal amount"
                     >
-                      <div className={`${isDarkMode ? 'bg-slate-900/60' : 'bg-slate-50'} px-4 py-3`}>
-                        <div className={`text-sm font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>
+                      <div className={`${"bg-[var(--color-surface)]"} px-4 py-3`}>
+                        <div className={`text-sm font-semibold ${"text-[var(--color-text)]"}`}>
                           Withdrawal amount
                         </div>
-                        <div className={`mt-0.5 text-xs ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                        <div className={`mt-0.5 text-xs ${"text-[var(--color-textSecondary)]"}`}>
                           Available to request (demo): up to about {formatCurrency(demoWithdrawalParticipant.amountAvailableForWithdrawal)}. This is an estimate.
                         </div>
                       </div>
@@ -2447,8 +2447,8 @@ Focus ONLY on US retirement topics.`
                               type="button"
                               onClick={() => setWithdrawalAmountDraft(amt)}
                               className={isDarkMode
-                                ? "px-3 py-2 rounded-xl text-sm font-medium border border-slate-700/60 text-slate-200 hover:bg-white/5"
-                                : "px-3 py-2 rounded-xl text-sm font-medium border border-slate-200 text-slate-800 hover:bg-slate-50"}
+                                ? "px-3 py-2 rounded-xl text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-white/5"
+                                : "px-3 py-2 rounded-xl text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-surface)]"}
                             >
                               {formatCurrency(amt)}
                             </button>
@@ -2457,8 +2457,8 @@ Focus ONLY on US retirement topics.`
                             type="button"
                             onClick={() => setWithdrawalAmountDraft(demoWithdrawalParticipant.amountAvailableForWithdrawal)}
                             className={isDarkMode
-                              ? "px-3 py-2 rounded-xl text-sm font-medium border border-indigo-400/40 text-indigo-200 hover:bg-indigo-500/10"
-                              : "px-3 py-2 rounded-xl text-sm font-medium border border-blue-200 text-blue-700 hover:bg-blue-50"}
+                              ? "px-3 py-2 rounded-xl text-sm font-medium border border-[var(--color-primary)]/40 text-[var(--color-primary)] hover:bg-[var(--color-primary)]/10"
+                              : "px-3 py-2 rounded-xl text-sm font-medium border border-[var(--color-primary)]/20 text-[var(--color-primary)] hover:bg-[var(--color-primary)]/10"}
                           >
                             Max
                           </button>
@@ -2473,15 +2473,15 @@ Focus ONLY on US retirement topics.`
                             step={50}
                             value={Math.min(withdrawalAmountDraft, Math.floor(demoWithdrawalParticipant.amountAvailableForWithdrawal))}
                             onChange={(e) => setWithdrawalAmountDraft(Number(e.target.value))}
-                            className={`flex-1 h-2 rounded-full ${isDarkMode ? 'bg-slate-700' : 'bg-slate-200'} accent-blue-600 cursor-pointer`}
+                            className={`flex-1 h-2 rounded-full ${isDarkMode ? 'bg-[var(--color-background)]' : 'bg-[var(--color-background)]'} accent-[var(--color-primary)] cursor-pointer`}
                           />
-                          <span className={`text-sm font-semibold tabular-nums ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>
+                          <span className={`text-sm font-semibold tabular-nums ${"text-[var(--color-text)]"}`}>
                             {formatCurrency(withdrawalAmountDraft)}
                           </span>
                         </div>
                         <div className={`
                           rounded-xl border px-3 py-2.5 text-xs sm:text-sm
-                          ${isDarkMode ? 'border-slate-700/60 bg-slate-950/20 text-slate-300' : 'border-slate-200 bg-slate-50 text-slate-700'}
+                          ${"border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)]"}
                         `}>
                           Withdrawals are typically subject to taxes and possible penalties.
                         </div>
@@ -2501,20 +2501,20 @@ Focus ONLY on US retirement topics.`
                     <div
                       className={`
                         rounded-2xl border shadow-sm overflow-hidden
-                        ${isDarkMode ? 'bg-slate-900/55 border-slate-700/60' : 'bg-white border-slate-200'}
+                        ${"bg-[var(--color-surface)] border-[var(--color-border)]"}
                       `}
                       aria-label="Withdrawal impact"
                     >
-                      <div className={`${isDarkMode ? 'bg-slate-900/60' : 'bg-slate-50'} px-4 py-3`}>
-                        <div className={`text-sm font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>
+                      <div className={`${"bg-[var(--color-surface)]"} px-4 py-3`}>
+                        <div className={`text-sm font-semibold ${"text-[var(--color-text)]"}`}>
                           Impact awareness
                         </div>
                       </div>
                       <div className="px-4 py-4 space-y-2 text-sm">
-                        <div className={isDarkMode ? "text-slate-300" : "text-slate-700"}>
+                        <div className={"text-[var(--color-text)]"}>
                           Withdrawing reduces your retirement savings.
                         </div>
-                        <div className={isDarkMode ? "text-slate-300" : "text-slate-700"}>
+                        <div className={"text-[var(--color-text)]"}>
                           You can change this later.
                         </div>
                         <button
@@ -2533,23 +2533,23 @@ Focus ONLY on US retirement topics.`
                     <div
                       className={`
                         rounded-2xl border shadow-sm overflow-hidden
-                        ${isDarkMode ? 'bg-slate-900/55 border-slate-700/60' : 'bg-white border-slate-200'}
+                        ${"bg-[var(--color-surface)] border-[var(--color-border)]"}
                       `}
                       aria-label="Review withdrawal request"
                     >
-                      <div className={`${isDarkMode ? 'bg-slate-900/60' : 'bg-slate-50'} px-4 py-3`}>
-                        <div className={`text-sm font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>
+                      <div className={`${"bg-[var(--color-surface)]"} px-4 py-3`}>
+                        <div className={`text-sm font-semibold ${"text-[var(--color-text)]"}`}>
                           Review & confirm
                         </div>
-                        <div className={`mt-0.5 text-xs ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                        <div className={`mt-0.5 text-xs ${"text-[var(--color-textSecondary)]"}`}>
                           This will submit a withdrawal request for processing. This does not guarantee approval.
                         </div>
                       </div>
                       <div className="px-4 py-4 space-y-3 text-sm">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           <div>
-                            <div className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>Withdrawal type</div>
-                            <div className={`font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>
+                            <div className={`text-xs ${"text-[var(--color-textSecondary)]"}`}>Withdrawal type</div>
+                            <div className={`font-semibold ${"text-[var(--color-text)]"}`}>
                               {withdrawalDemoState.withdrawalType === 'IN_SERVICE'
                                 ? 'In-service withdrawal'
                                 : withdrawalDemoState.withdrawalType === 'HARDSHIP'
@@ -2558,15 +2558,15 @@ Focus ONLY on US retirement topics.`
                             </div>
                           </div>
                           <div>
-                            <div className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>Amount</div>
-                            <div className={`font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>
+                            <div className={`text-xs ${"text-[var(--color-textSecondary)]"}`}>Amount</div>
+                            <div className={`font-semibold ${"text-[var(--color-text)]"}`}>
                               {formatCurrency(withdrawalDemoState.amount ?? withdrawalAmountDraft)}
                             </div>
                           </div>
                         </div>
                         <div className={`
                           rounded-xl border px-3 py-3 text-xs sm:text-sm
-                          ${isDarkMode ? 'border-slate-700/60 bg-slate-950/20 text-slate-300' : 'border-slate-200 bg-slate-50 text-slate-700'}
+                          ${"border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)]"}
                         `}>
                           Withdrawing reduces your retirement savings.
                         </div>
@@ -2584,8 +2584,8 @@ Focus ONLY on US retirement topics.`
                             type="button"
                             onClick={() => handleUserInput("change amount", "chip")}
                             className={isDarkMode
-                              ? "px-4 py-2.5 rounded-xl text-sm font-medium border border-slate-700/60 text-slate-200 hover:bg-white/5"
-                              : "px-4 py-2.5 rounded-xl text-sm font-medium border border-slate-200 text-slate-800 hover:bg-slate-50"}
+                              ? "px-4 py-2.5 rounded-xl text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-white/5"
+                              : "px-4 py-2.5 rounded-xl text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-surface)]"}
                           >
                             Change amount
                           </button>
@@ -2593,8 +2593,8 @@ Focus ONLY on US retirement topics.`
                             type="button"
                             onClick={() => handleUserInput("change type", "chip")}
                             className={isDarkMode
-                              ? "px-4 py-2.5 rounded-xl text-sm font-medium border border-slate-700/60 text-slate-200 hover:bg-white/5"
-                              : "px-4 py-2.5 rounded-xl text-sm font-medium border border-slate-200 text-slate-800 hover:bg-slate-50"}
+                              ? "px-4 py-2.5 rounded-xl text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-white/5"
+                              : "px-4 py-2.5 rounded-xl text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-surface)]"}
                           >
                             Change type
                           </button>
@@ -2610,17 +2610,17 @@ Focus ONLY on US retirement topics.`
                 <div
                   className={`
                     mt-4 rounded-2xl border shadow-lg overflow-hidden
-                    ${isDarkMode ? 'bg-slate-900/55 border-slate-700/60' : 'bg-white border-slate-200'}
+                    ${"bg-[var(--color-surface)] border-[var(--color-border)]"}
                   `}
                   role="region"
                   aria-label="Withdrawal request submitted"
                 >
-                  <div className={`px-4 sm:px-5 py-4 ${isDarkMode ? 'bg-slate-900/60' : 'bg-slate-50'}`}>
+                  <div className={`px-4 sm:px-5 py-4 ${"bg-[var(--color-surface)]"}`}>
                     <div className="flex items-start gap-3">
                       <div
                         className={`
                           mt-0.5 inline-flex h-9 w-9 items-center justify-center rounded-xl
-                          ${isDarkMode ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-400/20' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}
+                          ${"bg-[var(--color-success)]/10 text-[var(--color-success)] border border-[var(--color-success)]/20"}
                         `}
                         aria-hidden="true"
                       >
@@ -2629,10 +2629,10 @@ Focus ONLY on US retirement topics.`
                         </svg>
                       </div>
                       <div className="min-w-0">
-                        <div className={`text-base sm:text-lg font-semibold ${isDarkMode ? 'text-slate-50' : 'text-slate-900'}`}>
+                        <div className={`text-base sm:text-lg font-semibold ${isDarkMode ? 'text-[var(--color-text)]' : 'text-[var(--color-text)]'}`}>
                           Withdrawal request submitted
                         </div>
-                        <div className={`mt-1 text-sm leading-relaxed ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                        <div className={`mt-1 text-sm leading-relaxed ${"text-[var(--color-text)]"}`}>
                           Your withdrawal request has been submitted for processing. This does not guarantee approval.
                         </div>
                       </div>
@@ -2640,7 +2640,7 @@ Focus ONLY on US retirement topics.`
                   </div>
 
                   <div className="px-4 sm:px-5 py-4 space-y-3">
-                    <div className={`text-sm font-semibold ${isDarkMode ? 'text-slate-200' : 'text-slate-900'}`}>
+                    <div className={`text-sm font-semibold ${"text-[var(--color-text)]"}`}>
                       What happens next
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -2654,31 +2654,27 @@ Focus ONLY on US retirement topics.`
                           className={`
                             rounded-xl border p-3
                             ${s.active
-                              ? isDarkMode
-                                ? 'border-emerald-400/30 bg-emerald-500/10'
-                                : 'border-emerald-200 bg-emerald-50'
-                              : isDarkMode
-                                ? 'border-slate-700/60 bg-slate-950/20'
-                                : 'border-slate-200 bg-white'}
+                              ? "border-[var(--color-success)]/20 bg-[var(--color-success)]/10"
+                              : "border-[var(--color-border)] bg-[var(--color-surface)]"}
                           `}
                         >
                           <div className="flex items-start gap-2">
                             <span
                               className={`
                                 mt-[6px] h-2.5 w-2.5 rounded-full
-                                ${s.active ? (isDarkMode ? 'bg-emerald-300' : 'bg-emerald-600') : (isDarkMode ? 'bg-slate-500' : 'bg-slate-400')}
+                                ${s.active ? ("bg-[var(--color-success)]") : ("bg-[var(--color-textSecondary)]")}
                               `}
                               aria-hidden="true"
                             />
                             <div>
-                              <div className={`text-sm font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>{s.title}</div>
-                              <div className={`mt-1 text-xs sm:text-sm ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>{s.desc}</div>
+                              <div className={`text-sm font-semibold ${"text-[var(--color-text)]"}`}>{s.title}</div>
+                              <div className={`mt-1 text-xs sm:text-sm ${"text-[var(--color-text)]"}`}>{s.desc}</div>
                             </div>
                           </div>
                         </div>
                       ))}
                     </div>
-                    <div className={`text-sm ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                    <div className={`text-sm ${"text-[var(--color-text)]"}`}>
                       You don’t need to take any action right now.
                     </div>
                     <div className="flex flex-col sm:flex-row gap-2">
@@ -2699,17 +2695,17 @@ Focus ONLY on US retirement topics.`
                 <div
                   className={`
                     mt-4 rounded-2xl border shadow-lg overflow-hidden
-                    ${isDarkMode ? 'bg-slate-900/55 border-slate-700/60' : 'bg-white border-slate-200'}
+                    ${"bg-[var(--color-surface)] border-[var(--color-border)]"}
                   `}
                   role="region"
                   aria-label="Loan request submitted"
                 >
-                  <div className={`px-4 sm:px-5 py-4 ${isDarkMode ? 'bg-slate-900/60' : 'bg-slate-50'}`}>
+                  <div className={`px-4 sm:px-5 py-4 ${"bg-[var(--color-surface)]"}`}>
                     <div className="flex items-start gap-3">
                       <div
                         className={`
                           mt-0.5 inline-flex h-9 w-9 items-center justify-center rounded-xl
-                          ${isDarkMode ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-400/20' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}
+                          ${"bg-[var(--color-success)]/10 text-[var(--color-success)] border border-[var(--color-success)]/20"}
                         `}
                         aria-hidden="true"
                       >
@@ -2718,10 +2714,10 @@ Focus ONLY on US retirement topics.`
                         </svg>
                       </div>
                       <div className="min-w-0">
-                        <div className={`text-base sm:text-lg font-semibold ${isDarkMode ? 'text-slate-50' : 'text-slate-900'}`}>
+                        <div className={`text-base sm:text-lg font-semibold ${isDarkMode ? 'text-[var(--color-text)]' : 'text-[var(--color-text)]'}`}>
                           Loan request submitted
                         </div>
-                        <div className={`mt-1 text-sm leading-relaxed ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                        <div className={`mt-1 text-sm leading-relaxed ${"text-[var(--color-text)]"}`}>
                           Your loan request has been submitted. This does not guarantee approval. You can review details later if needed.
                         </div>
                       </div>
@@ -2729,7 +2725,7 @@ Focus ONLY on US retirement topics.`
                   </div>
 
                   <div className="px-4 sm:px-5 py-4 space-y-3">
-                    <div className={`text-sm font-semibold ${isDarkMode ? 'text-slate-200' : 'text-slate-900'}`}>
+                    <div className={`text-sm font-semibold ${"text-[var(--color-text)]"}`}>
                       What happens next
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -2755,31 +2751,27 @@ Focus ONLY on US retirement topics.`
                           className={`
                             rounded-xl border p-3
                             ${s.active
-                              ? isDarkMode
-                                ? 'border-emerald-400/30 bg-emerald-500/10'
-                                : 'border-emerald-200 bg-emerald-50'
-                              : isDarkMode
-                                ? 'border-slate-700/60 bg-slate-950/20'
-                                : 'border-slate-200 bg-white'}
+                              ? "border-[var(--color-success)]/20 bg-[var(--color-success)]/10"
+                              : "border-[var(--color-border)] bg-[var(--color-surface)]"}
                           `}
                         >
                           <div className="flex items-start gap-2">
                             <span
                               className={`
                                 mt-[6px] h-2.5 w-2.5 rounded-full
-                                ${s.active ? (isDarkMode ? 'bg-emerald-300' : 'bg-emerald-600') : (isDarkMode ? 'bg-slate-500' : 'bg-slate-400')}
+                                ${s.active ? ("bg-[var(--color-success)]") : ("bg-[var(--color-textSecondary)]")}
                               `}
                               aria-hidden="true"
                             />
                             <div>
-                              <div className={`text-sm font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>{s.title}</div>
-                              <div className={`mt-1 text-xs sm:text-sm ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>{s.desc}</div>
+                              <div className={`text-sm font-semibold ${"text-[var(--color-text)]"}`}>{s.title}</div>
+                              <div className={`mt-1 text-xs sm:text-sm ${"text-[var(--color-text)]"}`}>{s.desc}</div>
                             </div>
                           </div>
                         </div>
                       ))}
                     </div>
-                    <div className={`text-sm ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                    <div className={`text-sm ${"text-[var(--color-text)]"}`}>
                       You don’t need to take any action right now.
                     </div>
 
@@ -2788,8 +2780,8 @@ Focus ONLY on US retirement topics.`
                         type="button"
                         onClick={() => setShowLoanCompleteDetails((v) => !v)}
                         className={isDarkMode
-                          ? "px-4 py-2.5 rounded-xl text-sm font-medium border border-slate-700/60 text-slate-200 hover:bg-white/5"
-                          : "px-4 py-2.5 rounded-xl text-sm font-medium border border-slate-200 text-slate-800 hover:bg-slate-50"}
+                          ? "px-4 py-2.5 rounded-xl text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-white/5"
+                          : "px-4 py-2.5 rounded-xl text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-surface)]"}
                       >
                         {showLoanCompleteDetails ? 'Hide details' : 'Review my loan request'}
                       </button>
@@ -2809,29 +2801,29 @@ Focus ONLY on US retirement topics.`
                       <div
                         className={`
                           rounded-xl border px-3 py-3 text-sm
-                          ${isDarkMode ? 'border-slate-700/60 bg-slate-950/30 text-slate-200' : 'border-slate-200 bg-slate-50 text-slate-800'}
+                          ${"border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)]"}
                         `}
                         aria-label="Loan request details"
                       >
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           <div>
-                            <div className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>Amount</div>
+                            <div className={`text-xs ${"text-[var(--color-textSecondary)]"}`}>Amount</div>
                             <div className="font-semibold">
                               {loanCompleteState.collectedData.loanAmount != null ? formatCurrency(loanCompleteState.collectedData.loanAmount) : "—"}
                             </div>
                           </div>
                           <div>
-                            <div className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>Term</div>
+                            <div className={`text-xs ${"text-[var(--color-textSecondary)]"}`}>Term</div>
                             <div className="font-semibold">
                               {loanCompleteState.collectedData.repaymentTerm != null ? `${loanCompleteState.collectedData.repaymentTerm} years` : "—"}
                             </div>
                           </div>
                           <div>
-                            <div className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>Purpose</div>
+                            <div className={`text-xs ${"text-[var(--color-textSecondary)]"}`}>Purpose</div>
                             <div className="font-semibold">{loanCompleteState.collectedData.loanPurpose ?? "Not specified"}</div>
                           </div>
                           <div>
-                            <div className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>Estimated monthly payment</div>
+                            <div className={`text-xs ${"text-[var(--color-textSecondary)]"}`}>Estimated monthly payment</div>
                             <div className="font-semibold">
                               {loanCompleteState.collectedData.monthlyPayment != null ? formatCurrency(loanCompleteState.collectedData.monthlyPayment) : "—"}
                             </div>
@@ -2848,17 +2840,17 @@ Focus ONLY on US retirement topics.`
                 <div
                   className={`
                     mt-4 rounded-2xl border shadow-lg overflow-hidden
-                    ${isDarkMode ? 'bg-slate-900/55 border-slate-700/60' : 'bg-white border-slate-200'}
+                    ${"bg-[var(--color-surface)] border-[var(--color-border)]"}
                   `}
                   role="region"
                   aria-label="Enrollment submitted"
                 >
-                  <div className={`px-4 sm:px-5 py-4 ${isDarkMode ? 'bg-slate-900/60' : 'bg-slate-50'}`}>
+                  <div className={`px-4 sm:px-5 py-4 ${"bg-[var(--color-surface)]"}`}>
                     <div className="flex items-start gap-3">
                       <div
                         className={`
                           mt-0.5 inline-flex h-9 w-9 items-center justify-center rounded-xl
-                          ${isDarkMode ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-400/20' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}
+                          ${"bg-[var(--color-success)]/10 text-[var(--color-success)] border border-[var(--color-success)]/20"}
                         `}
                         aria-hidden="true"
                       >
@@ -2867,10 +2859,10 @@ Focus ONLY on US retirement topics.`
                         </svg>
                       </div>
                       <div className="min-w-0">
-                        <div className={`text-base sm:text-lg font-semibold ${isDarkMode ? 'text-slate-50' : 'text-slate-900'}`}>
+                        <div className={`text-base sm:text-lg font-semibold ${isDarkMode ? 'text-[var(--color-text)]' : 'text-[var(--color-text)]'}`}>
                           Enrollment submitted
                         </div>
-                        <div className={`mt-1 text-sm leading-relaxed ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                        <div className={`mt-1 text-sm leading-relaxed ${"text-[var(--color-text)]"}`}>
                           Your enrollment has been submitted successfully. You can change these selections later if needed.
                         </div>
                       </div>
@@ -2879,47 +2871,47 @@ Focus ONLY on US retirement topics.`
 
                   <div className="px-4 sm:px-5 py-4 space-y-3">
                     <div>
-                      <div className={`text-sm font-semibold ${isDarkMode ? 'text-slate-200' : 'text-slate-900'}`}>
+                      <div className={`text-sm font-semibold ${"text-[var(--color-text)]"}`}>
                         What happens next
                       </div>
                       <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <div className={`rounded-xl border p-3 ${isDarkMode ? 'border-emerald-400/30 bg-emerald-500/10' : 'border-emerald-200 bg-emerald-50'}`}>
+                        <div className={`rounded-xl border p-3 ${"border-[var(--color-success)]/20 bg-[var(--color-success)]/10"}`}>
                           <div className="flex items-start gap-2">
-                            <span className={`mt-[6px] h-2.5 w-2.5 rounded-full ${isDarkMode ? 'bg-emerald-300' : 'bg-emerald-600'}`} aria-hidden="true" />
+                            <span className={`mt-[6px] h-2.5 w-2.5 rounded-full ${"bg-[var(--color-success)]"}`} aria-hidden="true" />
                             <div>
-                              <div className={`text-sm font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>Submitted (Now)</div>
-                              <div className={`mt-1 text-xs sm:text-sm ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                              <div className={`text-sm font-semibold ${"text-[var(--color-text)]"}`}>Submitted (Now)</div>
+                              <div className={`mt-1 text-xs sm:text-sm ${"text-[var(--color-text)]"}`}>
                                 Your enrollment has been sent to your plan administrator.
                               </div>
                             </div>
                           </div>
                         </div>
 
-                        <div className={`rounded-xl border p-3 ${isDarkMode ? 'border-slate-700/60 bg-slate-950/20' : 'border-slate-200 bg-white'}`}>
+                        <div className={`rounded-xl border p-3 ${"border-[var(--color-border)] bg-[var(--color-surface)]"}`}>
                           <div className="flex items-start gap-2">
-                            <span className={`mt-[6px] h-2.5 w-2.5 rounded-full ${isDarkMode ? 'bg-slate-500' : 'bg-slate-400'}`} aria-hidden="true" />
+                            <span className={`mt-[6px] h-2.5 w-2.5 rounded-full ${"bg-[var(--color-textSecondary)]"}`} aria-hidden="true" />
                             <div>
-                              <div className={`text-sm font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>Being processed</div>
-                              <div className={`mt-1 text-xs sm:text-sm ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                              <div className={`text-sm font-semibold ${"text-[var(--color-text)]"}`}>Being processed</div>
+                              <div className={`mt-1 text-xs sm:text-sm ${"text-[var(--color-text)]"}`}>
                                 Your selections are being reviewed and set up.
                               </div>
                             </div>
                           </div>
                         </div>
 
-                        <div className={`rounded-xl border p-3 ${isDarkMode ? 'border-slate-700/60 bg-slate-950/20' : 'border-slate-200 bg-white'}`}>
+                        <div className={`rounded-xl border p-3 ${"border-[var(--color-border)] bg-[var(--color-surface)]"}`}>
                           <div className="flex items-start gap-2">
-                            <span className={`mt-[6px] h-2.5 w-2.5 rounded-full ${isDarkMode ? 'bg-slate-500' : 'bg-slate-400'}`} aria-hidden="true" />
+                            <span className={`mt-[6px] h-2.5 w-2.5 rounded-full ${"bg-[var(--color-textSecondary)]"}`} aria-hidden="true" />
                             <div>
-                              <div className={`text-sm font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>Active</div>
-                              <div className={`mt-1 text-xs sm:text-sm ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                              <div className={`text-sm font-semibold ${"text-[var(--color-text)]"}`}>Active</div>
+                              <div className={`mt-1 text-xs sm:text-sm ${"text-[var(--color-text)]"}`}>
                                 Your choices will take effect according to your plan’s schedule.
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                      <div className={`mt-3 text-sm ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                      <div className={`mt-3 text-sm ${"text-[var(--color-text)]"}`}>
                         You don’t need to take any action right now.
                       </div>
                     </div>
@@ -2931,8 +2923,8 @@ Focus ONLY on US retirement topics.`
                         className={`
                           px-4 py-2.5 rounded-xl text-sm font-medium border transition-colors
                           ${isDarkMode
-                            ? 'border-slate-700/60 text-slate-200 hover:bg-white/5'
-                            : 'border-slate-200 text-slate-800 hover:bg-slate-50'}
+                            ? 'border-[var(--color-border)] text-[var(--color-text)] hover:bg-white/5'
+                            : 'border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-surface)]'}
                         `}
                       >
                         {showEnrollmentCompleteDetails ? 'Hide details' : 'Review my selections'}
@@ -2953,22 +2945,22 @@ Focus ONLY on US retirement topics.`
                       <div
                         className={`
                           rounded-xl border px-3 py-3 text-sm
-                          ${isDarkMode ? 'border-slate-700/60 bg-slate-950/30 text-slate-200' : 'border-slate-200 bg-slate-50 text-slate-800'}
+                          ${"border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)]"}
                         `}
                         role="region"
                         aria-label="Enrollment selections"
                       >
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           <div>
-                            <div className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>Plan</div>
+                            <div className={`text-xs ${"text-[var(--color-textSecondary)]"}`}>Plan</div>
                             <div className="font-semibold">{enrollmentCompleteState.planType ?? '401(k)'}</div>
                           </div>
                           <div>
-                            <div className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>Saving</div>
+                            <div className={`text-xs ${"text-[var(--color-textSecondary)]"}`}>Saving</div>
                             <div className="font-semibold">{(enrollmentCompleteState.contributionPercentage ?? 6)}%</div>
                           </div>
                           <div>
-                            <div className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>Investments</div>
+                            <div className={`text-xs ${"text-[var(--color-textSecondary)]"}`}>Investments</div>
                             <div className="font-semibold">
                               {enrollmentCompleteState.investmentStrategy === 'MANUAL'
                                 ? 'You choose'
@@ -2979,7 +2971,7 @@ Focus ONLY on US retirement topics.`
                           </div>
                           {enrollmentCompleteState.investmentStrategy === 'MANUAL' && (
                             <div>
-                              <div className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>Risk</div>
+                              <div className={`text-xs ${"text-[var(--color-textSecondary)]"}`}>Risk</div>
                               <div className="font-semibold">
                                 {(enrollmentCompleteState.manualRiskLevel ?? 'conservative')
                                   .toString()
@@ -3013,16 +3005,16 @@ Focus ONLY on US retirement topics.`
                 enrollmentState.selectedPlanChoice &&
                 !["PLAN_RECOMMENDATION", "CONFIRMED"].includes(enrollmentState.step) && (
                   <div
-                    className="mt-3 rounded-2xl border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/40 shadow-sm hover:shadow-md transition-shadow overflow-hidden border-l-4 border-l-blue-500 dark:border-l-blue-400"
+                    className="mt-3 rounded-2xl border border-[var(--color-primary)]/20 bg-[var(--color-primary)]/10 shadow-sm hover:shadow-md transition-shadow overflow-hidden border-l-4 border-l-[var(--color-primary)]"
                     role="region"
                     aria-label="Selected plan summary"
                   >
                     <div className="px-4 py-3 flex items-start justify-between gap-3">
                       <div className="min-w-0">
-                        <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                        <div className="text-sm font-semibold text-[var(--color-text)]">
                           Your selected plan
                         </div>
-                        <div className="mt-0.5 text-xs text-slate-600 dark:text-slate-300">
+                        <div className="mt-0.5 text-xs text-[var(--color-textSecondary)]">
                           {enrollmentState.selectedPlanChoice === "PAY_TAX_NOW"
                             ? "Roth 401(k) — pay tax now, withdrawals may be tax-free later."
                             : "Traditional 401(k) — pay tax later, taxes apply when you withdraw."}
@@ -3031,14 +3023,14 @@ Focus ONLY on US retirement topics.`
                       <div className="flex items-center gap-2">
                         {enrollmentState.recommendedPlanChoice &&
                           enrollmentState.selectedPlanChoice === enrollmentState.recommendedPlanChoice && (
-                            <span className="inline-flex items-center rounded-full px-2 py-1 text-[10px] sm:text-xs font-semibold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-200 border border-blue-200 dark:border-blue-700">
+                            <span className="inline-flex items-center rounded-full px-2 py-1 text-[10px] sm:text-xs font-semibold bg-[var(--color-primary)]/10 text-[var(--color-primary)] border border-[var(--color-primary)]/20">
                               Suggested
                             </span>
                           )}
                         <button
                           type="button"
                           onClick={() => handleUserInput("change plan", "chip")}
-                          className="shrink-0 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                          className="shrink-0 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-background)] transition-colors"
                         >
                           Change plan
                         </button>
@@ -3054,26 +3046,26 @@ Focus ONLY on US retirement topics.`
                 enrollmentState.contributionPercentage >= 0 &&
                 !["PLAN_RECOMMENDATION", "CONFIRMED"].includes(enrollmentState.step) && (
                   <div
-                    className="mt-3 rounded-2xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 shadow-sm hover:shadow-md transition-shadow overflow-hidden"
+                    className="mt-3 rounded-2xl border border-[var(--color-success)]/20 bg-[var(--color-success)]/10 shadow-sm hover:shadow-md transition-shadow overflow-hidden"
                     role="region"
                     aria-label="Your contribution summary"
                   >
                     <div className="px-4 py-3 flex items-start justify-between gap-3">
                       <div className="min-w-0">
-                        <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                        <div className="text-sm font-semibold text-[var(--color-text)]">
                           Your contribution
                         </div>
-                        <div className="mt-0.5 text-base font-semibold text-emerald-600 dark:text-emerald-400">
+                        <div className="mt-0.5 text-base font-semibold text-[var(--color-success)]">
                           {enrollmentState.contributionPercentage}% of your salary
                         </div>
-                        <div className="mt-1 text-xs text-slate-600 dark:text-slate-400">
+                        <div className="mt-1 text-xs text-[var(--color-textSecondary)]">
                           You can change this later.
                         </div>
                       </div>
                       <button
                         type="button"
                         onClick={() => handleUserInput("change contribution", "chip")}
-                        className="shrink-0 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                        className="shrink-0 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-background)] transition-colors"
                       >
                         Change contribution
                       </button>
@@ -3089,23 +3081,23 @@ Focus ONLY on US retirement topics.`
                   enrollmentState.investmentStrategy === "ADVISOR") &&
                 !["PLAN_RECOMMENDATION", "CONFIRMED"].includes(enrollmentState.step) && (
                   <div
-                    className="mt-3 rounded-2xl border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950/40 shadow-sm hover:shadow-md transition-shadow overflow-hidden"
+                    className="mt-3 rounded-2xl border border-[var(--color-primary)]/20 bg-[var(--color-primary)]/5 shadow-sm hover:shadow-md transition-shadow overflow-hidden"
                     role="region"
                     aria-label="Your investments summary"
                   >
                     <div className="px-4 py-3 flex items-start justify-between gap-3">
                       <div className="min-w-0">
-                        <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                        <div className="text-sm font-semibold text-[var(--color-text)]">
                           Your investments
                         </div>
-                        <div className="mt-0.5 text-base font-medium text-slate-800 dark:text-slate-200">
+                        <div className="mt-0.5 text-base font-medium text-[var(--color-text)]">
                           {enrollmentState.investmentStrategy === "DEFAULT"
                             ? "System managed"
                             : enrollmentState.investmentStrategy === "MANUAL"
                               ? "I'll choose my own investments"
                               : "Work with an advisor"}
                         </div>
-                        <div className="mt-1 text-xs text-slate-600 dark:text-slate-400">
+                        <div className="mt-1 text-xs text-[var(--color-textSecondary)]">
                           {enrollmentState.investmentStrategy === "DEFAULT"
                             ? "Automatically adjusted over time"
                             : enrollmentState.investmentStrategy === "MANUAL"
@@ -3116,7 +3108,7 @@ Focus ONLY on US retirement topics.`
                       <button
                         type="button"
                         onClick={() => handleUserInput("change investment approach", "chip")}
-                        className="shrink-0 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                        className="shrink-0 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-background)] transition-colors"
                       >
                         Change investment approach
                       </button>
@@ -3183,21 +3175,21 @@ Focus ONLY on US retirement topics.`
                               border shadow-sm
                               ${isDarkMode
                                 ? isSuggested
-                                  ? 'bg-slate-900/70 border-indigo-400/50 ring-2 ring-indigo-400/50'
-                                  : 'bg-slate-900/50 border-slate-700/60 hover:bg-slate-900/60'
+                                  ? 'bg-[var(--color-surface)] border-[var(--color-primary)]/50 ring-2 ring-[var(--color-primary)]/50'
+                                  : 'bg-[var(--color-surface)] border-[var(--color-border)] hover:bg-[var(--color-surface)]'
                                 : isSuggested
-                                  ? 'bg-white border-blue-300 ring-2 ring-blue-200'
-                                  : 'bg-white border-slate-200 hover:bg-slate-50'
+                                  ? 'bg-[var(--color-surface)] border-[var(--color-primary)]/30 ring-2 ring-[var(--color-primary)]/30'
+                                  : 'bg-[var(--color-surface)] border-[var(--color-border)] hover:bg-[var(--color-surface)]'
                               }
                             `}
                               aria-label={`${c.title}. ${c.oneLine} ${isSuggested ? "Suggested." : ""} Select this plan.`}
                           >
                             <div className="flex items-start justify-between gap-3">
                               <div>
-                                <div className={`text-base sm:text-lg font-semibold ${isDarkMode ? 'text-slate-50' : 'text-slate-900'}`}>
+                                <div className={`text-base sm:text-lg font-semibold ${isDarkMode ? 'text-[var(--color-text)]' : 'text-[var(--color-text)]'}`}>
                                   {c.title}
                                 </div>
-                                <div className={`text-xs sm:text-sm mt-0.5 ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                                <div className={`text-xs sm:text-sm mt-0.5 ${"text-[var(--color-textSecondary)]"}`}>
                                   {c.subtitle}
                                 </div>
                                 {isSuggested && (
@@ -3210,7 +3202,7 @@ Focus ONLY on US retirement topics.`
                                     }}
                                     className={`
                                       mt-2 inline-flex items-center text-xs sm:text-sm font-medium underline underline-offset-4
-                                      ${isDarkMode ? 'text-slate-200 hover:text-slate-100' : 'text-slate-700 hover:text-slate-900'}
+                                      ${isDarkMode ? 'text-[var(--color-text)] hover:text-[var(--color-text)]' : 'text-[var(--color-text)] hover:text-[var(--color-text)]'}
                                     `}
                                     aria-expanded={suggestedPlanWhyOpen}
                                   >
@@ -3226,7 +3218,7 @@ Focus ONLY on US retirement topics.`
                                   }}
                                   className={`
                                     mt-2 inline-flex items-center text-xs sm:text-sm font-medium underline underline-offset-4
-                                    ${isDarkMode ? 'text-slate-200 hover:text-slate-100' : 'text-slate-700 hover:text-slate-900'}
+                                    ${isDarkMode ? 'text-[var(--color-text)] hover:text-[var(--color-text)]' : 'text-[var(--color-text)] hover:text-[var(--color-text)]'}
                                   `}
                                   aria-expanded={isOpen}
                                   aria-controls={`plan-explainer-${c.key}`}
@@ -3239,8 +3231,8 @@ Focus ONLY on US retirement topics.`
                                   className={`
                                     inline-flex items-center rounded-full px-2 py-1 text-[10px] sm:text-xs font-semibold
                                     ${isDarkMode
-                                      ? 'bg-indigo-500/20 text-indigo-200 border border-indigo-400/30'
-                                      : 'bg-blue-50 text-blue-700 border border-blue-200'
+                                      ? 'bg-[var(--color-primary)]/20 text-[var(--color-primary)] border border-[var(--color-primary)]/30'
+                                      : 'bg-[var(--color-primary)]/10 text-[var(--color-primary)] border border-[var(--color-primary)]/20'
                                     }
                                   `}
                                 >
@@ -3249,14 +3241,14 @@ Focus ONLY on US retirement topics.`
                               )}
                             </div>
 
-                            <div className={`mt-2 text-sm leading-relaxed ${isDarkMode ? 'text-slate-200' : 'text-slate-800'}`}>
+                            <div className={`mt-2 text-sm leading-relaxed ${"text-[var(--color-text)]"}`}>
                               {c.oneLine}
                             </div>
 
-                            <ul className={`mt-3 space-y-1 text-xs sm:text-sm ${isDarkMode ? 'text-slate-200' : 'text-slate-700'}`}>
+                            <ul className={`mt-3 space-y-1 text-xs sm:text-sm ${"text-[var(--color-text)]"}`}>
                               {c.benefits.map((b) => (
                                 <li key={b} className="flex items-start gap-2">
-                                  <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${isDarkMode ? 'bg-slate-400' : 'bg-slate-400'}`} />
+                                  <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${"bg-[var(--color-textSecondary)]"}`} />
                                   <span>{b}</span>
                                 </li>
                               ))}
@@ -3267,22 +3259,22 @@ Focus ONLY on US retirement topics.`
                                 className={`
                                   mt-3 rounded-xl border px-3 py-3 text-xs sm:text-sm
                                   ${isDarkMode
-                                    ? 'border-slate-700/60 bg-slate-950/35 text-slate-200'
-                                    : 'border-slate-200 bg-slate-50 text-slate-800'}
+                                    ? 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)]'
+                                    : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)]'}
                                 `}
                                 aria-live="polite"
                               >
                                 <ul className="space-y-1.5">
                                   <li className="flex items-start gap-2">
-                                    <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${isDarkMode ? 'bg-slate-400' : 'bg-slate-400'}`} />
+                                    <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${"bg-[var(--color-textSecondary)]"}`} />
                                     <span>A 401(k) is a retirement savings account offered by your employer.</span>
                                   </li>
                                   <li className="flex items-start gap-2">
-                                    <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${isDarkMode ? 'bg-slate-400' : 'bg-slate-400'}`} />
+                                    <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${"bg-[var(--color-textSecondary)]"}`} />
                                     <span>{c.oneLine}</span>
                                   </li>
                                   <li className="flex items-start gap-2">
-                                    <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${isDarkMode ? 'bg-slate-400' : 'bg-slate-400'}`} />
+                                    <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${"bg-[var(--color-textSecondary)]"}`} />
                                     <span>You can change this choice later.</span>
                                   </li>
                                 </ul>
@@ -3294,8 +3286,8 @@ Focus ONLY on US retirement topics.`
                                 className={`
                                   mt-3 rounded-xl border px-3 py-3 text-xs sm:text-sm
                                   ${isDarkMode
-                                    ? 'border-slate-700/60 bg-slate-950/35 text-slate-200'
-                                    : 'border-slate-200 bg-slate-50 text-slate-800'}
+                                    ? 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)]'
+                                    : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)]'}
                                 `}
                                 role="note"
                               >
@@ -3305,17 +3297,17 @@ Focus ONLY on US retirement topics.`
                                 </div>
                                 <ul className="mt-2 space-y-1.5">
                                   <li className="flex items-start gap-2">
-                                    <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${isDarkMode ? 'bg-slate-400' : 'bg-slate-400'}`} />
+                                    <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${"bg-[var(--color-textSecondary)]"}`} />
                                     <span>
                                       Time to retirement: {enrollmentState.yearsToRetirement != null ? `${Math.round(enrollmentState.yearsToRetirement)} years` : "based on your timeline"}
                                     </span>
                                   </li>
                                   <li className="flex items-start gap-2">
-                                    <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${isDarkMode ? 'bg-slate-400' : 'bg-slate-400'}`} />
+                                    <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${"bg-[var(--color-textSecondary)]"}`} />
                                     <span>Retirement location: {enrollmentState.workCountry ?? "your location"}</span>
                                   </li>
                                   <li className="flex items-start gap-2">
-                                    <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${isDarkMode ? 'bg-slate-400' : 'bg-slate-400'}`} />
+                                    <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${"bg-[var(--color-textSecondary)]"}`} />
                                     <span>Company-provided plan options and defaults</span>
                                   </li>
                                 </ul>
@@ -3341,7 +3333,7 @@ Focus ONLY on US retirement topics.`
                       <div
                         className={`
                           mt-2 rounded-xl border px-3 py-3 text-sm
-                          ${isDarkMode ? "border-slate-700/60 bg-slate-950/20 text-slate-200" : "border-slate-200 bg-slate-50 text-slate-800"}
+                          ${"border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)]"}
                         `}
                         role="note"
                       >
@@ -3371,16 +3363,16 @@ Focus ONLY on US retirement topics.`
                       className={`
                         text-left rounded-2xl px-4 py-4 sm:px-5 sm:py-5 transition-all border
                         ${isDarkMode
-                          ? 'bg-slate-900/70 border-indigo-400/50 ring-2 ring-indigo-400/40 hover:bg-slate-900/75'
-                          : 'bg-white border-blue-300 ring-2 ring-blue-200 hover:bg-slate-50'}
+                          ? 'bg-[var(--color-surface)] border-[var(--color-primary)]/50 ring-2 ring-[var(--color-primary)]/40 hover:bg-[var(--color-surface)]'
+                          : 'bg-[var(--color-surface)] border-[var(--color-primary)]/30 ring-2 ring-[var(--color-primary)]/30 hover:bg-[var(--color-surface)]'}
                       `}
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div>
-                          <div className={`text-base sm:text-lg font-semibold ${isDarkMode ? 'text-slate-50' : 'text-slate-900'}`}>
+                          <div className={`text-base sm:text-lg font-semibold ${isDarkMode ? 'text-[var(--color-text)]' : 'text-[var(--color-text)]'}`}>
                             Let the system handle it
                           </div>
-                          <div className={`text-xs sm:text-sm mt-0.5 ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                          <div className={`text-xs sm:text-sm mt-0.5 ${"text-[var(--color-textSecondary)]"}`}>
                             Recommended for most participants
                           </div>
                         </div>
@@ -3388,25 +3380,25 @@ Focus ONLY on US retirement topics.`
                           className={`
                             inline-flex items-center rounded-full px-2 py-1 text-[10px] sm:text-xs font-semibold
                             ${isDarkMode
-                              ? 'bg-indigo-500/20 text-indigo-200 border border-indigo-400/30'
-                              : 'bg-blue-50 text-blue-700 border border-blue-200'
+                              ? 'bg-[var(--color-primary)]/20 text-[var(--color-primary)] border border-[var(--color-primary)]/30'
+                              : 'bg-[var(--color-primary)]/10 text-[var(--color-primary)] border border-[var(--color-primary)]/20'
                             }
                           `}
                         >
                           Recommended
                         </span>
                       </div>
-                      <ul className={`mt-3 space-y-1 text-xs sm:text-sm ${isDarkMode ? 'text-slate-200' : 'text-slate-700'}`}>
+                      <ul className={`mt-3 space-y-1 text-xs sm:text-sm ${"text-[var(--color-text)]"}`}>
                         <li className="flex items-start gap-2">
-                          <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${isDarkMode ? 'bg-slate-400' : 'bg-slate-400'}`} />
+                          <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${"bg-[var(--color-textSecondary)]"}`} />
                           <span>Professionally managed portfolio</span>
                         </li>
                         <li className="flex items-start gap-2">
-                          <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${isDarkMode ? 'bg-slate-400' : 'bg-slate-400'}`} />
+                          <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${"bg-[var(--color-textSecondary)]"}`} />
                           <span>Adjusts as you approach retirement</span>
                         </li>
                         <li className="flex items-start gap-2">
-                          <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${isDarkMode ? 'bg-slate-400' : 'bg-slate-400'}`} />
+                          <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${"bg-[var(--color-textSecondary)]"}`} />
                           <span>No ongoing decisions required</span>
                         </li>
                       </ul>
@@ -3418,24 +3410,24 @@ Focus ONLY on US retirement topics.`
                       className={`
                         text-left rounded-2xl px-4 py-4 sm:px-5 sm:py-5 transition-all border shadow-sm
                         ${isDarkMode
-                          ? 'bg-slate-900/50 border-slate-700/60 hover:bg-slate-900/60'
-                          : 'bg-white border-slate-200 hover:bg-slate-50'}
+                          ? 'bg-[var(--color-surface)] border-[var(--color-border)] hover:bg-[var(--color-surface)]'
+                          : 'bg-[var(--color-surface)] border-[var(--color-border)] hover:bg-[var(--color-surface)]'}
                       `}
                     >
-                      <div className={`text-base sm:text-lg font-semibold ${isDarkMode ? 'text-slate-50' : 'text-slate-900'}`}>
+                      <div className={`text-base sm:text-lg font-semibold ${isDarkMode ? 'text-[var(--color-text)]' : 'text-[var(--color-text)]'}`}>
                         I want to choose my investments
                       </div>
-                      <ul className={`mt-3 space-y-1 text-xs sm:text-sm ${isDarkMode ? 'text-slate-200' : 'text-slate-700'}`}>
+                      <ul className={`mt-3 space-y-1 text-xs sm:text-sm ${"text-[var(--color-text)]"}`}>
                         <li className="flex items-start gap-2">
-                          <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${isDarkMode ? 'bg-slate-400' : 'bg-slate-400'}`} />
+                          <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${"bg-[var(--color-textSecondary)]"}`} />
                           <span>Full control over fund selection</span>
                         </li>
                         <li className="flex items-start gap-2">
-                          <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${isDarkMode ? 'bg-slate-400' : 'bg-slate-400'}`} />
+                          <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${"bg-[var(--color-textSecondary)]"}`} />
                           <span>Customize risk and allocation</span>
                         </li>
                         <li className="flex items-start gap-2">
-                          <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${isDarkMode ? 'bg-slate-400' : 'bg-slate-400'}`} />
+                          <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${"bg-[var(--color-textSecondary)]"}`} />
                           <span>Best for experienced investors</span>
                         </li>
                       </ul>
@@ -3447,24 +3439,24 @@ Focus ONLY on US retirement topics.`
                       className={`
                         text-left rounded-2xl px-4 py-4 sm:px-5 sm:py-5 transition-all border shadow-sm
                         ${isDarkMode
-                          ? 'bg-slate-900/50 border-slate-700/60 hover:bg-slate-900/60'
-                          : 'bg-white border-slate-200 hover:bg-slate-50'}
+                          ? 'bg-[var(--color-surface)] border-[var(--color-border)] hover:bg-[var(--color-surface)]'
+                          : 'bg-[var(--color-surface)] border-[var(--color-border)] hover:bg-[var(--color-surface)]'}
                       `}
                     >
-                      <div className={`text-base sm:text-lg font-semibold ${isDarkMode ? 'text-slate-50' : 'text-slate-900'}`}>
+                      <div className={`text-base sm:text-lg font-semibold ${isDarkMode ? 'text-[var(--color-text)]' : 'text-[var(--color-text)]'}`}>
                         Talk to an advisor later
                       </div>
-                      <ul className={`mt-3 space-y-1 text-xs sm:text-sm ${isDarkMode ? 'text-slate-200' : 'text-slate-700'}`}>
+                      <ul className={`mt-3 space-y-1 text-xs sm:text-sm ${"text-[var(--color-text)]"}`}>
                         <li className="flex items-start gap-2">
-                          <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${isDarkMode ? 'bg-slate-400' : 'bg-slate-400'}`} />
+                          <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${"bg-[var(--color-textSecondary)]"}`} />
                           <span>Complete enrollment now</span>
                         </li>
                         <li className="flex items-start gap-2">
-                          <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${isDarkMode ? 'bg-slate-400' : 'bg-slate-400'}`} />
+                          <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${"bg-[var(--color-textSecondary)]"}`} />
                           <span>Review with an advisor later</span>
                         </li>
                         <li className="flex items-start gap-2">
-                          <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${isDarkMode ? 'bg-slate-400' : 'bg-slate-400'}`} />
+                          <span className={`mt-[3px] h-1.5 w-1.5 rounded-full ${"bg-[var(--color-textSecondary)]"}`} />
                           <span>Change selections anytime</span>
                         </li>
                       </ul>
@@ -3484,7 +3476,7 @@ Focus ONLY on US retirement topics.`
                       <div
                         className={`
                           mt-2 rounded-xl border px-3 py-3 text-sm
-                          ${isDarkMode ? "border-slate-700/60 bg-slate-950/20 text-slate-200" : "border-slate-200 bg-slate-50 text-slate-800"}
+                          ${"border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)]"}
                         `}
                         role="note"
                       >
@@ -3533,17 +3525,17 @@ Focus ONLY on US retirement topics.`
                   <div
                     className={`
                       rounded-2xl border shadow-sm overflow-hidden
-                      ${isDarkMode ? 'bg-slate-900/55 border-slate-700/60' : 'bg-white border-slate-200'}
+                      ${"bg-[var(--color-surface)] border-[var(--color-border)]"}
                     `}
                     role="region"
                     aria-label="Vested balance snapshot"
                   >
-                    <div className={`${isDarkMode ? 'bg-slate-900/60' : 'bg-slate-50'} px-4 py-3 flex items-start justify-between gap-3`}>
+                    <div className={`${"bg-[var(--color-surface)]"} px-4 py-3 flex items-start justify-between gap-3`}>
                       <div className="min-w-0">
-                        <div className={`text-sm font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>
+                        <div className={`text-sm font-semibold ${"text-[var(--color-text)]"}`}>
                           Vested balance
                         </div>
-                        <div className={`mt-0.5 text-xs ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                        <div className={`mt-0.5 text-xs ${"text-[var(--color-textSecondary)]"}`}>
                           The portion of your retirement account you fully own.
                         </div>
                       </div>
@@ -3551,8 +3543,8 @@ Focus ONLY on US retirement topics.`
                         type="button"
                         onClick={() => setVestingExplainerOpen((v) => !v)}
                         className={isDarkMode
-                          ? "shrink-0 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium border border-slate-700/60 text-slate-200 hover:bg-white/5"
-                          : "shrink-0 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium border border-slate-200 text-slate-800 hover:bg-slate-50"}
+                          ? "shrink-0 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-white/5"
+                          : "shrink-0 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium border border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-surface)]"}
                         aria-expanded={vestingExplainerOpen}
                       >
                         How does vesting work?
@@ -3564,12 +3556,12 @@ Focus ONLY on US retirement topics.`
                       <div
                         className={`
                           rounded-xl border px-3 py-3
-                          ${isDarkMode ? 'border-slate-700/60 bg-slate-950/20' : 'border-slate-200 bg-white'}
+                          ${"border-[var(--color-border)] bg-[var(--color-surface)]"}
                         `}
                         role="group"
                         aria-label="Vesting bridges"
                       >
-                        <div className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                        <div className={`text-xs ${"text-[var(--color-textSecondary)]"}`}>
                           Optional:
                         </div>
                         <div className="mt-2 flex flex-wrap gap-2">
@@ -3577,8 +3569,8 @@ Focus ONLY on US retirement topics.`
                             type="button"
                             onClick={startWithdrawalBridgeFromVesting}
                             className={isDarkMode
-                              ? "px-4 py-2 rounded-lg text-sm font-medium bg-gray-800/60 text-gray-200 hover:bg-gray-700/60 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                              : "px-4 py-2 rounded-lg text-sm font-medium bg-white text-gray-800 hover:bg-slate-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"}
+                              ? "px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[var(--color-background)]/60 border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                              : "px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[var(--color-surface)] border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"}
                           >
                             Can I withdraw from this?
                           </button>
@@ -3586,13 +3578,13 @@ Focus ONLY on US retirement topics.`
                             type="button"
                             onClick={startLoanBridgeFromVesting}
                             className={isDarkMode
-                              ? "px-4 py-2 rounded-lg text-sm font-medium bg-gray-800/60 text-gray-200 hover:bg-gray-700/60 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                              : "px-4 py-2 rounded-lg text-sm font-medium bg-white text-gray-800 hover:bg-slate-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"}
+                              ? "px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[var(--color-background)]/60 border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                              : "px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[var(--color-surface)] border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"}
                           >
                             Can I take a loan?
                           </button>
                         </div>
-                        <div className={`mt-2 text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                        <div className={`mt-2 text-xs ${"text-[var(--color-textSecondary)]"}`}>
                           Availability may depend on your plan rules and your account.
                         </div>
                       </div>
@@ -3603,26 +3595,26 @@ Focus ONLY on US retirement topics.`
                         <div
                           className={`
                             rounded-xl border px-3 py-3
-                            ${isDarkMode ? 'border-slate-700/60 bg-slate-950/20' : 'border-slate-200 bg-slate-50'}
+                            ${"border-[var(--color-border)] bg-[var(--color-surface)]"}
                           `}
                           role="region"
                           aria-label="How vesting works"
                         >
-                          <div className={`text-sm font-semibold ${isDarkMode ? 'text-slate-100' : 'text-slate-900'}`}>
+                          <div className={`text-sm font-semibold ${"text-[var(--color-text)]"}`}>
                             How vesting works
                           </div>
-                          <div className={`mt-2 space-y-2 text-sm ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                          <div className={`mt-2 space-y-2 text-sm ${"text-[var(--color-text)]"}`}>
                             <p>Vesting determines how much of your retirement savings belongs to you.</p>
                             <p>Your contributions are always 100% vested.</p>
                             <p>Employer contributions may vest over time, based on your plan’s rules.</p>
                             <p>Once money is vested, it’s yours — even if you leave your employer.</p>
-                            <div className={`mt-2 rounded-lg border px-3 py-2.5 text-sm ${isDarkMode ? 'border-slate-700/60 bg-slate-950/25 text-slate-200' : 'border-slate-200 bg-white text-slate-800'}`}>
+                            <div className={`mt-2 rounded-lg border px-3 py-2.5 text-sm ${isDarkMode ? 'border-[var(--color-border)] bg-[var(--color-background)]/25 text-[var(--color-text)]' : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)]'}`}>
                               <div className="text-xs font-semibold uppercase tracking-wide opacity-80">Example</div>
                               <div className="mt-1">
                                 If your total balance is $100,000 and $80,000 is vested, that means $80,000 belongs to you today.
                               </div>
                             </div>
-                            <p className={`${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                            <p className={`${"text-[var(--color-text)]"}`}>
                               Vesting happens automatically — you don’t need to take any action.
                             </p>
                           </div>
@@ -3634,8 +3626,8 @@ Focus ONLY on US retirement topics.`
                                 startWithdrawalBridgeFromVesting();
                               }}
                               className={isDarkMode
-                                ? "px-4 py-2 rounded-lg text-sm font-medium bg-gray-700 text-gray-200 hover:bg-gray-600 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                : "px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 text-gray-800 hover:bg-gray-200 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"}
+                                ? "px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-background)] text-[var(--color-text)] hover:bg-[var(--color-background)] border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                                : "px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-background)] text-[var(--color-text)] hover:bg-[var(--color-background)] border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"}
                             >
                               Can I withdraw from this?
                             </button>
@@ -3645,8 +3637,8 @@ Focus ONLY on US retirement topics.`
                                 startLoanBridgeFromVesting();
                               }}
                               className={isDarkMode
-                                ? "px-4 py-2 rounded-lg text-sm font-medium bg-gray-700 text-gray-200 hover:bg-gray-600 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                : "px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 text-gray-800 hover:bg-gray-200 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"}
+                                ? "px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-background)] text-[var(--color-text)] hover:bg-[var(--color-background)] border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                                : "px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-background)] text-[var(--color-text)] hover:bg-[var(--color-background)] border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"}
                             >
                               Can I take a loan?
                             </button>
@@ -3654,8 +3646,8 @@ Focus ONLY on US retirement topics.`
                               type="button"
                               onClick={() => setVestingExplainerOpen(false)}
                               className={isDarkMode
-                                ? "px-4 py-2 rounded-lg text-sm font-medium bg-gray-800/60 text-gray-200 hover:bg-gray-700/60 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                : "px-4 py-2 rounded-lg text-sm font-medium bg-white/80 text-gray-800 hover:bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"}
+                                ? "px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[var(--color-background)]/60 border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                                : "px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-surface)]/80 text-[var(--color-text)] hover:bg-[var(--color-surface)] border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"}
                             >
                               Hide
                             </button>
@@ -3675,8 +3667,8 @@ Focus ONLY on US retirement topics.`
                       type="button"
                     onClick={() => handleUserInput("View vesting schedule", "chip")}
                       className={isDarkMode
-                        ? "px-4 py-2 rounded-lg text-sm font-medium bg-gray-700 text-gray-200 hover:bg-gray-600 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        : "px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 text-gray-800 hover:bg-gray-200 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"}
+                        ? "px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-background)] text-[var(--color-text)] hover:bg-[var(--color-background)] border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                        : "px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-background)] text-[var(--color-text)] hover:bg-[var(--color-background)] border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"}
                     >
                       View vesting schedule
                     </button>
@@ -3684,8 +3676,8 @@ Focus ONLY on US retirement topics.`
                       type="button"
                     onClick={() => handleUserInput("How does vesting affect withdrawals?", "chip")}
                       className={isDarkMode
-                        ? "px-4 py-2 rounded-lg text-sm font-medium bg-gray-700 text-gray-200 hover:bg-gray-600 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        : "px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 text-gray-800 hover:bg-gray-200 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"}
+                        ? "px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-background)] text-[var(--color-text)] hover:bg-[var(--color-background)] border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                        : "px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-background)] text-[var(--color-text)] hover:bg-[var(--color-background)] border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"}
                     >
                       How does vesting affect withdrawals?
                     </button>
@@ -3696,8 +3688,8 @@ Focus ONLY on US retirement topics.`
                       handleUserInput("I want to enroll", "chip");
                       }}
                       className={isDarkMode
-                        ? "px-4 py-2 rounded-lg text-sm font-medium bg-gray-800/60 text-gray-200 hover:bg-gray-700/60 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        : "px-4 py-2 rounded-lg text-sm font-medium bg-white/80 text-gray-800 hover:bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"}
+                        ? "px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[var(--color-background)]/60 border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                        : "px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-surface)]/80 text-[var(--color-text)] hover:bg-[var(--color-surface)] border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"}
                     >
                       Go back to enrollment
                     </button>

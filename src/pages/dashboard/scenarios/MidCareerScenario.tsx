@@ -38,21 +38,21 @@ export function MidCareerScenario({ user }: { user: PersonaProfile }) {
         />
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-800">
-        <h3 className="font-semibold text-slate-900 dark:text-slate-100">Retirement Readiness</h3>
-        <p className="mt-1 text-sm text-slate-500">Based on your current trajectory</p>
+      <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
+        <h3 className="font-semibold text-[var(--color-text)]">Retirement Readiness</h3>
+        <p className="mt-1 text-sm text-[var(--color-textSecondary)]">Based on your current trajectory</p>
         <div className="mt-4 flex items-center gap-4">
           <div className="flex-1">
-            <div className="h-3 rounded-full bg-slate-100 dark:bg-slate-700">
+            <div className="h-3 rounded-full bg-[var(--color-background)]">
               <div
                 className="h-3 rounded-full bg-gradient-to-r from-blue-500 to-emerald-500 transition-all"
                 style={{ width: `${user.retirementScore}%` }}
               />
             </div>
           </div>
-          <span className="text-lg font-bold text-blue-600">{user.retirementScore}%</span>
+          <span className="text-lg font-bold text-[var(--color-primary)]">{user.retirementScore}%</span>
         </div>
-        <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
+        <p className="mt-3 text-sm text-[var(--color-textSecondary)]">
           At your current pace, your projected balance at 65 is {fmt.format(projectedBalance)}.
           This could provide approximately {fmt.format(monthlyIncome)}/month in retirement income.
         </p>
@@ -63,8 +63,8 @@ export function MidCareerScenario({ user }: { user: PersonaProfile }) {
 
 function StatCard({ label, value, color }: { label: string; value: string; color: string }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
-      <p className="text-xs font-medium uppercase tracking-wider text-slate-400">{label}</p>
+    <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
+      <p className="text-xs font-medium uppercase tracking-wider text-[var(--color-textSecondary)]">{label}</p>
       <p className="mt-1 text-2xl font-bold" style={{ color }}>{value}</p>
     </div>
   );
@@ -72,10 +72,10 @@ function StatCard({ label, value, color }: { label: string; value: string; color
 
 function ActionCard({ title, description, buttonText, color }: { title: string; description: string; buttonText: string; color: string }) {
   return (
-    <div className="flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-800">
+    <div className="flex flex-col justify-between rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
       <div>
-        <h4 className="font-semibold text-slate-900 dark:text-slate-100">{title}</h4>
-        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{description}</p>
+        <h4 className="font-semibold text-[var(--color-text)]">{title}</h4>
+        <p className="mt-2 text-sm text-[var(--color-textSecondary)]">{description}</p>
       </div>
       <button
         type="button"

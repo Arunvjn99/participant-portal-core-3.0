@@ -12,6 +12,7 @@ interface State {
 /**
  * Class-based error boundary to catch render and commit-phase errors
  * (e.g. DOM removeChild when portals and key-based remounts conflict).
+ * Uses theme tokens so temporary override and company branding apply.
  */
 export class RouteErrorBoundary extends Component<Props, State> {
   state: State = { hasError: false };
@@ -27,26 +28,26 @@ export class RouteErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex min-h-screen flex-col items-center justify-center bg-slate-50 px-4 dark:bg-slate-900">
-          <div className="w-full max-w-md rounded-xl border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-            <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
+        <div className="flex min-h-screen flex-col items-center justify-center bg-[var(--color-background)] px-4">
+          <div className="w-full max-w-md rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8 shadow-[var(--shadow-lg)]">
+            <h1 className="text-xl font-semibold text-[var(--color-text-primary)]">
               Something went wrong
             </h1>
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+            <p className="mt-2 text-sm text-[var(--color-text-secondary)]">
               An unexpected error occurred. Please try again or go back to the dashboard.
             </p>
             <div className="mt-6 flex gap-3">
               <Link
                 to="/dashboard"
-                className="rounded-lg px-4 py-2 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2"
-                style={{ backgroundColor: "var(--color-primary, #0b5fff)" }}
+                className="rounded-lg px-4 py-2 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)]"
+                style={{ backgroundColor: "var(--color-primary)" }}
               >
                 Go to Dashboard
               </Link>
               <button
                 type="button"
                 onClick={() => window.location.reload()}
-                className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
+                className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-background-secondary)]"
               >
                 Reload page
               </button>

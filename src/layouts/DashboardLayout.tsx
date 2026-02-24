@@ -14,10 +14,10 @@ interface DashboardLayoutProps {
 /*
   Shared header base class.
   Sticky with backdrop-blur, consistent border, safe-area insets.
-  When subHeader is present, height is auto instead of fixed.
+  Theme-aware: uses --color-border and --color-background.
 */
 const HEADER_BASE =
-  "relative sticky top-0 z-40 shrink-0 border-b border-slate-200 bg-white/80 backdrop-blur-md supports-[backdrop-filter]:bg-white/80 dark:border-slate-700 dark:bg-slate-900/80 dark:supports-[backdrop-filter]:bg-slate-900/80 pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]";
+  "relative sticky top-0 z-40 shrink-0 border-b border-[var(--color-border)] bg-[var(--color-background)]/80 backdrop-blur-md supports-[backdrop-filter]:bg-[var(--color-background)]/80 pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]";
 
 const HEADER_FIXED_H = "h-14 lg:h-16";
 
@@ -45,7 +45,7 @@ export const DashboardLayout = ({
             {subHeader}
           </header>
         )}
-        <div className="flex-1 min-h-0 overflow-x-hidden bg-slate-50 dark:bg-slate-900">
+        <div className="flex-1 min-h-0 overflow-x-hidden bg-[var(--color-background)]">
           <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
             {children}
           </div>

@@ -30,11 +30,11 @@ export function LoanAmountSlider({
   return (
     <div className="space-y-2">
       <div className="flex justify-between">
-        <label htmlFor="loan-amount-slider" className="text-sm font-medium text-slate-700 dark:text-slate-300">
+        <label htmlFor="loan-amount-slider" className="text-sm font-medium text-[var(--color-text)]">
           {label}
         </label>
         <motion.span
-          className="font-semibold tabular-nums text-slate-900 dark:text-slate-100"
+          className="font-semibold tabular-nums text-[var(--color-text)]"
           key={value}
           initial={reduced ? false : { scale: 1.05 }}
           animate={{ scale: 1 }}
@@ -52,7 +52,7 @@ export function LoanAmountSlider({
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
         disabled={disabled}
-        className="h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200 dark:bg-slate-700 disabled:opacity-50 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary"
+        className="h-2 w-full cursor-pointer appearance-none rounded-full bg-[var(--color-border)] disabled:opacity-50 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary"
         aria-label={label}
         aria-valuemin={min}
         aria-valuemax={max}

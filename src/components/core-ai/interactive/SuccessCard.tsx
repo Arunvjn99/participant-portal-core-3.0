@@ -27,25 +27,25 @@ export function SuccessCard({ title, description, timeline, actionLabel, onActio
       initial={reduced ? false : { opacity: 0, scale: 0.97, y: 12 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-      className="rounded-xl border border-emerald-400/40 bg-gradient-to-br from-emerald-50 to-slate-100 shadow-lg overflow-hidden dark:border-emerald-500/30 dark:from-emerald-500/10 dark:to-slate-800/80"
+      className="rounded-xl border border-[var(--color-success)]/40 bg-gradient-to-br from-[var(--color-success)]/5 to-[var(--color-background)] shadow-lg overflow-hidden"
     >
       {/* Header */}
       <div className="px-4 py-4 flex items-start gap-3">
-        <div className="shrink-0 flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 border border-emerald-400/40 dark:bg-emerald-500/20 dark:border-emerald-500/30">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-600 dark:text-emerald-400">
+        <div className="shrink-0 flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-success)]/10 border border-[var(--color-success)]/40">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--color-success)]">
             <polyline points="20 6 9 17 4 12" />
           </svg>
         </div>
         <div className="min-w-0">
-          <h4 className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">{title}</h4>
-          {description && <p className="text-[11px] text-slate-500 mt-0.5 dark:text-slate-400">{description}</p>}
+          <h4 className="text-sm font-semibold text-[var(--color-success)]">{title}</h4>
+          {description && <p className="text-[11px] text-[var(--color-textSecondary)] mt-0.5">{description}</p>}
         </div>
       </div>
 
       {/* Timeline */}
       {timeline && timeline.length > 0 && (
         <div className="px-4 pb-3">
-          <p className="text-[10px] font-medium uppercase tracking-wide text-slate-500 mb-2">What happens next</p>
+          <p className="text-[10px] font-medium uppercase tracking-wide text-[var(--color-textSecondary)] mb-2">What happens next</p>
           <div className="space-y-2.5 pl-1">
             {timeline.map((step, i) => (
               <motion.div
@@ -56,14 +56,14 @@ export function SuccessCard({ title, description, timeline, actionLabel, onActio
                 className="flex items-start gap-2.5"
               >
                 <div className="relative mt-1">
-                  <span className="block h-2 w-2 rounded-full bg-emerald-500/60" />
+                  <span className="block h-2 w-2 rounded-full bg-[var(--color-success)]/60" />
                   {i < timeline.length - 1 && (
-                    <span className="absolute top-2 left-1/2 -translate-x-1/2 w-px h-4 bg-slate-300 dark:bg-slate-700" />
+                    <span className="absolute top-2 left-1/2 -translate-x-1/2 w-px h-4 bg-[var(--color-border)]" />
                   )}
                 </div>
                 <div className="min-w-0">
-                  <p className="text-xs text-slate-700 dark:text-slate-200">{step.label}</p>
-                  {step.detail && <p className="text-[10px] text-slate-500">{step.detail}</p>}
+                  <p className="text-xs text-[var(--color-text)]">{step.label}</p>
+                  {step.detail && <p className="text-[10px] text-[var(--color-textSecondary)]">{step.detail}</p>}
                 </div>
               </motion.div>
             ))}
@@ -73,11 +73,11 @@ export function SuccessCard({ title, description, timeline, actionLabel, onActio
 
       {/* Action */}
       {actionLabel && onAction && (
-        <div className="px-4 py-3 border-t border-emerald-500/20">
+        <div className="px-4 py-3 border-t border-[var(--color-success)]/20">
           <button
             type="button"
             onClick={onAction}
-            className="w-full px-3 py-2 rounded-lg bg-emerald-600 text-white text-xs font-medium hover:bg-emerald-500 transition-colors"
+            className="w-full px-3 py-2 rounded-lg bg-[var(--color-success)] text-white text-xs font-medium hover:bg-[var(--color-success)] transition-colors"
           >
             {actionLabel}
           </button>

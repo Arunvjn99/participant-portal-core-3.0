@@ -32,7 +32,7 @@ export const HeroSection = () => {
         className="pre-enrollment-hero-bg pre-enrollment-hero-noise absolute inset-0 -z-10"
         aria-hidden
       />
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent via-transparent to-slate-50/80 dark:to-slate-900/90" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent via-transparent to-slate-50/80" />
 
       <div className="relative flex flex-col lg:flex-row lg:items-center gap-8 sm:gap-10 lg:gap-16 pt-8 pb-10 sm:pt-14 sm:pb-16 lg:pt-20 lg:pb-24 px-0 min-h-0">
         {/* Left: content */}
@@ -44,24 +44,24 @@ export const HeroSection = () => {
         >
           <motion.div
             variants={fadeUp}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 dark:bg-emerald-900/40 dark:border-emerald-800 w-fit mb-4 sm:mb-6"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--color-success)]/10 border border-[var(--color-success)]/10 w-fit mb-4 sm:mb-6"
           >
-            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wide">
+            <div className="w-2 h-2 rounded-full bg-[var(--color-success)] animate-pulse" />
+            <span className="text-xs font-bold text-[var(--color-success)] uppercase tracking-wide">
               {t("dashboard.enrollmentOpen")}
             </span>
           </motion.div>
 
           <motion.h2
             variants={fadeUp}
-            className="text-xl md:text-2xl font-medium text-slate-500 dark:text-slate-400 mb-3"
+            className="text-xl md:text-2xl font-medium text-[var(--color-textSecondary)] mb-3"
           >
             {t("dashboard.greeting", { name: displayName })}
           </motion.h2>
 
           <motion.h1
             variants={fadeUp}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-display font-bold text-slate-900 dark:text-slate-100 leading-[1.08] tracking-tight mb-4 sm:mb-6"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-display font-bold text-[var(--color-text)] leading-[1.08] tracking-tight mb-4 sm:mb-6"
           >
             {t("dashboard.heroTitlePart1")}{" "}
             <br className="hidden sm:inline" />
@@ -72,7 +72,7 @@ export const HeroSection = () => {
 
           <motion.p
             variants={fadeUp}
-            className="text-sm sm:text-base md:text-lg text-slate-500 dark:text-slate-400 max-w-lg leading-relaxed mb-6 sm:mb-8 md:mb-10"
+            className="text-sm sm:text-base md:text-lg text-[var(--color-textSecondary)] max-w-lg leading-relaxed mb-6 sm:mb-8 md:mb-10"
           >
             {t("dashboard.heroSubtitle")}
           </motion.p>
@@ -84,7 +84,7 @@ export const HeroSection = () => {
             <motion.button
               type="button"
               onClick={() => setIsWizardOpen(true)}
-              className="group relative inline-flex items-center justify-center gap-2 px-5 py-3 sm:px-6 sm:py-3.5 md:px-8 md:py-4 w-full sm:w-auto bg-primary hover:bg-primary-hover text-white rounded-2xl font-semibold text-sm sm:text-base shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-slate-900"
+              className="group relative inline-flex items-center justify-center gap-2 px-5 py-3 sm:px-6 sm:py-3.5 md:px-8 md:py-4 w-full sm:w-auto bg-primary hover:bg-primary-hover text-white rounded-2xl font-semibold text-sm sm:text-base shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
               {t("dashboard.startEnrollment")}
               <ArrowRight
@@ -97,7 +97,7 @@ export const HeroSection = () => {
               type="button"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center justify-center gap-2 px-5 py-3 sm:px-6 sm:py-3.5 md:px-8 md:py-4 w-full sm:w-auto bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-2 border-slate-200 dark:border-slate-600 rounded-2xl font-semibold text-sm sm:text-base hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-500 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-slate-300 dark:focus:ring-slate-500 focus:ring-offset-2"
+              className="inline-flex items-center justify-center gap-2 px-5 py-3 sm:px-6 sm:py-3.5 md:px-8 md:py-4 w-full sm:w-auto bg-[var(--color-surface)] text-[var(--color-text)] border-2 border-[var(--color-border)] rounded-2xl font-semibold text-sm sm:text-base hover:bg-[var(--color-surface)] hover:border-[var(--color-border)] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:ring-offset-2"
             >
               <Compass size={18} />
               {t("dashboard.exploreOptions")}
@@ -117,11 +117,11 @@ export const HeroSection = () => {
             <FloatingCards />
           </div>
           {/* Mobile-only fallback (below md) */}
-          <div className="md:hidden w-full max-w-[260px] sm:max-w-[320px] aspect-square bg-gradient-to-br from-brand-100 to-indigo-50 dark:from-brand-900/40 dark:to-indigo-900/30 rounded-2xl sm:rounded-3xl flex items-center justify-center relative overflow-hidden shadow-lg dark:shadow-black/20 mx-auto">
+          <div className="md:hidden w-full max-w-[260px] sm:max-w-[320px] aspect-square bg-gradient-to-br from-brand-100 to-indigo-50 rounded-2xl sm:rounded-3xl flex items-center justify-center relative overflow-hidden shadow-lg mx-auto">
             <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" />
             <div className="text-center p-6 sm:p-8">
-              <h3 className="text-2xl sm:text-3xl font-bold text-brand-900 dark:text-brand-200 mb-2">$1.2M</h3>
-              <p className="text-sm sm:text-base text-brand-700 dark:text-brand-300 font-medium">{t("dashboard.projectedFutureValue")}</p>
+              <h3 className="text-2xl sm:text-3xl font-bold text-brand-900 mb-2">$1.2M</h3>
+              <p className="text-sm sm:text-base text-brand-700 font-medium">{t("dashboard.projectedFutureValue")}</p>
             </div>
           </div>
         </motion.div>

@@ -1,384 +1,343 @@
-import { useState, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { DashboardLayout } from "../../layouts/DashboardLayout";
 import { DashboardHeader } from "../../components/dashboard/DashboardHeader";
 import { useTheme } from "../../context/ThemeContext";
 import { useUser } from "../../context/UserContext";
-import { validateThemeJSON, generateDarkTheme } from "../../theme/utils";
-import type { CompanyTheme, ThemeColors } from "../../theme/utils";
+import {
+  defaultBrandingFromColors,
+  type BrandingState,
+  type FontFamilyOption,
+  type ThemeColorsForEditor,
+} from "./theme-editor/types";
+import type { ThemeColors } from "../../theme/utils";
+import { generateDarkTheme } from "../../theme/utils";
+import { serializeBranding } from "./theme-editor/serialization";
+import { upsertCompanyBranding } from "../../services/companyBrandingService";
+import { BrandColorsSection } from "./theme-editor/BrandColorsSection";
+import { ExperienceControlsSection } from "./theme-editor/ExperienceControlsSection";
+import { TypographySection } from "./theme-editor/TypographySection";
+import { LivePreviewPanel } from "./theme-editor/LivePreviewPanel";
+import { AdvancedJsonSection } from "./theme-editor/AdvancedJsonSection";
 
-const SAMPLE_JSON = JSON.stringify(
-  {
-    light: {
-      primary: "#0052CC",
-      secondary: "#E6F0FF",
-      accent: "#00C853",
-      background: "#FFFFFF",
-      surface: "#F8FAFC",
-      textPrimary: "#111827",
-      textSecondary: "#6B7280",
-      border: "#E5E7EB",
-      success: "#16A34A",
-      warning: "#F59E0B",
-      danger: "#DC2626",
-      font: "Inter",
-      logo: "https://example.com/logo.png",
-    },
-    dark: {},
-  },
-  null,
-  2,
-);
+function stripLogoFromColors(colors: ThemeColors): ThemeColorsForEditor {
+  const { logo: _logo, ...rest } = colors;
+  return rest;
+}
 
 export const ThemeSettings = () => {
-  const { company } = useUser();
-  const { mode, companyTheme, setCompanyBranding, currentColors } = useTheme();
+  const {
+    currentColors,
+    setCompanyBranding,
+    setTemporaryTheme,
+    clearTemporaryTheme,
+    overrideTheme,
+  } = useTheme();
+  const { company, profile } = useUser();
 
-  const [jsonInput, setJsonInput] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [previewActive, setPreviewActive] = useState(false);
-  const [savedThemeBackup, setSavedThemeBackup] = useState<CompanyTheme | null>(null);
+  const canEditBranding =
+    profile?.role === "admin" || profile?.role === "super_admin";
 
-  const currentJSON = JSON.stringify(
-    { light: companyTheme.light, dark: companyTheme.dark },
-    null,
-    2,
+  const initialBranding = useMemo(
+    () => defaultBrandingFromColors(currentColors),
+    [currentColors],
   );
 
-  const handleValidateAndPreview = useCallback(() => {
-    setError(null);
-    setSuccess(null);
+  const [branding, setBranding] = useState<BrandingState>(initialBranding);
 
-    if (!jsonInput.trim()) {
-      setError("Please paste or upload a theme JSON.");
-      return;
-    }
+  const [lastSavedSnapshot, setLastSavedSnapshot] = useState<string>("");
+  const [saveStatus, setSaveStatus] = useState<"idle" | "success" | "error">("idle");
+  const [saveErrorMessage, setSaveErrorMessage] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
-    let parsed: unknown;
+  const snapshotInitialized = useRef(false);
+  useEffect(() => {
+    if (snapshotInitialized.current) return;
+    snapshotInitialized.current = true;
     try {
-      parsed = JSON.parse(jsonInput);
+      setLastSavedSnapshot(JSON.stringify(serializeBranding(initialBranding)));
     } catch {
-      setError("Invalid JSON syntax. Please check your input.");
-      return;
+      setLastSavedSnapshot(JSON.stringify(serializeBranding(branding)));
     }
+  }, [initialBranding]);
 
-    const validationError = validateThemeJSON(parsed);
-    if (validationError) {
-      setError(validationError);
-      return;
-    }
+  const serialized = useMemo(() => serializeBranding(branding), [branding]);
+  const serializedString = JSON.stringify(serialized);
+  const hasUnsavedChanges =
+    lastSavedSnapshot !== "" && serializedString !== lastSavedSnapshot;
 
-    const obj = parsed as { light: ThemeColors; dark?: Partial<ThemeColors> };
-    const light = obj.light;
-    light.font = light.font || "Inter";
-    light.logo = light.logo || "";
-
-    const dark: ThemeColors =
-      obj.dark && Object.keys(obj.dark).length > 2
-        ? { ...generateDarkTheme(light), ...(obj.dark as ThemeColors) }
-        : generateDarkTheme(light);
-
-    if (!previewActive) {
-      setSavedThemeBackup({ ...companyTheme });
-    }
-
-    setPreviewActive(true);
-    setSuccess("Theme preview applied. Click 'Save' to keep or 'Revert' to undo.");
-
-    setCompanyBranding("__preview__");
-    const previewTheme: CompanyTheme = { light, dark };
-    const colors = mode === "dark" ? previewTheme.dark : previewTheme.light;
-    import("../../theme/utils").then(({ applyThemeToDOM }) => {
-      applyThemeToDOM(colors);
-    });
-  }, [jsonInput, companyTheme, mode, previewActive, setCompanyBranding]);
-
-  const handleRevert = useCallback(() => {
-    if (savedThemeBackup) {
-      const colors =
-        mode === "dark" ? savedThemeBackup.dark : savedThemeBackup.light;
-      import("../../theme/utils").then(({ applyThemeToDOM }) => {
-        applyThemeToDOM(colors);
-      });
-    }
-    setPreviewActive(false);
-    setSuccess(null);
-    setError(null);
-  }, [savedThemeBackup, mode]);
-
-  const handleSave = useCallback(() => {
-    setPreviewActive(false);
-    setSavedThemeBackup(null);
-    setSuccess("Theme saved successfully. (DB persistence coming in Phase 2)");
-  }, []);
-
-  const handleFileUpload = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-      if (!file.name.endsWith(".json")) {
-        setError("Please upload a .json file.");
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        const text = ev.target?.result;
-        if (typeof text === "string") {
-          setJsonInput(text);
-          setError(null);
-        }
-      };
-      reader.readAsText(file);
-    },
-    [],
+  const initialColorsForEditor = useMemo(
+    () => stripLogoFromColors(currentColors),
+    [currentColors],
   );
 
-  const handleLoadSample = useCallback(() => {
-    setJsonInput(SAMPLE_JSON);
-    setError(null);
-  }, []);
+  const resetToCurrentTheme = useCallback(() => {
+    setBranding(defaultBrandingFromColors(currentColors));
+  }, [currentColors]);
+
+  const jsonString = useMemo(
+    () => JSON.stringify({ light: branding.colors }, null, 2),
+    [branding.colors],
+  );
+
+  const updateMeta = useCallback(() => ({ lastModified: Date.now() }), []);
+
+  const handleApplyFromJson = useCallback(
+    (lightColors: ThemeColorsForEditor) => {
+      const fontFamily: FontFamilyOption = ["Inter", "Open Sans", "Montserrat"].includes(lightColors.font)
+        ? (lightColors.font as FontFamilyOption)
+        : "System Default";
+      setBranding((prev) => ({
+        ...prev,
+        colors: { ...lightColors },
+        typography: { ...prev.typography, fontFamily },
+        meta: updateMeta(),
+      }));
+    },
+    [updateMeta],
+  );
+
+  const buildFullThemeFromBranding = useCallback((): { light: ThemeColors; dark: ThemeColors } => {
+    const logoUrl = company?.logo_url?.trim() || "";
+    const light: ThemeColors = { ...branding.colors, logo: logoUrl };
+    const dark = generateDarkTheme(light);
+    return { light, dark };
+  }, [branding.colors, company?.logo_url]);
+
+  const handlePreviewGlobally = useCallback(() => {
+    const theme = buildFullThemeFromBranding();
+    setTemporaryTheme(theme);
+  }, [buildFullThemeFromBranding, setTemporaryTheme]);
+
+  const handleResetPreview = useCallback(() => {
+    clearTemporaryTheme();
+  }, [clearTemporaryTheme]);
+
+  const handleSaveBranding = useCallback(async () => {
+    if (!hasUnsavedChanges || !company?.id || !canEditBranding) return;
+    const payload = serializeBranding(branding);
+    setSaveStatus("idle");
+    setSaveErrorMessage(null);
+    setSaving(true);
+    const result = await upsertCompanyBranding(company.id, payload);
+    setSaving(false);
+    if (result) {
+      setLastSavedSnapshot(JSON.stringify(payload));
+      setSaveStatus("success");
+      clearTemporaryTheme();
+      const { light, dark } = buildFullThemeFromBranding();
+      setCompanyBranding(company.name, { light, dark }, company.logo_url);
+      setTimeout(() => setSaveStatus("idle"), 3000);
+    } else {
+      setSaveStatus("error");
+      setSaveErrorMessage("Failed to save branding. Please try again.");
+    }
+  }, [branding, hasUnsavedChanges, company, canEditBranding, setCompanyBranding, clearTemporaryTheme, buildFullThemeFromBranding]);
+
+  const isPreviewActive = overrideTheme !== null;
 
   return (
     <DashboardLayout header={<DashboardHeader />}>
-      <div className="space-y-8">
-        <div>
-          <h1 className="text-2xl font-bold" style={{ color: "var(--color-text)" }}>
-            Theme Settings
-          </h1>
-          <p className="mt-1 text-sm" style={{ color: "var(--color-text-secondary)" }}>
-            Customize your company branding and visual identity.
+      <div className="theme-settings-page">
+        <header className="theme-settings-page__header">
+          <h1 className="theme-settings-page__title">Brand & Experience Configuration</h1>
+          <p className="theme-settings-page__description">
+            Customize your company&apos;s visual identity and UI behavior.
           </p>
-        </div>
-
-        {/* Current company info */}
-        <section
-          className="rounded-xl border p-6"
-          style={{
-            background: "var(--color-surface)",
-            borderColor: "var(--color-border)",
-          }}
-        >
-          <h2 className="text-lg font-semibold" style={{ color: "var(--color-text)" }}>
-            Current Company
-          </h2>
-          <p className="mt-1 text-sm" style={{ color: "var(--color-text-secondary)" }}>
-            {company?.name ?? "No company loaded"}
+          <p className="theme-settings-page__note text-xs mt-2" style={{ color: "var(--color-text-secondary)" }}>
+            Dark mode is auto-generated from light theme.
           </p>
-          <div className="mt-4 flex items-center gap-4">
-            <div
-              className="h-10 w-10 rounded-lg"
-              style={{ backgroundColor: currentColors.primary }}
-            />
-            <div
-              className="h-10 w-10 rounded-lg"
-              style={{ backgroundColor: currentColors.secondary }}
-            />
-            <div
-              className="h-10 w-10 rounded-lg"
-              style={{ backgroundColor: currentColors.accent }}
-            />
-            <span className="text-xs" style={{ color: "var(--color-text-secondary)" }}>
-              Primary / Secondary / Accent
-            </span>
-          </div>
-        </section>
-
-        {/* Current theme JSON (read only) */}
-        <section
-          className="rounded-xl border p-6"
-          style={{
-            background: "var(--color-surface)",
-            borderColor: "var(--color-border)",
-          }}
-        >
-          <h2 className="text-lg font-semibold" style={{ color: "var(--color-text)" }}>
-            Active Theme JSON
-          </h2>
-          <pre
-            className="mt-3 max-h-64 overflow-auto rounded-lg p-4 text-xs"
-            style={{
-              background: "var(--color-background-secondary, #f9fafb)",
-              color: "var(--color-text-secondary)",
-            }}
-          >
-            {currentJSON}
-          </pre>
-        </section>
-
-        {/* Upload / paste JSON */}
-        <section
-          className="rounded-xl border p-6"
-          style={{
-            background: "var(--color-surface)",
-            borderColor: "var(--color-border)",
-          }}
-        >
-          <h2 className="text-lg font-semibold" style={{ color: "var(--color-text)" }}>
-            Upload Theme
-          </h2>
-          <p className="mt-1 text-sm" style={{ color: "var(--color-text-secondary)" }}>
-            Paste a JSON theme or upload a .json file. Dark theme is auto-generated if omitted.
-          </p>
-
-          <div className="mt-4 flex flex-wrap gap-3">
-            <label
-              className="inline-flex cursor-pointer items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:opacity-80"
-              style={{
-                borderColor: "var(--color-border)",
-                color: "var(--color-text)",
-              }}
-            >
-              Upload .json
-              <input
-                type="file"
-                accept=".json"
-                className="hidden"
-                onChange={handleFileUpload}
-              />
-            </label>
-            <button
-              type="button"
-              onClick={handleLoadSample}
-              className="rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:opacity-80"
-              style={{
-                background: "var(--color-primary)",
-                color: "#fff",
-              }}
-            >
-              Load Sample
-            </button>
-          </div>
-
-          <textarea
-            className="mt-4 w-full rounded-lg border p-4 font-mono text-xs"
-            style={{
-              background: "var(--color-background)",
-              borderColor: "var(--color-border)",
-              color: "var(--color-text)",
-              minHeight: 200,
-            }}
-            placeholder="Paste theme JSON here…"
-            value={jsonInput}
-            onChange={(e) => {
-              setJsonInput(e.target.value);
-              setError(null);
-            }}
-          />
-
-          {error && (
+          {!canEditBranding && (
             <div
               className="mt-3 rounded-lg border px-4 py-3 text-sm"
               style={{
-                borderColor: "var(--color-danger)",
-                color: "var(--color-danger)",
-                background: "var(--color-danger)10",
+                borderColor: "var(--color-warning)",
+                background: "rgba(245, 158, 11, 0.1)",
+                color: "var(--color-text)",
               }}
               role="alert"
             >
-              {error}
+              You do not have permission to modify company branding. You can still preview changes.
             </div>
           )}
-          {success && (
-            <div
-              className="mt-3 rounded-lg border px-4 py-3 text-sm"
-              style={{
-                borderColor: "var(--color-success)",
-                color: "var(--color-success)",
-                background: "var(--color-success)10",
-              }}
-              role="status"
-            >
-              {success}
-            </div>
+          {company?.name && (
+            <p className="text-sm mt-1" style={{ color: "var(--color-text-secondary)" }}>
+              Company: {company.name}
+            </p>
           )}
+        </header>
 
-          <div className="mt-4 flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={handleValidateAndPreview}
-              className="rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:opacity-90"
-              style={{ background: "var(--color-primary)" }}
-            >
-              Preview Theme
-            </button>
-            {previewActive && (
-              <>
-                <button
-                  type="button"
-                  onClick={handleSave}
-                  className="rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:opacity-90"
-                  style={{ background: "var(--color-success)" }}
-                >
-                  Save
-                </button>
-                <button
-                  type="button"
-                  onClick={handleRevert}
-                  className="rounded-lg border px-5 py-2.5 text-sm font-semibold transition-colors hover:opacity-90"
-                  style={{
-                    borderColor: "var(--color-border)",
-                    color: "var(--color-text)",
-                  }}
-                >
-                  Revert
-                </button>
-              </>
-            )}
-          </div>
-        </section>
-
-        {/* Color palette preview */}
-        <section
-          className="rounded-xl border p-6"
-          style={{
-            background: "var(--color-surface)",
-            borderColor: "var(--color-border)",
-          }}
-        >
-          <h2 className="text-lg font-semibold" style={{ color: "var(--color-text)" }}>
-            Color Palette
-          </h2>
-          <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-            {(
-              [
-                ["Primary", currentColors.primary],
-                ["Secondary", currentColors.secondary],
-                ["Accent", currentColors.accent],
-                ["Background", currentColors.background],
-                ["Surface", currentColors.surface],
-                ["Text Primary", currentColors.textPrimary],
-                ["Text Secondary", currentColors.textSecondary],
-                ["Border", currentColors.border],
-                ["Success", currentColors.success],
-                ["Warning", currentColors.warning],
-                ["Danger", currentColors.danger],
-              ] as [string, string][]
-            ).map(([label, color]) => (
-              <div key={label} className="text-center">
-                <div
-                  className="mx-auto h-12 w-12 rounded-lg border"
-                  style={{
-                    backgroundColor: color,
-                    borderColor: "var(--color-border)",
-                  }}
-                />
-                <p
-                  className="mt-1.5 text-xs font-medium"
-                  style={{ color: "var(--color-text-secondary)" }}
-                >
-                  {label}
-                </p>
-                <p
-                  className="text-[10px] font-mono"
-                  style={{ color: "var(--color-text-tertiary, #9ca3af)" }}
-                >
-                  {color}
-                </p>
+        <div className="theme-settings-page__layout">
+          <div className="theme-settings-page__controls">
+            {/* Status messages */}
+            {isPreviewActive && (
+              <div
+                className="rounded-lg border px-4 py-3 text-sm"
+                style={{
+                  borderColor: "var(--color-primary)",
+                  background: "rgba(0, 82, 204, 0.08)",
+                  color: "var(--color-primary)",
+                }}
+                role="status"
+              >
+                Global preview is active. All pages reflect these colors. Refresh to discard.
               </div>
-            ))}
+            )}
+            {saveStatus === "success" && (
+              <div
+                className="rounded-lg border px-4 py-3 text-sm"
+                style={{
+                  borderColor: "var(--color-success)",
+                  background: "rgba(22, 163, 74, 0.1)",
+                  color: "var(--color-success)",
+                }}
+                role="status"
+              >
+                Branding saved successfully.
+              </div>
+            )}
+            {saveStatus === "error" && saveErrorMessage && (
+              <div
+                className="rounded-lg border px-4 py-3 text-sm"
+                style={{
+                  borderColor: "var(--color-danger)",
+                  background: "rgba(220, 38, 38, 0.08)",
+                  color: "var(--color-danger)",
+                }}
+                role="alert"
+              >
+                {saveErrorMessage}
+              </div>
+            )}
+            {hasUnsavedChanges && (
+              <div
+                className="theme-settings-page__unsaved"
+                style={{
+                  display: "inline-block",
+                  padding: "6px 12px",
+                  borderRadius: "8px",
+                  background: "var(--color-warning)",
+                  color: "#fff",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                }}
+              >
+                Unsaved Changes
+              </div>
+            )}
+
+            <BrandColorsSection
+              colors={branding.colors}
+              initialColors={initialColorsForEditor}
+              onChange={(colors) =>
+                setBranding((p) => ({ ...p, colors, meta: updateMeta() }))
+              }
+            />
+
+            <div className="theme-settings-page__divider" />
+
+            <ExperienceControlsSection
+              experience={branding.experience}
+              onChange={(experience) =>
+                setBranding((p) => ({ ...p, experience, meta: updateMeta() }))
+              }
+            />
+
+            <div className="theme-settings-page__divider" />
+
+            <TypographySection
+              typography={branding.typography}
+              onChange={(typography) => {
+                const font = typography.fontFamily === "System Default" ? "system-ui" : typography.fontFamily;
+                setBranding((p) => ({
+                  ...p,
+                  typography,
+                  colors: { ...p.colors, font },
+                  meta: updateMeta(),
+                }));
+              }}
+            />
+
+            <div className="theme-settings-page__divider" />
+
+            <AdvancedJsonSection
+              jsonValue={jsonString}
+              onApplyFromJson={handleApplyFromJson}
+            />
+
+            <div className="theme-settings-page__divider" />
+
+            {/* Action buttons */}
+            <div className="theme-settings-page__actions flex flex-wrap gap-3 pt-4 items-center">
+              <button
+                type="button"
+                onClick={handleSaveBranding}
+                disabled={!hasUnsavedChanges || !canEditBranding || saving}
+                className="rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{ background: "var(--color-primary)" }}
+              >
+                {saving ? "Saving\u2026" : "Save Branding"}
+              </button>
+
+              <button
+                type="button"
+                onClick={handlePreviewGlobally}
+                className="rounded-lg border px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90"
+                style={{
+                  borderColor: "var(--color-primary)",
+                  color: "var(--color-primary)",
+                }}
+              >
+                Preview Globally
+              </button>
+
+              {isPreviewActive && (
+                <button
+                  type="button"
+                  onClick={handleResetPreview}
+                  className="rounded-lg border px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90"
+                  style={{
+                    borderColor: "var(--color-danger)",
+                    color: "var(--color-danger)",
+                  }}
+                >
+                  Reset Preview
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={resetToCurrentTheme}
+                className="rounded-lg border px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90"
+                style={{
+                  borderColor: "var(--color-border)",
+                  color: "var(--color-text)",
+                }}
+              >
+                Reset to Current Theme
+              </button>
+            </div>
           </div>
-        </section>
+
+          <aside className="theme-settings-page__preview">
+            <LivePreviewPanel branding={branding} />
+          </aside>
+        </div>
       </div>
+
+      <style>{`
+        .theme-settings-page { max-width: 1400px; margin: 0 auto; padding: 0 1rem 2rem; }
+        .theme-settings-page__header { margin-bottom: 1.5rem; }
+        .theme-settings-page__title { font-size: 1.5rem; font-weight: 700; color: var(--color-text); }
+        .theme-settings-page__description { margin-top: 0.25rem; font-size: 0.875rem; color: var(--color-text-secondary); }
+        .theme-settings-page__note { opacity: 0.9; }
+        .theme-settings-page__layout { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+        @media (min-width: 1024px) {
+          .theme-settings-page__layout { grid-template-columns: 60% 1fr; align-items: start; }
+        }
+        .theme-settings-page__controls { min-width: 0; display: flex; flex-direction: column; gap: 1.25rem; }
+        .theme-settings-page__preview { min-width: 0; }
+        .theme-settings-page__divider { height: 1px; background: var(--color-border); margin: 0.25rem 0; }
+      `}</style>
     </DashboardLayout>
   );
 };

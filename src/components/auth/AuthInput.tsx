@@ -29,7 +29,7 @@ export const AuthInput = ({
     <div className="flex w-full flex-col gap-2">
       <Label.Root
         htmlFor={inputId}
-        className="text-sm font-medium text-slate-900 dark:text-slate-100"
+        className="text-sm font-medium text-[var(--color-text)]"
       >
         {label}
       </Label.Root>
@@ -42,13 +42,13 @@ export const AuthInput = ({
         onChange={onChange}
         aria-invalid={error ? true : undefined}
         aria-describedby={errorId}
-        className={`w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-base text-slate-900 placeholder:text-slate-500 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:border-blue-400 dark:focus:ring-blue-400/20
-          ${error ? "border-red-500 focus:border-red-500 focus:ring-red-500/20 dark:border-red-500" : ""}
+        className={`w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-base text-[var(--color-text)] placeholder:text-[var(--color-textSecondary)] transition-colors focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20
+          ${error ? "border-[var(--color-danger)] focus:border-[var(--color-danger)] focus:ring-[var(--color-danger)]/20" : ""}
           ${className}`.trim()}
         {...props}
       />
       {error && (
-        <span id={errorId} className="text-sm text-red-500" role="alert">
+        <span id={errorId} className="text-sm text-[var(--color-danger)]" role="alert">
           {error}
         </span>
       )}

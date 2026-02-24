@@ -26,19 +26,19 @@ export const DashboardCard = ({ children, title, action, isSelected, className }
     <article
       className={`overflow-hidden rounded-xl border p-4 sm:p-6 md:p-8 transition-shadow duration-200 ${
         isSelected
-          ? "border-primary bg-primary/5 shadow-[var(--heroui-card-hover-shadow)] dark:border-primary dark:bg-primary/10"
-          : "border-slate-200/80 bg-card shadow-[var(--heroui-card-shadow)] hover:shadow-[var(--heroui-card-hover-shadow)] dark:border-slate-700/80 dark:bg-slate-800/95 dark:shadow-black/20"
+          ? "border-primary bg-primary/5 shadow-[var(--heroui-card-hover-shadow)]"
+          : "border-[var(--color-border)] bg-card shadow-[var(--heroui-card-shadow)] hover:shadow-[var(--heroui-card-hover-shadow)]"
       } ${className ?? ""}`}
     >
       {(title || action) && (
         <header className="mb-4 flex flex-wrap items-center justify-between gap-2">
           {title && (
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{title}</h2>
+            <h2 className="text-lg font-semibold text-[var(--color-text)]">{title}</h2>
           )}
           {action && <div className="shrink-0">{action}</div>}
         </header>
       )}
-      <div className="text-slate-700 dark:text-slate-300">{children}</div>
+      <div className="text-[var(--color-textSecondary)]">{children}</div>
     </article>
   );
 };

@@ -10,7 +10,7 @@ const DashboardSection = ({ title, action, children }: DashboardSectionProps) =>
   return (
     <section className="flex flex-col gap-4">
       <header className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 md:text-2xl">
+        <h2 className="text-xl font-bold text-[var(--color-text)] md:text-2xl">
           {title}
         </h2>
         {action && <div className="shrink-0">{action}</div>}

@@ -11407,19 +11407,11 @@ button {
   box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.08), 0 4px 5px 0 rgba(0, 0, 0, 0.04) !important;
 }
 
-.review-page__block--contributions .text-slate-900 {
-  color: #333333 !important;
+.review-page__block--contributions h3,
+.review-page__block--contributions .text-\[var\(--color-text\)\] {
+  color: var(--color-text) !important;
   font-size: 1.125em;
   font-weight: 600;
-}
-
-.dark .review-page__block--contributions {
-  background: var(--color-surface) !important;
-  border-color: var(--color-border) !important;
-}
-
-.dark .review-page__block--contributions .text-slate-900 {
-  color: var(--color-text) !important;
 }
 
 .review-page__block--investments {

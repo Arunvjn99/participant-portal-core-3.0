@@ -38,8 +38,8 @@ export function PlanSelectionCards({
   const base =
     "flex-1 min-w-0 rounded-xl border-2 p-4 sm:p-5 text-left transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-transparent";
   const unselected = isDarkMode
-    ? "border-gray-600 bg-gray-800/50 text-gray-200 hover:border-gray-500 hover:bg-gray-700/50"
-    : "border-gray-200 bg-white/80 text-gray-800 hover:border-gray-300 hover:bg-white shadow-sm";
+    ? "border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:border-[var(--color-border)] hover:bg-[var(--color-background)]"
+    : "border-[var(--color-border)] bg-[var(--color-surface)]/80 text-[var(--color-text)] hover:border-[var(--color-border)] hover:bg-[var(--color-surface)] shadow-sm";
 
   return (
     <div
@@ -57,7 +57,7 @@ export function PlanSelectionCards({
         <span className="block font-semibold text-sm sm:text-base">Traditional 401(k)</span>
         <span
           className={
-            isDarkMode ? "text-gray-400 text-xs sm:text-sm mt-1" : "text-gray-500 text-xs sm:text-sm mt-1"
+            isDarkMode ? "text-[var(--color-textSecondary)] text-xs sm:text-sm mt-1" : "text-[var(--color-textSecondary)] text-xs sm:text-sm mt-1"
           }
         >
           Pre-tax now, taxable later
@@ -72,7 +72,7 @@ export function PlanSelectionCards({
         <span className="block font-semibold text-sm sm:text-base">Roth 401(k)</span>
         <span
           className={
-            isDarkMode ? "text-gray-400 text-xs sm:text-sm mt-1" : "text-gray-500 text-xs sm:text-sm mt-1"
+            isDarkMode ? "text-[var(--color-textSecondary)] text-xs sm:text-sm mt-1" : "text-[var(--color-textSecondary)] text-xs sm:text-sm mt-1"
           }
         >
           After-tax now, tax-free later
@@ -104,7 +104,7 @@ export function ContributionSelector({
     onSelect(`${sliderValue}%`);
   };
 
-  const trackBg = isDarkMode ? "bg-gray-600" : "bg-gray-200";
+  const trackBg = "bg-[var(--color-background)]";
 
   return (
     <div className="space-y-4" role="group" aria-label="Choose contribution percentage">
@@ -115,9 +115,7 @@ export function ContributionSelector({
             type="button"
             onClick={() => handlePreset(p)}
             className={
-              isDarkMode
-                ? "px-4 py-2 rounded-lg text-sm font-medium bg-gray-700 text-gray-200 hover:bg-gray-600 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary"
-                : "px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 text-gray-800 hover:bg-gray-200 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary"
+              "px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-background)] text-[var(--color-text)] hover:bg-[var(--color-background)] border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-primary"
             }
             aria-label={`Contribute ${p} percent`}
           >
@@ -138,7 +136,7 @@ export function ContributionSelector({
           onChange={handleSlider}
           onMouseUp={commitSlider}
           onTouchEnd={commitSlider}
-          className={`flex-1 h-2 rounded-full ${trackBg} accent-blue-600 cursor-pointer`}
+          className={`flex-1 h-2 rounded-full ${trackBg} accent-[var(--color-primary)] cursor-pointer`}
           aria-valuemin={1}
           aria-valuemax={100}
           aria-valuenow={sliderValue}
@@ -146,9 +144,7 @@ export function ContributionSelector({
         />
         <span
           className={
-            isDarkMode
-              ? "text-gray-200 font-semibold tabular-nums min-w-[2.5rem]"
-              : "text-gray-800 font-semibold tabular-nums min-w-[2.5rem]"
+            "text-[var(--color-text)] font-semibold tabular-nums min-w-[2.5rem]"
           }
         >
           {sliderValue}%
@@ -174,9 +170,9 @@ export function InvestmentStrategySelector({
   const btn =
     "flex-1 min-w-0 rounded-lg border-2 py-3 px-3 text-center text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2";
   const unselected = isDarkMode
-    ? "border-gray-600 bg-gray-800/50 text-gray-200 hover:border-gray-500"
-    : "border-gray-200 bg-white/80 text-gray-800 hover:border-gray-300";
-  const hintClass = isDarkMode ? "text-gray-400 text-xs mt-0.5" : "text-gray-500 text-xs mt-0.5";
+    ? "border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:border-[var(--color-border)]"
+    : "border-[var(--color-border)] bg-[var(--color-surface)]/80 text-[var(--color-text)] hover:border-[var(--color-border)]";
+  const hintClass = isDarkMode ? "text-[var(--color-textSecondary)] text-xs mt-0.5" : "text-[var(--color-textSecondary)] text-xs mt-0.5";
 
   return (
     <div
@@ -260,14 +256,12 @@ export function EnrollmentReviewSummaryCard(props: EnrollmentReviewSummaryCardPr
       .sort((a, b) => b.pct - a.pct);
   }, [strategy, s.manualSelectedFundIds, s.manualAllocations, idToName]);
 
-  const card = isDarkMode
-    ? "rounded-2xl border border-gray-600 bg-gray-800/90 shadow-xl overflow-hidden"
-    : "rounded-2xl border border-gray-200 bg-white shadow-xl overflow-hidden";
-  const head = isDarkMode ? "bg-gray-700/80 text-gray-100" : "bg-gray-50 text-gray-800";
-  const row = isDarkMode ? "border-gray-700" : "border-gray-100";
-  const labelClass = isDarkMode ? "text-gray-400" : "text-gray-500";
-  const valueClass = isDarkMode ? "text-gray-100" : "text-gray-900";
-  const sectionClass = isDarkMode ? "text-gray-300" : "text-gray-700";
+  const card = "rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-xl overflow-hidden";
+  const head = "bg-[var(--color-background)] text-[var(--color-text)]";
+  const row = "border-[var(--color-border)]";
+  const labelClass = "text-[var(--color-textSecondary)]";
+  const valueClass = "text-[var(--color-text)]";
+  const sectionClass = "text-[var(--color-text)]";
 
   const contributionPct = s.contributionPercentage ?? 6;
   const investmentValue =
@@ -291,19 +285,19 @@ export function EnrollmentReviewSummaryCard(props: EnrollmentReviewSummaryCardPr
       <div className="px-4 sm:px-6 py-4 space-y-4">
         {/* Three stacked summary cards: Plan (blue), Contribution (emerald), Investments (indigo) */}
         <div className="space-y-3">
-          <div className="rounded-xl border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/40 px-4 py-3 border-l-4 border-l-blue-500 dark:border-l-blue-400 shadow-sm hover:shadow-md transition-shadow">
+          <div className="rounded-xl border border-[var(--color-primary)]/20 bg-[var(--color-primary)]/10 px-4 py-3 border-l-4 border-l-[var(--color-primary)] shadow-sm hover:shadow-md transition-shadow">
             <p className={`text-xs sm:text-sm font-semibold ${labelClass}`}>Selected Plan</p>
             <p className={`font-medium ${valueClass} mt-0.5`}>{planType}</p>
             <p className={`text-xs ${labelClass} mt-0.5`}>
               {planType === "Roth 401(k)" ? "Pay tax now, withdrawals may be tax-free later." : "Pay tax later, taxes apply when you withdraw."}
             </p>
           </div>
-          <div className="rounded-xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 px-4 py-3 shadow-sm hover:shadow-md transition-shadow">
+          <div className="rounded-xl border border-[var(--color-success)]/20 bg-[var(--color-success)]/10 px-4 py-3 shadow-sm hover:shadow-md transition-shadow">
             <p className={`text-xs sm:text-sm font-semibold ${labelClass}`}>Your contribution</p>
-            <p className="font-semibold text-emerald-600 dark:text-emerald-400 mt-0.5">{contributionPct}% of your salary</p>
+            <p className="font-semibold text-[var(--color-success)] mt-0.5">{contributionPct}% of your salary</p>
             <p className={`text-xs ${labelClass} mt-0.5`}>You can change this later.</p>
           </div>
-          <div className="rounded-xl border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950/40 px-4 py-3 shadow-sm hover:shadow-md transition-shadow">
+          <div className="rounded-xl border border-[var(--color-primary)]/20 bg-[var(--color-primary)]/5 px-4 py-3 shadow-sm hover:shadow-md transition-shadow">
             <p className={`text-xs sm:text-sm font-semibold ${labelClass}`}>Your investments</p>
             <p className={`font-medium ${valueClass} mt-0.5`}>{investmentValue}</p>
             <p className={`text-xs ${labelClass} mt-0.5`}>{investmentHelper}</p>
@@ -346,7 +340,7 @@ export function EnrollmentReviewSummaryCard(props: EnrollmentReviewSummaryCardPr
                 <button
                   type="button"
                   onClick={onEditRetirementAge}
-                  className={`text-xs sm:text-sm font-medium underline underline-offset-4 ${isDarkMode ? "text-gray-200 hover:text-white" : "text-gray-700 hover:text-gray-900"}`}
+                  className={`text-xs sm:text-sm font-medium underline underline-offset-4 ${"text-[var(--color-text)] hover:text-[var(--color-text)]"}`}
                 >
                   Edit
                 </button>
@@ -362,7 +356,7 @@ export function EnrollmentReviewSummaryCard(props: EnrollmentReviewSummaryCardPr
                 <button
                   type="button"
                   onClick={onEditRetirementLocation}
-                  className={`text-xs sm:text-sm font-medium underline underline-offset-4 ${isDarkMode ? "text-gray-200 hover:text-white" : "text-gray-700 hover:text-gray-900"}`}
+                  className={`text-xs sm:text-sm font-medium underline underline-offset-4 ${"text-[var(--color-text)] hover:text-[var(--color-text)]"}`}
                 >
                   Edit
                 </button>
@@ -377,7 +371,7 @@ export function EnrollmentReviewSummaryCard(props: EnrollmentReviewSummaryCardPr
             {strategy === "DEFAULT" ? "Default fund" : strategy === "MANUAL" ? "Allocation breakdown" : "Advisor model"}
           </p>
           {strategy === "DEFAULT" && (
-            <div className={`rounded-lg border ${row} px-3 py-2.5 text-sm ${isDarkMode ? "text-gray-200" : "text-gray-800"}`}>
+            <div className={`rounded-lg border ${row} px-3 py-2.5 text-sm ${"text-[var(--color-text)]"}`}>
               Plan default allocation (Target Date based on retirement year)
             </div>
           )}
@@ -386,8 +380,8 @@ export function EnrollmentReviewSummaryCard(props: EnrollmentReviewSummaryCardPr
               {manualBreakdown.length ? (
                 manualBreakdown.map(({ id, name, pct }) => (
                   <li key={id} className="flex justify-between items-center px-3 py-2 sm:py-2.5 text-sm">
-                    <span className={isDarkMode ? "text-gray-200" : "text-gray-800"}>{name}</span>
-                    <span className={`font-medium tabular-nums ${isDarkMode ? "text-gray-100" : "text-gray-900"}`}>{pct}%</span>
+                    <span className={"text-[var(--color-text)]"}>{name}</span>
+                    <span className={`font-medium tabular-nums ${"text-[var(--color-text)]"}`}>{pct}%</span>
                   </li>
                 ))
               ) : (
@@ -396,7 +390,7 @@ export function EnrollmentReviewSummaryCard(props: EnrollmentReviewSummaryCardPr
             </ul>
           )}
           {strategy === "ADVISOR" && (
-            <div className={`rounded-lg border ${row} px-3 py-2.5 text-sm ${isDarkMode ? "text-gray-200" : "text-gray-800"}`}>
+            <div className={`rounded-lg border ${row} px-3 py-2.5 text-sm ${"text-[var(--color-text)]"}`}>
               RetireReady Balanced — Age-based allocation managed by your advisor.
             </div>
           )}
@@ -408,9 +402,7 @@ export function EnrollmentReviewSummaryCard(props: EnrollmentReviewSummaryCardPr
             onClick={onEdit}
             className={`
               flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-sm font-medium
-              ${isDarkMode
-                ? "border border-gray-600 text-gray-300 hover:bg-gray-700/50"
-                : "border border-gray-300 text-gray-700 hover:bg-gray-50"}
+              ${"border border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-background)]"}
               focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
             `}
           >
@@ -436,11 +428,7 @@ export function EnrollmentDecisionBlock(props: EnrollmentDecisionUIProps) {
 
   return (
     <div
-      className={
-        isDarkMode
-          ? "rounded-2xl border border-gray-700/50 bg-gray-800/40 backdrop-blur-md p-4 sm:p-5 mt-2"
-          : "rounded-2xl border border-gray-200 bg-white/60 backdrop-blur-md p-4 sm:p-5 mt-2 shadow-sm"
-      }
+      className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]/60 backdrop-blur-md p-4 sm:p-5 mt-2 shadow-sm"
       role="region"
       aria-labelledby={hideFraming ? undefined : "enrollment-decision-heading"}
     >
@@ -448,9 +436,7 @@ export function EnrollmentDecisionBlock(props: EnrollmentDecisionUIProps) {
         <p
           id="enrollment-decision-heading"
           className={
-            isDarkMode
-              ? "text-gray-200 font-medium text-sm sm:text-base mb-4"
-              : "text-gray-800 font-medium text-sm sm:text-base mb-4"
+            "text-[var(--color-text)] font-medium text-sm sm:text-base mb-4"
           }
         >
           {framing}

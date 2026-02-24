@@ -1,9 +1,9 @@
 export const branding = {
   appName: "Participant Portal",
-  authAppName: "Ascend",
+  authAppName: "CORE",
   logo: {
-    src: "/image/ascend-logo.png",
-    alt: "Ascend",
+    src: "/image/core-logo.png",
+    alt: "CORE",
   },
   footer: {
     copyright: "© Congruent Solutions, Inc. All Rights Reserved",

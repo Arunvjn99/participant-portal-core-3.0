@@ -46,7 +46,7 @@ export const ForgotPasswordVerify = () => {
       <div className="flex flex-col items-center gap-3">
         <a
           href="#"
-          className="text-sm text-primary no-underline hover:underline dark:text-blue-400"
+          className="text-sm text-[var(--color-primary)] no-underline hover:underline"
           onClick={(e) => {
             e.preventDefault();
             handleResend();
@@ -57,7 +57,7 @@ export const ForgotPasswordVerify = () => {
         </a>
         <a
           href="#"
-          className="text-sm text-primary no-underline hover:underline dark:text-blue-400"
+          className="text-sm text-[var(--color-primary)] no-underline hover:underline"
           onClick={(e) => {
             e.preventDefault();
             handleBackToSignIn();

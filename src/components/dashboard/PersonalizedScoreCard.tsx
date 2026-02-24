@@ -25,12 +25,12 @@ export const PersonalizedScoreCard = () => {
 
   return (
     <article
-      className={`flex h-full min-h-[320px] flex-col items-center justify-center rounded-2xl border border-sky-200 bg-sky-50 p-6 shadow-md transition-all duration-200 dark:border-sky-900/50 dark:bg-sky-950/40 dark:shadow-black/20 md:p-8 ${canHover && !reduced ? "hover:border-sky-300 hover:shadow-lg dark:hover:border-sky-700" : ""}`}
+      className={`flex h-full min-h-[320px] flex-col items-center justify-center rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-md transition-all duration-200 md:p-8 ${canHover && !reduced ? "hover:border-[var(--color-primary)] hover:shadow-lg" : ""}`}
       onMouseEnter={handleCardHover}
     >
       {/* Icon: one-time pulse on first card hover */}
       <motion.div
-        className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border border-sky-200 bg-white text-primary shadow-md dark:border-sky-800 dark:bg-slate-800 dark:text-blue-400"
+        className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] text-primary shadow-md"
         aria-hidden
         animate={
           canHover && !reduced && hasPulsed
@@ -42,12 +42,12 @@ export const PersonalizedScoreCard = () => {
       </motion.div>
 
       {/* Title */}
-      <h3 className="mt-5 text-center text-xl font-bold text-slate-900 dark:text-slate-100 md:text-2xl">
+      <h3 className="mt-5 text-center text-xl font-bold text-[var(--color-text)] md:text-2xl">
         {t("dashboard.personalizedScoreTitle")}
       </h3>
 
       {/* Description */}
-      <p className="mt-2 text-center text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+      <p className="mt-2 text-center text-sm leading-relaxed text-[var(--color-textSecondary)]">
         {t("dashboard.personalizedScoreDesc")}
       </p>
 
@@ -58,7 +58,7 @@ export const PersonalizedScoreCard = () => {
         </Button>
         <a
           href="#"
-          className="inline-flex w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-6 py-2.5 text-sm font-semibold text-slate-700 no-underline transition-colors hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 dark:focus-visible:ring-blue-400 sm:w-auto"
+          className="inline-flex w-full items-center justify-center rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-6 py-2.5 text-sm font-semibold text-[var(--color-text)] no-underline transition-colors hover:bg-[var(--color-background)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 sm:w-auto"
         >
           {t("dashboard.learnMore")}
         </a>

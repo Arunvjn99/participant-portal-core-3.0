@@ -21,24 +21,24 @@ export const HelpCenter = () => {
   const bodySlot = (
     <>
       <div className="flex w-full flex-col gap-4">
-        <div className="flex flex-col gap-2 rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/50">
-          <div className="text-sm font-medium text-slate-500 dark:text-slate-400">
+        <div className="flex flex-col gap-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
+          <div className="text-sm font-medium text-[var(--color-textSecondary)]">
             {t("auth.phoneSupport")}
           </div>
           <a
             href="tel:1-800-555-0199"
-            className="text-base text-primary no-underline hover:underline dark:text-blue-400"
+            className="text-base text-[var(--color-primary)] no-underline hover:underline"
           >
             1-800-555-0199
           </a>
         </div>
-        <div className="flex flex-col gap-2 rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/50">
-          <div className="text-sm font-medium text-slate-500 dark:text-slate-400">
+        <div className="flex flex-col gap-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
+          <div className="text-sm font-medium text-[var(--color-textSecondary)]">
             {t("auth.email")}
           </div>
           <a
             href="mailto:support@example.com"
-            className="text-base text-primary no-underline hover:underline dark:text-blue-400"
+            className="text-base text-[var(--color-primary)] no-underline hover:underline"
           >
             support@example.com
           </a>
@@ -46,7 +46,7 @@ export const HelpCenter = () => {
       </div>
       <a
         href="#"
-        className="text-center text-sm text-primary no-underline hover:underline dark:text-blue-400"
+        className="text-center text-sm text-[var(--color-primary)] no-underline hover:underline"
         onClick={(e) => {
           e.preventDefault();
           handleBackToSignIn();

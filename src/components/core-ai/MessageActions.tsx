@@ -41,8 +41,8 @@ export function MessageActions({ messageId, text, isSpeaking, onPlay }: MessageA
         onClick={handleCopy}
         className={`p-1.5 rounded-md transition-colors ${
           copied
-            ? "text-emerald-500 dark:text-emerald-400"
-            : "text-slate-500 hover:text-slate-700 hover:bg-slate-200 dark:text-slate-500 dark:hover:text-slate-300 dark:hover:bg-slate-700/50"
+            ? "text-[var(--color-success)]"
+            : "text-[var(--color-textSecondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-background)]"
         }`}
         aria-label={copied ? "Copied" : "Copy message"}
         title={copied ? "Copied!" : "Copy"}
@@ -65,8 +65,8 @@ export function MessageActions({ messageId, text, isSpeaking, onPlay }: MessageA
         onClick={() => setFeedback(feedback === "up" ? null : "up")}
         className={`p-1.5 rounded-md transition-colors ${
           feedback === "up"
-            ? "text-emerald-500 dark:text-emerald-400"
-            : "text-slate-500 hover:text-slate-700 hover:bg-slate-200 dark:text-slate-500 dark:hover:text-slate-300 dark:hover:bg-slate-700/50"
+            ? "text-[var(--color-success)]"
+            : "text-[var(--color-textSecondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-background)]"
         }`}
         aria-label="Helpful"
         title="Helpful"
@@ -83,8 +83,8 @@ export function MessageActions({ messageId, text, isSpeaking, onPlay }: MessageA
         onClick={() => setFeedback(feedback === "down" ? null : "down")}
         className={`p-1.5 rounded-md transition-colors ${
           feedback === "down"
-            ? "text-red-400"
-            : "text-slate-500 hover:text-slate-700 hover:bg-slate-200 dark:text-slate-500 dark:hover:text-slate-300 dark:hover:bg-slate-700/50"
+            ? "text-[var(--color-danger)]"
+            : "text-[var(--color-textSecondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-background)]"
         }`}
         aria-label="Not helpful"
         title="Not helpful"
@@ -102,7 +102,7 @@ export function MessageActions({ messageId, text, isSpeaking, onPlay }: MessageA
         className={`p-1.5 rounded-md transition-colors ${
           isSpeaking
             ? "text-primary bg-primary/15"
-            : "text-slate-500 hover:text-slate-700 hover:bg-slate-200 dark:text-slate-500 dark:hover:text-slate-300 dark:hover:bg-slate-700/50"
+            : "text-[var(--color-textSecondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-background)]"
         }`}
         aria-label={isSpeaking ? "Stop audio" : "Play audio"}
         title={isSpeaking ? "Stop" : "Play"}

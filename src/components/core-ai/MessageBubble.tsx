@@ -76,7 +76,7 @@ export function MessageBubble({ message, speakingId, onPlay, onAction, onSuggest
                   <path d="M2 12l10 5 10-5" />
                 </svg>
               </div>
-              <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Core AI</span>
+              <span className="text-[11px] font-medium text-[var(--color-textSecondary)]">Core AI</span>
             </div>
 
             {/* Component content — animated mount */}
@@ -104,26 +104,26 @@ export function MessageBubble({ message, speakingId, onPlay, onAction, onSuggest
                   <path d="M2 12l10 5 10-5" />
                 </svg>
               </div>
-              <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Core AI</span>
+              <span className="text-[11px] font-medium text-[var(--color-textSecondary)]">Core AI</span>
             </div>
 
             {/* Message card */}
-            <div className="rounded-2xl rounded-tl-md bg-slate-100 border border-slate-300 px-4 py-3 dark:bg-slate-800/70 dark:border-slate-700/50">
+            <div className="rounded-2xl rounded-tl-md bg-[var(--color-background)] border border-[var(--color-border)] px-4 py-3">
               {/* Data snippet */}
               {message.dataSnippet && (
-                <p className="text-sm font-semibold text-emerald-600 mb-1 dark:text-emerald-400">
+                <p className="text-sm font-semibold text-[var(--color-success)] mb-1">
                   {message.dataSnippet}
                 </p>
               )}
 
               {/* Main content */}
-              <p className="text-sm leading-relaxed text-slate-700 whitespace-pre-wrap dark:text-slate-200">
+              <p className="text-sm leading-relaxed text-[var(--color-text)] whitespace-pre-wrap">
                 {message.content}
               </p>
 
               {/* Disclaimer */}
               {message.disclaimer && (
-                <p className="mt-2 text-[11px] italic text-slate-500 dark:text-slate-500">
+                <p className="mt-2 text-[11px] italic text-[var(--color-textSecondary)]">
                   {message.disclaimer}
                 </p>
               )}
@@ -144,7 +144,7 @@ export function MessageBubble({ message, speakingId, onPlay, onAction, onSuggest
                     <button
                       type="button"
                       onClick={() => onAction(message.secondaryAction!.route)}
-                      className="px-3 py-1.5 rounded-lg border border-slate-400 text-slate-600 text-xs font-medium hover:bg-slate-200 transition-colors dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
+                      className="px-3 py-1.5 rounded-lg border border-[var(--color-border)] text-[var(--color-textSecondary)] text-xs font-medium hover:bg-[var(--color-background)] transition-colors"
                     >
                       {message.secondaryAction.label}
                     </button>
@@ -154,13 +154,13 @@ export function MessageBubble({ message, speakingId, onPlay, onAction, onSuggest
 
               {/* Suggestion chips (inline in conversation, act as quick replies) */}
               {message.suggestions && message.suggestions.length > 0 && onSuggestion && (
-                <div className="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-slate-300 dark:border-slate-700/40">
+                <div className="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-[var(--color-border)]">
                   {message.suggestions.map((s) => (
                     <button
                       key={s}
                       type="button"
                       onClick={() => onSuggestion(s)}
-                      className="rounded-lg bg-slate-200/90 border border-slate-300 px-2.5 py-1.5 text-[11px] text-slate-700 hover:bg-slate-300 hover:text-slate-900 transition-colors dark:bg-slate-700/60 dark:border-slate-600/50 dark:text-slate-300 dark:hover:bg-slate-600 dark:hover:text-white"
+                      className="rounded-lg bg-[var(--color-background)] border border-[var(--color-border)] px-2.5 py-1.5 text-[11px] text-[var(--color-text)] hover:bg-[var(--color-background)] transition-colors"
                     >
                       {s}
                     </button>

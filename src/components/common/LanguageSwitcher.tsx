@@ -1,23 +1,7 @@
 import { useRef, useEffect, useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Globe } from "lucide-react";
-
-const SUPPORTED_LANGS = [
-  { code: "en", labelKey: "common.english" },
-  { code: "es", labelKey: "common.spanish" },
-  { code: "fr", labelKey: "common.french" },
-  { code: "ta", labelKey: "common.tamil" },
-  { code: "zh", labelKey: "common.chinese" },
-  { code: "ja", labelKey: "common.japanese" },
-  { code: "de", labelKey: "common.german" },
-  { code: "hi", labelKey: "common.hindi" },
-] as const;
-
-const normalizeLanguage = (lng: string): string => {
-  const code = lng.split("-")[0].toLowerCase();
-  if (SUPPORTED_LANGS.some((x) => x.code === code)) return code;
-  return "en";
-};
+import { SUPPORTED_LANGS, normalizeLanguage } from "@/constants/locales";
 
 export default function LanguageSwitcher() {
   const { i18n, t } = useTranslation();
@@ -56,15 +40,15 @@ export default function LanguageSwitcher() {
         aria-expanded={open}
         aria-haspopup="true"
         aria-label="Change language"
-        className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-sm font-medium shadow-sm hover:border-slate-300 transition dark:border-slate-600 dark:bg-slate-800 dark:hover:border-slate-500 dark:text-slate-200"
+        className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] text-sm font-medium text-[var(--color-text-primary)] shadow-sm hover:border-[var(--color-border)] transition"
       >
-        <Globe size={16} className="text-slate-500 dark:text-slate-400 shrink-0" />
+        <Globe size={16} className="text-[var(--color-text-secondary)] shrink-0" />
         <span className="max-w-[3rem] truncate">{displayLabel}</span>
       </button>
 
       {open && (
         <div
-          className="absolute right-0 mt-2 w-40 max-h-[70vh] overflow-y-auto rounded-lg bg-white shadow-lg border border-slate-200 z-50 dark:bg-slate-800 dark:border-slate-600"
+          className="absolute right-0 mt-2 w-40 max-h-[70vh] overflow-y-auto rounded-lg bg-[var(--color-surface)] shadow-[var(--shadow-lg)] border border-[var(--color-border)] z-50"
           role="menu"
         >
           {SUPPORTED_LANGS.map(({ code, labelKey }) => (
@@ -73,8 +57,7 @@ export default function LanguageSwitcher() {
               type="button"
               onClick={() => handleChange(code)}
               role="menuitem"
-              className={`w-full text-left px-3 py-2 text-sm hover:bg-slate-50 dark:hover:bg-slate-700 dark:text-slate-200 ${currentLang === code ? "font-medium dark:text-blue-400" : ""}`}
-              style={currentLang === code ? { color: "var(--color-primary)" } : undefined}
+              className={`w-full text-left px-3 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-background-secondary)] ${currentLang === code ? "font-medium text-[var(--color-primary)]" : ""}`}
             >
               {t(labelKey)}
             </button>

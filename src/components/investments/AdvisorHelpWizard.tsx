@@ -104,20 +104,20 @@ export const AdvisorHelpWizard = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 dark:bg-black/60"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
       role="dialog"
       aria-modal="true"
       aria-labelledby="advisor-wizard-title"
     >
       <div
-        className="relative flex w-full max-w-5xl h-[min(90vh,600px)] rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+        className="relative flex w-full max-w-5xl h-[min(90vh,600px)] rounded-2xl overflow-hidden shadow-2xl border border-[var(--color-border)] bg-[var(--color-surface)]"
         role="document"
       >
         {/* Close button */}
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition-colors"
+          className="absolute top-4 right-4 z-20 rounded-lg p-2 text-[var(--color-textSecondary)] hover:bg-[var(--color-background)] hover:text-[var(--color-text)] transition-colors"
           aria-label="Close"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -128,7 +128,7 @@ export const AdvisorHelpWizard = ({
         {/* Left panel - RetireReady AI branding */}
         <div className="w-64 shrink-0 flex flex-col justify-between p-6 rounded-l-2xl" style={{ backgroundColor: "var(--color-primary)" }}>
           <div>
-            <div className="w-14 h-14 rounded-xl bg-white flex items-center justify-center mb-4">
+            <div className="w-14 h-14 rounded-xl bg-[var(--color-surface)] flex items-center justify-center mb-4">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary, #2563eb)" strokeWidth="2" aria-hidden="true">
                 <path d="M12 2a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" />
                 <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
@@ -142,13 +142,13 @@ export const AdvisorHelpWizard = ({
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-emerald-400" aria-hidden />
+            <span className="h-2 w-2 rounded-full bg-[var(--color-success)]" aria-hidden />
             <span className="text-sm font-medium text-white">Online Now</span>
           </div>
         </div>
 
         {/* Center - Chat */}
-        <div className="flex-1 min-w-0 flex flex-col bg-white dark:bg-slate-900">
+        <div className="flex-1 min-w-0 flex flex-col bg-[var(--color-surface)]">
           <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-3">
             {messages.map((m) => (
               <div
@@ -159,7 +159,7 @@ export const AdvisorHelpWizard = ({
                   className={`max-w-[85%] rounded-2xl px-4 py-3 ${
                     m.role === "user"
                       ? "bg-primary text-white"
-                      : "bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+                      : "bg-[var(--color-background)] text-[var(--color-text)]"
                   }`}
                 >
                   <p className="text-sm">{m.text}</p>
@@ -167,7 +167,7 @@ export const AdvisorHelpWizard = ({
               </div>
             ))}
           </div>
-          <div className="p-4 border-t border-slate-200 dark:border-slate-700">
+          <div className="p-4 border-t border-[var(--color-border)]">
             <div className="flex gap-2">
               <input
                 type="text"
@@ -177,7 +177,7 @@ export const AdvisorHelpWizard = ({
                   if (e.key === "Enter") handleSend();
                 }}
                 placeholder="Type your message..."
-                className="flex-1 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                className="flex-1 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-sm text-[var(--color-text)] placeholder:text-[var(--color-textSecondary)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               />
               <button
                 type="button"
@@ -196,7 +196,7 @@ export const AdvisorHelpWizard = ({
                   key={action}
                   type="button"
                   onClick={() => handleQuickAction(action)}
-                  className="rounded-lg bg-slate-100 dark:bg-slate-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                  className="rounded-lg bg-[var(--color-background)] px-3 py-2 text-sm text-[var(--color-text)] hover:bg-[var(--color-background)] transition-colors"
                 >
                   {action}
                 </button>
@@ -206,15 +206,15 @@ export const AdvisorHelpWizard = ({
         </div>
 
         {/* Right panel - Advisors */}
-        <div className="w-72 shrink-0 border-l border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 overflow-y-auto p-4 rounded-r-2xl">
-          <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-4">
+        <div className="w-72 shrink-0 border-l border-[var(--color-border)] bg-[var(--color-surface)] overflow-y-auto p-4 rounded-r-2xl">
+          <h3 className="text-sm font-semibold text-[var(--color-text)] mb-4">
             Human Advisors
           </h3>
           <div className="flex flex-col gap-4">
             {ADVISORS.map((advisor) => (
               <div
                 key={advisor.id}
-                className="rounded-xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50/50 dark:bg-slate-800/50"
+                className="rounded-xl border border-[var(--color-border)] p-4 bg-[var(--color-surface)]/50"
               >
                 <div className="flex flex-col gap-2">
                   <div className="flex items-start gap-3">
@@ -222,11 +222,11 @@ export const AdvisorHelpWizard = ({
                       <img
                         src={advisor.avatarSrc}
                         alt=""
-                        className="w-12 h-12 rounded-full object-cover bg-slate-200"
+                        className="w-12 h-12 rounded-full object-cover bg-[var(--color-background)]"
                       />
                       {advisor.isOnline && (
                         <span
-                          className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-800"
+                          className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-[var(--color-success)] border-2 border-white"
                           aria-hidden
                         />
                       )}
@@ -234,15 +234,15 @@ export const AdvisorHelpWizard = ({
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-2">
                         <div>
-                          <p className="font-semibold text-slate-900 dark:text-slate-100 text-sm">
+                          <p className="font-semibold text-[var(--color-text)] text-sm">
                             {advisor.name}
                           </p>
-                          <p className="text-xs text-blue-600 dark:text-blue-400">
+                          <p className="text-xs text-[var(--color-primary)]">
                             {advisor.certifications}
                           </p>
                         </div>
                         <div className="flex items-center gap-1 shrink-0">
-                          <span className="text-sm font-medium text-slate-900 dark:text-slate-100">
+                          <span className="text-sm font-medium text-[var(--color-text)]">
                             {advisor.rating}
                           </span>
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="#eab308" stroke="#eab308" strokeWidth="1">
@@ -250,16 +250,16 @@ export const AdvisorHelpWizard = ({
                           </svg>
                         </div>
                       </div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Rating</p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">Next Available</p>
-                      <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
+                      <p className="text-xs text-[var(--color-textSecondary)] mt-1">Rating</p>
+                      <p className="text-xs text-[var(--color-textSecondary)]">Next Available</p>
+                      <p className="text-sm font-medium text-[var(--color-success)]">
                         {advisor.nextAvailable}
                       </p>
                     </div>
                   </div>
                   <button
                     type="button"
-                    className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline mt-2"
+                    className="text-sm font-medium text-[var(--color-primary)] hover:underline mt-2"
                   >
                     Contact advisor
                   </button>

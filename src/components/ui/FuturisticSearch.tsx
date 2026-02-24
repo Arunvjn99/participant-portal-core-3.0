@@ -9,7 +9,6 @@ interface Message {
     timestamp: Date;
 }
 
-// Knowledge base for Core AI
 const knowledgeBase: Record<string, string> = {
     'what is a roth 401(k)': 'A Roth 401(k) is a retirement savings account where you contribute after-tax dollars. The major benefit is that your withdrawals in retirement are completely tax-free, including all the investment growth! This is ideal if you expect to be in a higher tax bracket in retirement.',
     'what is a traditional 401(k)': 'A Traditional 401(k) lets you contribute pre-tax dollars, which reduces your taxable income today. You\'ll pay taxes on withdrawals in retirement. This is great if you\'re in a higher tax bracket now and expect to be in a lower one when you retire.',
@@ -28,16 +27,13 @@ const knowledgeBase: Record<string, string> = {
     'what is vesting': 'Vesting determines when you own your employer\'s matching contributions. You always own 100% of what YOU contribute. Employer contributions may vest over time (typically 3-6 years). Check your plan details for your specific vesting schedule.',
 };
 
-// Function to find best matching answer
 function findAnswer(question: string): string {
     const normalizedQuestion = question.toLowerCase().trim();
 
-    // Direct match
     if (knowledgeBase[normalizedQuestion]) {
         return knowledgeBase[normalizedQuestion];
     }
 
-    // Fuzzy match based on keywords
     const keywords = normalizedQuestion.split(' ').filter(word => word.length > 3);
     let bestMatch = '';
     let highestScore = 0;
@@ -54,7 +50,6 @@ function findAnswer(question: string): string {
         return bestMatch;
     }
 
-    // Default response
     return "That's a great question! While I'm still learning, I can help with questions about: plan types (Roth vs Traditional), contribution amounts, investment options, employer match, retirement scores, and the enrollment process. Feel free to ask me anything about these topics!";
 }
 
@@ -87,7 +82,6 @@ export function FuturisticSearch({ onVoiceTrigger, className, isDashboard }: { o
 
     const handleSuggestionClick = (suggestion: string) => {
         setInputValue(suggestion);
-        // Auto-submit the suggestion
         setTimeout(() => {
             const question: Message = {
                 id: `q-${Date.now()}`,
@@ -110,7 +104,6 @@ export function FuturisticSearch({ onVoiceTrigger, className, isDashboard }: { o
 
     const handleClose = () => {
         setIsExpanded(false);
-        // Clear messages after closing animation
         setTimeout(() => setMessages([]), 300);
     };
 
@@ -124,7 +117,6 @@ export function FuturisticSearch({ onVoiceTrigger, className, isDashboard }: { o
         >
             <AnimatePresence mode="wait">
                 {!isExpanded ? (
-                    // Collapsed state - floating button
                     <motion.button
                         key="collapsed"
                         initial={{ opacity: 0, scale: 0.9 }}
@@ -133,25 +125,18 @@ export function FuturisticSearch({ onVoiceTrigger, className, isDashboard }: { o
                         onClick={() => setIsExpanded(true)}
                         className="relative mx-auto block pointer-events-auto"
                     >
-                        <div className="absolute inset-0 bg-gradient-to-r from-[#2779A7]/10 via-[#F3C74B]/10 to-[#2779A7]/10 rounded-full blur-2xl" />
-                        <div className="relative backdrop-blur-xl bg-white/95 rounded-full border border-[#2779A7]/20 shadow-lg px-6 py-4 flex items-center gap-3 hover:shadow-xl transition-all hover:scale-105">
+                        <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-primary)]/10 via-[var(--color-accent)]/10 to-[var(--color-primary)]/10 rounded-full blur-2xl" />
+                        <div className="relative backdrop-blur-xl bg-[var(--color-surface)]/95 rounded-full border border-[var(--color-primary)]/20 shadow-lg px-6 py-4 flex items-center gap-3 hover:shadow-xl transition-all hover:scale-105">
                             <motion.div
-                                animate={{
-                                    rotate: [0, 360],
-                                }}
-                                transition={{
-                                    duration: 4,
-                                    repeat: Infinity,
-                                    ease: "linear",
-                                }}
+                                animate={{ rotate: [0, 360] }}
+                                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
                             >
-                                <Sparkles className="text-[#2779A7]" size={20} />
+                                <Sparkles className="text-[var(--color-primary)]" size={20} />
                             </motion.div>
-                            <span className="text-[#2779A7]">Ask Core AI anything</span>
+                            <span className="text-[var(--color-primary)]">Ask Core AI anything</span>
                         </div>
                     </motion.button>
                 ) : (
-                    // Expanded state - full chat interface
                     <motion.div
                         key="expanded"
                         initial={{ opacity: 0, y: 10 }}
@@ -159,38 +144,30 @@ export function FuturisticSearch({ onVoiceTrigger, className, isDashboard }: { o
                         exit={{ opacity: 0, y: 10 }}
                         className="relative pointer-events-auto"
                     >
-                        <div className="absolute inset-0 bg-gradient-to-r from-[#2779A7]/10 via-[#F3C74B]/10 to-[#2779A7]/10 rounded-2xl blur-2xl" />
-                        <div className="relative backdrop-blur-xl bg-white/95 rounded-2xl border border-[#2779A7]/20 shadow-xl overflow-hidden">
-                            {/* Header */}
-                            <div className="p-4 border-b border-[#E5E7EB] bg-gradient-to-r from-[#E5F2F8] to-[#FEF9E7]">
+                        <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-primary)]/10 via-[var(--color-accent)]/10 to-[var(--color-primary)]/10 rounded-2xl blur-2xl" />
+                        <div className="relative backdrop-blur-xl bg-[var(--color-surface)]/95 rounded-2xl border border-[var(--color-primary)]/20 shadow-xl overflow-hidden">
+                            <div className="p-4 border-b border-[var(--color-border)] bg-[var(--color-secondary)]">
                                 <div className="flex items-center gap-3">
                                     <motion.div
-                                        animate={{
-                                            rotate: [0, 360],
-                                        }}
-                                        transition={{
-                                            duration: 4,
-                                            repeat: Infinity,
-                                            ease: "linear",
-                                        }}
-                                        className="w-10 h-10 rounded-full bg-gradient-to-br from-[#2779A7] to-[#1E5A7F] flex items-center justify-center shadow-sm"
+                                        animate={{ rotate: [0, 360] }}
+                                        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                                        className="w-10 h-10 rounded-full bg-[var(--color-primary)] flex items-center justify-center shadow-sm"
                                     >
-                                        <Sparkles className="text-[#F3C74B]" size={20} />
+                                        <Sparkles className="text-white" size={20} />
                                     </motion.div>
                                     <div className="flex-1">
-                                        <h3 className="text-[#1E293B] font-medium text-sm">Core AI Assistant</h3>
-                                        <p className="text-[#64748B] text-xs">Your retirement planning guide</p>
+                                        <h3 className="text-[var(--color-text)] font-medium text-sm">Core AI Assistant</h3>
+                                        <p className="text-[var(--color-textSecondary)] text-xs">Your retirement planning guide</p>
                                     </div>
                                     <button
                                         onClick={handleClose}
-                                        className="text-[#64748B] hover:text-[#1E293B] transition-colors"
+                                        className="text-[var(--color-textSecondary)] hover:text-[var(--color-text)] transition-colors"
                                     >
                                         <X size={20} />
                                     </button>
                                 </div>
                             </div>
 
-                            {/* Messages Area */}
                             {messages.length > 0 && (
                                 <motion.div
                                     initial={{ opacity: 0 }}
@@ -207,16 +184,16 @@ export function FuturisticSearch({ onVoiceTrigger, className, isDashboard }: { o
                                         >
                                             {message.type === 'answer' && (
                                                 <div className="flex items-start gap-2 max-w-[85%]">
-                                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#2779A7] to-[#1E5A7F] flex items-center justify-center flex-shrink-0 shadow-sm">
-                                                        <Sparkles className="text-[#F3C74B]" size={14} />
+                                                    <div className="w-8 h-8 rounded-full bg-[var(--color-primary)] flex items-center justify-center flex-shrink-0 shadow-sm">
+                                                        <Sparkles className="text-white" size={14} />
                                                     </div>
-                                                    <div className="bg-gradient-to-br from-[#E5F2F8] to-[#F0F9FF] rounded-2xl rounded-tl-sm p-3 border border-[#2779A7]/20">
-                                                        <p className="text-[#475569] text-sm leading-relaxed">{message.text}</p>
+                                                    <div className="bg-[var(--color-secondary)] rounded-2xl rounded-tl-sm p-3 border border-[var(--color-primary)]/20">
+                                                        <p className="text-[var(--color-text)] text-sm leading-relaxed">{message.text}</p>
                                                     </div>
                                                 </div>
                                             )}
                                             {message.type === 'question' && (
-                                                <div className="bg-[#2779A7] text-white rounded-2xl rounded-tr-sm p-3 max-w-[85%] shadow-sm">
+                                                <div className="bg-[var(--color-primary)] text-white rounded-2xl rounded-tr-sm p-3 max-w-[85%] shadow-sm">
                                                     <p className="text-sm">{message.text}</p>
                                                 </div>
                                             )}
@@ -225,30 +202,28 @@ export function FuturisticSearch({ onVoiceTrigger, className, isDashboard }: { o
                                 </motion.div>
                             )}
 
-                            {/* Input Area */}
-                            <div className="p-4 border-t border-[#E5E7EB] bg-[#F9FAFB]">
+                            <div className="p-4 border-t border-[var(--color-border)] bg-[var(--color-background)]">
                                 <form onSubmit={handleSubmit} className="flex items-center gap-2 mb-3">
                                     <input
                                         type="text"
                                         value={inputValue}
                                         onChange={(e) => setInputValue(e.target.value)}
                                         placeholder="Ask me anything about your 401(k)..."
-                                        className="flex-1 bg-white border border-[#E5E7EB] rounded-full px-4 py-2.5 outline-none text-[#1E293B] placeholder-[#94A3B8] text-sm focus:border-[#2779A7] transition-colors"
+                                        className="flex-1 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-full px-4 py-2.5 outline-none text-[var(--color-text)] placeholder-[var(--color-textSecondary)] text-sm focus:border-[var(--color-primary)] transition-colors"
                                         autoFocus
                                     />
                                     <button
                                         type="submit"
                                         disabled={!inputValue.trim()}
-                                        className="w-10 h-10 rounded-full bg-[#2779A7] hover:bg-[#1E5A7F] disabled:bg-[#CBD5E1] flex items-center justify-center transition-all disabled:cursor-not-allowed shadow-sm"
+                                        className="w-10 h-10 rounded-full bg-[var(--color-primary)] hover:opacity-90 disabled:opacity-40 flex items-center justify-center transition-all disabled:cursor-not-allowed shadow-sm"
                                     >
                                         <Send size={16} className="text-white" />
                                     </button>
                                 </form>
 
-                                {/* Quick suggestions */}
                                 {messages.length === 0 && (
                                     <div className="space-y-2">
-                                        <p className="text-xs text-[#64748B] mb-2">Popular questions:</p>
+                                        <p className="text-xs text-[var(--color-textSecondary)] mb-2">Popular questions:</p>
                                         <div className="flex flex-wrap gap-2">
                                             {[
                                                 'What is a Roth 401(k)?',
@@ -260,7 +235,7 @@ export function FuturisticSearch({ onVoiceTrigger, className, isDashboard }: { o
                                                 <button
                                                     key={idx}
                                                     onClick={() => handleSuggestionClick(suggestion)}
-                                                    className="text-xs px-3 py-1.5 rounded-full bg-white border border-[#E5E7EB] text-[#2779A7] hover:bg-[#E5F2F8] hover:border-[#2779A7] transition-all"
+                                                    className="text-xs px-3 py-1.5 rounded-full bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-primary)] hover:bg-[var(--color-secondary)] hover:border-[var(--color-primary)] transition-all"
                                                 >
                                                     {suggestion}
                                                 </button>

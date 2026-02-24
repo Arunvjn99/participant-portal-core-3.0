@@ -19,10 +19,10 @@ const LEVEL_CONFIG: Record<
   PasswordStrengthLevel,
   { label: string; color: string; bgColor: string; segments: number }
 > = {
-  weak: { label: "Weak", color: "text-red-600 dark:text-red-400", bgColor: "bg-red-500", segments: 1 },
-  fair: { label: "Fair", color: "text-amber-600 dark:text-amber-400", bgColor: "bg-amber-500", segments: 2 },
-  good: { label: "Good", color: "text-yellow-500 dark:text-yellow-400", bgColor: "bg-yellow-500", segments: 3 },
-  strong: { label: "Strong", color: "text-emerald-600 dark:text-emerald-400", bgColor: "bg-emerald-500", segments: 4 },
+  weak: { label: "Weak", color: "text-[var(--color-danger)]", bgColor: "bg-[var(--color-danger)]", segments: 1 },
+  fair: { label: "Fair", color: "text-[var(--color-warning)]", bgColor: "bg-[var(--color-warning)]", segments: 2 },
+  good: { label: "Good", color: "text-[var(--color-warning)]", bgColor: "bg-[var(--color-warning)]", segments: 3 },
+  strong: { label: "Strong", color: "text-[var(--color-success)]", bgColor: "bg-[var(--color-success)]", segments: 4 },
 };
 
 interface PasswordStrengthProps {
@@ -41,7 +41,7 @@ export function PasswordStrength({ password, className = "" }: PasswordStrengthP
           <div
             key={i}
             className={`h-1.5 flex-1 rounded-full transition-colors duration-200 ${
-              i < config.segments ? config.bgColor : "bg-slate-200 dark:bg-slate-600"
+              i < config.segments ? config.bgColor : "bg-[var(--color-border)]"
             }`}
           />
         ))}

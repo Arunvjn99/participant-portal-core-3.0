@@ -52,7 +52,7 @@ export const ResetPassword = () => {
       <AuthButton onClick={handleResetPassword}>{t("auth.resetPassword")}</AuthButton>
       <a
         href="#"
-        className="text-center text-sm text-primary no-underline hover:underline dark:text-blue-400"
+        className="text-center text-sm text-[var(--color-primary)] no-underline hover:underline"
         onClick={(e) => {
           e.preventDefault();
           handleBackToSignIn();

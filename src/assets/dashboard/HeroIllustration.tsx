@@ -29,7 +29,7 @@ export const HeroIllustration = ({ className = "" }: HeroIllustrationProps) => (
         <stop offset="100%" stopColor="#f59e0b" />
       </linearGradient>
     </defs>
-    <rect width="400" height="300" fill="url(#hero-sky)" className="dark:opacity-90" />
+    <rect width="400" height="300" fill="url(#hero-sky)" className="" />
 
     {/* Abstract clouds */}
     <ellipse cx="80" cy="50" rx="40" ry="25" fill="white" fillOpacity="0.9" />
@@ -58,7 +58,7 @@ export const HeroIllustration = ({ className = "" }: HeroIllustrationProps) => (
     <path
       d="M80 220 Q120 180 200 170 Q280 160 320 200 L340 240 L60 240 Z"
       fill="url(#hero-hammock)"
-      className="dark:opacity-90"
+      className=""
     />
 
     {/* Yellow/amber blanket/cushion */}
@@ -67,18 +67,18 @@ export const HeroIllustration = ({ className = "" }: HeroIllustrationProps) => (
     {/* Person silhouette - simplified */}
     <g transform="translate(170, 140)">
       {/* Head */}
-      <circle cx="30" cy="10" r="18" fill="#1e293b" className="dark:fill-slate-200" />
+      <circle cx="30" cy="10" r="18" fill="#1e293b" className="" />
       {/* Body */}
-      <ellipse cx="30" cy="55" rx="35" ry="25" fill="#334155" className="dark:fill-slate-300" />
+      <ellipse cx="30" cy="55" rx="35" ry="25" fill="#334155" className="" />
       {/* Arm holding phone */}
       <path
         d="M55 45 L75 35 L75 55 L55 65 Z"
         fill="#475569"
-        className="dark:fill-slate-400"
+        className=""
       />
       {/* Phone */}
-      <rect x="72" y="38" width="18" height="28" rx="2" fill="#1e293b" className="dark:fill-slate-500" />
-      <rect x="74" y="42" width="14" height="20" rx="1" fill="#0f172a" className="dark:fill-slate-600" />
+      <rect x="72" y="38" width="18" height="28" rx="2" fill="#1e293b" className="" />
+      <rect x="74" y="42" width="14" height="20" rx="1" fill="#0f172a" className="" />
     </g>
   </svg>
 );

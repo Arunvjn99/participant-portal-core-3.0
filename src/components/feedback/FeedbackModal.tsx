@@ -87,7 +87,7 @@ function StarIcon({ filled, hovered }: { filled: boolean; hovered: boolean }) {
           ? "text-[var(--color-primary)]"
           : hovered
             ? "text-[var(--color-primary)]/60"
-            : "text-slate-300 dark:text-slate-600"
+            : "text-[var(--color-text)]"
       }`}
     >
       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
@@ -110,8 +110,8 @@ function OptionButton({
       onClick={onClick}
       className={`flex w-full items-center gap-3 rounded-xl border-2 px-3.5 py-2.5 text-left text-sm font-medium transition-all duration-150 ${
         selected
-          ? "border-[var(--color-primary)] bg-[var(--color-primary)]/5 text-slate-900 dark:text-white"
-          : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-300 dark:hover:border-slate-600"
+          ? "border-[var(--color-primary)] bg-[var(--color-primary)]/5 text-[var(--color-text)]"
+          : "border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-textSecondary)] hover:border-[var(--color-border)] hover:bg-[var(--color-surface)]"
       }`}
       aria-pressed={selected}
     >
@@ -154,14 +154,14 @@ function NpsSlider({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <span className="text-xs text-slate-400 dark:text-slate-500">Not likely</span>
+        <span className="text-xs text-[var(--color-textSecondary)]">Not likely</span>
         <span
           className="text-2xl font-bold tabular-nums"
           style={{ color: "var(--color-primary)" }}
         >
           {value}
         </span>
-        <span className="text-xs text-slate-400 dark:text-slate-500">Extremely likely</span>
+        <span className="text-xs text-[var(--color-textSecondary)]">Extremely likely</span>
       </div>
       <input
         type="range"
@@ -169,12 +169,12 @@ function NpsSlider({
         max={10}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200 accent-[var(--color-primary)] dark:bg-slate-700 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:shadow-md"
+        className="h-2 w-full cursor-pointer appearance-none rounded-full bg-[var(--color-background)] accent-[var(--color-primary)] [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:shadow-md"
         aria-label="NPS score"
       />
       <div className="flex justify-between px-0.5">
         {Array.from({ length: 11 }, (_, i) => (
-          <span key={i} className="text-[9px] tabular-nums text-slate-400 dark:text-slate-600">
+          <span key={i} className="text-[9px] tabular-nums text-[var(--color-textSecondary)]">
             {i}
           </span>
         ))}
@@ -320,13 +320,13 @@ export function FeedbackModal({ isOpen, onClose, workflowType }: FeedbackModalPr
         ))}
       </div>
       {rating > 0 && (
-        <p className="mt-1 text-center text-xs text-slate-400 dark:text-slate-500">
+        <p className="mt-1 text-center text-xs text-[var(--color-textSecondary)]">
           {["", "Poor", "Fair", "Good", "Great", "Excellent"][rating]}
         </p>
       )}
 
       <textarea
-        className="mt-5 w-full rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-700 placeholder:text-slate-400 focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:placeholder:text-slate-500"
+        className="mt-5 w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3 text-sm text-[var(--color-text)] placeholder:text-[var(--color-textSecondary)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
         rows={2}
         placeholder="Any additional comments? (optional)"
         value={comment}
@@ -337,7 +337,7 @@ export function FeedbackModal({ isOpen, onClose, workflowType }: FeedbackModalPr
         <button
           type="button"
           onClick={onClose}
-          className="flex-1 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+          className="flex-1 rounded-xl border border-[var(--color-border)] px-4 py-2.5 text-sm font-medium text-[var(--color-textSecondary)] transition-colors hover:bg-[var(--color-surface)]"
         >
           Skip
         </button>
@@ -357,7 +357,7 @@ export function FeedbackModal({ isOpen, onClose, workflowType }: FeedbackModalPr
     <motion.div key="step-2-enroll" {...STEP_ANIMATION} className="space-y-5">
       {/* Q: Difficult part */}
       <div>
-        <p className="mb-2 text-sm font-medium text-slate-700 dark:text-slate-200">
+        <p className="mb-2 text-sm font-medium text-[var(--color-text)]">
           What part was most challenging?
         </p>
         <div className="space-y-2">
@@ -374,7 +374,7 @@ export function FeedbackModal({ isOpen, onClose, workflowType }: FeedbackModalPr
 
       {/* Q: Confidence */}
       <div>
-        <p className="mb-2 text-sm font-medium text-slate-700 dark:text-slate-200">
+        <p className="mb-2 text-sm font-medium text-[var(--color-text)]">
           Did you feel confident about your investment choice?
         </p>
         <div className="space-y-2">
@@ -390,14 +390,14 @@ export function FeedbackModal({ isOpen, onClose, workflowType }: FeedbackModalPr
       </div>
 
       {errorMsg && (
-        <p className="text-sm text-red-500 dark:text-red-400" role="alert">{errorMsg}</p>
+        <p className="text-sm text-[var(--color-danger)]" role="alert">{errorMsg}</p>
       )}
 
       <div className="flex gap-3 pt-1">
         <button
           type="button"
           onClick={handleBack}
-          className="flex-1 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+          className="flex-1 rounded-xl border border-[var(--color-border)] px-4 py-2.5 text-sm font-medium text-[var(--color-textSecondary)] transition-colors hover:bg-[var(--color-surface)]"
         >
           Back
         </button>
@@ -417,7 +417,7 @@ export function FeedbackModal({ isOpen, onClose, workflowType }: FeedbackModalPr
     <motion.div key="step-2-logout" {...STEP_ANIMATION} className="space-y-5">
       {/* Q: Primary feature */}
       <div>
-        <p className="mb-2 text-sm font-medium text-slate-700 dark:text-slate-200">
+        <p className="mb-2 text-sm font-medium text-[var(--color-text)]">
           What did you primarily use today?
         </p>
         <div className="space-y-2">
@@ -434,21 +434,21 @@ export function FeedbackModal({ isOpen, onClose, workflowType }: FeedbackModalPr
 
       {/* Q: NPS */}
       <div>
-        <p className="mb-3 text-sm font-medium text-slate-700 dark:text-slate-200">
+        <p className="mb-3 text-sm font-medium text-[var(--color-text)]">
           How likely are you to recommend this portal?
         </p>
         <NpsSlider value={npsScore} onChange={setNpsScore} />
       </div>
 
       {errorMsg && (
-        <p className="text-sm text-red-500 dark:text-red-400" role="alert">{errorMsg}</p>
+        <p className="text-sm text-[var(--color-danger)]" role="alert">{errorMsg}</p>
       )}
 
       <div className="flex gap-3 pt-1">
         <button
           type="button"
           onClick={handleBack}
-          className="flex-1 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+          className="flex-1 rounded-xl border border-[var(--color-border)] px-4 py-2.5 text-sm font-medium text-[var(--color-textSecondary)] transition-colors hover:bg-[var(--color-surface)]"
         >
           Back
         </button>
@@ -471,15 +471,15 @@ export function FeedbackModal({ isOpen, onClose, workflowType }: FeedbackModalPr
       animate={{ opacity: 1, scale: 1 }}
       className="flex flex-col items-center py-6"
     >
-      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/40">
+      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-success)]/10">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--color-success, #16a34a)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <polyline points="20 6 9 17 4 12" />
         </svg>
       </div>
-      <p className="mt-4 text-lg font-semibold text-slate-900 dark:text-slate-100">
+      <p className="mt-4 text-lg font-semibold text-[var(--color-text)]">
         Thank you!
       </p>
-      <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+      <p className="mt-1 text-sm text-[var(--color-textSecondary)]">
         Your feedback has been submitted.
       </p>
     </motion.div>
@@ -496,7 +496,7 @@ export function FeedbackModal({ isOpen, onClose, workflowType }: FeedbackModalPr
           transition={{ duration: 0.2 }}
         >
           <motion.div
-            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-[var(--color-surface)] backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -505,7 +505,7 @@ export function FeedbackModal({ isOpen, onClose, workflowType }: FeedbackModalPr
           />
 
           <motion.div
-            className="relative z-10 w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-slate-900 dark:shadow-black/50"
+            className="relative z-10 w-full max-w-md overflow-hidden rounded-2xl bg-[var(--color-surface)] shadow-2xl"
             initial={{ scale: 0.92, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
@@ -526,17 +526,17 @@ export function FeedbackModal({ isOpen, onClose, workflowType }: FeedbackModalPr
                       <div className="mb-2">
                         <StepIndicator current={step} total={TOTAL_STEPS} />
                       </div>
-                      <h2 id="feedback-title" className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                      <h2 id="feedback-title" className="text-lg font-semibold text-[var(--color-text)]">
                         {STEP_TITLES[workflowType][step]}
                       </h2>
-                      <p className="mt-0.5 text-xs text-slate-400 dark:text-slate-500">
+                      <p className="mt-0.5 text-xs text-[var(--color-textSecondary)]">
                         Step {step} of {TOTAL_STEPS}
                       </p>
                     </div>
                     <button
                       type="button"
                       onClick={onClose}
-                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-300"
+                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[var(--color-textSecondary)] transition-colors hover:bg-[var(--color-background)] hover:text-[var(--color-textSecondary)]"
                       aria-label="Close"
                       ref={firstFocusRef}
                     >

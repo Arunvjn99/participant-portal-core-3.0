@@ -5,6 +5,7 @@ import { DashboardLayout } from "../../../layouts/DashboardLayout";
 import { DashboardHeader } from "../DashboardHeader";
 import type { EnrollmentSummary } from "../../../data/enrollmentSummary";
 import { useDashboardEngine } from "./useDashboardEngine";
+import { useAISettings } from "../../../context/AISettingsContext";
 import { DashboardRegistry } from "./DashboardRegistry";
 import { DashboardSlot } from "./DashboardSlot";
 import type { DashboardModuleEntry, ModuleProps } from "./types";
@@ -24,10 +25,15 @@ interface DashboardShellProps {
 export function DashboardShell({ data }: DashboardShellProps) {
   const { t, i18n } = useTranslation();
   const engine = useDashboardEngine(data);
+  const { insightsEnabled } = useAISettings();
 
   const { fullModules, primaryModules, secondaryModules } = useMemo(() => {
     const active = DashboardRegistry
       .filter((entry) => entry.condition(engine))
+      .filter((entry) => {
+        if (entry.id === "insights" && !insightsEnabled) return false;
+        return true;
+      })
       .sort((a, b) => a.priority - b.priority);
 
     return {
@@ -35,7 +41,7 @@ export function DashboardShell({ data }: DashboardShellProps) {
       primaryModules: active.filter((m) => m.span === "primary"),
       secondaryModules: active.filter((m) => m.span === "secondary"),
     };
-  }, [engine]);
+  }, [engine, insightsEnabled]);
 
   const moduleProps: ModuleProps = { engine, data };
 

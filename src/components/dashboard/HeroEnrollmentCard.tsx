@@ -48,7 +48,7 @@ export const HeroEnrollmentCard = ({
   return (
     <>
       <section
-        className={`relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-lg transition-shadow duration-300 dark:border-slate-700 dark:bg-slate-800 dark:shadow-black/30 md:p-8 ${canHover ? "md:hover:shadow-xl" : ""}`}
+        className={`relative overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-lg transition-shadow duration-300 md:p-8 ${canHover ? "md:hover:shadow-xl" : ""}`}
       >
         <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-10">
           {/* Left: copy, badge, CTA - stagger first */}
@@ -59,21 +59,21 @@ export const HeroEnrollmentCard = ({
             className="flex flex-1 flex-col items-start gap-4 lg:order-1"
           >
             {enrollmentBadge && (
-              <span className="rounded-full bg-emerald-600 px-4 py-1.5 text-xs font-semibold text-white dark:bg-emerald-500">
+              <span className="rounded-full bg-[var(--color-success)] px-4 py-1.5 text-xs font-semibold text-white">
                 {enrollmentBadge}
               </span>
             )}
-            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+            <p className="text-sm font-medium text-[var(--color-textSecondary)]">
               {greeting}
             </p>
-            <h1 className="text-2xl font-bold leading-tight text-slate-900 dark:text-slate-100 md:text-3xl">
+            <h1 className="text-2xl font-bold leading-tight text-[var(--color-text)] md:text-3xl">
               {headline}
             </h1>
-            <p className="text-base leading-relaxed text-slate-600 dark:text-slate-400">
+            <p className="text-base leading-relaxed text-[var(--color-textSecondary)]">
               {description}
             </p>
             <Button
-              className="rounded-2xl px-8 py-3.5 font-semibold text-white bg-primary hover:bg-primary-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 dark:focus-visible:outline-offset-slate-900 transition-colors shadow-md hover:shadow-lg"
+              className="rounded-2xl px-8 py-3.5 font-semibold text-white bg-[var(--color-primary)] hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-primary)] focus-visible:outline-offset-2 transition-colors shadow-md hover:shadow-lg"
               onClick={handleEnrollClick}
             >
               {primaryCtaLabel ?? "Enroll Now"}
@@ -87,7 +87,7 @@ export const HeroEnrollmentCard = ({
             transition={reduced ? {} : { duration: 0.3, ease: [0.25, 0.1, 0.25, 1], delay: 0.08 }}
             className="relative order-first w-full shrink-0 lg:order-2 lg:min-w-[280px] lg:w-2/5"
           >
-            <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-700">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-[var(--color-background)]">
               <img
                 src={heroImageSrc}
                 alt=""
@@ -102,19 +102,19 @@ export const HeroEnrollmentCard = ({
                 initial={reduced ? {} : { opacity: 0, y: 8 }}
                 animate={reduced ? {} : { opacity: 1, y: 0 }}
                 transition={reduced ? {} : { duration: 0.3, ease: [0.25, 0.1, 0.25, 1], delay: 0.16 }}
-                className="absolute bottom-4 left-4 right-4 rounded-lg border border-slate-200/80 bg-white/95 p-4 shadow-lg backdrop-blur-sm dark:border-slate-600/80 dark:bg-slate-800/95 dark:shadow-black/40 md:right-auto md:w-48"
+                className="absolute bottom-4 left-4 right-4 rounded-lg border border-[var(--color-border)]/80 bg-[var(--color-surface)]/95 p-4 shadow-lg backdrop-blur-sm md:right-auto md:w-48"
               >
-                <p className="mb-2 flex items-center gap-1.5 text-xs font-medium text-blue-600 dark:text-blue-400">
+                <p className="mb-2 flex items-center gap-1.5 text-xs font-medium text-[var(--color-primary)]">
                   PERSONALISED INSIGHTS
                   <ArrowUpRightIcon size={12} className="shrink-0" />
                 </p>
-                <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                <p className="text-sm font-medium text-[var(--color-text)]">
                   {insightPlanName}
                 </p>
-                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                <p className="mt-1 text-xs text-[var(--color-textSecondary)]">
                   {insightBalanceLabel}
                 </p>
-                <p className="text-xl font-bold text-slate-900 dark:text-slate-100">
+                <p className="text-xl font-bold text-[var(--color-text)]">
                   {insightBalanceValue}
                 </p>
               </motion.div>

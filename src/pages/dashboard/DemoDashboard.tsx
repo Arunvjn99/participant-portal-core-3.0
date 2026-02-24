@@ -45,8 +45,8 @@ export function DemoDashboard() {
       default:
         return (
           <ScenarioShell user={user} accentColor="#6b7280">
-            <div className="rounded-xl border border-slate-200 bg-white p-6 text-center dark:border-slate-700 dark:bg-slate-800">
-              <p className="text-lg font-semibold text-slate-700 dark:text-slate-200">
+            <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 text-center">
+              <p className="text-lg font-semibold text-[var(--color-text)]">
                 {t("demo.scenarioComingSoon", { scenario: user.scenario })}
               </p>
             </div>

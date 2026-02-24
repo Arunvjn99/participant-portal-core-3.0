@@ -112,8 +112,8 @@ export const QuickActionsCard = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="min-w-0 rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800 xl:p-6 lg:col-start-1">
-      <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">Quick Actions</h2>
+    <section className="min-w-0 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-sm xl:p-6 lg:col-start-1">
+      <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">Quick Actions</h2>
       <motion.div
         className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5"
         variants={containerVariants}
@@ -126,7 +126,7 @@ export const QuickActionsCard = () => {
             type="button"
             variants={itemVariants}
             onClick={() => navigate(action.route)}
-            className="flex flex-col items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-5 shadow-sm transition-shadow hover:border-slate-300 hover:bg-slate-100 hover:shadow-md dark:border-slate-600 dark:bg-slate-700/50 dark:hover:border-slate-500 dark:hover:bg-slate-700/80 dark:hover:shadow-lg dark:shadow-black/20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900"
+            className="flex flex-col items-center gap-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-5 shadow-sm transition-shadow hover:border-[var(--color-border)] hover:bg-[var(--color-background)] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-2"
             whileHover={{
               scale: 1.03,
               y: -4,
@@ -150,7 +150,7 @@ export const QuickActionsCard = () => {
                 {action.icon}
               </span>
             </motion.span>
-            <span className="text-center text-sm font-medium text-slate-700 dark:text-slate-200">
+            <span className="text-center text-sm font-medium text-[var(--color-textSecondary)]">
               {action.label}
             </span>
           </motion.button>

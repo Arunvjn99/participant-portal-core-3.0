@@ -13,15 +13,23 @@ import { loadUXtweak } from "./utils/uxtweakLoader";
 import { loadUXsniff } from "./utils/uxsniffLoader";
 import { router } from "./app/router.tsx";
 import { ThemeProvider } from "./context/ThemeContext";
+import { AISettingsProvider } from "./context/AISettingsContext";
 import { AuthProvider } from "./context/AuthContext";
 import { OtpProvider } from "./context/OtpContext";
 import { UserProvider } from "./context/UserContext";
 
 // Initialize theme from localStorage before first paint (avoids flash)
 const savedTheme = localStorage.getItem("theme");
-const isDark = savedTheme === "dark";
+const effectiveTheme =
+  savedTheme === "system"
+    ? (typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light")
+    : savedTheme === "dark"
+      ? "dark"
+      : "light";
 document.documentElement.classList.remove("light", "dark");
-document.documentElement.classList.add(isDark ? "dark" : "light");
+document.documentElement.classList.add(effectiveTheme);
 
 /** Keys router to current language so all route content remounts and picks up new translations. */
 function RootWithLanguageKey() {
@@ -30,9 +38,11 @@ function RootWithLanguageKey() {
     <AuthProvider>
       <OtpProvider>
         <ThemeProvider>
-          <UserProvider>
-            <RouterProvider key={i18nInstance.language || "en"} router={router} />
-          </UserProvider>
+          <AISettingsProvider>
+            <UserProvider>
+              <RouterProvider key={i18nInstance.language || "en"} router={router} />
+            </UserProvider>
+          </AISettingsProvider>
         </ThemeProvider>
       </OtpProvider>
     </AuthProvider>

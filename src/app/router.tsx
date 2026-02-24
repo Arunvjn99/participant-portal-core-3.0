@@ -31,6 +31,7 @@ import { EnrollmentReviewContent } from "../components/enrollment/EnrollmentRevi
 import { RootLayout } from "../layouts/RootLayout";
 import { ProtectedRoute } from "../components/auth/ProtectedRoute";
 import { ThemeSettings } from "../pages/settings/ThemeSettings";
+import { SettingsHub } from "../pages/settings/SettingsHub";
 
 /**
  * Router configuration using createBrowserRouter (React Router v6+)
@@ -149,6 +150,10 @@ export const router = createBrowserRouter([
       {
         path: "/transactions/:transactionId",
         element: <ProtectedRoute><TransactionAnalysis /></ProtectedRoute>,
+      },
+      {
+        path: "/settings",
+        element: <ProtectedRoute><SettingsHub /></ProtectedRoute>,
       },
       {
         path: "/settings/theme",

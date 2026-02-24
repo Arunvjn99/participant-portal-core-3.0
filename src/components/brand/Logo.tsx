@@ -1,21 +1,18 @@
-import { AscendLogo } from "./AscendLogo";
-import { branding } from "../../config/branding";
+/**
+ * Product logo for pre-auth pages only (Login, Signup, Forgot Password, etc.).
+ * Renders CORE branding. Post-auth header uses tenant logo from ThemeContext.
+ */
+import { CoreProductBranding } from "./CoreProductBranding";
 
 interface LogoProps {
   className?: string;
-  /** "full" = Ascend logo PNG (auth). "icon" = icon only (dashboard with separate app name). */
-  variant?: "full" | "icon";
+  /** Show "by Congruent Solutions" subtext (default true) */
+  showByline?: boolean;
 }
 
-export const Logo = ({ className, variant = "full" }: LogoProps) => {
-  if (variant === "full") {
-    return (
-      <img
-        src={branding.logo.src}
-        alt={branding.logo.alt}
-        className={className}
-      />
-    );
-  }
-  return <AscendLogo className={className} variant={variant} />;
-};
+export const Logo = ({ className = "", showByline = true }: LogoProps) => (
+  <CoreProductBranding
+    imgClassName={className ? `${className} object-contain mb-2` : "h-10 w-auto object-contain mb-2"}
+    showByline={showByline}
+  />
+);

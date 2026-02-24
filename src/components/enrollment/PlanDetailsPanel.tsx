@@ -184,7 +184,7 @@ export function PlanDetailsPanel({ plan, user, rationaleKey, rationale }: PlanDe
             className="text-[10px] font-bold uppercase tracking-widest flex items-center gap-2"
             style={{ color: "var(--enroll-text-primary)" }}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-500" aria-hidden /> {t("enrollment.cons")}
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-warning)]" aria-hidden /> {t("enrollment.cons")}
           </h5>
           <ul className="space-y-2.5">
             <li className="flex gap-2.5 text-xs" style={{ color: "var(--enroll-text-muted)" }}>

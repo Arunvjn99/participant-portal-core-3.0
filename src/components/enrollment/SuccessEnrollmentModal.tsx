@@ -13,9 +13,9 @@ interface SuccessEnrollmentModalProps {
 const BURST_PARTICLES = 16;
 const PARTICLE_ANGLES = Array.from({ length: BURST_PARTICLES }, (_, i) => (i / BURST_PARTICLES) * 360);
 const BURST_COLORS = [
-  "bg-emerald-400 dark:bg-emerald-500",
-  "bg-emerald-300 dark:bg-emerald-600",
-  "bg-emerald-200 dark:bg-emerald-700",
+  "bg-[var(--color-success)]",
+  "bg-[var(--color-success)]/80",
+  "bg-[var(--color-success)]/60",
 ];
 
 export function SuccessEnrollmentModal({
@@ -69,7 +69,7 @@ export function SuccessEnrollmentModal({
       >
         {/* Backdrop */}
         <motion.div
-          className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+          className="absolute inset-0 bg-[var(--color-text)]/60 backdrop-blur-sm"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -80,7 +80,7 @@ export function SuccessEnrollmentModal({
 
         {/* Modal card */}
         <motion.div
-          className="relative z-10 w-full max-w-md overflow-hidden rounded-2xl bg-white p-8 shadow-2xl dark:bg-slate-900 dark:shadow-black/50"
+          className="relative z-10 w-full max-w-md overflow-hidden rounded-2xl bg-[var(--color-surface)] p-8 shadow-2xl"
           initial={reducedMotion ? false : { scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
@@ -130,7 +130,7 @@ export function SuccessEnrollmentModal({
           {/* Success icon with ring burst */}
           <div className="relative flex justify-center">
             <motion.div
-              className="absolute h-16 w-16 rounded-full bg-emerald-500/20 dark:bg-emerald-500/30"
+              className="absolute h-16 w-16 rounded-full bg-[var(--color-success)]/20"
               initial={reducedMotion ? false : { scale: 0.5, opacity: 0.8 }}
               animate={{ scale: 2.5, opacity: 0 }}
               transition={{
@@ -139,7 +139,7 @@ export function SuccessEnrollmentModal({
               }}
             />
             <motion.div
-              className="relative flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500 dark:bg-emerald-600"
+              className="relative flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-success)]"
               initial={reducedMotion ? false : { scale: 0 }}
               animate={{ scale: 1 }}
               transition={{
@@ -174,7 +174,7 @@ export function SuccessEnrollmentModal({
           {/* Title */}
           <motion.h2
             id="success-modal-title"
-            className="mt-6 text-center text-xl font-semibold text-slate-900 dark:text-slate-100"
+            className="mt-6 text-center text-xl font-semibold text-[var(--color-text)]"
             initial={reducedMotion ? false : { opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.3 }}
@@ -184,7 +184,7 @@ export function SuccessEnrollmentModal({
 
           {/* Description */}
           <motion.p
-            className="mt-3 text-center text-sm text-slate-600 dark:text-slate-400"
+            className="mt-3 text-center text-sm text-[var(--color-textSecondary)]"
             initial={reducedMotion ? false : { opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.3 }}
@@ -202,7 +202,7 @@ export function SuccessEnrollmentModal({
             <button
               type="button"
               onClick={handleOkay}
-              className="w-full max-w-[200px] rounded-xl bg-emerald-500 px-6 py-3 text-base font-medium text-white transition-colors hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:bg-emerald-600 dark:hover:bg-emerald-700 dark:focus:ring-offset-slate-900"
+              className="w-full max-w-[200px] rounded-xl bg-[var(--color-success)] px-6 py-3 text-base font-medium text-white transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--color-success)] focus:ring-offset-2"
             >
               {t("enrollment.successModalOkay")}
             </button>
@@ -218,7 +218,7 @@ export function SuccessEnrollmentModal({
             <button
               type="button"
               onClick={handleViewPlanDetails}
-              className="text-sm font-medium text-slate-600 underline-offset-2 hover:underline dark:text-slate-400 dark:hover:text-slate-300"
+              className="text-sm font-medium text-[var(--color-textSecondary)] underline-offset-2 hover:underline"
             >
               {t("enrollment.successModalViewPlan")}
             </button>

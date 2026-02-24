@@ -32,7 +32,7 @@ const ResourceCard = ({ title, description, imageSrc, badge, onClick }: Resource
 
   const cardContent = (
     <>
-      <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-slate-100 dark:bg-slate-700">
+      <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-[var(--color-background)]">
         <img
           src={imgSrc}
           alt=""
@@ -41,22 +41,22 @@ const ResourceCard = ({ title, description, imageSrc, badge, onClick }: Resource
         />
         {badge && (
           <span
-            className="absolute right-2 top-2 rounded bg-slate-900/80 px-2 py-1 text-xs font-medium text-white dark:bg-slate-800/90"
+            className="absolute right-2 top-2 rounded bg-black/80 px-2 py-1 text-xs font-medium text-white"
             aria-label={`Content type: ${badge}`}
           >
             {badge}
           </span>
         )}
       </div>
-      <h3 className="mt-4 text-lg font-semibold text-slate-900 dark:text-slate-100">{title}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+      <h3 className="mt-4 text-lg font-semibold text-[var(--color-text)]">{title}</h3>
+      <p className="mt-2 text-sm leading-relaxed text-[var(--color-textSecondary)]">
         {description}
       </p>
     </>
   );
 
   const baseClasses =
-    "flex cursor-default flex-col transition-transform focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800";
+    "flex cursor-default flex-col transition-transform focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-2";
 
   if (onClick) {
     return (

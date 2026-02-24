@@ -31,11 +31,11 @@ export function PreEnrollmentScenario({ user }: { user: PersonaProfile }) {
         />
       </div>
 
-      <div className="rounded-xl border border-indigo-200 bg-indigo-50 p-6 dark:border-indigo-800 dark:bg-indigo-900/20">
-        <h2 className="text-lg font-semibold text-indigo-900 dark:text-indigo-200">
+      <div className="rounded-xl border border-[var(--color-primary)]/20 bg-[var(--color-primary)]/5 p-6">
+        <h2 className="text-lg font-semibold text-[var(--color-text)]">
           {t("demo.readyToStartTitle")}
         </h2>
-        <p className="mt-2 text-sm text-indigo-700 dark:text-indigo-300">
+        <p className="mt-2 text-sm text-[var(--color-textSecondary)]">
           {t("demo.readyToStartDesc", { age: user.age, years: 65 - user.age })}
         </p>
         <button
@@ -51,10 +51,10 @@ export function PreEnrollmentScenario({ user }: { user: PersonaProfile }) {
 
 function Card({ title, value, description, color }: { title: string; value: string; description: string; color: string }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-800">
-      <p className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">{title}</p>
+    <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
+      <p className="text-xs font-medium uppercase tracking-wider text-[var(--color-textSecondary)]">{title}</p>
       <p className="mt-1 text-xl font-bold" style={{ color }}>{value}</p>
-      <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{description}</p>
+      <p className="mt-2 text-sm text-[var(--color-textSecondary)]">{description}</p>
     </div>
   );
 }

@@ -91,9 +91,9 @@ export function InvestmentBreakdownStep({ data, onDataChange }: InvestmentBreakd
   return (
     <LoanStepLayout sidebar={summaryRows.length > 0 ? <LoanSummaryCard title="Summary" rows={summaryRows} /> : undefined}>
       <div className="space-y-6">
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">Investment source</h2>
-          <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
+        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">Investment source</h2>
+          <p className="mb-4 text-sm text-[var(--color-textSecondary)]">
             Default is pro-rata liquidation across your current funds. You can keep pro-rata or switch to custom allocation.
           </p>
           <div className="flex gap-2">
@@ -103,7 +103,7 @@ export function InvestmentBreakdownStep({ data, onDataChange }: InvestmentBreakd
               className={`rounded-lg px-4 py-2 text-sm font-medium ${
                 investment.allocationMode === "proRata"
                   ? "bg-primary text-white"
-                  : "bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300"
+                  : "bg-[var(--color-background)] text-[var(--color-text)]"
               }`}
               aria-pressed={investment.allocationMode === "proRata"}
             >
@@ -124,7 +124,7 @@ export function InvestmentBreakdownStep({ data, onDataChange }: InvestmentBreakd
               className={`rounded-lg px-4 py-2 text-sm font-medium ${
                 investment.allocationMode === "custom"
                   ? "bg-primary text-white"
-                  : "bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300"
+                  : "bg-[var(--color-background)] text-[var(--color-text)]"
               }`}
               aria-pressed={investment.allocationMode === "custom"}
             >
@@ -133,8 +133,8 @@ export function InvestmentBreakdownStep({ data, onDataChange }: InvestmentBreakd
           </div>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">Allocation</h2>
+        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">Allocation</h2>
           <InvestmentBreakdownTable allocations={allocations} totalAmount={totalAllocated} />
         </div>
       </div>

@@ -11,11 +11,11 @@ interface AuthButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<AuthButtonVariant, string> = {
   primary:
-    "bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] active:bg-[var(--color-primary-active)] focus:ring-[var(--color-primary)]",
+    "bg-[var(--color-primary)] text-white hover:opacity-90 active:opacity-80 focus:ring-[var(--color-primary)]",
   secondary:
-    "border border-slate-200 bg-transparent text-slate-900 hover:bg-slate-50 focus:ring-[var(--color-primary)] dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-700",
+    "border border-[var(--color-border)] bg-transparent text-[var(--color-text)] hover:bg-[var(--color-surface)] focus:ring-[var(--color-primary)]",
   ghost:
-    "bg-transparent text-slate-900 hover:bg-slate-50 focus:ring-[var(--color-primary)] dark:text-slate-100 dark:hover:bg-slate-700",
+    "bg-transparent text-[var(--color-text)] hover:bg-[var(--color-surface)] focus:ring-[var(--color-primary)]",
 };
 
 export const AuthButton = ({
@@ -28,7 +28,7 @@ export const AuthButton = ({
   ...props
 }: AuthButtonProps) => {
   const base =
-    "inline-flex w-full items-center justify-center gap-2 rounded-lg px-6 py-3 font-medium text-base transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 dark:focus:ring-offset-slate-800";
+    "inline-flex w-full items-center justify-center gap-2 rounded-lg px-6 py-3 font-medium text-base transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60";
 
   const Comp = asChild ? Slot.Root : "button";
 

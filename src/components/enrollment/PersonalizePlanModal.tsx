@@ -102,7 +102,7 @@ function ProgressBar({ step }: { step: number }) {
           );
         })}
       </div>
-      <span className="text-sm font-semibold whitespace-nowrap text-blue-700 dark:text-blue-400">
+      <span className="text-sm font-semibold whitespace-nowrap text-[var(--color-primary)]">
         {t("preEnrollment.wizardStepOf", { current: step, total: TOTAL_STEPS })}
       </span>
     </div>
@@ -149,7 +149,7 @@ function Step1Combined({
       {/* Age info card */}
       {editingAge ? (
         <div className="space-y-3">
-          <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
+          <label className="block text-sm font-semibold text-[var(--color-text)]">
             {t("preEnrollment.wizardCurrentAgeLabel")}
           </label>
           <input
@@ -161,7 +161,7 @@ function Step1Combined({
               const v = parseInt(e.target.value, 10);
               if (!isNaN(v)) onCurrentAgeChange(Math.min(75, Math.max(18, v)));
             }}
-            className="h-12 max-w-[8rem] w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-base font-semibold text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 focus:border-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+            className="h-12 max-w-[8rem] w-full rounded-xl border-2 border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-base font-semibold text-[var(--color-text)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-1 focus:border-[var(--color-primary)]"
           />
           <button
             type="button"
@@ -172,18 +172,18 @@ function Step1Combined({
           </button>
         </div>
       ) : (
-        <div className="rounded-2xl border border-blue-200 bg-blue-50/60 p-4 sm:p-[17px] dark:border-blue-800 dark:bg-blue-900/20">
+        <div className="rounded-2xl border border-[var(--color-primary)]/30 bg-[var(--color-primary)]/5 p-4 sm:p-[17px]">
           <div className="flex items-center justify-between gap-4">
             <div className="flex flex-col gap-2 min-w-0">
               <p className="text-base sm:text-lg font-semibold">
-                <span className="text-slate-800 dark:text-slate-200">
+                <span className="text-[var(--color-text)]">
                   {t("preEnrollment.wizardAgeIntro")}{" "}
                 </span>
-                <span className="text-blue-700 dark:text-blue-400">
+                <span className="text-[var(--color-primary)]">
                   {t("preEnrollment.wizardAgeAndDob", { age: currentAge, dob: "04/16/1999" })}
                 </span>
               </p>
-              <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+              <p className="text-xs font-medium text-[var(--color-textSecondary)]">
                 {t("preEnrollment.wizardUpdateHint")}
               </p>
             </div>
@@ -214,10 +214,10 @@ function Step1Combined({
 
       {/* Retirement age question + slider */}
       <div>
-        <h3 className="text-xl sm:text-2xl font-bold leading-7 text-slate-900 dark:text-slate-100">
+        <h3 className="text-xl sm:text-2xl font-bold leading-7 text-[var(--color-text)]">
           {t("preEnrollment.wizardRetireAgeQuestion")}
         </h3>
-        <p className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">
+        <p className="mt-1 text-xs font-medium text-[var(--color-textSecondary)]">
           {t("preEnrollment.wizardRetireAgeHint")}
         </p>
       </div>
@@ -242,7 +242,7 @@ function Step1Combined({
             const v = parseInt(e.target.value, 10);
             if (!isNaN(v)) onRetirementAgeChange(Math.min(max, Math.max(min, v)));
           }}
-          className="h-[42px] w-[166px] shrink-0 rounded-lg border border-blue-500 bg-white px-3 py-1.5 text-center text-sm font-medium text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 dark:border-blue-500 dark:bg-slate-800 dark:text-blue-400"
+          className="h-[42px] w-[166px] shrink-0 rounded-lg border border-[var(--color-primary)] bg-[var(--color-surface)] px-3 py-1.5 text-center text-sm font-medium text-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-1"
         />
       </div>
 
@@ -251,7 +251,7 @@ function Step1Combined({
         key={yearsToRetire}
         initial={{ opacity: 0, y: 4 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-lg border border-blue-200 bg-blue-50/60 px-4 py-3 text-center text-sm font-semibold text-blue-800 dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-300"
+        className="rounded-lg border border-[var(--color-primary)]/30 bg-[var(--color-primary)]/5 px-4 py-3 text-center text-sm font-semibold text-[var(--color-primary)]"
       >
         {t("preEnrollment.wizardYearsFromNow", { years: yearsToRetire })}
       </motion.div>
@@ -288,10 +288,10 @@ function Step3Location({
       className="flex flex-col gap-5"
     >
       <div>
-        <h3 className="text-xl sm:text-2xl font-bold leading-7 text-slate-900 dark:text-slate-100">
+        <h3 className="text-xl sm:text-2xl font-bold leading-7 text-[var(--color-text)]">
           {t("preEnrollment.wizardWhereRetire")}
         </h3>
-        <p className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">
+        <p className="mt-1 text-xs font-medium text-[var(--color-textSecondary)]">
           {t("preEnrollment.wizardWhereRetireHint")}
         </p>
       </div>
@@ -306,7 +306,7 @@ function Step3Location({
             fill="none"
             stroke="currentColor"
             strokeWidth="2"
-            className="shrink-0 text-slate-400"
+            className="shrink-0 text-[var(--color-textSecondary)]"
             aria-hidden
           >
             <circle cx="12" cy="12" r="10" />
@@ -318,7 +318,7 @@ function Step3Location({
           placeholder={t("preEnrollment.wizardSearchLocation")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded-lg border-2 border-slate-200 bg-white py-3 pl-11 pr-11 text-sm font-medium text-slate-900 placeholder-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500"
+          className="w-full rounded-lg border-2 border-[var(--color-border)] bg-[var(--color-surface)] py-3 pl-11 pr-11 text-sm font-medium text-[var(--color-text)] placeholder-[var(--color-textSecondary)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
         />
         <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
           <svg
@@ -330,7 +330,7 @@ function Step3Location({
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="shrink-0 text-slate-400"
+            className="shrink-0 text-[var(--color-textSecondary)]"
             aria-hidden
           >
             <circle cx="11" cy="11" r="8" />
@@ -352,8 +352,8 @@ function Step3Location({
                 className={cn(
                   "flex items-center h-[56px] sm:h-[60px] px-3 rounded-lg border-2 text-left text-sm font-medium transition-all duration-150",
                   selected
-                    ? "border-blue-500 bg-blue-50 text-blue-600 dark:border-blue-400 dark:bg-blue-500/10 dark:text-blue-400"
-                    : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-500"
+                    ? "border-[var(--color-primary)] bg-[var(--color-primary)]/5 text-[var(--color-primary)]"
+                    : "border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:border-[var(--color-border)] hover:bg-[var(--color-background)]"
                 )}
               >
                 {location}
@@ -361,7 +361,7 @@ function Step3Location({
             );
           })}
           {filtered.length === 0 && (
-            <p className="col-span-full text-center text-sm text-slate-500 py-4 dark:text-slate-400">
+            <p className="col-span-full text-center text-sm text-[var(--color-textSecondary)] py-4">
               {t("preEnrollment.wizardNoLocationsFound")}
             </p>
           )}
@@ -394,15 +394,15 @@ function Step4Savings({
       className="space-y-5"
     >
       <div>
-        <h3 className="text-xl sm:text-2xl font-bold leading-7 text-slate-900 dark:text-slate-100">
+        <h3 className="text-xl sm:text-2xl font-bold leading-7 text-[var(--color-text)]">
           {t("preEnrollment.wizardSavingsQuestion")}
         </h3>
-        <p className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">
+        <p className="mt-1 text-xs font-medium text-[var(--color-textSecondary)]">
           {t("preEnrollment.wizardSavingsHint")}
         </p>
       </div>
       <div className="relative w-full">
-        <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-slate-400 font-semibold text-lg">
+        <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-[var(--color-textSecondary)] font-semibold text-lg">
           $
         </span>
         <input
@@ -411,7 +411,7 @@ function Step4Savings({
           value={display}
           onChange={(e) => onChange(parseCurrencyInput(e.target.value))}
           placeholder="0"
-          className="h-14 w-full rounded-xl border-2 border-slate-200 bg-white pl-10 pr-4 py-3 text-lg font-semibold text-slate-900 placeholder-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 focus:border-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+          className="h-14 w-full rounded-xl border-2 border-[var(--color-border)] bg-[var(--color-surface)] pl-10 pr-4 py-3 text-lg font-semibold text-[var(--color-text)] placeholder-[var(--color-textSecondary)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-1 focus:border-[var(--color-primary)]"
         />
       </div>
     </motion.div>
@@ -598,23 +598,23 @@ export const PersonalizePlanModal = ({
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.98 }}
         transition={{ duration: 0.2 }}
-        className="flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-2xl bg-white dark:bg-slate-900"
+        className="flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-2xl bg-[var(--color-surface)]"
       >
         {/* ─── Header ─── */}
-        <div className="shrink-0 border-b border-slate-200 px-5 py-4 sm:px-6 dark:border-slate-700">
+        <div className="shrink-0 border-b border-[var(--color-border)] px-5 py-4 sm:px-6">
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex flex-col gap-1">
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 truncate dark:text-slate-100">
+              <h2 className="text-xl sm:text-2xl font-bold text-[var(--color-text)] truncate">
                 {t("preEnrollment.wizardTitle", { name: userName })}
               </h2>
-              <p className="text-sm text-slate-500 dark:text-slate-400">
+              <p className="text-sm text-[var(--color-textSecondary)]">
                 {t("preEnrollment.wizardSubtitle")}
               </p>
             </div>
             <button
               type="button"
               onClick={onClose}
-              className="shrink-0 flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-300"
+              className="shrink-0 flex h-8 w-8 items-center justify-center rounded-lg text-[var(--color-textSecondary)] transition-colors hover:bg-[var(--color-background)] hover:text-[var(--color-text)]"
               aria-label={t("preEnrollment.wizardClose")}
             >
               <CloseIcon />
@@ -661,13 +661,13 @@ export const PersonalizePlanModal = ({
         </div>
 
         {/* ─── Footer ─── */}
-        <div className="shrink-0 border-t border-slate-200 bg-slate-50 px-5 py-3 sm:px-6 sm:py-4 dark:border-slate-700 dark:bg-slate-800/50">
+        <div className="shrink-0 border-t border-[var(--color-border)] bg-[var(--color-background)] px-5 py-3 sm:px-6 sm:py-4">
           <div className="flex items-center justify-between gap-3">
             {/* Save & Exit */}
             <button
               type="button"
               onClick={handleSaveAndExit}
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--color-textSecondary)] transition-colors hover:text-[var(--color-text)]"
             >
               <SaveIcon />
               <span className="whitespace-nowrap">
@@ -684,8 +684,8 @@ export const PersonalizePlanModal = ({
                 className={cn(
                   "inline-flex items-center gap-1 rounded-lg border px-3 sm:px-5 py-2 text-sm font-medium transition-colors",
                   isFirstStep
-                    ? "border-slate-200 bg-white text-slate-400 cursor-default dark:border-slate-700 dark:bg-slate-800 dark:text-slate-600"
-                    : "border-slate-300 bg-white text-slate-500 hover:border-slate-400 hover:text-slate-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-400 dark:hover:border-slate-500 dark:hover:text-slate-300"
+                    ? "border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-textSecondary)] cursor-default"
+                    : "border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-textSecondary)] hover:border-[var(--color-border)] hover:text-[var(--color-text)]"
                 )}
               >
                 <ChevronLeftIcon />
@@ -694,7 +694,7 @@ export const PersonalizePlanModal = ({
               <button
                 type="button"
                 onClick={handleNext}
-                className="inline-flex items-center gap-1 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-4 sm:px-5 py-2 text-sm font-medium text-white transition-all hover:from-blue-700 hover:to-blue-800 whitespace-nowrap dark:from-blue-500 dark:to-blue-600 dark:hover:from-blue-600 dark:hover:to-blue-700"
+                className="inline-flex items-center gap-1 rounded-lg bg-[var(--color-primary)] px-4 sm:px-5 py-2 text-sm font-medium text-white transition-all hover:opacity-90 whitespace-nowrap"
               >
                 {isLastStep ? t("preEnrollment.wizardFinish") : t("preEnrollment.wizardNextStep")}
                 <ChevronRightIcon />

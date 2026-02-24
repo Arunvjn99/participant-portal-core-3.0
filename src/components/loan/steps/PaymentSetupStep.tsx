@@ -35,9 +35,9 @@ export function PaymentSetupStep({ data, onDataChange, planConfig }: PaymentSetu
 
   return (
     <LoanStepLayout sidebar={summaryRows.length > 0 ? <LoanSummaryCard title="Loan summary" rows={summaryRows} /> : undefined}>
-      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-        <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">Payment setup (ACH)</h2>
-        <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
+      <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
+        <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">Payment setup (ACH)</h2>
+        <p className="mb-4 text-sm text-[var(--color-textSecondary)]">
           Loan payments will be deducted from your bank account via ACH.
         </p>
         <BankDetailsForm value={payment} onChange={handleChange} />

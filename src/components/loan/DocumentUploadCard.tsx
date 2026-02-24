@@ -60,8 +60,8 @@ export function DocumentUploadCard({
     <motion.div
       className={`rounded-xl border-2 border-dashed p-6 transition-colors ${
         dragOver && !disabled
-          ? "border-blue-500 bg-blue-50/50 dark:bg-slate-700"
-          : "border-slate-200 bg-slate-50/50 dark:border-slate-700 dark:bg-slate-800/50"
+          ? "border-[var(--color-primary)] bg-[var(--color-primary)]/5"
+          : "border-[var(--color-border)] bg-[var(--color-surface)]"
       } ${disabled ? "opacity-60" : ""}`}
       onDrop={handleDrop}
       onDragOver={handleDragOver}
@@ -70,11 +70,11 @@ export function DocumentUploadCard({
       animate={{ opacity: 1 }}
       transition={{ duration: 0.2 }}
     >
-      <p className="mb-2 text-sm font-medium text-slate-700 dark:text-slate-300">
+      <p className="mb-2 text-sm font-medium text-[var(--color-text)]">
         {documentType}
-        {required && <span className="text-red-600 dark:text-red-400"> *</span>}
+        {required && <span className="text-[var(--color-danger)]"> *</span>}
       </p>
-      <label className="flex cursor-pointer flex-col items-center gap-2 rounded-lg py-4 text-slate-600 dark:text-slate-400">
+      <label className="flex cursor-pointer flex-col items-center gap-2 rounded-lg py-4 text-[var(--color-textSecondary)]">
         <input
           type="file"
           accept={accept}
@@ -87,7 +87,7 @@ export function DocumentUploadCard({
         <span className="text-center text-sm">Drag and drop or click to upload</span>
       </label>
       {accepted.length > 0 && (
-        <ul className="mt-3 space-y-1 text-sm text-slate-600 dark:text-slate-400" aria-label="Uploaded files">
+        <ul className="mt-3 space-y-1 text-sm text-[var(--color-textSecondary)]" aria-label="Uploaded files">
           {accepted.map((f) => (
             <li key={f.id}>{f.name}</li>
           ))}

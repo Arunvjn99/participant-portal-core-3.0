@@ -58,13 +58,13 @@ export const RateOfReturnCard = ({ confidencePct, message, timeRange: initialRan
   };
 
   return (
-    <article className="ped-ror bg-card rounded-xl border border-slate-200 p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800 min-h-fit w-full min-w-0">
+    <article className="ped-ror rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm min-h-fit w-full min-w-0">
       <div className="ped-ror__header flex flex-wrap items-start justify-between gap-4 mb-4">
         <div>
-          <h2 className="ped-ror__title m-0 mb-1 text-lg font-semibold text-slate-900 dark:text-slate-100">
+          <h2 className="ped-ror__title m-0 mb-1 text-lg font-semibold text-[var(--color-text)]">
             Rate of Return
           </h2>
-          <p className="ped-ror__sub m-0 text-sm text-slate-500 dark:text-slate-400">
+          <p className="ped-ror__sub m-0 text-sm text-[var(--color-textSecondary)]">
             Historical performance across all plans
           </p>
         </div>
@@ -75,8 +75,8 @@ export const RateOfReturnCard = ({ confidencePct, message, timeRange: initialRan
               type="button"
               className={`ped-ror__tab px-3 py-2 text-sm font-medium rounded-md transition-colors ${
                 timeRange === r
-                  ? "bg-slate-200 text-slate-900 dark:bg-slate-600 dark:text-slate-100"
-                  : "bg-transparent text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700"
+                  ? "bg-[var(--color-background)] text-[var(--color-text)]"
+                  : "bg-transparent text-[var(--color-textSecondary)] hover:bg-[var(--color-background)]"
               }`}
               onClick={() => setTimeRange(r)}
             >
@@ -137,7 +137,7 @@ export const RateOfReturnCard = ({ confidencePct, message, timeRange: initialRan
               dominantBaseline="middle"
               fontSize="10"
               fill="currentColor"
-              className="text-slate-500 dark:text-slate-400"
+              className="text-[var(--color-textSecondary)]"
             >
               {formatYLabel(v)}
             </text>
@@ -151,7 +151,7 @@ export const RateOfReturnCard = ({ confidencePct, message, timeRange: initialRan
               textAnchor="middle"
               fontSize="10"
               fill="currentColor"
-              className="text-slate-500 dark:text-slate-400"
+              className="text-[var(--color-textSecondary)]"
             >
               {label}
             </text>
@@ -171,30 +171,30 @@ export const RateOfReturnCard = ({ confidencePct, message, timeRange: initialRan
         </svg>
         {tooltip && (
           <div
-            className="pointer-events-none absolute z-10 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm shadow-lg dark:border-slate-600 dark:bg-slate-800 dark:shadow-black/50"
+            className="pointer-events-none absolute z-10 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm shadow-lg"
             style={{ left: tooltip.x + 12, top: tooltip.y + 12, transform: "translate(0, -50%)" }}
           >
-            <div className="font-medium text-slate-900 dark:text-slate-100">{X_LABELS[tooltip.index]}</div>
-            <div className="text-blue-600 dark:text-blue-400">{formatCurrency(BLUE_LINE[tooltip.index] * 1000)}</div>
-            <div className="text-emerald-600 dark:text-emerald-400">{formatCurrency(GREEN_LINE[tooltip.index] * 1000)}</div>
+            <div className="font-medium text-[var(--color-text)]">{X_LABELS[tooltip.index]}</div>
+            <div className="text-[var(--color-primary)]">{formatCurrency(BLUE_LINE[tooltip.index] * 1000)}</div>
+            <div className="text-[var(--color-success)]">{formatCurrency(GREEN_LINE[tooltip.index] * 1000)}</div>
           </div>
         )}
       </div>
 
       {/* Confidence Indicator - light green section */}
-      <div className="ped-ror__confidence flex flex-wrap items-center gap-2 rounded-lg bg-emerald-50 px-4 py-3 dark:bg-emerald-950/30 dark:border dark:border-emerald-800/30 mb-4">
+      <div className="ped-ror__confidence flex flex-wrap items-center gap-2 rounded-lg bg-[var(--color-success)]/10 px-4 py-3 mb-4">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success, #22c55e)" strokeWidth="2" className="shrink-0" aria-hidden>
           <path d="M 0 20 L 4 16 L 8 20 L 16 12 L 24 20" />
         </svg>
         <div className="flex-1 min-w-0">
-          <span className="font-medium text-slate-900 dark:text-slate-100">Confidence Indicator: {confidencePct}%</span>
-          <span className="block text-sm text-slate-600 dark:text-slate-400">{message}</span>
+          <span className="font-medium text-[var(--color-text)]">Confidence Indicator: {confidencePct}%</span>
+          <span className="block text-sm text-[var(--color-textSecondary)]">{message}</span>
         </div>
       </div>
 
       <button
         type="button"
-        className="ped-ror__btn w-full rounded-lg bg-emerald-600 px-4 py-3 font-medium text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900"
+        className="ped-ror__btn w-full rounded-lg bg-[var(--color-success)] px-4 py-3 font-medium text-white hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--color-success)] focus:ring-offset-2"
         onClick={() => navigate("/enrollment/investments")}
       >
         Maintain Strategy

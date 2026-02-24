@@ -38,16 +38,16 @@ export const AIAdvisorModal = ({ open, onClose }: AIAdvisorModalProps) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 dark:bg-black/60"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
       role="dialog"
       aria-modal="true"
       aria-labelledby="ai-advisor-modal-title"
     >
-      <div className="w-full max-w-md rounded-xl border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-700 dark:bg-slate-800">
-        <h2 id="ai-advisor-modal-title" className="text-xl font-semibold text-slate-900 dark:text-slate-100">
+      <div className="w-full max-w-md rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-xl">
+        <h2 id="ai-advisor-modal-title" className="text-xl font-semibold text-[var(--color-text)]">
           Optimize Your Portfolio
         </h2>
-        <p className="mt-3 text-slate-600 dark:text-slate-400">
+        <p className="mt-3 text-[var(--color-textSecondary)]">
           Get personalized guidance from our AI advisor or connect with a human expert to optimize
           your retirement investments.
         </p>
@@ -69,7 +69,7 @@ export const AIAdvisorModal = ({ open, onClose }: AIAdvisorModalProps) => {
           <button
             type="button"
             onClick={onClose}
-            className="mt-2 text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
+            className="mt-2 text-sm text-[var(--color-textSecondary)] hover:text-[var(--color-text)]"
           >
             Maybe later
           </button>

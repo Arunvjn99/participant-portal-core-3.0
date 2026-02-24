@@ -38,8 +38,8 @@ export const Dashboard = () => {
       {/* Learning Resources (left) + Personalized Score (right) - canonical grid like Plans */}
       <section className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_400px] 2xl:grid-cols-[minmax(0,1fr)_420px] lg:items-start">
         {/* Section 1: Learning Resources - Figma: white rounded container, title left, carousel inside */}
-        <div className="relative min-w-0 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800 md:p-8">
-          <h2 className="mb-5 text-left text-xl font-bold text-slate-900 dark:text-slate-100 md:text-2xl">
+        <div className="relative min-w-0 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm md:p-8">
+          <h2 className="mb-5 text-left text-xl font-bold text-[var(--color-text)] md:text-2xl">
             {t("dashboard.learningResources")}
           </h2>
           <LearningResourcesCarousel>

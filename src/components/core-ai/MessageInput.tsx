@@ -62,9 +62,9 @@ export function MessageInput({
   return (
     <form
       onSubmit={handleSubmit}
-      className="shrink-0 border-t border-slate-200 px-4 py-3 sm:px-5 dark:border-slate-700/60"
+      className="shrink-0 border-t border-[var(--color-border)] px-4 py-3 sm:px-5"
     >
-      <div className="flex items-center gap-2 rounded-full bg-slate-100 border border-slate-300 pl-2 pr-1 focus-within:border-teal-500/70 transition-colors dark:bg-slate-800 dark:border-slate-700/50 dark:focus-within:border-teal-500/50">
+      <div className="flex items-center gap-2 rounded-full bg-[var(--color-background)] border border-[var(--color-border)] pl-2 pr-1 focus-within:border-[var(--color-primary)]/70 transition-colors">
         {/* Mic button — inside input */}
         <button
           type="button"
@@ -72,10 +72,10 @@ export function MessageInput({
           disabled={disabled || isProcessing}
           className={`relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-all ${
             isListening
-              ? "bg-red-500 text-white shadow-lg shadow-red-500/25"
+              ? "bg-[var(--color-danger)] text-white shadow-lg shadow-[var(--color-danger)]/25"
               : isProcessing
-                ? "bg-amber-500/80 text-white"
-                : "text-slate-500 hover:text-primary hover:bg-slate-200 dark:text-slate-400 dark:hover:text-primary dark:hover:bg-slate-700"
+                ? "bg-[var(--color-warning)]/80 text-white"
+                : "text-[var(--color-textSecondary)] hover:text-primary hover:bg-[var(--color-background)]"
           }`}
           aria-label={
             isListening
@@ -94,7 +94,7 @@ export function MessageInput({
         >
           {/* Pulse ring when listening */}
           {isListening && (
-            <span className="absolute inset-0 rounded-full animate-ping bg-red-500/30" />
+            <span className="absolute inset-0 rounded-full animate-ping bg-[var(--color-danger)]/30" />
           )}
 
           {/* Processing spinner */}
@@ -141,7 +141,7 @@ export function MessageInput({
           onChange={(e) => setValue(e.target.value)}
           placeholder={placeholder}
           disabled={disabled || micBusy}
-          className="flex-1 bg-transparent py-2.5 text-sm text-slate-900 placeholder-slate-500 outline-none min-w-0 disabled:opacity-50 dark:text-white dark:placeholder-slate-500"
+          className="flex-1 bg-transparent py-2.5 text-sm text-[var(--color-text)] placeholder-[var(--color-textSecondary)] outline-none min-w-0 disabled:opacity-50"
           aria-label={t("coreAi.ariaMessageInput")}
         />
 
@@ -171,12 +171,12 @@ export function MessageInput({
 
       {/* Speech status */}
       {isListening && (
-        <p className="mt-1.5 text-center text-[11px] text-red-400/80 animate-pulse">
+        <p className="mt-1.5 text-center text-[11px] text-[var(--color-danger)]/80 animate-pulse">
           {t("coreAi.recordingHint")}
         </p>
       )}
       {isProcessing && (
-        <p className="mt-1.5 text-center text-[11px] text-amber-400/80">
+        <p className="mt-1.5 text-center text-[11px] text-[var(--color-warning)]/80">
           {t("coreAi.processingHint")}
         </p>
       )}

@@ -25,7 +25,7 @@ export const SaveToast = () => {
     <div
       role="status"
       aria-live="polite"
-      className="fixed left-1/2 top-6 z-[100] -translate-x-1/2 rounded-lg border border-emerald-200 bg-emerald-50 px-6 py-3 text-sm font-medium text-emerald-800 shadow-lg dark:border-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-200"
+      className="fixed left-1/2 top-6 z-[100] -translate-x-1/2 rounded-lg border border-[var(--color-success)] bg-[var(--color-success-light)] px-6 py-3 text-sm font-medium text-[var(--color-success)] shadow-[var(--shadow-lg)]"
     >
       Your progress has been saved. You can resume anytime.
     </div>

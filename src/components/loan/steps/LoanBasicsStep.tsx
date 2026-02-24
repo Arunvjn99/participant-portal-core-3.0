@@ -78,8 +78,8 @@ export function LoanBasicsStep({ data, onDataChange, planConfig, userContext }: 
       }
     >
       <div className="space-y-6">
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">Loan amount</h2>
+        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">Loan amount</h2>
           <LoanAmountSlider
             value={basics.loanAmount}
             min={config.minLoanAmount}
@@ -95,8 +95,8 @@ export function LoanBasicsStep({ data, onDataChange, planConfig, userContext }: 
           />
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">Repayment term</h2>
+        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">Repayment term</h2>
           <div className="flex flex-wrap gap-2">
             {[1, 2, 3, 4, 5].map((y) => (
               <button
@@ -106,7 +106,7 @@ export function LoanBasicsStep({ data, onDataChange, planConfig, userContext }: 
                 className={`rounded-lg px-4 py-2 text-sm font-medium ${
                   basics.tenureYears === y
                     ? "bg-primary text-white"
-                    : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
+                    : "bg-[var(--color-background)] text-[var(--color-text)] hover:bg-[var(--color-background)]"
                 }`}
                 aria-pressed={basics.tenureYears === y}
                 aria-label={`${y} year${y === 1 ? "" : "s"}`}
@@ -117,8 +117,8 @@ export function LoanBasicsStep({ data, onDataChange, planConfig, userContext }: 
           </div>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-          <label htmlFor="loan-first-payment" className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
+          <label htmlFor="loan-first-payment" className="mb-2 block text-sm font-medium text-[var(--color-text)]">
             First payment date
           </label>
           <input
@@ -127,13 +127,13 @@ export function LoanBasicsStep({ data, onDataChange, planConfig, userContext }: 
             value={basics.firstPaymentDate}
             min={minDateStr}
             onChange={(e) => onDataChange({ basics: { ...basics, firstPaymentDate: e.target.value } })}
-            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+            className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-[var(--color-text)]"
             aria-label="First payment date"
           />
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-          <h2 className="mb-2 text-lg font-semibold text-slate-900 dark:text-slate-100">Payment frequency</h2>
+        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
+          <h2 className="mb-2 text-lg font-semibold text-[var(--color-text)]">Payment frequency</h2>
           <div className="flex flex-wrap gap-2">
             {PAYROLL_OPTIONS.filter((o) => config.allowedPayrollFrequencies.includes(o.value)).map((o) => (
               <button
@@ -143,7 +143,7 @@ export function LoanBasicsStep({ data, onDataChange, planConfig, userContext }: 
                 className={`rounded-lg px-4 py-2 text-sm font-medium ${
                   basics.payrollFrequency === o.value
                     ? "bg-primary text-white"
-                    : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
+                    : "bg-[var(--color-background)] text-[var(--color-text)] hover:bg-[var(--color-background)]"
                 }`}
                 aria-pressed={basics.payrollFrequency === o.value}
                 aria-label={o.label}
@@ -154,8 +154,8 @@ export function LoanBasicsStep({ data, onDataChange, planConfig, userContext }: 
           </div>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-          <h2 className="mb-2 text-lg font-semibold text-slate-900 dark:text-slate-100">Loan purpose (optional)</h2>
+        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
+          <h2 className="mb-2 text-lg font-semibold text-[var(--color-text)]">Loan purpose (optional)</h2>
           <div className="flex flex-wrap gap-2">
             {PURPOSE_OPTIONS.map((p) => (
               <button
@@ -165,7 +165,7 @@ export function LoanBasicsStep({ data, onDataChange, planConfig, userContext }: 
                 className={`rounded-lg px-4 py-2 text-sm font-medium ${
                   basics.loanPurpose === p
                     ? "bg-primary text-white"
-                    : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
+                    : "bg-[var(--color-background)] text-[var(--color-text)] hover:bg-[var(--color-background)]"
                 }`}
                 aria-pressed={basics.loanPurpose === p}
                 aria-label={p}

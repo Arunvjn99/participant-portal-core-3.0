@@ -67,7 +67,7 @@ function ChevronDownIcon({ className }: { className?: string }) {
 /* ────────────────────── Icon button shared class ─────────────────────── */
 
 const ICON_BTN =
-  "relative h-9 w-9 flex items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100";
+  "relative h-9 w-9 flex items-center justify-center rounded-lg text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface)] hover:text-[var(--color-text-primary)]";
 
 /* ──────────────────────────── Component ──────────────────────────────── */
 
@@ -81,7 +81,7 @@ export const DashboardHeader = () => {
   const demoUser = useDemoUser();
   const { signOut } = useAuth();
   const { resetOtp } = useOtp();
-  const { profile } = useUser();
+  const { user, profile, company } = useUser();
 
   /* Close user menu on outside click */
   useEffect(() => {
@@ -132,47 +132,31 @@ export const DashboardHeader = () => {
   };
 
   const { currentColors } = useTheme();
-  const { company } = useUser();
-  const companyLogo = currentColors.logo;
-  const [logoError, setLogoError] = useState(false);
-
-  useEffect(() => {
-    setLogoError(false);
-  }, [companyLogo]);
-
-  const showLogoImg = companyLogo && !logoError;
+  const tenantLogo = currentColors?.logo?.trim();
+  const isAuthenticated = Boolean(user);
 
   return (
     <>
       <div>
       <div className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:h-16 lg:px-8">
-        {/* ── Left: Company brand → divider → CORE platform logo ── */}
-        <div className="flex items-center gap-3 shrink-0">
-          {/* Dynamic company brand — changes per tenant */}
-          {showLogoImg ? (
+        {/* ── Left: [Tenant Logo] | [CORE Logo] (post-auth only; no company name fallback, no Ascend) ── */}
+        {isAuthenticated && (
+          <div className="flex items-center gap-3 shrink-0">
+            {tenantLogo && (
+              <img
+                src={tenantLogo}
+                alt="Company Logo"
+                className="h-8 w-auto max-w-[160px] object-contain"
+              />
+            )}
+            <span className="text-[var(--color-border)]" aria-hidden>|</span>
             <img
-              key={companyLogo}
-              src={companyLogo}
-              alt={company?.name ?? "Company"}
-              className="h-7 w-auto max-w-[160px] object-contain sm:h-8"
-              onError={() => setLogoError(true)}
+              src="/image/core-logo.png"
+              alt="CORE"
+              className="h-8 w-auto object-contain"
             />
-          ) : (
-            <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
-              {company?.name ?? ""}
-            </span>
-          )}
-
-          {/* Divider */}
-          <span className="hidden sm:block h-5 w-px shrink-0 bg-slate-200 dark:bg-slate-600" aria-hidden />
-
-          {/* Static CORE platform logo — never changes */}
-          <img
-            src="/image/core-logo.png"
-            alt="CORE"
-            className="hidden sm:block h-7 w-auto object-contain sm:h-8"
-          />
-        </div>
+          </div>
+        )}
 
         {/* ── Center: Desktop nav (visible at lg+) ── */}
         <nav
@@ -188,7 +172,7 @@ export const DashboardHeader = () => {
                 className={`relative px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors ${
                   active
                     ? "text-[var(--color-primary)] font-semibold"
-                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800"
+                    : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface)]"
                 }`}
               >
                 {t(labelKey)}
@@ -208,8 +192,8 @@ export const DashboardHeader = () => {
           <LanguageSwitcher />
           {/* Demo Mode badge */}
           {demoUser && (
-            <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-amber-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-amber-700 dark:border-amber-600 dark:bg-amber-900/30 dark:text-amber-300">
-              <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" aria-hidden />
+            <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-[var(--color-warning)] bg-[var(--color-warning-light)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-[var(--color-warning)]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-warning)] animate-pulse" aria-hidden />
               {t("demo.badge", { scenario: t(`demo.scenario_${demoUser.scenario}` as const) })}
             </span>
           )}
@@ -224,14 +208,14 @@ export const DashboardHeader = () => {
             aria-label={t("nav.notifications")}
           >
             <BellIcon />
-            <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-slate-900" aria-hidden />
+            <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-[var(--color-danger)] ring-2 ring-[var(--color-background)]" aria-hidden />
           </button>
 
           {/* User avatar + dropdown – hidden on mobile */}
           <div className="relative hidden lg:block" ref={userMenuRef}>
             <button
               type="button"
-              className="flex items-center gap-1.5 rounded-lg p-1 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="flex items-center gap-1.5 rounded-lg p-1 transition-colors hover:bg-[var(--color-surface)]"
               aria-label={t("nav.userMenu")}
               aria-expanded={userMenuOpen}
               aria-haspopup="true"
@@ -244,25 +228,33 @@ export const DashboardHeader = () => {
               >
                 {demoUser?.name?.charAt(0) ?? profile?.name?.charAt(0) ?? "U"}
               </span>
-              <ChevronDownIcon className="text-slate-400" />
+              <ChevronDownIcon className="text-[var(--color-text-secondary)]" />
             </button>
 
             {userMenuOpen && (
               <div
-                className="absolute right-0 top-full mt-2 z-50 min-w-[160px] rounded-lg border border-slate-200 bg-white py-1 shadow-lg dark:border-slate-700 dark:bg-slate-800"
+                className="absolute right-0 top-full mt-2 z-50 min-w-[160px] rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] py-1 shadow-[var(--shadow-lg)]"
                 role="menu"
               >
                 <Link
                   to="/profile"
-                  className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700"
+                  className="block px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-surface-elevated)]"
                   role="menuitem"
                   onClick={() => setUserMenuOpen(false)}
                 >
                   {t("nav.profile")}
                 </Link>
+                <Link
+                  to="/settings"
+                  className="block px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-surface-elevated)]"
+                  role="menuitem"
+                  onClick={() => setUserMenuOpen(false)}
+                >
+                  {t("nav.settings")}
+                </Link>
                 <button
                   type="button"
-                  className="block w-full px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700"
+                  className="block w-full px-4 py-2 text-left text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-surface-elevated)]"
                   role="menuitem"
                   onClick={handleLogoutClick}
                 >
@@ -288,7 +280,7 @@ export const DashboardHeader = () => {
       {/* ── Mobile nav drawer (below lg) ── */}
       {mobileMenuOpen && (
       <div
-        className="absolute inset-x-0 top-full z-40 border-b border-slate-200 bg-white shadow-lg lg:hidden dark:border-slate-700 dark:bg-slate-900"
+        className="absolute inset-x-0 top-full z-40 border-b border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-lg)] lg:hidden"
         role="dialog"
         aria-label={t("nav.mobileNav")}
       >
@@ -302,8 +294,8 @@ export const DashboardHeader = () => {
                     to={to}
                     className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                       active
-                        ? "text-[var(--color-primary)] bg-blue-50 dark:bg-blue-500/10"
-                        : "text-slate-600 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800"
+                        ? "text-[var(--color-primary)] bg-[var(--color-secondary)]"
+                        : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)]"
                     }`}
                     onClick={() => setMobileMenuOpen(false)}
                   >
@@ -312,10 +304,10 @@ export const DashboardHeader = () => {
                 </li>
               );
             })}
-            <li className="mt-1 border-t border-slate-100 pt-1 dark:border-slate-800">
+            <li className="mt-1 border-t border-[var(--color-border)] pt-1">
               <button
                 type="button"
-                className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-slate-600 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800"
+                className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)]"
                 onClick={handleLogoutClick}
               >
                 {t("nav.logOut")}

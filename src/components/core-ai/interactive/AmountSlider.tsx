@@ -76,7 +76,7 @@ export function AmountSlider({
 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <label htmlFor="amount-slider" className="text-xs font-medium text-slate-500 dark:text-slate-400">
+          <label htmlFor="amount-slider" className="text-xs font-medium text-[var(--color-textSecondary)]">
             {label}
           </label>
           <motion.span
@@ -99,7 +99,7 @@ export function AmountSlider({
           onChange={(e) => setValue(Number(e.target.value))}
           onMouseUp={commitSlider}
           onTouchEnd={commitSlider}
-          className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-slate-300 accent-primary dark:bg-slate-700
+          className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-[var(--color-border)] accent-primary
             [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4
             [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:cursor-pointer
             [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary
@@ -110,7 +110,7 @@ export function AmountSlider({
           aria-valuenow={value}
           aria-valuetext={display}
         />
-        <div className="flex justify-between text-[10px] text-slate-500 dark:text-slate-500">
+        <div className="flex justify-between text-[10px] text-[var(--color-textSecondary)]">
           <span>{formatValue ? formatValue(min) : `${min.toLocaleString()}${unit}`}</span>
           <span>{formatValue ? formatValue(max) : `${max.toLocaleString()}${unit}`}</span>
         </div>

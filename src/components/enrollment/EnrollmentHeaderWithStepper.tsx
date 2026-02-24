@@ -49,7 +49,7 @@ export function EnrollmentHeaderWithStepper({ activeStep }: EnrollmentHeaderWith
   ];
 
   return (
-    <div className="border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 py-3">
+    <div className="border-t border-[var(--color-border)] bg-[var(--color-surface)] py-3">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <EnrollmentStepper
           currentStep={activeStep}

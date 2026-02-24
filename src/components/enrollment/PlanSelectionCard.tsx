@@ -33,7 +33,7 @@ export const PlanSelectionCard = ({
     return (
       <DashboardCard
         isSelected={isSelected}
-        className="plan-selection-card--standard-wrapper border-2 bg-white p-5 md:p-6 dark:bg-slate-800"
+        className="plan-selection-card--standard-wrapper border-2 bg-[var(--color-surface)] p-5 md:p-6"
         style={{ borderColor: "var(--color-accent, #00bba7)" }}
       >
         <div
@@ -172,7 +172,7 @@ export const PlanSelectionCard = ({
 
   const standardWrapperClass = isSelected
     ? "plan-selection-card--standard-wrapper p-5 md:p-6"
-    : "plan-selection-card--standard-wrapper border-slate-200 bg-white p-5 md:p-6 dark:border-slate-600 dark:bg-slate-800";
+    : "plan-selection-card--standard-wrapper border-[var(--color-border)] bg-[var(--color-surface)] p-5 md:p-6";
 
   return (
     <DashboardCard isSelected={isSelected} className={standardWrapperClass}>

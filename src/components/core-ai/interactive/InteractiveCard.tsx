@@ -25,12 +25,12 @@ export function InteractiveCard({ title, subtitle, children, className = "" }: I
       initial={reduced ? false : { opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-      className={`rounded-xl border border-slate-300 bg-slate-50/90 backdrop-blur-sm shadow-lg overflow-hidden dark:border-slate-700/50 dark:bg-slate-800/80 ${className}`}
+      className={`rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] backdrop-blur-sm shadow-lg overflow-hidden ${className}`}
     >
       {title && (
-        <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700/40">
-          <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{title}</h4>
-          {subtitle && <p className="text-[11px] text-slate-500 mt-0.5 dark:text-slate-400">{subtitle}</p>}
+        <div className="px-4 py-3 border-b border-[var(--color-border)]">
+          <h4 className="text-sm font-semibold text-[var(--color-text)]">{title}</h4>
+          {subtitle && <p className="text-[11px] text-[var(--color-textSecondary)] mt-0.5">{subtitle}</p>}
         </div>
       )}
       <div className="px-4 py-3">{children}</div>

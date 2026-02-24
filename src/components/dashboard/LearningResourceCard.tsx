@@ -50,12 +50,12 @@ export const LearningResourceCard = ({
       variants={containerVariants}
       initial="initial"
       animate="animate"
-      className={`flex h-[320px] w-[280px] shrink-0 snap-start flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-md transition-shadow duration-200 focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 dark:border-slate-700 dark:bg-slate-800 dark:shadow-black/30 dark:focus-within:ring-offset-slate-900 ${canHover && !reduced ? "hover:shadow-lg focus-within:shadow-lg" : ""}`}
+      className={`flex h-[320px] w-[280px] shrink-0 snap-start flex-col overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-md transition-shadow duration-200 focus-within:ring-2 focus-within:ring-[var(--color-primary)] focus-within:ring-offset-2 ${canHover && !reduced ? "hover:shadow-lg focus-within:shadow-lg" : ""}`}
       whileHover={canHover && !reduced ? { y: -4, transition: { duration: 0.2 } } : undefined}
     >
         <div className="group/card flex h-full flex-col">
         {/* Thumbnail - scale 1.05 on card hover (inside overflow-hidden) */}
-        <div className="relative aspect-video w-full shrink-0 overflow-hidden bg-slate-100 dark:bg-slate-700">
+        <div className="relative aspect-video w-full shrink-0 overflow-hidden bg-[var(--color-background)]">
           <img
             src={src}
             alt={title}
@@ -66,7 +66,7 @@ export const LearningResourceCard = ({
           />
           {badge && (
             <span
-              className="absolute right-2 top-2 rounded-full border border-slate-200 bg-white/95 px-3 py-1 text-xs font-medium text-slate-700 shadow-sm dark:border-slate-600 dark:bg-slate-800/95 dark:text-slate-200"
+              className="absolute right-2 top-2 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1 text-xs font-medium text-[var(--color-textSecondary)] shadow-sm"
               aria-label={`Content type: ${badge}`}
             >
               {badge}
@@ -75,8 +75,8 @@ export const LearningResourceCard = ({
         </div>
         {/* Title + source */}
         <div className="flex min-h-0 flex-1 flex-col p-5">
-          <h3 className="line-clamp-2 text-base font-semibold text-slate-900 dark:text-slate-100">{title}</h3>
-          <p className="mt-1 line-clamp-1 text-sm text-slate-500 dark:text-slate-400">{subtitle}</p>
+          <h3 className="line-clamp-2 text-base font-semibold text-[var(--color-text)]">{title}</h3>
+          <p className="mt-1 line-clamp-1 text-sm text-[var(--color-textSecondary)]">{subtitle}</p>
         </div>
       </div>
     </motion.article>

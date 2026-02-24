@@ -7,15 +7,15 @@ export const ScoreUnlockCard = () => {
     <DashboardCard>
       <div className="flex flex-col gap-4">
         <div
-          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400"
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[var(--color-background)] text-[var(--color-primary)]"
           aria-hidden="true"
         >
           <PadlockIcon size={28} />
         </div>
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+        <h3 className="text-lg font-semibold text-[var(--color-text)]">
           Unlock Your Personalized Score
         </h3>
-        <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+        <p className="text-sm leading-relaxed text-[var(--color-textSecondary)]">
           Enroll in the plan to see your projected retirement income and earn badges.
         </p>
         <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:flex-wrap">

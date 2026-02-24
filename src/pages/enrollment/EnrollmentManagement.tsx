@@ -73,11 +73,11 @@ export const EnrollmentManagement = () => {
   const getStatusStyles = (status: PlanStatus): string => {
     switch (status) {
       case "enrolled":
-        return "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300";
+        return "bg-[var(--color-success)]/10 text-[var(--color-success)]";
       case "eligible":
-        return "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300";
+        return "bg-[var(--color-primary)]/10 text-[var(--color-primary)]";
       case "ineligible":
-        return "bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400";
+        return "bg-[var(--color-background)] text-[var(--color-textSecondary)]";
     }
   };
 
@@ -99,10 +99,10 @@ export const EnrollmentManagement = () => {
         custom={!!reducedMotion}
       >
         <header className="space-y-2">
-          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 md:text-3xl">
+          <h1 className="text-2xl font-semibold text-[var(--color-text)] md:text-3xl">
             {t("enrollment.managementTitle")}
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
+          <p className="text-sm text-[var(--color-textSecondary)]">
             {t("enrollment.managementDescription")}
           </p>
         </header>
@@ -114,10 +114,10 @@ export const EnrollmentManagement = () => {
               type="button"
               onClick={() => setFilter(f.value)}
               aria-pressed={filter === f.value}
-              className={`rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-900 ${
+              className={`rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${
                 filter === f.value
                   ? "text-white"
-                  : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:bg-slate-700"
+                  : "border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-textSecondary)] hover:border-[var(--color-border)] hover:bg-[var(--color-background)]"
               }`}
               style={filter === f.value ? { backgroundColor: "var(--color-primary)", borderColor: "var(--color-primary)" } : undefined}
               whileHover={reducedMotion ? undefined : { scale: 1.02 }}
@@ -132,11 +132,11 @@ export const EnrollmentManagement = () => {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {filteredPlans.length === 0 ? (
             <motion.div
-              className="col-span-full rounded-xl border border-slate-200 bg-slate-50/50 px-6 py-12 text-center dark:border-slate-700 dark:bg-slate-800/40"
+              className="col-span-full rounded-xl border border-[var(--color-border)] bg-[var(--color-background)]/50 px-6 py-12 text-center"
               variants={cardVariants}
               custom={!!reducedMotion}
             >
-              <p className="text-sm text-slate-600 dark:text-slate-400">
+              <p className="text-sm text-[var(--color-textSecondary)]">
                 {t("enrollment.noPlansFound")}
               </p>
             </motion.div>
@@ -146,15 +146,15 @@ export const EnrollmentManagement = () => {
                 key={plan.id}
                 variants={cardVariants}
                 custom={!!reducedMotion}
-                className="flex flex-col rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-[box-shadow,border-color] duration-200 ease-out hover:border-slate-300 hover:shadow-md dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600 dark:hover:shadow-lg dark:hover:shadow-black/10"
+                className="flex flex-col rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm transition-[box-shadow,border-color] duration-200 ease-out hover:border-[var(--color-border)] hover:shadow-md"
               >
                 <div className="flex flex-1 flex-col gap-4">
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0 flex-1 space-y-1">
-                      <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                      <h3 className="text-lg font-semibold text-[var(--color-text)]">
                         {plan.planName}
                       </h3>
-                      <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-sm text-slate-500 dark:text-slate-400">
+                      <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-sm text-[var(--color-textSecondary)]">
                         <span>{t("enrollment.planId")}: {plan.planId}</span>
                         <span className="italic">{plan.planType}</span>
                       </div>
@@ -167,19 +167,19 @@ export const EnrollmentManagement = () => {
                   </div>
 
                   {plan.status === "ineligible" && plan.ineligibilityReason && (
-                    <div className="rounded-lg border border-amber-200 bg-amber-50/80 px-4 py-3 dark:border-amber-800/50 dark:bg-amber-900/20">
-                      <p className="text-sm text-slate-700 dark:text-slate-300">
+                    <div className="rounded-lg border border-[var(--color-warning)]/30 bg-[var(--color-warning)]/10 px-4 py-3">
+                      <p className="text-sm text-[var(--color-text)]">
                         {plan.ineligibilityReason}
                       </p>
                     </div>
                   )}
 
                   {plan.status === "enrolled" && plan.balance !== undefined && (
-                    <div className="flex items-center justify-between rounded-lg border border-slate-100 bg-slate-50/80 px-4 py-3 dark:border-slate-700 dark:bg-slate-700/30">
-                      <span className="text-sm text-slate-500 dark:text-slate-400">
+                    <div className="flex items-center justify-between rounded-lg border border-[var(--color-border)] bg-[var(--color-background)]/80 px-4 py-3">
+                      <span className="text-sm text-[var(--color-textSecondary)]">
                         {t("enrollment.currentBalance")}:
                       </span>
-                      <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                      <span className="text-sm font-semibold text-[var(--color-text)]">
                         {formatCurrency(plan.balance)}
                       </span>
                     </div>

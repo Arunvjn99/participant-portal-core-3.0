@@ -55,14 +55,14 @@ export const PlanOverviewCard = ({
   };
 
   return (
-    <article className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800 min-h-fit w-full min-w-0">
+    <article className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm min-h-fit w-full min-w-0">
       {/* Header: 9% ER badge + Enrolled date */}
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="rounded-full bg-emerald-50 px-3 py-1 text-sm font-semibold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+          <span className="rounded-full bg-[var(--color-success)]/10 px-3 py-1 text-sm font-semibold text-[var(--color-success)]">
             {plan.contributionRate}% ER
           </span>
-          <span className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
+          <span className="flex items-center gap-1.5 text-sm text-[var(--color-textSecondary)]">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
               <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
               <line x1="16" y1="2" x2="16" y2="6" />
@@ -74,19 +74,19 @@ export const PlanOverviewCard = ({
         </div>
       </div>
 
-      <h2 className="mb-4 text-xl font-bold text-slate-900 dark:text-slate-100">{plan.planName}</h2>
+      <h2 className="mb-4 text-xl font-bold text-[var(--color-text)]">{plan.planName}</h2>
 
       {/* Balance + Chart row */}
       <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <span className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <span className="block text-xs font-semibold uppercase tracking-wider text-[var(--color-textSecondary)]">
             Total Balance
           </span>
           <div className="mt-1 flex flex-wrap items-baseline gap-3">
-            <span className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+            <span className="text-3xl font-bold text-[var(--color-text)]">
               {formatCurrency(plan.totalBalance)}
             </span>
-            <span className="flex items-center gap-1 text-sm font-medium text-emerald-600 dark:text-emerald-400">
+            <span className="flex items-center gap-1 text-sm font-medium text-[var(--color-success)]">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
                 <polyline points="18 15 12 9 6 15" />
               </svg>
@@ -125,13 +125,13 @@ export const PlanOverviewCard = ({
           </svg>
           {tooltip && (
             <div
-              className="pointer-events-none absolute z-10 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm shadow-lg dark:border-slate-600 dark:bg-slate-800 dark:shadow-black/50"
+              className="pointer-events-none absolute z-10 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm shadow-lg"
               style={{ left: tooltip.x + 12, top: tooltip.y + 12, transform: "translate(0, -50%)" }}
             >
-              <div className="font-medium text-slate-900 dark:text-slate-100">
+              <div className="font-medium text-[var(--color-text)]">
                 {BALANCE_CHART_LABELS[tooltip.index]}
               </div>
-              <div className="text-blue-600 dark:text-blue-400">
+              <div className="text-[var(--color-primary)]">
                 {formatCurrency(BALANCE_CHART_POINTS[tooltip.index])}
               </div>
             </div>
@@ -141,55 +141,55 @@ export const PlanOverviewCard = ({
 
       {/* Three balance cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-4 dark:border-slate-600 dark:bg-slate-800/50">
-          <h3 className="mb-1 text-sm font-semibold text-slate-900 dark:text-slate-100">
+        <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] p-4">
+          <h3 className="mb-1 text-sm font-semibold text-[var(--color-text)]">
             Vested Balance
           </h3>
-          <span className="block text-2xl font-bold text-slate-900 dark:text-slate-100">
+          <span className="block text-2xl font-bold text-[var(--color-text)]">
             {formatCurrency(balances.vestedBalance)}
           </span>
-          <p className="mb-3 mt-1 text-xs text-slate-500 dark:text-slate-400">
+          <p className="mb-3 mt-1 text-xs text-[var(--color-textSecondary)]">
             Move to IRA or new employer.
           </p>
           <button
             type="button"
-            className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-400"
+            className="text-sm font-medium text-[var(--color-primary)] hover:underline"
             onClick={() => navigate("/transactions/rollover/start")}
           >
             Start Rollover
           </button>
         </div>
-        <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-4 dark:border-slate-600 dark:bg-slate-800/50">
-          <h3 className="mb-1 text-sm font-semibold text-slate-900 dark:text-slate-100">
+        <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] p-4">
+          <h3 className="mb-1 text-sm font-semibold text-[var(--color-text)]">
             Rollover Eligible
           </h3>
-          <span className="block text-2xl font-bold text-slate-900 dark:text-slate-100">
+          <span className="block text-2xl font-bold text-[var(--color-text)]">
             {formatCurrency(balances.rolloverEligible)}
           </span>
-          <p className="mb-3 mt-1 text-xs text-slate-500 dark:text-slate-400">
+          <p className="mb-3 mt-1 text-xs text-[var(--color-textSecondary)]">
             Move to IRA or new employer.
           </p>
           <button
             type="button"
-            className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-400"
+            className="text-sm font-medium text-[var(--color-primary)] hover:underline"
             onClick={() => navigate("/transactions/rollover/start")}
           >
             Start Rollover
           </button>
         </div>
-        <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-4 dark:border-slate-600 dark:bg-slate-800/50">
-          <h3 className="mb-1 text-sm font-semibold text-slate-900 dark:text-slate-100">
+        <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] p-4">
+          <h3 className="mb-1 text-sm font-semibold text-[var(--color-text)]">
             Available Cash
           </h3>
-          <span className={`block text-2xl font-bold ${balances.availableCash < 0 ? "text-slate-900 dark:text-slate-100" : "text-slate-900 dark:text-slate-100"}`}>
+          <span className="block text-2xl font-bold text-[var(--color-text)]">
             {formatCurrencyWithSign(balances.availableCash)}
           </span>
-          <p className="mb-3 mt-1 text-xs text-slate-500 dark:text-slate-400">
+          <p className="mb-3 mt-1 text-xs text-[var(--color-textSecondary)]">
             Est. after taxes/penalties.
           </p>
           <button
             type="button"
-            className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="text-sm font-medium text-[var(--color-primary)] hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isWithdrawalRestricted}
             onClick={() => navigate("/transactions/withdrawal/start")}
           >
