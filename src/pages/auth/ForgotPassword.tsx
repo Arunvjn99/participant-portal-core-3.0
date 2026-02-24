@@ -38,16 +38,18 @@ export const ForgotPassword = () => {
         onChange={(e) => setEmail(e.target.value)}
       />
       <AuthButton onClick={handleSendResetLink}>{t("auth.sendResetLink")}</AuthButton>
-      <a
-        href="#"
-        className="text-center text-sm text-[var(--color-primary)] no-underline hover:underline"
-        onClick={(e) => {
-          e.preventDefault();
-          handleBackToSignIn();
-        }}
-      >
-        {t("auth.backToSignIn")}
-      </a>
+      <div className="flex flex-col items-center gap-2">
+        <a
+          href="#"
+          className="text-center text-sm text-[var(--color-primary)] no-underline hover:underline"
+          onClick={(e) => {
+            e.preventDefault();
+            handleBackToSignIn();
+          }}
+        >
+          {t("auth.backToSignIn")}
+        </a>
+      </div>
     </>
   );
 

@@ -17,6 +17,8 @@ import { AISettingsProvider } from "./context/AISettingsContext";
 import { AuthProvider } from "./context/AuthContext";
 import { OtpProvider } from "./context/OtpContext";
 import { UserProvider } from "./context/UserContext";
+import { NetworkProvider } from "./lib/network/networkContext";
+import { NetworkBanner } from "./components/system/NetworkBanner";
 
 // Initialize theme from localStorage before first paint (avoids flash)
 const savedTheme = localStorage.getItem("theme");
@@ -35,17 +37,20 @@ document.documentElement.classList.add(effectiveTheme);
 function RootWithLanguageKey() {
   const { i18n: i18nInstance } = useTranslation();
   return (
-    <AuthProvider>
-      <OtpProvider>
-        <ThemeProvider>
-          <AISettingsProvider>
-            <UserProvider>
-              <RouterProvider key={i18nInstance.language || "en"} router={router} />
-            </UserProvider>
-          </AISettingsProvider>
-        </ThemeProvider>
-      </OtpProvider>
-    </AuthProvider>
+    <NetworkProvider>
+      <NetworkBanner />
+      <AuthProvider>
+        <OtpProvider>
+          <ThemeProvider>
+            <AISettingsProvider>
+              <UserProvider>
+                <RouterProvider key={i18nInstance.language || "en"} router={router} />
+              </UserProvider>
+            </AISettingsProvider>
+          </ThemeProvider>
+        </OtpProvider>
+      </AuthProvider>
+    </NetworkProvider>
   );
 }
 

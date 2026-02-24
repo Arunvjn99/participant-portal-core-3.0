@@ -60,7 +60,8 @@ export function AdvancedJsonSection({
     let parsed: unknown;
     try {
       parsed = JSON.parse(raw);
-    } catch {
+    } catch (err) {
+      if (import.meta.env.DEV) console.error("[AdvancedJsonSection] JSON parse failed:", err);
       setError("Invalid JSON syntax. Please check your input.");
       return;
     }

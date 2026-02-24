@@ -29,7 +29,8 @@ function loadFromStorage(): AISettingsState {
       coreAIEnabled: typeof parsed.coreAIEnabled === "boolean" ? parsed.coreAIEnabled : DEFAULT_STATE.coreAIEnabled,
       insightsEnabled: typeof parsed.insightsEnabled === "boolean" ? parsed.insightsEnabled : DEFAULT_STATE.insightsEnabled,
     };
-  } catch {
+  } catch (err) {
+    if (import.meta.env.DEV) console.error("[AISettingsContext] loadFromStorage parse failed:", err);
     return { ...DEFAULT_STATE };
   }
 }
@@ -37,8 +38,8 @@ function loadFromStorage(): AISettingsState {
 function saveToStorage(state: AISettingsState): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  } catch {
-    // ignore
+  } catch (err) {
+    if (import.meta.env.DEV) console.error("[AISettingsContext] saveToStorage failed:", err);
   }
 }
 

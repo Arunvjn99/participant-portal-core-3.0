@@ -17,7 +17,8 @@ const useEnrollmentSafe = () => {
   try {
     const { useEnrollment } = require("../../enrollment/context/EnrollmentContext");
     return useEnrollment();
-  } catch {
+  } catch (err) {
+    if (import.meta.env.DEV) console.error("[CoreAssistantModal] useEnrollment safe import failed:", err);
     return null;
   }
 };
@@ -191,7 +192,8 @@ export function CoreAssistantModal({ isOpen, onClose }: CoreAssistantModalProps)
         };
 
         setMessages((prev) => [...prev, assistantMsg]);
-      } catch {
+      } catch (err) {
+        if (import.meta.env.DEV) console.error("[CoreAssistantModal] send message failed:", err);
         const errorMsg: ChatMessage = {
           id: nextId(),
           role: "assistant",

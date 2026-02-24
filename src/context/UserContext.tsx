@@ -64,15 +64,18 @@ export function UserProvider({ children }: { children: ReactNode }) {
     setProfileLoading(true);
 
     const fetchUserData = async () => {
+      if (import.meta.env.DEV) console.log("[user-diag] fetching profile for", authUser.id);
       const { data: profileData, error: profileError } = await supabase
         .from("profiles")
         .select("id, name, company_id, location, role")
         .eq("id", authUser.id)
         .single();
 
+      if (import.meta.env.DEV) console.log("[user-diag] profile result:", { profileData, profileError });
       if (cancelled) return;
 
       if (profileError || !profileData) {
+        if (import.meta.env.DEV) console.error("[user-diag] profile fetch failed:", profileError);
         setProfile(null);
         setCompany(null);
         setBrandingLoading(false);
@@ -87,12 +90,14 @@ export function UserProvider({ children }: { children: ReactNode }) {
         console.log("[logo-audit] user.id:", authUser.id, "profile.company_id:", profileData.company_id);
       }
 
-      const { data: companyData } = await supabase
+      if (import.meta.env.DEV) console.log("[user-diag] fetching company for", profileData.company_id);
+      const { data: companyData, error: companyError } = await supabase
         .from("companies")
         .select("id, name, primary_color, secondary_color, branding_json, logo_url")
         .eq("id", profileData.company_id)
         .single();
 
+      if (import.meta.env.DEV) console.log("[user-diag] company result:", { companyData, companyError });
       if (cancelled) return;
 
       const company = companyData as Company | null;

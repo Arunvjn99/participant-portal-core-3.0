@@ -45,7 +45,7 @@ export const VerifyCode = () => {
       <AuthButton onClick={handleVerify}>
         {t("auth.verifyContinue")}
       </AuthButton>
-      <div className="flex flex-col items-center gap-3">
+      <div className="flex flex-col items-center gap-2">
         <a
           href="#"
           className="text-sm text-[var(--color-primary)] no-underline hover:underline"

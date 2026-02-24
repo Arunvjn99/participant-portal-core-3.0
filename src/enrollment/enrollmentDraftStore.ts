@@ -51,7 +51,8 @@ export function loadEnrollmentDraft(): EnrollmentDraft | null {
     const raw = sessionStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
     return JSON.parse(raw) as EnrollmentDraft;
-  } catch {
+  } catch (err) {
+    if (import.meta.env.DEV) console.error("[enrollmentDraftStore] loadEnrollmentDraft parse failed:", err);
     return null;
   }
 }

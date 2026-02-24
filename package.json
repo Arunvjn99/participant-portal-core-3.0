@@ -10,7 +10,8 @@
     "build": "vite build",
     "build:check": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "playwright:demo": "node scripts/superdesign-demo.js"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -29,6 +30,7 @@
     "i18next": "^25.8.10",
     "i18next-browser-languagedetector": "^8.2.1",
     "lucide-react": "^0.563.0",
+    "playwright": "^1.58.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-i18next": "^16.5.4",

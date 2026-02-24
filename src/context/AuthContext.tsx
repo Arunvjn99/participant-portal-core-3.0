@@ -32,9 +32,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let cancelled = false;
 
     const initSession = async () => {
+      if (import.meta.env.DEV) console.log("[auth-diag] getSession: requesting…");
       const { data, error } = await supabase.auth.getSession();
+      if (import.meta.env.DEV) console.log("[auth-diag] getSession:", { session: data.session, error });
       if (cancelled) return;
       if (error) {
+        if (import.meta.env.DEV) console.error("[auth-diag] getSession error:", error);
         setSession(null);
         setUser(null);
         setLoading(false);

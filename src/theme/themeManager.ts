@@ -71,7 +71,8 @@ export const themeManager = {
           : generateDarkTheme(light);
 
       return { light, dark };
-    } catch {
+    } catch (err) {
+      if (import.meta.env.DEV) console.error("[themeManager] getTheme parse failed:", err);
       return null;
     }
   },

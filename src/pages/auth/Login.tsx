@@ -11,6 +11,7 @@ import {
 import { Logo } from "../../components/brand/Logo";
 import { useAuth } from "../../context/AuthContext";
 import { useOtp } from "../../context/OtpContext";
+import { useNetwork } from "../../lib/network/networkContext";
 import { supabase } from "../../lib/supabase";
 import { personas, SCENARIO_LABELS } from "@/mock/personas";
 import { setDemoUser } from "@/hooks/useDemoUser";
@@ -38,7 +39,10 @@ export const Login = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading, signIn } = useAuth();
   const { isOtpVerified } = useOtp();
+  const { status: networkStatus } = useNetwork();
   const [showDemoPanel, setShowDemoPanel] = useState(false);
+
+  const canReachServer = networkStatus === "healthy";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -78,7 +82,8 @@ export const Login = () => {
         } else {
           setDetectedLogo(null);
         }
-      } catch {
+      } catch (err) {
+        if (import.meta.env.DEV) console.error("[Login] domain logo lookup failed:", err);
         setDetectedLogo(null);
       }
     }, DOMAIN_LOOKUP_DEBOUNCE_MS);
@@ -91,6 +96,7 @@ export const Login = () => {
 
   const handleLogin = async () => {
     setError(null);
+    if (!canReachServer) return;
     if (!email.trim() || !password) {
       setError("Please enter your email and password.");
       return;
@@ -121,18 +127,26 @@ export const Login = () => {
   };
 
   /* ── CORE product branding (pre-auth only; tenant logo shown after login) ── */
-  const headerSlot = <Logo />;
+  const headerSlot = <Logo className="h-10 w-auto" />;
 
   /* ── Standard login form body ── */
   const standardBody = (
     <>
       {detectedLogo && (
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center">
           <img
             src={detectedLogo}
             alt="Company Preview"
             className="h-10 w-auto object-contain transition-opacity duration-300"
           />
+        </div>
+      )}
+      {!canReachServer && (
+        <div
+          role="alert"
+          className="rounded-lg border border-[var(--color-warning)]/30 bg-[var(--color-warning)]/10 px-4 py-3 text-sm text-[var(--color-warning)]"
+        >
+          Unable to reach authentication server. Check your connection or try again later.
         </div>
       )}
       {error && (
@@ -144,16 +158,17 @@ export const Login = () => {
         </div>
       )}
 
-      <AuthInput
-        label={t("auth.email")}
-        type="email"
-        name="email"
-        id="email"
-        placeholder={t("auth.enterEmail")}
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-6">
+        <AuthInput
+          label={t("auth.email")}
+          type="email"
+          name="email"
+          id="email"
+          placeholder={t("auth.enterEmail")}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <div className="flex flex-col gap-2">
         <AuthPasswordInput
           label={t("auth.password")}
           name="password"
@@ -175,23 +190,27 @@ export const Login = () => {
           </a>
         </div>
       </div>
-      <AuthButton onClick={handleLogin} disabled={submitting} className="w-full">
-        {submitting ? t("auth.loggingIn", "Logging in…") : t("auth.login")}
-      </AuthButton>
+        <AuthButton
+          onClick={handleLogin}
+          disabled={submitting || !canReachServer}
+          className="w-full"
+        >
+          {submitting ? t("auth.loggingIn", "Logging in…") : t("auth.login")}
+        </AuthButton>
 
-      {/* ── Divider ── */}
-      <div className="relative flex items-center py-1">
-        <div className="flex-1 border-t border-[var(--color-border)]" />
-        <span className="mx-3 text-xs font-medium text-[var(--color-textSecondary)]">{t("auth.or")}</span>
-        <div className="flex-1 border-t border-[var(--color-border)]" />
-      </div>
+        {/* ── Divider ── */}
+        <div className="relative flex items-center py-2">
+          <div className="flex-1 border-t border-[var(--color-border)]" />
+          <span className="mx-3 text-xs font-medium text-[var(--color-textSecondary)]">{t("auth.or")}</span>
+          <div className="flex-1 border-t border-[var(--color-border)]" />
+        </div>
 
-      {/* ── Explore Scenarios CTA ── */}
-      <button
-        type="button"
-        onClick={() => setShowDemoPanel(true)}
-        className="group flex w-full items-center justify-center gap-2.5 rounded-lg border-2 border-dashed border-[var(--color-primary)]/30 bg-[var(--color-primary)]/5 px-5 py-3.5 text-sm font-semibold text-[var(--color-primary)] transition-all hover:border-[var(--color-primary)]/50 hover:bg-[var(--color-primary)]/10"
-      >
+        {/* ── Explore Scenarios CTA ── */}
+        <button
+          type="button"
+          onClick={() => setShowDemoPanel(true)}
+          className="group flex w-full items-center justify-center gap-2.5 rounded-lg border-2 border-dashed border-[var(--color-primary)]/30 bg-[var(--color-primary)]/5 px-5 py-3.5 text-sm font-semibold text-[var(--color-primary)] transition-all hover:border-[var(--color-primary)]/50 hover:bg-[var(--color-primary)]/10"
+        >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0" aria-hidden>
           <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
           <circle cx="8.5" cy="7" r="4" />
@@ -204,29 +223,32 @@ export const Login = () => {
         </span>
       </button>
 
-      <p className="text-center text-sm text-[var(--color-textSecondary)]">
-        Don&apos;t have an account?{" "}
-        <Link
-          to="/signup"
-          className="text-[var(--color-primary)] no-underline hover:underline"
-        >
-          Sign up
-        </Link>
-      </p>
-
-      <p className="text-center text-sm text-[var(--color-textSecondary)]">
-        {t("auth.stillNeedHelp")}{" "}
-        <a
-          href="#"
-          className="text-[var(--color-primary)] no-underline hover:underline"
-          onClick={(e) => {
-            e.preventDefault();
-            handleHelpCenter();
-          }}
-        >
-          {t("auth.helpCenter")}
-        </a>
-      </p>
+        {/* ── Secondary links: 8px gap ── */}
+        <div className="flex flex-col items-center gap-2">
+          <p className="text-center text-sm text-[var(--color-textSecondary)]">
+            Don&apos;t have an account?{" "}
+            <Link
+              to="/signup"
+              className="text-[var(--color-primary)] no-underline hover:underline"
+            >
+              Sign up
+            </Link>
+          </p>
+          <p className="text-center text-sm text-[var(--color-textSecondary)]">
+            {t("auth.stillNeedHelp")}{" "}
+            <a
+              href="#"
+              className="text-[var(--color-primary)] no-underline hover:underline"
+              onClick={(e) => {
+                e.preventDefault();
+                handleHelpCenter();
+              }}
+            >
+              {t("auth.helpCenter")}
+            </a>
+          </p>
+        </div>
+      </div>
     </>
   );
 

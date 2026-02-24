@@ -791,7 +791,8 @@ export default function BellaScreen(props?: BellaScreenProps) {
       try {
         const history = messagesRef.current;
         assistantText = await callGeminiAPI(input, history);
-      } catch {
+      } catch (err) {
+        if (import.meta.env.DEV) console.error("[BellaScreen] callGeminiAPI failed, using fallback:", err);
         assistantText = fallbackRetirementBrain(input, messagesRef.current);
       }
       setMessages((prev) => [
@@ -1202,8 +1203,8 @@ Focus ONLY on US retirement topics.`
     if (recognitionRef.current && listening) {
       try {
         recognitionRef.current.stop();
-      } catch {
-        /* already stopped */
+      } catch (err) {
+        if (import.meta.env.DEV) console.warn("[BellaScreen] recognition stop:", err);
       }
       recognitionRef.current = null;
       setListening(false);

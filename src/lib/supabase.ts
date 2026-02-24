@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { timeoutFetch } from "./network/timeoutFetch";
 
 // These variables must be set in Netlify Environment Settings for production,
 // or in a local .env file for development (prefixed with VITE_).
@@ -33,4 +34,11 @@ if (
   );
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const SUPABASE_FETCH_TIMEOUT_MS = 10_000;
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  global: {
+    fetch: (url: RequestInfo | string, options?: RequestInit) =>
+      timeoutFetch(url, options ?? {}, SUPABASE_FETCH_TIMEOUT_MS),
+  },
+});

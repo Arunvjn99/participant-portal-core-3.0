@@ -28,7 +28,9 @@ function bootstrapTool(tool: UXTweakTool): void {
 function processConfig(raw: string): void {
   try {
     sessionStorage.setItem(STORAGE_KEY, raw);
-  } catch { /* storage full or blocked — non-critical */ }
+  } catch (err) {
+    if (import.meta.env.DEV) console.warn("[uxtweakLoader] sessionStorage setItem failed:", err);
+  }
 
   const tools: UXTweakTool[] = JSON.parse(raw);
   tools.forEach(bootstrapTool);

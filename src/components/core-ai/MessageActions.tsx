@@ -28,8 +28,8 @@ export function MessageActions({ messageId, text, isSpeaking, onPlay }: MessageA
       await navigator.clipboard.writeText(text);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch {
-      /* Clipboard not available */
+    } catch (err) {
+      if (import.meta.env.DEV) console.error("[MessageActions] clipboard write failed:", err);
     }
   };
 

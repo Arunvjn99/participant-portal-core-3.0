@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef, useMemo, type FormEvent } from "react";
+import { useState, useEffect, useRef, useMemo, useLayoutEffect, type FormEvent } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate, Link } from "react-router-dom";
 import * as Label from "@radix-ui/react-label";
 import {
@@ -13,6 +14,32 @@ import { useAuth } from "../../context/AuthContext";
 import { useOtp } from "../../context/OtpContext";
 import { supabase } from "../../lib/supabase";
 import { US_STATES } from "../../constants/usStates";
+
+/** Normalized state option for combobox; supports string[] or { code?, name?, label?, state_name? }[] from source. */
+interface StateOption {
+  code: string;
+  name: string;
+}
+
+function normalizeStateOptions(source: unknown): StateOption[] {
+  const list = Array.isArray(source) ? source : [];
+  if (list.length > 0) {
+    // eslint-disable-next-line no-console -- temporary log to verify state object structure
+    console.log("[Signup] US_STATES first item structure:", list[0], "keys:", typeof list[0] === "object" && list[0] !== null ? Object.keys(list[0] as object) : "primitive");
+  }
+  return list
+    .filter((item): item is NonNullable<typeof item> => item != null)
+    .map((item): StateOption => {
+      if (typeof item === "string") {
+        return { code: item, name: item };
+      }
+      const obj = item as Record<string, unknown>;
+      const name = (obj?.name ?? obj?.label ?? obj?.state_name ?? "").toString();
+      const code = (obj?.code ?? obj?.name ?? obj?.label ?? name).toString();
+      return { code: code || name, name: name || code };
+    })
+    .filter((s) => (s.name ?? "").trim() !== "");
+}
 
 interface Company {
   id: string;
@@ -46,6 +73,22 @@ function validate(
   return errors;
 }
 
+type PasswordStrength = "weak" | "medium" | "strong";
+
+function getPasswordStrength(password: string): { level: PasswordStrength; score: number } {
+  if (!password) return { level: "weak", score: 0 };
+  let score = 0;
+  if (password.length >= 6) score += 1;
+  if (password.length >= 10) score += 1;
+  if (/[A-Z]/.test(password)) score += 1;
+  if (/[a-z]/.test(password)) score += 1;
+  if (/\d/.test(password)) score += 1;
+  if (/[^A-Za-z0-9]/.test(password)) score += 1;
+  const level: PasswordStrength =
+    score >= 5 ? "strong" : score >= 3 ? "medium" : "weak";
+  return { level, score };
+}
+
 export const Signup = () => {
   const navigate = useNavigate();
   const { signUp } = useAuth();
@@ -56,7 +99,10 @@ export const Signup = () => {
   const [stateSearchQuery, setStateSearchQuery] = useState("");
   const [stateDropdownOpen, setStateDropdownOpen] = useState(false);
   const [stateHighlightIndex, setStateHighlightIndex] = useState(0);
+  const [dropdownRect, setDropdownRect] = useState<{ top: number; left: number; width: number } | null>(null);
   const stateDropdownRef = useRef<HTMLDivElement>(null);
+  const stateInputRef = useRef<HTMLInputElement>(null);
+  const stateListboxRef = useRef<HTMLUListElement>(null);
 
   const [companyId, setCompanyId] = useState("");
   const [companies, setCompanies] = useState<Company[]>([]);
@@ -70,14 +116,18 @@ export const Signup = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const stateOptions = useMemo(() => normalizeStateOptions(US_STATES), []);
+
   const filteredStates = useMemo(() => {
-    const q = stateSearchQuery.trim().toLowerCase();
-    if (!q) return US_STATES;
-    return US_STATES.filter((s) => s.name.toLowerCase().includes(q));
-  }, [stateSearchQuery]);
+    const q = (stateSearchQuery ?? "").trim().toLowerCase();
+    if (!q) return stateOptions;
+    return stateOptions.filter((s) =>
+      (s?.name ?? "").toLowerCase().includes(q)
+    );
+  }, [stateSearchQuery, stateOptions]);
 
   const selectedStateName = selectedState
-    ? US_STATES.find((s) => s.code === selectedState)?.name ?? ""
+    ? (stateOptions.find((s) => s?.code === selectedState)?.name ?? "")
     : "";
 
   useEffect(() => {
@@ -101,12 +151,40 @@ export const Signup = () => {
     return () => { cancelled = true; };
   }, []);
 
+  useLayoutEffect(() => {
+    if (!stateDropdownOpen || !stateInputRef.current) return;
+    const el = stateInputRef.current;
+    const updateRect = () => {
+      const rect = el.getBoundingClientRect();
+      setDropdownRect({
+        top: rect.bottom + 4,
+        left: rect.left,
+        width: rect.width,
+      });
+    };
+    updateRect();
+    window.addEventListener("scroll", updateRect, true);
+    window.addEventListener("resize", updateRect);
+    return () => {
+      window.removeEventListener("scroll", updateRect, true);
+      window.removeEventListener("resize", updateRect);
+    };
+  }, [stateDropdownOpen, stateSearchQuery, filteredStates.length]);
+
   useEffect(() => {
-    if (!stateDropdownOpen) return;
+    if (!stateDropdownOpen) {
+      setDropdownRect(null);
+      return;
+    }
     const handleClickOutside = (e: MouseEvent) => {
-      if (stateDropdownRef.current && !stateDropdownRef.current.contains(e.target as Node)) {
-        setStateDropdownOpen(false);
+      const target = e.target as Node;
+      if (
+        stateDropdownRef.current?.contains(target) ||
+        stateListboxRef.current?.contains(target)
+      ) {
+        return;
       }
+      setStateDropdownOpen(false);
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -148,11 +226,11 @@ export const Signup = () => {
   const headerSlot = <Logo className="h-10 w-auto" />;
 
   const bodySlot = (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-6" noValidate>
+    <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 overflow-visible md:grid-cols-2 md:gap-6" noValidate>
       {serverError && (
         <div
           role="alert"
-          className="rounded-lg border border-[var(--color-danger)]/20 bg-[var(--color-danger)]/5 px-4 py-3 text-sm text-[var(--color-danger)]"
+          className="md:col-span-2 rounded-lg border border-[var(--color-danger)]/20 bg-[var(--color-danger)]/5 px-4 py-3 text-sm text-[var(--color-danger)]"
         >
           {serverError}
         </div>
@@ -161,7 +239,7 @@ export const Signup = () => {
       {successMessage && (
         <div
           role="status"
-          className="rounded-lg border border-[var(--color-success)]/20 bg-[var(--color-success)]/5 px-4 py-3 text-sm text-[var(--color-success)]"
+          className="md:col-span-2 rounded-lg border border-[var(--color-success)]/20 bg-[var(--color-success)]/5 px-4 py-3 text-sm text-[var(--color-success)]"
         >
           {successMessage}
         </div>
@@ -178,7 +256,18 @@ export const Signup = () => {
         error={errors.name}
       />
 
-      <div className="flex w-full flex-col gap-2" ref={stateDropdownRef}>
+      <AuthInput
+        label="Email"
+        type="email"
+        name="email"
+        id="signup-email"
+        placeholder="Enter your email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        error={errors.email}
+      />
+
+      <div className="flex w-full flex-col gap-2 overflow-visible" ref={stateDropdownRef}>
         <Label.Root
           htmlFor="signup-state"
           className="text-sm font-medium text-[var(--color-text)]"
@@ -187,6 +276,7 @@ export const Signup = () => {
         </Label.Root>
         <div className="relative">
           <input
+            ref={stateInputRef}
             id="signup-state"
             type="text"
             autoComplete="off"
@@ -248,7 +338,7 @@ export const Signup = () => {
                 setStateSearchQuery("");
               }
             }}
-            className={`w-full rounded-lg border bg-[var(--color-surface)] px-4 py-3 text-base transition-colors focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 ${
+            className={`h-[2.75rem] w-full rounded-lg border bg-[var(--color-surface)] px-4 py-3 text-base transition-colors focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 ${
               selectedStateName
                 ? "text-[var(--color-text)]"
                 : "text-[var(--color-textSecondary)]"
@@ -258,42 +348,57 @@ export const Signup = () => {
                 : "border-[var(--color-border)]"
             }`}
           />
-          {stateDropdownOpen && (
-            <ul
-              id="signup-state-listbox"
-              role="listbox"
-              className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] py-1 shadow-lg"
-            >
-              {filteredStates.length === 0 ? (
-                <li className="px-4 py-3 text-sm text-[var(--color-textSecondary)]">
-                  No matching state
-                </li>
-              ) : (
-                filteredStates.map((state, index) => (
+          {stateDropdownOpen &&
+            dropdownRect &&
+            createPortal(
+              <ul
+                ref={stateListboxRef}
+                id="signup-state-listbox"
+                role="listbox"
+                className="z-50 max-h-60 overflow-auto rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] py-1 shadow-lg"
+                style={{
+                  position: "fixed",
+                  top: dropdownRect.top,
+                  left: dropdownRect.left,
+                  width: dropdownRect.width,
+                  minWidth: dropdownRect.width,
+                }}
+              >
+                {filteredStates.length === 0 ? (
                   <li
-                    key={state.code}
-                    id={`signup-state-option-${state.code}`}
                     role="option"
-                    aria-selected={selectedState === state.code}
-                    className={`cursor-pointer px-4 py-2.5 text-sm ${
-                      index === stateHighlightIndex
-                        ? "bg-[var(--color-primary)]/10 text-[var(--color-primary)]"
-                        : "text-[var(--color-text)]"
-                    }`}
-                    onMouseEnter={() => setStateHighlightIndex(index)}
-                    onClick={() => {
-                      setSelectedState(state.code);
-                      setStateSearchQuery("");
-                      setStateDropdownOpen(false);
-                      setErrors((prev) => ({ ...prev, location: undefined }));
-                    }}
+                    aria-disabled="true"
+                    className="px-4 py-3 text-sm text-[var(--color-textSecondary)]"
                   >
-                    {state.name}
+                    No matching state
                   </li>
-                ))
-              )}
-            </ul>
-          )}
+                ) : (
+                  filteredStates.map((state, index) => (
+                    <li
+                      key={state.code}
+                      id={`signup-state-option-${state.code}`}
+                      role="option"
+                      aria-selected={selectedState === state.code}
+                      className={`cursor-pointer px-4 py-2.5 text-sm ${
+                        index === stateHighlightIndex
+                          ? "bg-[var(--color-primary)]/10 text-[var(--color-primary)]"
+                          : "text-[var(--color-text)]"
+                      }`}
+                      onMouseEnter={() => setStateHighlightIndex(index)}
+                      onClick={() => {
+                        setSelectedState(state.code);
+                        setStateSearchQuery("");
+                        setStateDropdownOpen(false);
+                        setErrors((prev) => ({ ...prev, location: undefined }));
+                      }}
+                    >
+                      {state.name}
+                    </li>
+                  ))
+                )}
+              </ul>,
+              document.body
+            )}
         </div>
         {errors.location && (
           <span id="signup-state-error" className="text-sm text-[var(--color-danger)]" role="alert">
@@ -317,7 +422,7 @@ export const Signup = () => {
           disabled={companiesLoading}
           aria-invalid={errors.companyId ? true : undefined}
           aria-describedby={errors.companyId ? "signup-company-error" : undefined}
-          className={`w-full rounded-lg border bg-[var(--color-surface)] px-4 py-3 text-base transition-colors focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 ${
+          className={`h-[2.75rem] w-full rounded-lg border bg-[var(--color-surface)] px-4 py-3 text-base transition-colors focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 ${
             companyId
               ? "text-[var(--color-text)]"
               : "text-[var(--color-textSecondary)]"
@@ -343,26 +448,60 @@ export const Signup = () => {
         )}
       </div>
 
-      <AuthInput
-        label="Email"
-        type="email"
-        name="email"
-        id="signup-email"
-        placeholder="Enter your email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        error={errors.email}
-      />
-
-      <AuthPasswordInput
-        label="Password"
-        name="password"
-        id="signup-password"
-        placeholder="Create a password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        error={errors.password}
-      />
+      <div className="flex w-full flex-col gap-2">
+        <AuthPasswordInput
+          label="Password"
+          name="password"
+          id="signup-password"
+          placeholder="Create a password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          error={errors.password}
+        />
+        {(() => {
+          const { level } = getPasswordStrength(password);
+          const segmentCount = level === "weak" ? 1 : level === "medium" ? 2 : 3;
+          const label =
+            level === "weak"
+              ? "Weak password"
+              : level === "medium"
+                ? "Medium strength"
+                : "Strong password";
+          const barColor =
+            level === "weak"
+              ? "var(--color-danger)"
+              : level === "medium"
+                ? "var(--color-warning, #ca8a04)"
+                : "var(--color-success)";
+          return (
+            <div
+              role="status"
+              aria-live="polite"
+              className="flex flex-col gap-1.5"
+              aria-label={`Password strength: ${label}`}
+            >
+              <div className="flex gap-0.5" aria-hidden>
+                {[1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="h-1 flex-1 rounded-full transition-colors"
+                    style={{
+                      backgroundColor:
+                        i <= segmentCount ? barColor : "var(--color-border)",
+                    }}
+                  />
+                ))}
+              </div>
+              <span
+                className="text-xs font-medium"
+                style={{ color: barColor }}
+              >
+                {label}
+              </span>
+            </div>
+          );
+        })()}
+      </div>
 
       <AuthPasswordInput
         label="Confirm Password"
@@ -374,23 +513,28 @@ export const Signup = () => {
         error={errors.confirmPassword}
       />
 
-      <AuthButton
-        type="submit"
-        disabled={loading || companiesLoading || selectedState === null}
-        className="w-full"
-      >
-        {loading ? "Creating account…" : "Sign Up"}
-      </AuthButton>
-
-      <p className="text-center text-sm text-[var(--color-textSecondary)]">
-        Already have an account?{" "}
-        <Link
-          to="/"
-          className="text-[var(--color-primary)] no-underline hover:underline"
+      <div className="md:col-span-2">
+        <AuthButton
+          type="submit"
+          disabled={loading || companiesLoading || selectedState === null}
+          aria-busy={loading}
+          className="w-full"
         >
-          Sign in
-        </Link>
-      </p>
+          {loading ? "Creating account…" : "Sign Up"}
+        </AuthButton>
+      </div>
+
+      <div className="md:col-span-2">
+        <p className="text-center text-sm text-[var(--color-textSecondary)]">
+          Already have an account?{" "}
+          <Link
+            to="/"
+            className="text-[var(--color-primary)] no-underline hover:underline"
+          >
+            Sign in
+          </Link>
+        </p>
+      </div>
     </form>
   );
 

@@ -71,7 +71,7 @@ export const AuthOTPInput = ({
 
   return (
     <div
-      className={`my-2 flex justify-center gap-2 ${className}`.trim()}
+      className={`flex justify-center gap-3 ${className}`.trim()}
       role="group"
       aria-label={`${length}-digit verification code`}
     >
@@ -84,7 +84,7 @@ export const AuthOTPInput = ({
           type="text"
           inputMode="numeric"
           maxLength={1}
-          className="h-12 min-h-[48px] w-12 min-w-[48px] rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-0 text-center text-2xl font-semibold text-[var(--color-text)] transition-colors focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+          className="h-12 w-12 shrink-0 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-0 text-center text-2xl font-semibold text-[var(--color-text)] transition-colors focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
           onChange={(e) => handleInput(index, e)}
           onKeyDown={(e) => handleKeyDown(index, e)}
           onPaste={handlePaste}

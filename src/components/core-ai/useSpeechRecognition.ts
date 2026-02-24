@@ -65,8 +65,8 @@ export function useSpeechRecognition(
     if (recognitionRef.current) {
       try {
         recognitionRef.current.stop();
-      } catch {
-        /* already stopped */
+      } catch (err) {
+        if (import.meta.env.DEV) console.warn("[useSpeechRecognition] stop:", err);
       }
       recognitionRef.current = null;
     }
@@ -118,8 +118,8 @@ export function useSpeechRecognition(
       /* Stop recognition (may already be stopped since continuous=false) */
       try {
         recognition.stop();
-      } catch {
-        /* already stopped */
+      } catch (err) {
+        if (import.meta.env.DEV) console.warn("[useSpeechRecognition] onresult stop:", err);
       }
     };
 
@@ -163,7 +163,8 @@ export function useSpeechRecognition(
       recognition.start();
       isListeningRef.current = true;
       setIsListening(true);
-    } catch {
+    } catch (err) {
+      if (import.meta.env.DEV) console.error("[useSpeechRecognition] start failed:", err);
       setError("Could not start speech recognition. Please try again.");
       isListeningRef.current = false;
       recognitionRef.current = null;
@@ -176,8 +177,8 @@ export function useSpeechRecognition(
       if (recognitionRef.current) {
         try {
           recognitionRef.current.stop();
-        } catch {
-          /* noop */
+        } catch (err) {
+          if (import.meta.env.DEV) console.warn("[useSpeechRecognition] cleanup stop:", err);
         }
         recognitionRef.current = null;
       }

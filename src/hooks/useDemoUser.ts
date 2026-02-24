@@ -36,7 +36,8 @@ function getSnapshot(): PersonaProfile | null {
     cachedRaw = raw;
     try {
       cachedValue = raw ? (JSON.parse(raw) as PersonaProfile) : null;
-    } catch {
+    } catch (err) {
+      if (import.meta.env.DEV) console.error("[useDemoUser] parse failed:", err);
       cachedValue = null;
     }
   }

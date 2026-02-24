@@ -102,8 +102,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setModeState(m);
     try {
       localStorage.setItem("theme", m);
-    } catch {
-      // ignore
+    } catch (err) {
+      if (import.meta.env.DEV) console.error("[ThemeContext] setItem theme failed:", err);
     }
   }, []);
 

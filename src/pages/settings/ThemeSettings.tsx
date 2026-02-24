@@ -55,7 +55,8 @@ export const ThemeSettings = () => {
     snapshotInitialized.current = true;
     try {
       setLastSavedSnapshot(JSON.stringify(serializeBranding(initialBranding)));
-    } catch {
+    } catch (err) {
+      if (import.meta.env.DEV) console.error("[ThemeSettings] initial snapshot serialize failed:", err);
       setLastSavedSnapshot(JSON.stringify(serializeBranding(branding)));
     }
   }, [initialBranding]);
