@@ -56,9 +56,8 @@ export function RiskComfortSelector({
 }) {
   const btn =
     "flex-1 min-w-0 rounded-xl border-2 p-4 text-left transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2";
-  const unselected = isDarkMode
-    ? "border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:border-[var(--color-border)]"
-    : "border-[var(--color-border)] bg-[var(--color-surface)]/80 text-[var(--color-text)] hover:border-[var(--color-border)] hover:bg-[var(--color-surface)]";
+  const unselected =
+    "border-[var(--color-border)] bg-[var(--surface-2)] text-[var(--text-primary)] hover:border-[var(--color-border)] hover:bg-[var(--surface-1)]";
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3" role="group" aria-label="Risk comfort">
@@ -71,7 +70,7 @@ export function RiskComfortSelector({
           aria-label={`${opt.label}: ${opt.hint}`}
         >
           <span className="block font-semibold text-sm">{opt.label}</span>
-          <span className={isDarkMode ? "text-[var(--color-textSecondary)] text-xs mt-0.5" : "text-[var(--color-textSecondary)] text-xs mt-0.5"}>
+          <span className="text-[var(--text-secondary)] text-xs mt-0.5">
             {opt.hint}
           </span>
         </button>
@@ -105,12 +104,10 @@ export function FundCards({
 
   const card =
     "rounded-xl border-2 p-3 sm:p-4 text-left transition-all focus:outline-none focus:ring-2 focus:ring-primary";
-  const unselected = isDarkMode
-    ? "border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:border-[var(--color-border)]"
-    : "border-[var(--color-border)] bg-[var(--color-surface)]/80 text-[var(--color-text)] hover:border-[var(--color-border)]";
-  const selected = isDarkMode
-    ? "border-[var(--color-primary)] bg-[var(--color-primary)]/10 text-[var(--color-primary)] ring-2 ring-[var(--color-primary)]/30"
-    : "border-[var(--color-primary)] bg-[var(--color-primary)]/10 text-[var(--color-primary)] ring-2 ring-[var(--color-primary)]/30";
+  const unselected =
+    "border-[var(--color-border)] bg-[var(--surface-2)] text-[var(--text-primary)] hover:border-[var(--color-border)] hover:bg-[var(--surface-1)]";
+  const selected =
+    "border-[var(--color-primary)] bg-[var(--color-primary)]/10 text-[var(--color-primary)] ring-2 ring-[var(--color-primary)]/30";
 
   return (
     <div className="space-y-4" role="region" aria-label="Fund selection by category">
@@ -137,7 +134,7 @@ export function FundCards({
                   aria-label={`${f.name}, 1Y return ${f.return1y}, fee ${f.expenseRatio}. ${selectedById[f.id] ? "Selected" : "Select"}`}
                 >
                   <span className="block font-semibold text-sm">{f.name}</span>
-                  <span className={isDarkMode ? "text-[var(--color-textSecondary)] text-xs mt-1" : "text-[var(--color-textSecondary)] text-xs mt-1"}>
+                  <span className="text-[var(--text-secondary)] text-xs mt-1">
                     {f.return1y} · {f.expenseRatio}
                   </span>
                 </button>

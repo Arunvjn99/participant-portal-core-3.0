@@ -58,7 +58,7 @@ export const RateOfReturnCard = ({ confidencePct, message, timeRange: initialRan
   };
 
   return (
-    <article className="ped-ror rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm min-h-fit w-full min-w-0">
+    <article className="ped-ror rounded-2xl elevation-1 bg-[var(--surface-1)] p-6 min-h-fit w-full min-w-0">
       <div className="ped-ror__header flex flex-wrap items-start justify-between gap-4 mb-4">
         <div>
           <h2 className="ped-ror__title m-0 mb-1 text-lg font-semibold text-[var(--color-text)]">

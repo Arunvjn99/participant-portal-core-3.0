@@ -32,7 +32,7 @@ export const HeroSection = () => {
         className="pre-enrollment-hero-bg pre-enrollment-hero-noise absolute inset-0 -z-10"
         aria-hidden
       />
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent via-transparent to-slate-50/80" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent via-transparent to-[var(--surface-1)]/80" />
 
       <div className="relative flex flex-col lg:flex-row lg:items-center gap-8 sm:gap-10 lg:gap-16 pt-8 pb-10 sm:pt-14 sm:pb-16 lg:pt-20 lg:pb-24 px-0 min-h-0">
         {/* Left: content */}
@@ -65,7 +65,7 @@ export const HeroSection = () => {
           >
             {t("dashboard.heroTitlePart1")}{" "}
             <br className="hidden sm:inline" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-indigo-600">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--brand-primary)] to-[var(--color-primary)]">
               {t("dashboard.heroTitlePart2")}
             </span>
           </motion.h1>
@@ -97,7 +97,7 @@ export const HeroSection = () => {
               type="button"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center justify-center gap-2 px-5 py-3 sm:px-6 sm:py-3.5 md:px-8 md:py-4 w-full sm:w-auto bg-[var(--color-surface)] text-[var(--color-text)] border-2 border-[var(--color-border)] rounded-2xl font-semibold text-sm sm:text-base hover:bg-[var(--color-surface)] hover:border-[var(--color-border)] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:ring-offset-2"
+              className="inline-flex items-center justify-center gap-2 px-5 py-3 sm:px-6 sm:py-3.5 md:px-8 md:py-4 w-full sm:w-auto bg-[var(--color-surface)] text-[var(--color-text)] border-2 border-[var(--color-border)] rounded-2xl font-semibold text-sm sm:text-base hover:bg-[var(--color-surface)] hover:border-[var(--color-border)] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--border-subtle)] focus:ring-offset-2"
             >
               <Compass size={18} />
               {t("dashboard.exploreOptions")}
@@ -117,11 +117,11 @@ export const HeroSection = () => {
             <FloatingCards />
           </div>
           {/* Mobile-only fallback (below md) */}
-          <div className="md:hidden w-full max-w-[260px] sm:max-w-[320px] aspect-square bg-gradient-to-br from-brand-100 to-indigo-50 rounded-2xl sm:rounded-3xl flex items-center justify-center relative overflow-hidden shadow-lg mx-auto">
+          <div className="md:hidden w-full max-w-[260px] sm:max-w-[320px] aspect-square bg-gradient-to-br from-[var(--brand-primary)]/10 to-[var(--color-primary)]/5 rounded-2xl sm:rounded-3xl flex items-center justify-center relative overflow-hidden shadow-lg mx-auto">
             <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" />
             <div className="text-center p-6 sm:p-8">
-              <h3 className="text-2xl sm:text-3xl font-bold text-brand-900 mb-2">$1.2M</h3>
-              <p className="text-sm sm:text-base text-brand-700 font-medium">{t("dashboard.projectedFutureValue")}</p>
+              <h3 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)] mb-2">$1.2M</h3>
+              <p className="text-sm sm:text-base text-[var(--text-secondary)] font-medium">{t("dashboard.projectedFutureValue")}</p>
             </div>
           </div>
         </motion.div>

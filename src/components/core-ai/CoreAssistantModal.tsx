@@ -282,7 +282,7 @@ export function CoreAssistantModal({ isOpen, onClose }: CoreAssistantModalProps)
             {/* ── Header ── */}
             <div className="shrink-0 flex items-center justify-between gap-3 border-b border-[var(--color-border)] px-5 py-3">
               <div className="flex items-center gap-3 min-w-0">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-teal-500 to-teal-700 shadow-lg shadow-teal-600/20">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-active)] shadow-lg shadow-[var(--brand-primary)]/20">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M12 2L2 7l10 5 10-5-10-5z" />
                     <path d="M2 17l10 5 10-5" />

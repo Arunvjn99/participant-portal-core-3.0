@@ -48,7 +48,7 @@ function StepNode({
         style={{
           backgroundColor: isCompleted ? GREEN : isActive ? PRIMARY : "transparent",
           borderColor: isCompleted || isActive ? "transparent" : GREY_LINE,
-          color: isCompleted || isActive ? "#fff" : GREY_LABEL,
+          color: isCompleted || isActive ? "var(--color-text-inverse)" : GREY_LABEL,
         }}
         aria-hidden
       >

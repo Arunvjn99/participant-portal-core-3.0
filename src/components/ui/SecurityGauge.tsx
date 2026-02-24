@@ -8,14 +8,14 @@ export const SecurityGauge = () => {
                     <path
                         d="M 10 50 A 40 40 0 1 1 90 50"
                         fill="none"
-                        stroke="#e2e8f0"
+                        stroke="var(--border-subtle)"
                         strokeWidth="8"
                         strokeLinecap="round"
                     />
                     <path
                         d="M 10 50 A 40 40 0 1 1 90 50"
                         fill="none"
-                        stroke="#10b981"
+                        stroke="var(--success)"
                         strokeWidth="8"
                         strokeLinecap="round"
                         strokeDasharray="126"

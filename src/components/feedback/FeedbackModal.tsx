@@ -50,7 +50,7 @@ const CONFIDENCE_OPTIONS: SelectOption[] = [
 
 const FEATURE_OPTIONS: SelectOption[] = [
   { value: "dashboard", label: "Dashboard", icon: "📈" },
-  { value: "enrollment", label: "Enrollment", icon: "📝" },
+  { value: "enrollment", label: "Enrolment", icon: "📝" },
   { value: "investment_portfolio", label: "Investments", icon: "💼" },
   { value: "transactions", label: "Transactions", icon: "🔄" },
   { value: "core_ai", label: "Core AI assistant", icon: "🤖" },

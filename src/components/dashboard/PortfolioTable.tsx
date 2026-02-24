@@ -19,7 +19,7 @@ export const PortfolioTable = ({ rows, employerMatchLabel = "100% up to 6% Match
   const navigate = useNavigate();
 
   return (
-    <div className="ped-portfolio w-full min-w-0 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-sm sm:p-5 lg:p-6">
+    <div className="ped-portfolio w-full min-w-0 rounded-2xl elevation-1 bg-[var(--surface-1)] p-4 sm:p-5 lg:p-6">
       {/* Header — stacks on mobile */}
       <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <h2 className="m-0 text-lg font-semibold text-[var(--color-text)]">Your Portfolio</h2>

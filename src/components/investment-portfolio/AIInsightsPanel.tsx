@@ -47,8 +47,8 @@ export const AIInsightsPanel: React.FC<Props> = ({ data, plans }) => {
             <div
               className="rounded-lg border p-1.5"
               style={{
-                backgroundColor: "rgba(255,255,255,0.2)",
-                borderColor: "rgba(255,255,255,0.3)",
+                backgroundColor: "rgb(var(--color-primary-rgb) / 0.15)",
+                borderColor: "rgb(var(--color-primary-rgb) / 0.25)",
               }}
             >
               <Sparkles size={16} className="text-white/90" />
@@ -77,7 +77,7 @@ export const AIInsightsPanel: React.FC<Props> = ({ data, plans }) => {
             </div>
 
             <div className="relative space-y-3">
-              <div className="absolute -left-4 top-0 bottom-0 hidden w-px bg-white/20 md:block" />
+              <div className="absolute -left-4 top-0 bottom-0 hidden w-px bg-[var(--surface-primary)]/20 md:block" />
               <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--color-success)]">
                 <Lightbulb size={14} />
                 {t("investmentPortfolio.actionableInsight")}
@@ -88,7 +88,7 @@ export const AIInsightsPanel: React.FC<Props> = ({ data, plans }) => {
               </p>
               <button
                 type="button"
-                className="mt-2 rounded-md bg-white/10 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-white/20"
+                className="mt-2 rounded-md bg-[var(--surface-primary)]/10 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-[var(--surface-primary)]/20"
               >
                 {t("investmentPortfolio.viewDetails")}
               </button>

@@ -37,9 +37,8 @@ export function PlanSelectionCards({
 }) {
   const base =
     "flex-1 min-w-0 rounded-xl border-2 p-4 sm:p-5 text-left transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-transparent";
-  const unselected = isDarkMode
-    ? "border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:border-[var(--color-border)] hover:bg-[var(--color-background)]"
-    : "border-[var(--color-border)] bg-[var(--color-surface)]/80 text-[var(--color-text)] hover:border-[var(--color-border)] hover:bg-[var(--color-surface)] shadow-sm";
+  const unselected =
+    "border-[var(--color-border)] bg-[var(--surface-2)] text-[var(--text-primary)] hover:border-[var(--color-border)] hover:bg-[var(--surface-1)] shadow-sm";
 
   return (
     <div
@@ -55,11 +54,7 @@ export function PlanSelectionCards({
         aria-label="Select Traditional 401(k). Pre-tax contributions, taxable in retirement."
       >
         <span className="block font-semibold text-sm sm:text-base">Traditional 401(k)</span>
-        <span
-          className={
-            isDarkMode ? "text-[var(--color-textSecondary)] text-xs sm:text-sm mt-1" : "text-[var(--color-textSecondary)] text-xs sm:text-sm mt-1"
-          }
-        >
+        <span className="text-[var(--text-secondary)] text-xs sm:text-sm mt-1">
           Pre-tax now, taxable later
         </span>
       </button>
@@ -70,11 +65,7 @@ export function PlanSelectionCards({
         aria-label="Select Roth 401(k). After-tax contributions, tax-free in retirement."
       >
         <span className="block font-semibold text-sm sm:text-base">Roth 401(k)</span>
-        <span
-          className={
-            isDarkMode ? "text-[var(--color-textSecondary)] text-xs sm:text-sm mt-1" : "text-[var(--color-textSecondary)] text-xs sm:text-sm mt-1"
-          }
-        >
+        <span className="text-[var(--text-secondary)] text-xs sm:text-sm mt-1">
           After-tax now, tax-free later
         </span>
       </button>
@@ -169,10 +160,9 @@ export function InvestmentStrategySelector({
 
   const btn =
     "flex-1 min-w-0 rounded-lg border-2 py-3 px-3 text-center text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2";
-  const unselected = isDarkMode
-    ? "border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:border-[var(--color-border)]"
-    : "border-[var(--color-border)] bg-[var(--color-surface)]/80 text-[var(--color-text)] hover:border-[var(--color-border)]";
-  const hintClass = isDarkMode ? "text-[var(--color-textSecondary)] text-xs mt-0.5" : "text-[var(--color-textSecondary)] text-xs mt-0.5";
+  const unselected =
+    "border-[var(--color-border)] bg-[var(--surface-2)] text-[var(--text-primary)] hover:border-[var(--color-border)]";
+  const hintClass = "text-[var(--text-secondary)] text-xs mt-0.5";
 
   return (
     <div

@@ -65,6 +65,28 @@ button {
   border-color: rgba(51, 65, 85, 0.8);
 }
 
+/* ── 3-tier elevation system (dashboard floating elements) ── */
+.elevation-1 {
+  box-shadow:
+    0px 1px 2px rgba(16, 24, 40, 0.04),
+    0px 1px 3px rgba(16, 24, 40, 0.08);
+  border: 1px solid rgba(16, 24, 40, 0.06);
+}
+
+.elevation-2 {
+  box-shadow:
+    0px 4px 12px rgba(16, 24, 40, 0.08),
+    0px 2px 6px rgba(16, 24, 40, 0.06);
+  border: 1px solid rgba(16, 24, 40, 0.05);
+}
+
+.elevation-3 {
+  box-shadow:
+    0px 8px 24px rgba(16, 24, 40, 0.12),
+    0px 2px 8px rgba(16, 24, 40, 0.08);
+  border: 1px solid rgba(16, 24, 40, 0.04);
+}
+
 /* Hero background depth – radial + mesh, subtle */
 .pre-enrollment-hero-bg {
   background:
@@ -853,7 +875,7 @@ button {
   }
 }
 
-/* ─── Modal Styles (Global) ─── */
+/* ─── Modal Styles (theme-aware; no hardcoded colors) ─── */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -869,9 +891,11 @@ button {
 }
 
 .modal-dialog {
-  background-color: var(--card-bg);
+  background-color: var(--surface-1);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-xl);
+  color: var(--text-primary);
   width: 100%;
   max-width: 600px;
   max-height: 90dvh;

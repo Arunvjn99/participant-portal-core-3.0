@@ -59,7 +59,7 @@ export const Switch = ({
         >
           <span
             className={cn(
-              "pointer-events-none inline-block h-5 w-5 translate-y-0.5 rounded-full bg-white shadow-sm ring-0 transition duration-200",
+              "pointer-events-none inline-block h-5 w-5 translate-y-0.5 rounded-full bg-surface-primary shadow-sm ring-0 transition duration-200",
               checked ? "translate-x-5" : "translate-x-0.5"
             )}
             aria-hidden

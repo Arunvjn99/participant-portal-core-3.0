@@ -143,7 +143,7 @@ export function AdvancedJsonSection({
           type="button"
           onClick={handleLoadSample}
           className="rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:opacity-80"
-          style={{ background: "var(--color-primary)", color: "#fff" }}
+          style={{ background: "var(--color-primary)", color: "var(--color-text-inverse)" }}
         >
           Load Sample
         </button>
@@ -175,7 +175,7 @@ export function AdvancedJsonSection({
           style={{
             borderColor: "var(--color-danger)",
             color: "var(--color-danger)",
-            background: "rgba(220, 38, 38, 0.08)",
+            background: "rgb(var(--color-danger-rgb) / 0.08)",
           }}
           role="alert"
         >

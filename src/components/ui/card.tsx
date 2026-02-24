@@ -6,7 +6,7 @@ function Card({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card"
       className={cn(
-        "bg-[var(--color-surface)] text-[var(--color-text)] flex flex-col gap-4 sm:gap-6 rounded-xl border border-[var(--color-border)] py-4 sm:py-6 shadow-sm transition-shadow duration-200",
+        "bg-surface-secondary text-foreground-primary flex flex-col gap-4 sm:gap-6 rounded-xl border border-border-subtle py-4 sm:py-6 shadow-sm transition-shadow duration-200",
         className
       )}
       {...props}
@@ -31,7 +31,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-title"
-      className={cn("leading-none font-semibold text-[var(--color-text)]", className)}
+      className={cn("leading-none font-semibold text-foreground-primary", className)}
       {...props}
     />
   );
@@ -41,7 +41,7 @@ function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-description"
-      className={cn("text-sm text-[var(--color-textSecondary)]", className)}
+      className={cn("text-sm text-foreground-secondary", className)}
       {...props}
     />
   );
@@ -64,7 +64,7 @@ function CardContent({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-content"
-      className={cn("px-4 sm:px-6 text-[var(--color-text)]", className)}
+      className={cn("px-4 sm:px-6 text-foreground-primary", className)}
       {...props}
     />
   );

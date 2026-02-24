@@ -93,7 +93,7 @@ export default function Chat() {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+    <div style={{ display: "flex", flexDirection: "column", height: "100vh", background: "var(--surface-1)", color: "var(--text-primary)" }}>
       <div
         style={{
           flex: 1,
@@ -113,7 +113,7 @@ export default function Chat() {
               padding: "0.5rem 1rem",
               borderRadius: "0.5rem",
               backgroundColor:
-                message.role === "user" ? "#e3f2fd" : "#f5f5f5",
+                message.role === "user" ? "rgb(var(--color-primary-rgb) / 0.1)" : "var(--surface-2)",
             }}
           >
             {message.text}
@@ -124,7 +124,7 @@ export default function Chat() {
             style={{
               alignSelf: "flex-start",
               padding: "0.5rem 1rem",
-              color: "#666",
+              color: "var(--text-secondary)",
             }}
           >
             Loading...
@@ -136,7 +136,7 @@ export default function Chat() {
         style={{
           display: "flex",
           padding: "1rem",
-          borderTop: "1px solid #ddd",
+          borderTop: "1px solid var(--border-subtle)",
         }}
       >
         <input
@@ -149,7 +149,9 @@ export default function Chat() {
             flex: 1,
             padding: "0.5rem",
             borderRadius: "0.25rem",
-            border: "1px solid #ddd",
+            border: "1px solid var(--border-subtle)",
+            background: "var(--surface-1)",
+            color: "var(--text-primary)",
             marginRight: "0.5rem",
           }}
         />
@@ -160,8 +162,8 @@ export default function Chat() {
             padding: "0.5rem 1rem",
             borderRadius: "0.25rem",
             border: "none",
-            backgroundColor: "#1976d2",
-            color: "white",
+            backgroundColor: "var(--brand-primary)",
+            color: "var(--color-text-inverse)",
             cursor: isLoading || !inputValue.trim() ? "not-allowed" : "pointer",
             opacity: isLoading || !inputValue.trim() ? 0.5 : 1,
           }}

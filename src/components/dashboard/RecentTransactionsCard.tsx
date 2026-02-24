@@ -74,7 +74,7 @@ export const RecentTransactionsCard = ({ transactions }: RecentTransactionsCardP
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return (
-    <article className="ped-transactions bg-card rounded-xl border border-[var(--color-border)] p-6 shadow-sm min-h-fit w-full min-w-0">
+    <article className="ped-transactions rounded-2xl elevation-1 bg-[var(--surface-1)] p-6 min-h-fit w-full min-w-0">
       <div className="flex items-start justify-between gap-4 mb-2">
         <div>
           <h2 className="m-0 text-lg font-semibold text-[var(--color-text)]">Recent Transactions</h2>

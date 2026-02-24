@@ -189,7 +189,7 @@ export const ActivityHero = memo(function ActivityHero({
         {/* Right: Chart */}
         <div
           className="flex flex-col justify-center border-l p-6 lg:col-span-7 lg:p-8"
-          style={{ background: "rgb(255 255 255 / 0.5)", borderColor: "var(--color-border)" }}
+          style={{ background: "var(--surface-1)", borderColor: "var(--color-border)" }}
         >
           <div className="mb-6 flex items-center justify-between">
             <h3 className="flex items-center gap-2 text-sm font-semibold" style={{ color: "var(--color-text)" }}>

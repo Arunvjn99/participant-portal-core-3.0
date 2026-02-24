@@ -208,7 +208,7 @@ export const Review = () => {
   /* ── Handlers ── */
   const buildEnrollmentSummary = useCallback(() => {
     const lines: string[] = [
-      "Enrollment Summary",
+      "Enrolment Summary",
       "==================",
       "",
       `Plan: ${selectedPlanName || "Traditional 401(k)"}`,
@@ -242,7 +242,7 @@ export const Review = () => {
 
   const handleEmailSummary = useCallback(() => {
     const summary = buildEnrollmentSummary();
-    const subject = encodeURIComponent("My Retirement Enrollment Summary");
+    const subject = encodeURIComponent("My Retirement Enrolment Summary");
     const body = encodeURIComponent(summary);
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
     showFeedback(t("enrollment.openingEmail"));

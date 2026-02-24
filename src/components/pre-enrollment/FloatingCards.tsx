@@ -25,9 +25,9 @@ export const FloatingCards = () => {
 
   return (
     <div className="relative w-full h-full min-h-[320px] md:min-h-[480px] select-none pointer-events-auto">
-      {/* Main projection card – front layer, subtle float */}
+      {/* Main projection card – front layer, elevation-2 */}
       <motion.div
-        className="absolute top-4 right-2 md:top-10 md:right-4 xl:right-10 w-[16rem] md:w-[20rem] xl:w-96 h-56 md:h-72 xl:h-80 glass-card rounded-2xl md:rounded-3xl p-4 md:p-5 xl:p-6 z-20 transition-shadow duration-300 shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)],0,0,0.3),0_0_0_1px_rgba(51,65,85,0.5)] hover:shadow-[0_24px_48px_-12px_rgba(139,92,246,0.18)],92,246,0.25)]"
+        className="absolute top-4 right-2 md:top-10 md:right-4 xl:right-10 w-[16rem] md:w-[20rem] xl:w-96 h-56 md:h-72 xl:h-80 elevation-2 rounded-2xl bg-[var(--surface-1)] p-4 md:p-5 xl:p-6 z-20 transition-shadow duration-300"
         animate={{ y: [0, -6, 0] }}
         transition={{ ...floatTransition, delay: 0 }}
         whileHover={{ scale: 1.02, transition: { duration: 0.25 } }}
@@ -50,22 +50,22 @@ export const FloatingCards = () => {
             <AreaChart data={data}>
               <defs>
                 <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                  <stop offset="5%" stopColor="var(--brand-primary)" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="var(--brand-primary)" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <Tooltip
                 contentStyle={{
                   borderRadius: "12px",
                   border: "none",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
                 }}
-                itemStyle={{ color: "#6d28d9", fontWeight: 600 }}
+                itemStyle={{ color: "var(--brand-primary)", fontWeight: 600 }}
               />
               <Area
                 type="monotone"
                 dataKey="amount"
-                stroke="#8b5cf6"
+                stroke="var(--brand-primary)"
                 strokeWidth={3}
                 fillOpacity={1}
                 fill="url(#colorAmount)"
@@ -75,9 +75,9 @@ export const FloatingCards = () => {
         </div>
       </motion.div>
 
-      {/* Insight chip – middle layer, delayed float */}
+      {/* Smart Recommendation chip – elevation-3 */}
       <motion.div
-        className="absolute top-0 right-4 md:right-16 xl:right-28 bg-[var(--color-surface)]/90 backdrop-blur-md px-2.5 md:px-3 xl:px-4 py-2 md:py-2.5 xl:py-3 rounded-xl md:rounded-2xl border border-[var(--color-border)]/60 z-30 flex items-center gap-2 xl:gap-3 shadow-lg max-w-[200px] md:max-w-[260px]"
+        className="absolute top-0 right-4 md:right-16 xl:right-28 elevation-3 rounded-2xl bg-[var(--surface-1)] px-2.5 md:px-3 xl:px-4 py-2 md:py-2.5 xl:py-3 z-30 flex items-center gap-2 xl:gap-3 max-w-[200px] md:max-w-[260px]"
         animate={{ y: [0, -8, 0] }}
         transition={{ ...floatTransition, delay: 1.5 }}
         whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
@@ -91,9 +91,9 @@ export const FloatingCards = () => {
         </div>
       </motion.div>
 
-      {/* Contribution card – back layer, more float delay */}
+      {/* Contribution card – back layer, elevation-2 */}
       <motion.div
-        className="absolute bottom-4 left-2 md:bottom-10 md:left-2 xl:bottom-20 xl:left-10 w-52 md:w-64 xl:w-80 glass-card rounded-xl md:rounded-2xl p-3 md:p-4 xl:p-6 z-10 border border-white/80 shadow-[0_16px_32px_-12px_rgba(0,0,0,0.1)],0,0,0.35)]"
+        className="absolute bottom-4 left-2 md:bottom-10 md:left-2 xl:bottom-20 xl:left-10 w-52 md:w-64 xl:w-80 elevation-2 rounded-2xl bg-[var(--surface-1)] p-3 md:p-4 xl:p-6 z-10"
         animate={{ y: [0, -5, 0] }}
         transition={{ ...floatTransition, delay: 3 }}
         whileHover={{ scale: 1.02, transition: { duration: 0.25 } }}

@@ -75,7 +75,7 @@ export function LivePreviewPanel({ branding }: LivePreviewPanelProps) {
       style={{
         background: "var(--color-surface)",
         borderColor: "var(--color-border)",
-        boxShadow: "0 4px 20px rgba(0,0,0,0.06)",
+        boxShadow: "var(--shadow-md)",
       }}
     >
       <div className="px-4 py-3 border-b" style={{ borderColor: "var(--color-border)" }}>

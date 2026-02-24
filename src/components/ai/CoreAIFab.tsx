@@ -35,7 +35,7 @@ export const CoreAIFab = () => {
             <button
               type="button"
               onClick={() => setIsOpen(true)}
-              className="core-ai-fab-btn relative flex items-center gap-2.5 rounded-full px-5 py-3 text-white shadow-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+              className="core-ai-fab-btn elevation-3 relative flex items-center gap-2.5 rounded-full px-5 py-3 text-white transition-all duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
               aria-label={t("coreAi.fabAria")}
             >
               <motion.img

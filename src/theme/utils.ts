@@ -131,15 +131,27 @@ function hexToRGB(hex: string): string {
 
 /**
  * Maps a ThemeColors object to CSS custom properties and applies them
- * to document.documentElement.
+ * to document.documentElement. All UI must use these variables; no hardcoded colors.
  */
 export function applyThemeToDOM(colors: ThemeColors): void {
   const root = document.documentElement;
+  const brandHover = adjustColor(colors.primary, -8);
+  const brandActive = adjustColor(colors.primary, -15);
 
   const vars: Record<string, string> = {
+    /* ─── Semantic theme API (use these everywhere) ─── */
+    "--surface-primary": colors.background,
+    "--surface-secondary": colors.surface,
+    "--text-primary": colors.textPrimary,
+    "--text-secondary": colors.textSecondary,
+    "--border-subtle": colors.border,
+    "--brand-primary": colors.primary,
+    "--brand-hover": brandHover,
+    "--brand-active": brandActive,
+
     "--color-primary": colors.primary,
-    "--color-primary-hover": adjustColor(colors.primary, -8),
-    "--color-primary-active": adjustColor(colors.primary, -15),
+    "--color-primary-hover": brandHover,
+    "--color-primary-active": brandActive,
     "--color-primary-rgb": hexToRGB(colors.primary),
     "--color-secondary": colors.secondary,
     "--color-accent": colors.accent,
@@ -157,12 +169,12 @@ export function applyThemeToDOM(colors: ThemeColors): void {
     "--color-warning": colors.warning,
     "--color-danger": colors.danger,
     "--color-danger-rgb": hexToRGB(colors.danger),
+    "--color-success-rgb": hexToRGB(colors.success),
+    "--color-warning-rgb": hexToRGB(colors.warning),
     "--accent": colors.primary,
     "--accent-primary": colors.primary,
     "--accent-success": colors.success,
     "--accent-warning": colors.warning,
-    "--text-primary": colors.textPrimary,
-    "--text-secondary": colors.textSecondary,
     "--bg": colors.background,
     "--surface": colors.surface,
     "--border": colors.border,
@@ -202,6 +214,18 @@ export function applyThemeToDOM(colors: ThemeColors): void {
 export function clearThemeFromDOM(): void {
   const root = document.documentElement;
   const props = [
+    "--surface-1",
+    "--surface-2",
+    "--surface-primary",
+    "--surface-secondary",
+    "--text-primary",
+    "--text-secondary",
+    "--border-subtle",
+    "--brand-primary",
+    "--brand-hover",
+    "--brand-active",
+    "--danger",
+    "--success",
     "--color-primary",
     "--color-primary-hover",
     "--color-primary-active",
@@ -222,12 +246,12 @@ export function clearThemeFromDOM(): void {
     "--color-warning",
     "--color-danger",
     "--color-danger-rgb",
+    "--color-success-rgb",
+    "--color-warning-rgb",
     "--accent",
     "--accent-primary",
     "--accent-success",
     "--accent-warning",
-    "--text-primary",
-    "--text-secondary",
     "--bg",
     "--surface",
     "--border",

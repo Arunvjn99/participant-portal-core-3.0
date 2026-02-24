@@ -18,7 +18,7 @@ export const GoalSimulatorCard = ({ data }: GoalSimulatorCardProps) => {
   const strokeDashoffset = circumference - (data.percentOnTrack / 100) * circumference;
 
   return (
-    <article className="ped-goal bg-card rounded-xl border border-border p-6 shadow-sm min-h-fit w-full min-w-0">
+    <article className="ped-goal rounded-2xl elevation-1 bg-[var(--surface-1)] p-6 min-h-fit w-full min-w-0">
       <div className="ped-goal__header">
         <h2 className="ped-goal__title">Goal Simulator</h2>
         <button type="button" className="ped-goal__bookmark" aria-label="Info">

@@ -406,7 +406,7 @@ function RiskSpectrum({ value, onSelect }: { value?: RiskTolerance; onSelect: (v
                     animate={{ scale: 1 }}
                     className="h-full w-full rounded-full flex items-center justify-center"
                   >
-                    <div className="h-2 w-2 rounded-full bg-white" />
+                    <div className="h-2 w-2 rounded-full bg-surface-primary" />
                   </motion.div>
                 )}
               </motion.div>

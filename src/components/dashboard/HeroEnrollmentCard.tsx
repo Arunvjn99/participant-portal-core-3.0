@@ -31,7 +31,7 @@ export const HeroEnrollmentCard = ({
   headline = "Get started with your 401(k)",
   description = "Enroll in your retirement plan today and start building your financial future. The process is simple and takes just a few minutes.",
   heroImageSrc = DEFAULT_HERO_IMAGE,
-  enrollmentBadge = "+ ENROLLMENT OPEN",
+  enrollmentBadge = "+ ENROLMENT OPEN",
   primaryCtaLabel,
   insightPlanName = "Plan: Roth 401(k)",
   insightBalanceLabel = "Current Balance",
@@ -48,7 +48,7 @@ export const HeroEnrollmentCard = ({
   return (
     <>
       <section
-        className={`relative overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-lg transition-shadow duration-300 md:p-8 ${canHover ? "md:hover:shadow-xl" : ""}`}
+        className="relative overflow-hidden rounded-2xl elevation-1 bg-[var(--surface-1)] p-6 md:p-8"
       >
         <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-10">
           {/* Left: copy, badge, CTA - stagger first */}
@@ -102,7 +102,7 @@ export const HeroEnrollmentCard = ({
                 initial={reduced ? {} : { opacity: 0, y: 8 }}
                 animate={reduced ? {} : { opacity: 1, y: 0 }}
                 transition={reduced ? {} : { duration: 0.3, ease: [0.25, 0.1, 0.25, 1], delay: 0.16 }}
-                className="absolute bottom-4 left-4 right-4 rounded-lg border border-[var(--color-border)]/80 bg-[var(--color-surface)]/95 p-4 shadow-lg backdrop-blur-sm md:right-auto md:w-48"
+                className="absolute bottom-4 left-4 right-4 elevation-2 rounded-2xl bg-[var(--surface-1)] p-4 md:right-auto md:w-48"
               >
                 <p className="mb-2 flex items-center gap-1.5 text-xs font-medium text-[var(--color-primary)]">
                   PERSONALISED INSIGHTS

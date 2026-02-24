@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useEnrollment } from "../../enrollment/context/EnrollmentContext";
@@ -65,19 +65,12 @@ function buildPlansFromRecommendation(recommendation: PlanRecommendation, t: (ke
       fitScore: recommendation.fitScore,
       isEligible: true,
     },
-    {
-      id: "roth-ira",
-      title: t("enrollment.planSafeHarborTitle"),
-      matchInfo: t("enrollment.planSafeHarborMatch"),
-      description: t("enrollment.planSafeHarborDesc"),
-      benefits: [
-        t("enrollment.planSafeHarborBenefit1"),
-        t("enrollment.planSafeHarborBenefit2"),
-        t("enrollment.planSafeHarborBenefit3"),
-      ],
-      isRecommended: false,
-      isEligible: true,
-    },
+    // Safe Harbor 401(k) plan — hidden per product requirement
+    // {
+    //   id: "roth-ira",
+    //   title: t("enrollment.planSafeHarborTitle"),
+    //   ...
+    // },
   ];
   const withRecommendation = base.map((p) => ({
     ...p,
@@ -101,15 +94,9 @@ export const ChoosePlan = () => {
   });
 
   const plans = useMemo(() => buildPlansFromRecommendation(recommendation, t), [recommendation, t]);
-  const recommendedId = plans.find((p) => p.isRecommended)?.id ?? plans[0]?.id;
-  const selectedPlanIdRaw = planIdToRaw(state.selectedPlan) ?? recommendedId;
-  const selectedPlan = plans.find((p) => p.id === selectedPlanIdRaw) ?? plans[0];
-  const selectedPlanId = selectedPlanIdRaw ?? recommendedId;
-
-  useEffect(() => {
-    if (state.selectedPlan != null || !recommendedId) return;
-    setSelectedPlan(normalizePlanId(recommendedId));
-  }, [state.selectedPlan, recommendedId, setSelectedPlan]);
+  const selectedPlanIdRaw = planIdToRaw(state.selectedPlan) ?? null;
+  const selectedPlan = selectedPlanIdRaw != null ? plans.find((p) => p.id === selectedPlanIdRaw) ?? null : null;
+  const selectedPlanId = selectedPlanIdRaw;
 
   const handlePlanSelect = useCallback(
     (planId: string) => {

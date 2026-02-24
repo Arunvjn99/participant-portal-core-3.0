@@ -22,6 +22,7 @@ const SLIDER_MIN = 1;
 const SLIDER_MAX = 25;
 
 const PRESETS = [
+  { id: "match", labelKey: "enrollment.presetEmployerMatch", percentage: 6 },
   { id: "safe", labelKey: "enrollment.presetSafe", percentage: 8 },
   { id: "aggressive", labelKey: "enrollment.presetAggressive", percentage: 15 },
 ] as const;
@@ -251,13 +252,13 @@ export const Contribution = () => {
                     className="rounded-full px-5 py-2 text-sm font-medium transition-all duration-200"
                     style={{
                       background: activePreset === p.id
-                        ? (p.id === "safe" ? "rgb(var(--enroll-accent-rgb) / 0.08)" : "rgb(var(--enroll-brand-rgb) / 0.08)")
+                        ? (p.id === "safe" || p.id === "match" ? "rgb(var(--enroll-accent-rgb) / 0.08)" : "rgb(var(--enroll-brand-rgb) / 0.08)")
                         : "var(--enroll-soft-bg)",
                       color: activePreset === p.id
-                        ? (p.id === "safe" ? "var(--enroll-accent)" : "var(--enroll-brand)")
+                        ? (p.id === "safe" || p.id === "match" ? "var(--enroll-accent)" : "var(--enroll-brand)")
                         : "var(--enroll-text-secondary)",
                       border: `1px solid ${activePreset === p.id
-                        ? (p.id === "safe" ? "rgb(var(--enroll-accent-rgb) / 0.2)" : "rgb(var(--enroll-brand-rgb) / 0.2)")
+                        ? (p.id === "safe" || p.id === "match" ? "rgb(var(--enroll-accent-rgb) / 0.2)" : "rgb(var(--enroll-brand-rgb) / 0.2)")
                         : "var(--enroll-card-border)"}`,
                     }}
                   >
@@ -461,7 +462,7 @@ export const Contribution = () => {
                                 onChange={(e) => setSourcesEditMode(e.target.checked)}
                                 className="peer sr-only"
                               />
-                              <span className="relative block h-full w-full rounded-full transition-colors after:absolute after:left-0.5 after:top-0.5 after:h-4 after:w-4 after:rounded-full after:bg-white after:shadow-sm after:transition-transform after:content-[''] peer-checked:after:translate-x-4"
+                              <span className="relative block h-full w-full rounded-full transition-colors after:absolute after:left-0.5 after:top-0.5 after:h-4 after:w-4 after:rounded-full after:bg-surface-primary after:shadow-sm after:transition-transform after:content-[''] peer-checked:after:translate-x-4"
                                 style={{
                                   background: state.sourcesEditMode ? "var(--enroll-brand)" : "var(--enroll-soft-bg)",
                                   border: state.sourcesEditMode ? "none" : "1px solid var(--enroll-card-border)",

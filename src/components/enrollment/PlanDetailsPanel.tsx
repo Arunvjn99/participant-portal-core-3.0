@@ -160,40 +160,42 @@ export function PlanDetailsPanel({ plan, user, rationaleKey, rationale }: PlanDe
         <MetricRow icon={<Unlock size={14} />} label={t("enrollment.accessToMoney")} value={t("enrollment.flexible")} score={Math.min(100, (plan.benefits?.length ?? 0) * 25)} />
       </div>
 
-      {/* Pros / Cons */}
-      <div className="p-6 space-y-6" style={cardStyle}>
-        <div className="space-y-3">
-          <h5
-            className="text-[10px] font-bold uppercase tracking-widest flex items-center gap-2"
-            style={{ color: "var(--enroll-text-primary)" }}
-          >
-            <span className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--enroll-accent)" }} aria-hidden /> {t("enrollment.pros")}
-          </h5>
-          <ul className="space-y-2.5">
-            {(plan.benefits ?? []).map((value, i) => (
-              <li key={i} className="flex gap-2.5 text-xs" style={{ color: "var(--enroll-text-secondary)" }}>
-                <Check size={14} className="shrink-0" style={{ color: "var(--enroll-accent)" }} />
-                <span>{value}</span>
+      {/* Pros / Cons — hidden per product requirement */}
+      {false && (
+        <div className="p-6 space-y-6" style={cardStyle}>
+          <div className="space-y-3">
+            <h5
+              className="text-[10px] font-bold uppercase tracking-widest flex items-center gap-2"
+              style={{ color: "var(--enroll-text-primary)" }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--enroll-accent)" }} aria-hidden /> {t("enrollment.pros")}
+            </h5>
+            <ul className="space-y-2.5">
+              {(plan.benefits ?? []).map((value, i) => (
+                <li key={i} className="flex gap-2.5 text-xs" style={{ color: "var(--enroll-text-secondary)" }}>
+                  <Check size={14} className="shrink-0" style={{ color: "var(--enroll-accent)" }} />
+                  <span>{value}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="w-full h-px" style={{ background: "var(--enroll-card-border)" }} aria-hidden />
+          <div className="space-y-3">
+            <h5
+              className="text-[10px] font-bold uppercase tracking-widest flex items-center gap-2"
+              style={{ color: "var(--enroll-text-primary)" }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-warning)]" aria-hidden /> {t("enrollment.cons")}
+            </h5>
+            <ul className="space-y-2.5">
+              <li className="flex gap-2.5 text-xs" style={{ color: "var(--enroll-text-muted)" }}>
+                <X size={14} className="shrink-0" style={{ color: "var(--enroll-text-muted)" }} />
+                <span>{plan.id === "roth-401k" || plan.isRecommended ? t("enrollment.conNoTaxBreakToday") : t("enrollment.conPayTaxesWithdraw")}</span>
               </li>
-            ))}
-          </ul>
+            </ul>
+          </div>
         </div>
-        <div className="w-full h-px" style={{ background: "var(--enroll-card-border)" }} aria-hidden />
-        <div className="space-y-3">
-          <h5
-            className="text-[10px] font-bold uppercase tracking-widest flex items-center gap-2"
-            style={{ color: "var(--enroll-text-primary)" }}
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-warning)]" aria-hidden /> {t("enrollment.cons")}
-          </h5>
-          <ul className="space-y-2.5">
-            <li className="flex gap-2.5 text-xs" style={{ color: "var(--enroll-text-muted)" }}>
-              <X size={14} className="shrink-0" style={{ color: "var(--enroll-text-muted)" }} />
-              <span>{plan.id === "roth-401k" || plan.isRecommended ? t("enrollment.conNoTaxBreakToday") : t("enrollment.conPayTaxesWithdraw")}</span>
-            </li>
-          </ul>
-        </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -74,24 +74,10 @@ const HorizontalTile: React.FC<{
         boxShadow: isSelected ? "var(--enroll-elevation-3)" : "var(--enroll-elevation-2)",
       }}
     >
-      {/* Best-fit styling */}
+      {/* Best-fit styling — no grid/dot lines on Roth 401(k) widget */}
       {isRecommended && isEligible && (
         <>
           <div className={`absolute inset-0 bg-gradient-to-br from-[var(--color-primary)]/5 via-[var(--color-surface)] to-[var(--color-primary)]/3 pointer-events-none transition-opacity duration-500 ${isSelected ? "opacity-100" : "opacity-60"}`} />
-          <div className="absolute inset-0 pointer-events-none opacity-[0.4] mix-blend-multiply">
-            <svg width="100%" height="100%" className="absolute inset-0">
-              <defs>
-                <pattern id="grid-pattern-rail" width="40" height="40" patternUnits="userSpaceOnUse">
-                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-[var(--color-primary)]/20" />
-                </pattern>
-                <pattern id="dot-pattern-rail" width="20" height="20" patternUnits="userSpaceOnUse">
-                  <circle cx="1" cy="1" r="1" className="text-[var(--color-primary)]/15" fill="currentColor" />
-                </pattern>
-              </defs>
-              <rect width="100%" height="100%" fill="url(#grid-pattern-rail)" />
-              <rect width="100%" height="100%" fill="url(#dot-pattern-rail)" />
-            </svg>
-          </div>
           <div className={`absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-bl from-[var(--color-primary)]/10 via-[var(--color-primary)]/5 to-transparent rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none transition-all duration-700 ${isSelected ? "opacity-100 scale-110" : "opacity-50 scale-100"}`} />
           {isSelected && (
             <div className="absolute inset-0 border-2 border-[var(--color-primary)]/20 rounded-2xl animate-pulse pointer-events-none" aria-hidden />

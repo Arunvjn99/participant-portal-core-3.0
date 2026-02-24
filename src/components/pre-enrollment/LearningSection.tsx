@@ -32,7 +32,7 @@ export const LearningSection = () => {
             return (
             <div
               key={resource.id}
-              className="group relative w-56 h-64 sm:w-64 sm:h-72 md:w-72 md:h-80 rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl shadow-md ring-1 ring-slate-200/50 flex-shrink-0"
+              className="group relative w-56 h-64 sm:w-64 sm:h-72 md:w-72 md:h-80 rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl shadow-md ring-1 ring-[var(--border-subtle)] flex-shrink-0"
             >
               <div className="absolute inset-0">
                 <img
@@ -40,18 +40,18 @@ export const LearningSection = () => {
                   alt={title}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
               </div>
 
               <div className="absolute bottom-0 left-0 p-3 sm:p-4 md:p-6 w-full">
-                <span className="inline-block px-2 py-1 bg-white/20 backdrop-blur-md rounded-md text-[10px] font-bold text-white uppercase tracking-wider mb-1.5 sm:mb-2 border border-white/10">
+                <span className="inline-block px-2 py-1 bg-[var(--surface-primary)]/20 backdrop-blur-md rounded-md text-[10px] font-bold text-white uppercase tracking-wider mb-1.5 sm:mb-2 border border-[var(--surface-primary)]/10">
                   {category}
                 </span>
                 <h3 className="text-base sm:text-lg md:text-xl font-bold text-white mb-1 sm:mb-1.5 md:mb-2 leading-tight">
                   {title}
                 </h3>
                 <div className="flex items-center gap-2 text-white/80 text-xs sm:text-sm">
-                  <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
+                  <div className="w-6 h-6 rounded-full bg-[var(--surface-primary)]/20 flex items-center justify-center">
                     <Play size={10} fill="currentColor" />
                   </div>
                   {duration}

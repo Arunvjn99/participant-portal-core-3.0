@@ -37,9 +37,9 @@ const getImpactStyles = (type: InsightImpactType) => {
       };
     case "Pending":
       return {
-        bg: "rgb(59 130 246 / 0.1)",
+        bg: "rgb(var(--color-primary-rgb) / 0.1)",
         border: "var(--color-primary)",
-        iconBg: "rgb(59 130 246 / 0.15)",
+        iconBg: "rgb(var(--color-primary-rgb) / 0.15)",
         iconColor: "var(--color-primary)",
         badge: "var(--color-primary)",
         icon: <Clock className="h-5 w-5" />,

@@ -151,7 +151,7 @@ export const ThemeSettings = () => {
               className="mt-3 rounded-lg border px-4 py-3 text-sm"
               style={{
                 borderColor: "var(--color-warning)",
-                background: "rgba(245, 158, 11, 0.1)",
+                background: "rgb(var(--color-warning-rgb) / 0.1)",
                 color: "var(--color-text)",
               }}
               role="alert"
@@ -174,7 +174,7 @@ export const ThemeSettings = () => {
                 className="rounded-lg border px-4 py-3 text-sm"
                 style={{
                   borderColor: "var(--color-primary)",
-                  background: "rgba(0, 82, 204, 0.08)",
+                  background: "rgb(var(--color-primary-rgb) / 0.08)",
                   color: "var(--color-primary)",
                 }}
                 role="status"
@@ -187,7 +187,7 @@ export const ThemeSettings = () => {
                 className="rounded-lg border px-4 py-3 text-sm"
                 style={{
                   borderColor: "var(--color-success)",
-                  background: "rgba(22, 163, 74, 0.1)",
+                  background: "rgb(var(--color-success-rgb) / 0.1)",
                   color: "var(--color-success)",
                 }}
                 role="status"
@@ -200,7 +200,7 @@ export const ThemeSettings = () => {
                 className="rounded-lg border px-4 py-3 text-sm"
                 style={{
                   borderColor: "var(--color-danger)",
-                  background: "rgba(220, 38, 38, 0.08)",
+                  background: "rgb(var(--color-danger-rgb) / 0.08)",
                   color: "var(--color-danger)",
                 }}
                 role="alert"
@@ -216,7 +216,7 @@ export const ThemeSettings = () => {
                   padding: "6px 12px",
                   borderRadius: "8px",
                   background: "var(--color-warning)",
-                  color: "#fff",
+                  color: "var(--color-text-inverse)",
                   fontSize: "12px",
                   fontWeight: 600,
                 }}

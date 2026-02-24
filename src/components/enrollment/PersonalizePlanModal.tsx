@@ -9,6 +9,7 @@ import {
   saveEnrollmentDraft,
   type EnrollmentDraft,
 } from "../../enrollment/enrollmentDraftStore";
+import { US_STATES } from "@/constants/usStates";
 
 const TOTAL_STEPS = 3;
 
@@ -29,27 +30,6 @@ const DEFAULT_STATE: WizardFormState = {
   retirementLocation: "",
   savingsAmount: 0,
 };
-
-const COUNTRIES = [
-  "Dominica",
-  "Eritrea",
-  "Chad",
-  "Fiji",
-  "Belize",
-  "Gabon",
-  "Andorra",
-  "Haiti",
-  "Iceland",
-  "New York, NY",
-  "Los Angeles, CA",
-  "Chicago, IL",
-  "Houston, TX",
-  "Phoenix, AZ",
-  "Philadelphia, PA",
-  "San Antonio, TX",
-  "San Diego, CA",
-  "Dallas, TX",
-];
 
 export interface PersonalizePlanModalProps {
   isOpen: boolean;
@@ -272,9 +252,9 @@ function Step3Location({
   const [search, setSearch] = useState("");
 
   const filtered = useMemo(() => {
-    if (!search.trim()) return COUNTRIES;
+    if (!search.trim()) return US_STATES;
     const q = search.toLowerCase();
-    return COUNTRIES.filter((c) => c.toLowerCase().includes(q));
+    return US_STATES.filter((s) => s.toLowerCase().includes(q));
   }, [search]);
 
   return (

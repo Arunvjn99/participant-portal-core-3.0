@@ -24,10 +24,8 @@ interface DashboardCardProps {
 export const DashboardCard = ({ children, title, action, isSelected, className }: DashboardCardProps) => {
   return (
     <article
-      className={`overflow-hidden rounded-xl border p-4 sm:p-6 md:p-8 transition-shadow duration-200 ${
-        isSelected
-          ? "border-primary bg-primary/5 shadow-[var(--heroui-card-hover-shadow)]"
-          : "border-[var(--color-border)] bg-card shadow-[var(--heroui-card-shadow)] hover:shadow-[var(--heroui-card-hover-shadow)]"
+      className={`overflow-hidden rounded-2xl elevation-1 bg-[var(--surface-1)] p-4 sm:p-6 md:p-8 ${
+        isSelected ? "ring-2 ring-[var(--color-primary)] ring-offset-2 bg-[var(--color-primary)]/5" : ""
       } ${className ?? ""}`}
     >
       {(title || action) && (

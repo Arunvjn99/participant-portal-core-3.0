@@ -29,7 +29,7 @@ export const SourceOfWealth: React.FC = () => {
             backgroundColor: "var(--color-text)",
           }}
         >
-          <div className="absolute inset-0 bg-white/10 opacity-0 transition-opacity group-hover:opacity-100" />
+          <div className="absolute inset-0 bg-[var(--surface-primary)]/10 opacity-0 transition-opacity group-hover:opacity-100" />
         </div>
         <div
           className="relative flex h-full items-center justify-center group"
@@ -38,7 +38,7 @@ export const SourceOfWealth: React.FC = () => {
             backgroundColor: "var(--color-text-tertiary)",
           }}
         >
-          <div className="absolute inset-0 bg-white/10 opacity-0 transition-opacity group-hover:opacity-100" />
+          <div className="absolute inset-0 bg-[var(--surface-primary)]/10 opacity-0 transition-opacity group-hover:opacity-100" />
         </div>
         <div
           className="relative flex h-full items-center justify-center group"
@@ -47,7 +47,7 @@ export const SourceOfWealth: React.FC = () => {
             backgroundColor: "var(--color-primary)",
           }}
         >
-          <div className="absolute inset-0 bg-white/10 opacity-0 transition-opacity group-hover:opacity-100" />
+          <div className="absolute inset-0 bg-[var(--surface-primary)]/10 opacity-0 transition-opacity group-hover:opacity-100" />
         </div>
       </div>
 

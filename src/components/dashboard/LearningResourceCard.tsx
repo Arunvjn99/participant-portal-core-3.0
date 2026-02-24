@@ -50,7 +50,7 @@ export const LearningResourceCard = ({
       variants={containerVariants}
       initial="initial"
       animate="animate"
-      className={`flex h-[320px] w-[280px] shrink-0 snap-start flex-col overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-md transition-shadow duration-200 focus-within:ring-2 focus-within:ring-[var(--color-primary)] focus-within:ring-offset-2 ${canHover && !reduced ? "hover:shadow-lg focus-within:shadow-lg" : ""}`}
+      className={`flex h-[320px] w-[280px] shrink-0 snap-start flex-col overflow-hidden rounded-2xl elevation-1 bg-[var(--surface-1)] transition-shadow duration-200 focus-within:ring-2 focus-within:ring-[var(--color-primary)] focus-within:ring-offset-2 ${canHover && !reduced ? "hover:shadow-[0px_8px_24px_rgba(16,24,40,0.12)]" : ""}`}
       whileHover={canHover && !reduced ? { y: -4, transition: { duration: 0.2 } } : undefined}
     >
         <div className="group/card flex h-full flex-col">

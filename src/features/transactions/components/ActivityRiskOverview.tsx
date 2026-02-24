@@ -117,9 +117,9 @@ export const ActivityRiskOverview = memo(function ActivityRiskOverview() {
         >
           <div
             className="absolute -top-1/2 right-0 h-32 w-32 rounded-full blur-3xl translate-x-1/2"
-            style={{ background: "rgb(79 70 229 / 0.2)" }}
+            style={{ background: "rgb(var(--color-primary-rgb) / 0.2)" }}
           />
-            <div className="relative z-10 border-b px-4 py-4" style={{ borderColor: "rgb(255 255 255 / 0.1)" }}>
+            <div className="relative z-10 border-b px-4 py-4" style={{ borderColor: "rgb(var(--color-text-inverse-rgb, 255 255 255) / 0.1)" }}>
             <div className="flex items-center justify-between">
               <h3 className="text-base font-semibold" style={{ color: "var(--color-text-inverse)" }}>{t("transactions.riskOverview.riskProjection")}</h3>
               <ShieldCheck className="h-5 w-5" style={{ color: "var(--color-success)" }} />
@@ -130,8 +130,8 @@ export const ActivityRiskOverview = memo(function ActivityRiskOverview() {
               <div
                 className="flex h-9 w-9 items-center justify-center rounded-lg border"
                 style={{
-                  background: "rgb(34 197 94 / 0.1)",
-                  borderColor: "rgb(34 197 94 / 0.2)",
+                  background: "rgb(var(--color-success-rgb) / 0.1)",
+                  borderColor: "rgb(var(--color-success-rgb) / 0.2)",
                   color: "var(--color-success)",
                 }}
               >
@@ -145,14 +145,14 @@ export const ActivityRiskOverview = memo(function ActivityRiskOverview() {
               </div>
             </div>
 
-            <div className="h-px" style={{ background: "rgb(255 255 255 / 0.1)" }} />
+            <div className="h-px" style={{ background: "rgb(var(--color-text-inverse-rgb, 255 255 255) / 0.1)" }} />
 
             <div className="flex items-start gap-3">
               <div
                 className="flex h-9 w-9 items-center justify-center rounded-lg border"
                 style={{
-                  background: "rgb(245 158 11 / 0.1)",
-                  borderColor: "rgb(245 158 11 / 0.2)",
+                  background: "rgb(var(--color-warning-rgb) / 0.1)",
+                  borderColor: "rgb(var(--color-warning-rgb) / 0.2)",
                   color: "var(--color-warning)",
                 }}
               >

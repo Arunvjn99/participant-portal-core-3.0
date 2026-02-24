@@ -25,7 +25,7 @@ export const PersonalizedScoreCard = () => {
 
   return (
     <article
-      className={`flex h-full min-h-[320px] flex-col items-center justify-center rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-md transition-all duration-200 md:p-8 ${canHover && !reduced ? "hover:border-[var(--color-primary)] hover:shadow-lg" : ""}`}
+      className={`flex h-full min-h-[320px] flex-col items-center justify-center rounded-2xl elevation-1 bg-[var(--surface-1)] p-6 md:p-8 ${canHover && !reduced ? "transition-all duration-200 hover:ring-2 hover:ring-[var(--color-primary)] hover:ring-offset-2" : ""}`}
       onMouseEnter={handleCardHover}
     >
       {/* Icon: one-time pulse on first card hover */}

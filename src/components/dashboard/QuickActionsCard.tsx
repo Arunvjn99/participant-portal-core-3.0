@@ -15,8 +15,8 @@ const ACTIONS: QuickAction[] = [
     id: "contribution",
     label: "Change Contribution",
     route: "/enrollment/contribution",
-    iconColor: "#5D3FD3",
-    iconBg: "#ECEBFC",
+    iconColor: "var(--brand-primary)",
+    iconBg: "rgb(var(--color-primary-rgb) / 0.12)",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
@@ -27,8 +27,8 @@ const ACTIONS: QuickAction[] = [
     id: "transfer",
     label: "Transfer Funds",
     route: "/transactions/transfer/start",
-    iconColor: "#3465F5",
-    iconBg: "#EBF2FF",
+    iconColor: "var(--brand-primary)",
+    iconBg: "rgb(var(--color-primary-rgb) / 0.12)",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <polyline points="8 9 4 12 8 15" />
@@ -40,8 +40,8 @@ const ACTIONS: QuickAction[] = [
     id: "rebalance",
     label: "Rebalance",
     route: "/transactions/rebalance/start",
-    iconColor: "#4CAF50",
-    iconBg: "#EAF8EB",
+    iconColor: "var(--success)",
+    iconBg: "rgb(var(--color-success-rgb) / 0.12)",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M21 12a9 9 0 11-9-9" />
@@ -53,8 +53,8 @@ const ACTIONS: QuickAction[] = [
     id: "rollover",
     label: "Start Rollover",
     route: "/transactions/rollover/start",
-    iconColor: "#F59E0B",
-    iconBg: "#FFF8EA",
+    iconColor: "var(--color-warning)",
+    iconBg: "rgb(var(--color-warning-rgb) / 0.12)",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
@@ -69,8 +69,8 @@ const ACTIONS: QuickAction[] = [
     id: "profile",
     label: "Update Profile",
     route: "/profile",
-    iconColor: "#6B7280",
-    iconBg: "#F3F4F6",
+    iconColor: "var(--text-secondary)",
+    iconBg: "var(--surface-2)",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
@@ -112,7 +112,7 @@ export const QuickActionsCard = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="min-w-0 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-sm xl:p-6 lg:col-start-1">
+    <section className="min-w-0 rounded-2xl elevation-1 bg-[var(--surface-1)] p-5 xl:p-6 lg:col-start-1">
       <h2 className="mb-4 text-lg font-semibold text-[var(--color-text)]">Quick Actions</h2>
       <motion.div
         className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5"
@@ -126,7 +126,7 @@ export const QuickActionsCard = () => {
             type="button"
             variants={itemVariants}
             onClick={() => navigate(action.route)}
-            className="flex flex-col items-center gap-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-5 shadow-sm transition-shadow hover:border-[var(--color-border)] hover:bg-[var(--color-background)] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-2"
+            className="flex flex-col items-center gap-3 rounded-2xl elevation-1 bg-[var(--surface-1)] px-4 py-5 transition-shadow hover:shadow-[0px_4px_12px_rgba(16,24,40,0.08)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-2"
             whileHover={{
               scale: 1.03,
               y: -4,

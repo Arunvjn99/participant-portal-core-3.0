@@ -81,7 +81,7 @@ function ActionCard({ title, description, buttonText, color }: { title: string; 
         type="button"
         className="mt-4 self-start rounded-lg border-2 px-4 py-2 text-sm font-medium transition-colors hover:text-white"
         style={{ borderColor: color, color, }}
-        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = color; e.currentTarget.style.color = '#fff'; }}
+        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = color; e.currentTarget.style.color = 'var(--color-text-inverse)'; }}
         onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = color; }}
       >
         {buttonText}

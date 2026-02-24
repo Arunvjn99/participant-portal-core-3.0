@@ -53,16 +53,16 @@ function StepItem({
           justifyContent: "center",
           ...(isCompleted && {
             backgroundColor: BLUE_ACTIVE,
-            border: "2px solid #fff",
-            color: "#fff",
+            border: "2px solid var(--color-text-inverse)",
+            color: "var(--color-text-inverse)",
           }),
           ...(isActive && {
             backgroundColor: BLUE_ACTIVE,
-            border: "2px solid #fff",
-            color: "#fff",
+            border: "2px solid var(--color-text-inverse)",
+            color: "var(--color-text-inverse)",
           }),
           ...(status === "upcoming" && {
-            backgroundColor: "#fff",
+            backgroundColor: "var(--surface-primary)",
             border: `1px solid ${GREY_LINE}`,
             color: GREY_LABEL,
           }),

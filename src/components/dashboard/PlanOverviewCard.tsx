@@ -55,7 +55,7 @@ export const PlanOverviewCard = ({
   };
 
   return (
-    <article className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm min-h-fit w-full min-w-0">
+    <article className="rounded-2xl elevation-1 bg-[var(--surface-1)] p-6 min-h-fit w-full min-w-0">
       {/* Header: 9% ER badge + Enrolled date */}
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
