@@ -11,6 +11,7 @@ import "./theme/enrollment-dark.css";
 import "./index.css";
 import { loadUXtweak } from "./utils/uxtweakLoader";
 import { loadUXsniff } from "./utils/uxsniffLoader";
+import { loadClarity } from "./lib/analytics/clarity";
 import { router } from "./app/router.tsx";
 import { ThemeProvider } from "./context/ThemeContext";
 import { AISettingsProvider } from "./context/AISettingsContext";
@@ -56,6 +57,7 @@ function RootWithLanguageKey() {
 
 loadUXtweak();
 loadUXsniff();
+loadClarity();
 
 createRoot(document.getElementById("root")!).render(
   <I18nextProvider i18n={i18n}>
