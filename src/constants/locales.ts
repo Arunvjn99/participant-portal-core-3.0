@@ -3,15 +3,10 @@
  * Used by LanguageSwitcher and Settings hub to avoid duplication.
  */
 
+/** Restricted to English and Spanish for production SaaS. */
 export const SUPPORTED_LANGS = [
   { code: "en", labelKey: "common.english" },
   { code: "es", labelKey: "common.spanish" },
-  { code: "fr", labelKey: "common.french" },
-  { code: "ta", labelKey: "common.tamil" },
-  { code: "zh", labelKey: "common.chinese" },
-  { code: "ja", labelKey: "common.japanese" },
-  { code: "de", labelKey: "common.german" },
-  { code: "hi", labelKey: "common.hindi" },
 ] as const;
 
 export function normalizeLanguage(lng: string): string {

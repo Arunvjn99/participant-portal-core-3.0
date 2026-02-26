@@ -7,7 +7,7 @@
  *   <BellaScreen onClose={() => navigate('/dashboard')} />
  *
  * Host app must:
- * - Set VITE_GEMINI_API_KEY for Gemini fallback (general questions when no scripted flow active)
+ * - Core AI goes through /api/core-ai with session token (no frontend API keys)
  * - Browser SpeechRecognition and speechSynthesis (Chrome, Safari, Edge)
  */
 export { default as BellaScreen } from "./BellaScreen";

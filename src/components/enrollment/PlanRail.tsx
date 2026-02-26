@@ -1,25 +1,45 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { Lock, Sparkles, CheckCircle2, Trophy } from "lucide-react";
+import { Lock, CheckCircle2, Info } from "lucide-react";
+import Button from "../ui/Button";
 import type { PlanOption } from "../../types/enrollment";
+
+/** Plan-specific prompt for Core AI (lightweight). */
+export function getPlanAskAiPrompt(planTitle: string): string {
+  return `Explain ${planTitle} in simple terms and how it affects taxes in retirement.`;
+}
+
+/** Richer prompt for "Ask for detailed explanation" from popover. */
+export function getPlanDetailedPrompt(plan: PlanOption): string {
+  const id = plan.id.toLowerCase();
+  if (id.includes("roth")) {
+    return "Explain Roth 401(k) in simple terms. Include tax implications, employer match treatment, and who it's best for.";
+  }
+  if (id.includes("traditional")) {
+    return "Explain Traditional 401(k), how pre-tax contributions reduce taxable income, and how withdrawals are taxed in retirement.";
+  }
+  return `Explain ${plan.title} in simple terms and how it affects taxes in retirement.`;
+}
 
 export interface PlanRailProps {
   plans: PlanOption[];
   selectedId: string | null;
   onSelect: (id: string) => void;
+  onAskAi?: (plan: PlanOption) => void;
 }
 
-/** Horizontal plan rail: eligibility states, best-fit highlight, smooth selection. */
-export function PlanRail({ plans, selectedId, onSelect }: PlanRailProps) {
+/** Horizontal plan rail: selection only; no in-card CTA (CTA lives below grid). */
+export function PlanRail({ plans, selectedId, onSelect, onAskAi }: PlanRailProps) {
   return (
     <div className="w-full relative z-10">
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-6">
         {plans.map((plan) => (
           <HorizontalTile
             key={plan.id}
             plan={plan}
             isSelected={selectedId === plan.id}
             onSelect={() => onSelect(plan.id)}
+            onAskAi={onAskAi}
           />
         ))}
       </div>
@@ -31,11 +51,15 @@ const HorizontalTile: React.FC<{
   plan: PlanOption;
   isSelected: boolean;
   onSelect: () => void;
-}> = ({ plan, isSelected, onSelect }) => {
+  onAskAi?: (plan: PlanOption) => void;
+}> = ({ plan, isSelected, onSelect, onAskAi }) => {
   const { t } = useTranslation();
   const isEligible = plan.isEligible !== false;
-  const isRecommended = plan.isRecommended === true;
-  const confidenceScore = plan.fitScore ?? 0;
+
+  const openCoreAi = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onAskAi?.(plan);
+  };
 
   return (
     <div
@@ -49,130 +73,87 @@ const HorizontalTile: React.FC<{
         }
       }}
       className={`
-        relative w-full overflow-hidden group transition-all duration-300 ease-out
+        relative w-full overflow-hidden transition-all duration-300 ease-out rounded-2xl
         ${!isEligible ? "opacity-60 grayscale-[0.8] cursor-not-allowed" : "cursor-pointer"}
-        ${isEligible && isRecommended
-          ? isSelected
-            ? "scale-[1.01] z-20"
-            : "z-10"
-          : isEligible && isSelected
-            ? "scale-[1.005] z-10"
-            : isEligible
-              ? "z-0"
-              : ""}
+        ${isEligible && isSelected ? "scale-[1.01] z-10" : "z-0"}
       `}
       style={{
-        background: !isEligible ? "var(--enroll-soft-bg)" : "var(--enroll-card-bg)",
-        border: isEligible && isRecommended && isSelected
-          ? "2px solid var(--enroll-brand)"
-          : isEligible && isRecommended
-            ? "1px solid rgb(var(--enroll-brand-rgb) / 0.2)"
-            : isSelected
-              ? "1px solid var(--enroll-card-border)"
-              : "1px solid var(--enroll-card-border)",
+        background: !isEligible ? "var(--enroll-soft-bg)" : isSelected ? "var(--enroll-card-bg)" : "var(--enroll-card-bg)",
+        border: isEligible && isSelected ? "2px solid var(--enroll-brand)" : "1px solid var(--enroll-card-border)",
         borderRadius: "var(--enroll-card-radius)",
-        boxShadow: isSelected ? "var(--enroll-elevation-3)" : "var(--enroll-elevation-2)",
+        boxShadow: isSelected ? "var(--enroll-elevation-3)" : "0 1px 3px rgba(0,0,0,0.06)",
       }}
     >
-      {/* Best-fit styling — no grid/dot lines on Roth 401(k) widget */}
-      {isRecommended && isEligible && (
-        <>
-          <div className={`absolute inset-0 bg-gradient-to-br from-[var(--color-primary)]/5 via-[var(--color-surface)] to-[var(--color-primary)]/3 pointer-events-none transition-opacity duration-500 ${isSelected ? "opacity-100" : "opacity-60"}`} />
-          <div className={`absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-bl from-[var(--color-primary)]/10 via-[var(--color-primary)]/5 to-transparent rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none transition-all duration-700 ${isSelected ? "opacity-100 scale-110" : "opacity-50 scale-100"}`} />
-          {isSelected && (
-            <div className="absolute inset-0 border-2 border-[var(--color-primary)]/20 rounded-2xl animate-pulse pointer-events-none" aria-hidden />
-          )}
-        </>
+      {isEligible && isSelected && (
+        <div className="absolute inset-0 pointer-events-none rounded-2xl transition-opacity duration-300" style={{ background: "rgb(var(--enroll-brand-rgb) / 0.04)" }} aria-hidden />
       )}
 
-      <div className="relative z-10 p-6 md:p-7 flex flex-col gap-5">
-        <div className="flex justify-between items-start">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-            <div
-              className={`
-                flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider shadow-sm border w-fit transition-all duration-300
-                ${isRecommended && isEligible
-                  ? "bg-primary border-primary text-white shadow-primary/30"
-                  : !isEligible
-                    ? "bg-[var(--color-background)] border-[var(--color-border)] text-[var(--color-textSecondary)]"
-                    : "bg-[var(--color-surface)] border-[var(--color-border)] text-[var(--color-textSecondary)]"}
-              `}
-            >
-              {isRecommended && isEligible ? <Trophy size={11} className="text-[var(--color-warning)] fill-[var(--color-warning)]" /> : null}
-              {isEligible ? t("enrollment.fitLabel", { percent: confidenceScore }) : t("enrollment.locked")}
+      <div className="relative z-10 p-6 flex flex-col gap-4">
+        <div className="flex justify-between items-start gap-3">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h3 className={`text-xl md:text-2xl font-bold tracking-tight ${!isEligible ? "text-[var(--color-textSecondary)]" : "text-[var(--color-text)]"}`}>
+                {plan.title}
+              </h3>
+              {isEligible && onAskAi && (
+                <button
+                  type="button"
+                  onClick={openCoreAi}
+                  className="flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--enroll-brand)] focus-visible:ring-offset-1 shrink-0"
+                  style={{
+                    color: "var(--enroll-brand)",
+                    background: "rgb(var(--enroll-brand-rgb) / 0.1)",
+                    border: "1px solid rgb(var(--enroll-brand-rgb) / 0.25)",
+                  }}
+                  title={t("enrollment.learnMoreAboutPlan", { planName: plan.title })}
+                  aria-label={t("enrollment.learnMoreAboutPlan", { planName: plan.title })}
+                >
+                  <Info size={14} className="shrink-0" />
+                  <span>{t("enrollment.aiInfo")}</span>
+                </button>
+              )}
             </div>
-            {isRecommended && isEligible && (
-              <span className="text-[11px] font-medium text-[var(--color-primary)]/80 flex items-center gap-1">
-                <Sparkles size={10} />
-                {t("enrollment.aiRecommendedStrategy")}
-              </span>
-            )}
+            <p className="text-sm text-[var(--color-textSecondary)] mt-1">{plan.matchInfo}</p>
           </div>
-
-          <div className={`transition-all duration-300 transform ${isSelected ? "translate-x-0 opacity-100" : "translate-x-4 opacity-0 hidden sm:block"}`}>
+          <div className="flex items-center gap-2 shrink-0">
             {isSelected && (
-              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--color-text)] text-[var(--color-surface)] text-[10px] font-bold uppercase tracking-wide shadow-md">
-                <CheckCircle2 size={12} className="text-[var(--color-success)]" />
-                {t("enrollment.selected")}
+              <div className="flex items-center justify-center w-8 h-8 rounded-full shrink-0" style={{ background: "var(--enroll-brand)", color: "white" }}>
+                <CheckCircle2 size={18} />
               </div>
             )}
+            {!isSelected && isEligible && (
+              <Button
+                type="button"
+                className="enrollment-plan-card__select-cta"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSelect();
+                }}
+              >
+                {t("enrollment.selectPlan")}
+              </Button>
+            )}
           </div>
+        </div>
 
-          {!isSelected && isEligible && (
-            <button
-              type="button"
-              className={`
-                px-4 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 border border-[var(--color-border)] text-[var(--color-textSecondary)] hover:border-[var(--color-border)] hover:bg-[var(--color-background)]
-                ${isRecommended ? "hover:border-[var(--color-primary)]/30 hover:text-[var(--color-primary)] hover:bg-[var(--color-primary)]/5" : ""}
-              `}
-              onClick={(e) => {
-                e.stopPropagation();
-                onSelect();
+        <p className="text-sm text-[var(--color-textSecondary)] leading-relaxed">
+          {plan.description}
+        </p>
+
+        <div className="flex flex-wrap gap-2">
+          {plan.benefits.map((value, i) => (
+            <span
+              key={i}
+              className="px-2.5 py-1 rounded-lg text-xs font-medium"
+              style={{
+                color: "var(--enroll-text-secondary)",
+                background: "var(--enroll-soft-bg)",
+                border: "1px solid var(--enroll-card-border)",
               }}
             >
-              {t("enrollment.select")}
-            </button>
-          )}
-        </div>
-
-        <div>
-          <div className="mb-2">
-            <h3 className={`text-xl md:text-2xl font-bold tracking-tight ${!isEligible ? "text-[var(--color-textSecondary)]" : "text-[var(--color-text)]"}`}>
-              {plan.title}
-            </h3>
-            <p className="text-sm font-medium text-[var(--color-textSecondary)] mt-1 flex items-center gap-2">
-              <span className={isRecommended && isEligible ? "text-[var(--color-primary)] font-semibold" : "text-[var(--color-textSecondary)]"}>{plan.matchInfo}</span>
-              <span className="w-1 h-1 rounded-full bg-[var(--color-border)]" aria-hidden />
-              <span className="text-[var(--color-textSecondary)] font-normal">{plan.description.slice(0, 50)}…</span>
-            </p>
-          </div>
-          <p className="text-sm text-[var(--color-textSecondary)] leading-relaxed max-w-2xl">
-            {plan.description}
-          </p>
-        </div>
-
-        <div className="pt-2 flex flex-wrap gap-2">
-          {plan.benefits.map((value, i) => (
-            <div
-              key={i}
-              className={`
-                px-3 py-1.5 rounded-md border text-[10px] font-semibold transition-colors duration-300
-                ${isSelected
-                  ? isRecommended
-                    ? "bg-[var(--color-primary)]/10 border-[var(--color-primary)]/30 text-[var(--color-primary)]"
-                    : "bg-[var(--color-background)] border-[var(--color-border)] text-[var(--color-text)]"
-                  : "bg-[var(--color-background)]/50 border-[var(--color-border)] text-[var(--color-textSecondary)]"}
-              `}
-            >
-              <span className="opacity-70 font-normal mr-1">{t("enrollment.benefitLabel")}</span>
               {value}
-            </div>
+            </span>
           ))}
-          {isRecommended && isEligible && (
-            <div className="px-3 py-1.5 rounded-md border border-[var(--color-success)]/20 bg-[var(--color-success)]/10 text-[var(--color-success)] text-[10px] font-semibold flex items-center gap-1">
-              {t("enrollment.taxFreeGrowth")}
-            </div>
-          )}
         </div>
       </div>
 

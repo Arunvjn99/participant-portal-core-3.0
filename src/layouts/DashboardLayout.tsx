@@ -17,7 +17,8 @@ interface DashboardLayoutProps {
   Theme-aware: uses --color-border and --color-background.
 */
 const HEADER_BASE =
-  "relative sticky top-0 z-40 shrink-0 border-b border-[var(--color-border)] bg-[var(--color-background)]/80 backdrop-blur-md supports-[backdrop-filter]:bg-[var(--color-background)]/80 pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]";
+  "relative sticky top-0 z-40 shrink-0 bg-[var(--color-background)]/80 backdrop-blur-md supports-[backdrop-filter]:bg-[var(--color-background)]/80 pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]";
+const HEADER_WITH_BORDER = "border-b border-[var(--color-border)]";
 
 const HEADER_FIXED_H = "h-14 lg:h-16";
 
@@ -34,7 +35,7 @@ export const DashboardLayout = ({
 
   const headerClass = subHeader
     ? HEADER_BASE
-    : `${HEADER_BASE} ${HEADER_FIXED_H}`;
+    : `${HEADER_BASE} ${HEADER_WITH_BORDER} ${HEADER_FIXED_H}`;
 
   if (transparentBackground) {
     return (
@@ -46,7 +47,7 @@ export const DashboardLayout = ({
           </header>
         )}
         <div className="flex-1 min-h-0 overflow-x-hidden bg-[var(--color-background)]">
-          <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+          <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 pt-4 pb-12 sm:px-6 md:pb-16 lg:px-8">
             {children}
           </div>
         </div>

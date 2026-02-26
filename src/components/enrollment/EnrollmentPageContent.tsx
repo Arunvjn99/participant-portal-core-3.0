@@ -26,22 +26,22 @@ export function EnrollmentPageContent({
 }: EnrollmentPageContentProps) {
   return (
     <div
-      className="w-full pb-28"
+      className="w-full min-h-0 pb-12 md:pb-16"
       style={{ background: "var(--enroll-bg)" }}
     >
-      <div className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-10">
-        {/* ── Page heading ── */}
+      <div className="max-w-[1200px] mx-auto px-4 md:px-6">
+        {/* Stepper → 24px (layout pt-6) → H1 → 12px → Subtext → 32px (mb-8) → content */}
         <header className="mb-8">
-          {badge && <div className="mb-3">{badge}</div>}
+          {badge && <div className="mb-2">{badge}</div>}
           <h1
-            className="text-[28px] md:text-[32px] font-bold leading-tight"
+            className="text-xl md:text-2xl font-bold leading-tight"
             style={{ color: "var(--enroll-text-primary)" }}
           >
             {title}
           </h1>
           {subtitle && (
             <p
-              className="mt-1.5 text-base"
+              className="mt-1 text-base leading-relaxed"
               style={{ color: "var(--enroll-text-secondary)" }}
             >
               {subtitle}

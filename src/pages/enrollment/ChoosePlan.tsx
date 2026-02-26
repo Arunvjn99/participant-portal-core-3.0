@@ -2,9 +2,9 @@ import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useEnrollment } from "../../enrollment/context/EnrollmentContext";
-import { PlanRail } from "../../components/enrollment/PlanRail";
+import { useCoreAIModalOptional } from "../../context/CoreAIModalContext";
+import { PlanRail, getPlanDetailedPrompt } from "../../components/enrollment/PlanRail";
 import { PlanDetailsPanel } from "../../components/enrollment/PlanDetailsPanel";
-import { EnrollmentFooter } from "../../components/enrollment/EnrollmentFooter";
 import { EnrollmentPageContent } from "../../components/enrollment/EnrollmentPageContent";
 import { loadEnrollmentDraft, saveEnrollmentDraft } from "../../enrollment/enrollmentDraftStore";
 import { getPlanRecommendation } from "../../enrollment/logic/planRecommendationLogic";
@@ -126,20 +126,48 @@ export const ChoosePlan = () => {
   };
 
   const canContinue = state.selectedPlan != null && (selectedPlan?.isEligible !== false);
+  const coreAi = useCoreAIModalOptional();
+  const handleAskAi = useCallback(
+    (plan: PlanOption) => {
+      coreAi?.openWithPrompt(getPlanDetailedPrompt(plan));
+    },
+    [coreAi]
+  );
 
   return (
     <EnrollmentPageContent
-      title={t("enrollment.selectPlanTitle")}
-      subtitle={t("enrollment.selectPlanSubtitle")}
+      title={t("enrollment.choosePlanHeading")}
+      subtitle={t("enrollment.choosePlanSubtitle")}
     >
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        <div className="lg:col-span-7 space-y-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="lg:col-span-7 space-y-6">
           <PlanRail
             plans={plans}
             selectedId={selectedPlanId}
             onSelect={handlePlanSelect}
+            onAskAi={coreAi ? handleAskAi : undefined}
           />
-          <div className="lg:hidden">
+          {/* Single CTA below plan grid — 32px gap, not sticky */}
+          <div className="mt-8 flex flex-col-reverse sm:flex-row sm:justify-between sm:items-center gap-3">
+            <button
+              type="button"
+              disabled
+              className="w-full sm:w-auto order-2 sm:order-1 px-5 py-2.5 rounded-xl text-sm font-semibold border border-[var(--color-border)] text-[var(--color-textSecondary)] cursor-not-allowed opacity-70"
+              aria-label={t("enrollment.footerBackDisabledAria")}
+            >
+              {t("enrollment.footerBack")}
+            </button>
+            <button
+              type="button"
+              onClick={handleContinue}
+              disabled={!canContinue}
+              className="w-full sm:w-auto order-1 sm:order-2 px-6 py-2.5 rounded-xl text-sm font-semibold text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ background: canContinue ? "var(--enroll-brand)" : "var(--enroll-text-muted)" }}
+            >
+              {t("enrollment.continueToContributions")} →
+            </button>
+          </div>
+          <div className="lg:hidden mt-4">
             <p className="text-sm" style={{ color: "var(--enroll-text-muted)" }}>
               {t("enrollment.needHelpDeciding")}{" "}
               <a href="#" className="underline" style={{ color: "var(--enroll-brand)" }} onClick={(e) => e.preventDefault()}>
@@ -155,14 +183,6 @@ export const ChoosePlan = () => {
           </div>
         </div>
       </div>
-
-      <EnrollmentFooter
-        step={0}
-        primaryLabel={t("enrollment.continueToContributions")}
-        primaryDisabled={!canContinue}
-        onPrimary={handleContinue}
-        getDraftSnapshot={() => ({ selectedPlanId: state.selectedPlan ?? null })}
-      />
     </EnrollmentPageContent>
   );
 };

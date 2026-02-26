@@ -3061,6 +3061,78 @@ button {
   filter: brightness(1.08);
 }
 
+/* Source allocation sliders (Pre-tax / Roth / After-tax) – track fill + thumb */
+.source-allocation-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border-radius: 9999px;
+  cursor: pointer;
+  outline: none;
+  position: absolute;
+  inset: 0;
+  margin: 0;
+}
+.source-allocation-slider::-webkit-slider-runnable-track {
+  background: transparent;
+  height: 8px;
+  border-radius: 9999px;
+}
+.source-allocation-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 18px;
+  width: 18px;
+  border-radius: 9999px;
+  background: var(--enroll-brand);
+  border: 2px solid var(--enroll-card-bg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  margin-top: -5px;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+.source-allocation-slider::-webkit-slider-thumb:hover {
+  filter: brightness(1.08);
+}
+.source-allocation-slider::-webkit-slider-thumb:active {
+  transform: scale(0.98);
+}
+.source-allocation-slider::-moz-range-track {
+  background: transparent;
+  height: 8px;
+  border-radius: 9999px;
+  border: 0;
+}
+.source-allocation-slider::-moz-range-thumb {
+  height: 18px;
+  width: 18px;
+  border-radius: 9999px;
+  background: var(--enroll-brand);
+  border: 2px solid var(--enroll-card-bg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+.source-allocation-slider::-moz-range-thumb:hover {
+  filter: brightness(1.08);
+}
+.source-allocation-slider::-moz-range-thumb:active {
+  transform: scale(0.98);
+}
+.source-allocation-slider:disabled {
+  cursor: not-allowed;
+}
+.source-allocation-slider:disabled::-webkit-slider-thumb {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.source-allocation-slider:disabled::-moz-range-thumb {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .contrib-slider {
   margin-bottom: 24px;
 }
@@ -4096,6 +4168,31 @@ button {
 .enrollment-footer__primary:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* Secondary CTA on plan card — outline style, blue on hover */
+.enrollment-plan-card__select-cta {
+  min-height: 44px;
+  padding: 10px 24px;
+  background: transparent;
+  border: 2px solid var(--color-border);
+  color: var(--color-text);
+  font-size: 0.9375em;
+  font-weight: 600;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.enrollment-plan-card__select-cta:hover:not(:disabled) {
+  background-color: rgba(59, 130, 246, 0.08);
+  border-color: #3b82f6;
+  color: #2563eb;
+}
+
+.enrollment-plan-card__select-cta:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
 }
 
 @media (max-width: 640px) {

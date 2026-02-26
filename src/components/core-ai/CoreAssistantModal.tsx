@@ -9,6 +9,7 @@ import { MessageInput } from "./MessageInput";
 import { useSpeechRecognition } from "./useSpeechRecognition";
 import { useTextToSpeech } from "./useTextToSpeech";
 import { routeMessage, type ActiveFlowState } from "./flows/flowRouter";
+import { useAuth } from "../../context/AuthContext";
 import { sendCoreAIMessage } from "../../services/coreAiService";
 import type { ChatMessage } from "./MessageBubble";
 
@@ -27,6 +28,10 @@ const useEnrollmentSafe = () => {
 export interface CoreAssistantModalProps {
   isOpen: boolean;
   onClose: () => void;
+  /** When set, modal sends this as the first user message and then clears it (e.g. "Ask AI about this plan"). */
+  initialPrompt?: string | null;
+  /** Called after the initial prompt has been submitted so the parent can clear it. */
+  onInitialPromptSent?: () => void;
 }
 
 /* ── Helpers ── */
@@ -53,10 +58,11 @@ function getWelcomeMessage(t: (key: string) => string): ChatMessage {
 }
 
 /* ── Component ── */
-export function CoreAssistantModal({ isOpen, onClose }: CoreAssistantModalProps) {
+export function CoreAssistantModal({ isOpen, onClose, initialPrompt, onInitialPromptSent }: CoreAssistantModalProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
+  const { session } = useAuth();
   const enrollment = useEnrollmentSafe();
 
   /* ── State ── */
@@ -64,6 +70,7 @@ export function CoreAssistantModal({ isOpen, onClose }: CoreAssistantModalProps)
   const [isLoading, setIsLoading] = useState(false);
   const flowStateRef = useRef<ActiveFlowState | null>(null);
   const prevOpenRef = useRef(false);
+  const initialPromptSentRef = useRef(false);
 
   /* ── Core message handler (defined early so speech hook can reference it) ── */
   const handleSendRef = useRef<(text: string) => void>(() => {});
@@ -94,6 +101,7 @@ export function CoreAssistantModal({ isOpen, onClose }: CoreAssistantModalProps)
 
     if (isOpen && !wasOpen) {
       /* Fresh open — reset everything */
+      initialPromptSentRef.current = false;
       setMessages([getWelcomeMessage(t)]);
       setIsLoading(false);
       isLoadingRef.current = false;
@@ -106,6 +114,15 @@ export function CoreAssistantModal({ isOpen, onClose }: CoreAssistantModalProps)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
+
+  /* ── Send initial prompt when opened with one (e.g. "Ask AI about this plan") ── */
+  useEffect(() => {
+    if (!isOpen || !initialPrompt?.trim() || initialPromptSentRef.current) return;
+    const prompt = initialPrompt.trim();
+    initialPromptSentRef.current = true;
+    onInitialPromptSent?.();
+    handleSendRef.current(prompt);
+  }, [isOpen, initialPrompt, onInitialPromptSent]);
 
   /* ── Escape to close ── */
   useEffect(() => {
@@ -172,14 +189,18 @@ export function CoreAssistantModal({ isOpen, onClose }: CoreAssistantModalProps)
 
       /* 3. No scripted flow matched → call Core AI backend (Gemini) */
       try {
-        const aiResponse = await sendCoreAIMessage(trimmed, {
-          isEnrolled: userContext.isEnrolled,
-          isInEnrollmentFlow: userContext.isInEnrollmentFlow,
-          isPostEnrollment: userContext.isPostEnrollment,
-          currentRoute: userContext.currentRoute,
-          selectedPlan: userContext.selectedPlan,
-          contributionAmount: userContext.contributionAmount,
-        });
+        const aiResponse = await sendCoreAIMessage(
+          trimmed,
+          {
+            isEnrolled: userContext.isEnrolled,
+            isInEnrollmentFlow: userContext.isInEnrollmentFlow,
+            isPostEnrollment: userContext.isPostEnrollment,
+            currentRoute: userContext.currentRoute,
+            selectedPlan: userContext.selectedPlan,
+            contributionAmount: userContext.contributionAmount,
+          },
+          session?.access_token ?? undefined
+        );
 
         const assistantMsg: ChatMessage = {
           id: nextId(),

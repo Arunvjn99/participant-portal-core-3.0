@@ -8,11 +8,15 @@
 
 import express from "express";
 import cors from "cors";
+import rateLimit from "express-rate-limit";
 import multer from "multer";
 import { SpeechClient } from "@google-cloud/speech";
 import { TextToSpeechClient } from "@google-cloud/text-to-speech";
 import dotenv from "dotenv";
 import { generateCoreReply } from "./coreAiController.js";
+import { verifyCoreAIAuth, insertAILog } from "./supabaseAdmin.js";
+import { resolveIntent } from "./intentResolver.js";
+import { getDataForIntent } from "./services/retirementService.js";
 
 dotenv.config();
 
@@ -201,26 +205,74 @@ function sanitizeTextForTTS(text) {
   return sanitized;
 }
 
+/* Rate limit: Core AI — 30 requests per minute per IP */
+const coreAIRateLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 30,
+  message: { error: "Too many requests. Please try again in a minute." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 /**
  * POST /api/core-ai
  * Core AI — Scoped retirement assistant powered by Gemini
- * Validates topic scope before calling Gemini API
+ * Requires Authorization: Bearer <supabase_jwt>. Ignores client-sent context; uses profile from DB.
  */
-app.post("/api/core-ai", async (req, res) => {
+app.post("/api/core-ai", coreAIRateLimiter, async (req, res) => {
   try {
-    const { message, context } = req.body;
+    const authHeader = req.headers.authorization;
+    const auth = await verifyCoreAIAuth(authHeader);
+    if (!auth) {
+      return res.status(401).json({
+        error: "Unauthorized",
+        reply: "Please sign in to use Core AI.",
+      });
+    }
 
+    const { message } = req.body;
     if (!message || typeof message !== "string" || message.trim().length === 0) {
       return res.status(400).json({
         error: "No message provided",
       });
     }
 
-    const result = await generateCoreReply(message.trim(), context || {});
+    const trimmedMessage = message.trim();
+    const intent = resolveIntent(trimmedMessage);
+    const { data, sources } = await getDataForIntent(intent, auth.user_id, auth.company_id);
+    const serverContext = {
+      user_id: auth.user_id,
+      company_id: auth.company_id,
+      email: auth.profile?.email ?? null,
+    };
+
+    const result = await generateCoreReply(trimmedMessage, {
+      intent,
+      data,
+      serverContext,
+      sources,
+    });
+
+    const responseText = result.reply ?? result.spoken_text ?? "";
+    const dataSources = result.data_sources ?? sources ?? [];
+
+    await insertAILog({
+      user_id: auth.user_id,
+      company_id: auth.company_id,
+      question: trimmedMessage,
+      detected_intent: intent,
+      response: responseText,
+      data_sources: dataSources,
+    });
 
     res.json({
-      reply: result.reply,
+      reply: responseText,
       filtered: result.filtered || false,
+      type: result.type ?? intent,
+      spoken_text: result.spoken_text ?? responseText,
+      ui_data: result.ui_data ?? {},
+      confidence: result.confidence ?? "medium",
+      data_sources: dataSources,
     });
   } catch (error) {
     console.error("Core AI Error:", error.message);

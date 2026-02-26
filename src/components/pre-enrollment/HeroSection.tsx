@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { ArrowRight, Compass } from "lucide-react";
+import { ArrowRight, Compass, Clock } from "lucide-react";
 import { FloatingCards } from "./FloatingCards";
 import { PersonalizePlanModal } from "../enrollment/PersonalizePlanModal";
 import { useUser } from "../../context/UserContext";
@@ -23,6 +23,12 @@ export const HeroSection = () => {
   const { profile } = useUser();
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const displayName = profile?.name || "there";
+
+  const greetingLine = useMemo(() => {
+    const hour = typeof document !== "undefined" ? new Date().getHours() : 12;
+    const key = hour >= 5 && hour < 12 ? "dashboard.greetingMorning" : hour >= 12 && hour < 17 ? "dashboard.greetingAfternoon" : hour >= 17 && hour < 21 ? "dashboard.greetingEvening" : "dashboard.greetingWelcomeBack";
+    return t(key);
+  }, [t]);
 
   return (
     <>
@@ -52,23 +58,32 @@ export const HeroSection = () => {
             </span>
           </motion.div>
 
-          <motion.h2
+          {/* 1. Smallest: greeting */}
+          <motion.p
             variants={fadeUp}
-            className="text-xl md:text-2xl font-medium text-[var(--color-textSecondary)] mb-3"
+            className="text-xs sm:text-sm font-medium text-[var(--color-textSecondary)] mb-2 leading-snug"
           >
-            {t("dashboard.greeting", { name: displayName })}
-          </motion.h2>
+            {greetingLine}
+          </motion.p>
 
+          {/* 2. Medium: user name (~20–30% smaller than headline; wraps cleanly) */}
           <motion.h1
             variants={fadeUp}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-display font-bold text-[var(--color-text)] leading-[1.08] tracking-tight mb-4 sm:mb-6"
+            className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-display font-bold text-[var(--color-text)] leading-tight tracking-tight mb-3 sm:mb-4 break-words"
+          >
+            {displayName}
+          </motion.h1>
+
+          {/* 3. Largest: hero headline (visually dominant) */}
+          <motion.h2
+            variants={fadeUp}
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-display font-bold text-[var(--color-text)] leading-[1.08] tracking-tight mb-4 sm:mb-6"
           >
             {t("dashboard.heroTitlePart1")}{" "}
-            <br className="hidden sm:inline" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--brand-primary)] to-[var(--color-primary)]">
               {t("dashboard.heroTitlePart2")}
             </span>
-          </motion.h1>
+          </motion.h2>
 
           <motion.p
             variants={fadeUp}
@@ -77,29 +92,36 @@ export const HeroSection = () => {
             {t("dashboard.heroSubtitle")}
           </motion.p>
 
+          {/* CTA group: align by top so both buttons share baseline; identical h, py, font, radius; chip below primary only */}
           <motion.div
             variants={fadeUp}
-            className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8 sm:mb-10"
+            className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4 mb-8 sm:mb-10"
           >
-            <motion.button
-              type="button"
-              onClick={() => setIsWizardOpen(true)}
-              className="group relative inline-flex items-center justify-center gap-2 px-5 py-3 sm:px-6 sm:py-3.5 md:px-8 md:py-4 w-full sm:w-auto bg-primary hover:bg-primary-hover text-white rounded-2xl font-semibold text-sm sm:text-base shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-            >
-              {t("dashboard.startEnrollment")}
-              <ArrowRight
-                size={18}
-                className="transition-transform duration-300 group-hover:translate-x-1"
-              />
-            </motion.button>
+            <div className="flex flex-col items-start w-full sm:w-auto">
+              <motion.button
+                type="button"
+                onClick={() => setIsWizardOpen(true)}
+                className="group relative inline-flex h-11 sm:h-12 items-center justify-center gap-2 px-6 py-0 w-full sm:w-auto bg-primary hover:bg-primary-hover text-white rounded-2xl text-sm font-semibold leading-none shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              >
+                {t("dashboard.startEnrollment")}
+                <ArrowRight
+                  size={18}
+                  className="shrink-0 transition-transform duration-300 group-hover:translate-x-1"
+                />
+              </motion.button>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--color-background-secondary)] px-3 py-1.5 text-xs text-[var(--color-textSecondary)] mt-2">
+                <Clock size={12} className="shrink-0" aria-hidden />
+                {t("dashboard.takesMinutes")}
+              </span>
+            </div>
 
             <motion.button
               type="button"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center justify-center gap-2 px-5 py-3 sm:px-6 sm:py-3.5 md:px-8 md:py-4 w-full sm:w-auto bg-[var(--color-surface)] text-[var(--color-text)] border-2 border-[var(--color-border)] rounded-2xl font-semibold text-sm sm:text-base hover:bg-[var(--color-surface)] hover:border-[var(--color-border)] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--border-subtle)] focus:ring-offset-2"
+              className="inline-flex h-11 sm:h-12 items-center justify-center gap-2 px-6 py-0 w-full sm:w-auto bg-[var(--color-surface)] text-[var(--color-text)] border-2 border-[var(--color-border)] rounded-2xl text-sm font-semibold leading-none hover:bg-[var(--color-surface)] hover:border-[var(--color-border)] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--border-subtle)] focus:ring-offset-2 box-border"
             >
-              <Compass size={18} />
+              <Compass size={18} className="shrink-0" />
               {t("dashboard.exploreOptions")}
             </motion.button>
           </motion.div>

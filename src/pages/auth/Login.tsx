@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -126,8 +127,8 @@ export const Login = () => {
     navigate("/demo");
   };
 
-  /* ── CORE product branding (pre-auth only; tenant logo shown after login) ── */
-  const headerSlot = <Logo className="h-10 w-auto" />;
+  /* ── CORE product branding (pre-auth only; secondary to title hierarchy) ── */
+  const headerSlot = <Logo className="max-h-8 w-auto" />;
 
   /* ── Standard login form body ── */
   const standardBody = (
@@ -149,14 +150,6 @@ export const Login = () => {
           Unable to reach authentication server. Check your connection or try again later.
         </div>
       )}
-      {error && (
-        <div
-          role="alert"
-          className="rounded-lg border border-[var(--color-danger)]/20 bg-[var(--color-danger)]/5 px-4 py-3 text-sm text-[var(--color-danger)]"
-        >
-          {error}
-        </div>
-      )}
 
       <div className="flex flex-col gap-6">
         <AuthInput
@@ -169,27 +162,27 @@ export const Login = () => {
           onChange={(e) => setEmail(e.target.value)}
         />
         <div className="flex flex-col gap-2">
-        <AuthPasswordInput
-          label={t("auth.password")}
-          name="password"
-          id="password"
-          placeholder={t("auth.enterPassword")}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <div className="flex justify-end">
-          <a
-            href="#"
-            className="text-sm text-[var(--color-primary)] no-underline transition-colors hover:underline"
-            onClick={(e) => {
-              e.preventDefault();
-              handleForgotPassword();
-            }}
-          >
-            {t("auth.forgotPassword")}
-          </a>
+          <AuthPasswordInput
+            label={t("auth.password")}
+            name="password"
+            id="password"
+            placeholder={t("auth.enterPassword")}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <div className="flex justify-end">
+            <a
+              href="#"
+              className="text-sm text-[var(--color-primary)] no-underline transition-colors hover:underline"
+              onClick={(e) => {
+                e.preventDefault();
+                handleForgotPassword();
+              }}
+            >
+              {t("auth.forgotPassword")}
+            </a>
+          </div>
         </div>
-      </div>
         <AuthButton
           onClick={handleLogin}
           disabled={submitting || !canReachServer}
@@ -198,39 +191,21 @@ export const Login = () => {
           {submitting ? t("auth.loggingIn", "Logging in…") : t("auth.login")}
         </AuthButton>
 
-        {/* ── Divider ── */}
-        <div className="relative flex items-center py-2">
-          <div className="flex-1 border-t border-[var(--color-border)]" />
-          <span className="mx-3 text-xs font-medium text-[var(--color-textSecondary)]">{t("auth.or")}</span>
-          <div className="flex-1 border-t border-[var(--color-border)]" />
-        </div>
-
-        {/* ── Explore Scenarios CTA ── */}
-        <button
-          type="button"
-          onClick={() => setShowDemoPanel(true)}
-          className="group flex w-full items-center justify-center gap-2.5 rounded-lg border-2 border-dashed border-[var(--color-primary)]/30 bg-[var(--color-primary)]/5 px-5 py-3.5 text-sm font-semibold text-[var(--color-primary)] transition-all hover:border-[var(--color-primary)]/50 hover:bg-[var(--color-primary)]/10"
-        >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0" aria-hidden>
-          <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-          <circle cx="8.5" cy="7" r="4" />
-          <line x1="20" y1="8" x2="20" y2="14" />
-          <line x1="23" y1="11" x2="17" y2="11" />
-        </svg>
-        {t("auth.exploreDemoScenarios")}
-        <span className="rounded-full bg-[var(--color-primary)]/10 px-2 py-0.5 text-[10px] font-bold text-[var(--color-primary)]">
-          {personas.length} {t("auth.personas")}
-        </span>
-      </button>
+        {error && (
+          <div
+            role="alert"
+            aria-live="polite"
+            className="rounded-lg border border-[var(--color-danger)]/20 bg-[var(--color-danger)]/5 px-4 py-3 text-sm text-[var(--color-danger)]"
+          >
+            {error}
+          </div>
+        )}
 
         {/* ── Secondary links: 8px gap ── */}
         <div className="flex flex-col items-center gap-2">
           <p className="text-center text-sm text-[var(--color-textSecondary)]">
             Don&apos;t have an account?{" "}
-            <Link
-              to="/signup"
-              className="text-[var(--color-primary)] no-underline hover:underline"
-            >
+            <Link to="/signup" className="text-[var(--color-primary)] no-underline hover:underline">
               Sign up
             </Link>
           </p>
@@ -259,6 +234,26 @@ export const Login = () => {
         title={t("auth.login")}
         bodySlot={standardBody}
       />
+
+      {/* ── Explore Demo: portaled to body so always on top; visible from md; solid surface + primary border ── */}
+      {typeof document !== "undefined" &&
+        createPortal(
+          <button
+            type="button"
+            onClick={() => setShowDemoPanel(true)}
+            className="fixed left-4 bottom-6 z-[100] flex items-center gap-2.5 rounded-2xl border-2 border-[var(--color-primary)] bg-[var(--color-surface)] px-4 py-3 text-sm font-semibold text-[var(--color-primary)] shadow-lg transition-[box-shadow,transform] duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 hover:-translate-y-0.5 hover:shadow-xl md:left-6"
+            aria-label={t("auth.exploreDemoScenarios")}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0" aria-hidden>
+              <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="8.5" cy="7" r="4" />
+              <line x1="20" y1="8" x2="20" y2="14" />
+              <line x1="23" y1="11" x2="17" y2="11" />
+            </svg>
+            <span>{t("auth.exploreDemoScenarios")}</span>
+          </button>,
+          document.body
+        )}
 
       {/* ── Demo Scenario Picker Modal ── */}
       {showDemoPanel && (

@@ -9,6 +9,7 @@ import { useOtp } from "@/context/OtpContext";
 import { useUser } from "@/context/UserContext";
 import { useTheme } from "@/context/ThemeContext";
 import { FeedbackModal } from "@/components/feedback/FeedbackModal";
+import { NotificationPanel } from "@/components/dashboard/NotificationPanel";
 
 /* ────────────────────────────── Nav config ────────────────────────────── */
 
@@ -16,13 +17,14 @@ import { FeedbackModal } from "@/components/feedback/FeedbackModal";
  * Build nav links dynamically — "Dashboard" points to /demo when a demo
  * persona is active, otherwise to /dashboard. labelKey is the i18n key.
  */
+/** Order: Dashboard, Retirement Plan, Transactions, Investment Portfolio, Account. */
 function getNavLinks(isDemoMode: boolean) {
   return [
     { to: isDemoMode ? "/demo" : "/dashboard", labelKey: "nav.dashboard" as const },
-    { to: "/enrollment", labelKey: "nav.enrollment" as const },
-    { to: "/profile", labelKey: "nav.profile" as const },
+    { to: "/enrollment", labelKey: "nav.retirementPlan" as const },
     { to: "/transactions", labelKey: "nav.transactions" as const },
     { to: "/dashboard/investment-portfolio", labelKey: "nav.investmentPortfolio" as const },
+    { to: "/profile", labelKey: "nav.account" as const },
   ] as const;
 }
 
@@ -77,6 +79,7 @@ export const DashboardHeader = () => {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [notificationPanelOpen, setNotificationPanelOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const demoUser = useDemoUser();
   const { signOut } = useAuth();
@@ -139,22 +142,18 @@ export const DashboardHeader = () => {
     <>
       <div>
       <div className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:h-16 lg:px-8">
-        {/* ── Left: [Tenant Logo] | [CORE Logo] (post-auth only; no company name fallback, no Ascend) ── */}
+        {/* ── Left: Client logo only (primary brand); CORE logo removed per brand hierarchy ── */}
         {isAuthenticated && (
-          <div className="flex items-center gap-3 shrink-0">
-            {tenantLogo && (
+          <div className="flex items-center shrink-0">
+            {tenantLogo ? (
               <img
                 src={tenantLogo}
                 alt="Company Logo"
                 className="h-8 w-auto max-w-[160px] object-contain"
               />
+            ) : (
+              <span className="text-sm font-semibold text-[var(--color-text-secondary)]" aria-hidden>Dashboard</span>
             )}
-            <span className="text-[var(--color-border)]" aria-hidden>|</span>
-            <img
-              src="/image/core-logo.png"
-              alt="CORE"
-              className="h-8 w-auto object-contain"
-            />
           </div>
         )}
 
@@ -201,11 +200,13 @@ export const DashboardHeader = () => {
           {/* Theme toggle – always visible */}
           <ThemeToggle />
 
-          {/* Notifications – hidden on mobile */}
+          {/* Notifications – opens right slide-over panel */}
           <button
             type="button"
             className={`${ICON_BTN} hidden lg:flex`}
             aria-label={t("nav.notifications")}
+            aria-expanded={notificationPanelOpen}
+            onClick={() => setNotificationPanelOpen(true)}
           >
             <BellIcon />
             <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-[var(--color-danger)] ring-2 ring-[var(--color-background)]" aria-hidden />
@@ -242,7 +243,7 @@ export const DashboardHeader = () => {
                   role="menuitem"
                   onClick={() => setUserMenuOpen(false)}
                 >
-                  {t("nav.profile")}
+                  {t("nav.account")}
                 </Link>
                 <Link
                   to="/settings"
@@ -318,6 +319,12 @@ export const DashboardHeader = () => {
       </div>
       )}
       </div>
+
+      {/* Notification center – right slide-over panel */}
+      <NotificationPanel
+        open={notificationPanelOpen}
+        onClose={() => setNotificationPanelOpen(false)}
+      />
 
       {/* Logout feedback modal */}
       <FeedbackModal

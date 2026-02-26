@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
-import { GoogleGenAI } from "@google/genai";
 import {
   createInitialEnrollmentState,
   getEnrollmentResponse,
@@ -103,6 +103,7 @@ export interface BellaScreenProps {
 export default function BellaScreen(props?: BellaScreenProps) {
   const { onClose, initialDarkMode: _initialDarkMode, variant: variantProp } = props ?? {};
   const variant = variantProp ?? "fullpage";
+  const { session } = useAuth();
   const { effectiveMode, setMode } = useTheme();
   const isDarkMode = effectiveMode === "dark";
   const [listening, setListening] = useState(false);
@@ -790,10 +791,10 @@ export default function BellaScreen(props?: BellaScreenProps) {
 
       try {
         const history = messagesRef.current;
-        assistantText = await callGeminiAPI(input, history);
+        assistantText = await callCoreAIBackend(input, history);
       } catch (err) {
-        if (import.meta.env.DEV) console.error("[BellaScreen] callGeminiAPI failed, using fallback:", err);
-        assistantText = fallbackRetirementBrain(input, messagesRef.current);
+        if (import.meta.env.DEV) console.error("[BellaScreen] Core AI backend failed:", err);
+        assistantText = "The assistant is temporarily unavailable. Please try again later.";
       }
       setMessages((prev) => [
         ...prev,
@@ -964,219 +965,23 @@ export default function BellaScreen(props?: BellaScreenProps) {
   };
 
   /**
-   * Call Gemini API - Fallback Only
-   * 
-   * This function is ONLY called when activeMode === 'NONE'.
-   * It provides informational responses for general retirement questions.
-   * 
-   * Why Gemini is fallback-only:
-   * - Scripted flows (enrollment, loan) must remain deterministic
-   * - Gemini cannot modify application state or interfere with workflows
-   * - Only use Gemini when no scripted flow is active
-   * 
-   * System prompt restrictions:
-   * - No financial advice
-   * - No transaction guidance
-   * - Only high-level informational questions
+   * All reasoning is server-side. Bella only handles UI/voice.
+   * Single pipeline: POST /api/core-ai (same as Core AI modal).
    */
-  const callGeminiAPI = async (input: string, conversationHistory: Message[]): Promise<string> => {
-    // Use provided Gemini API key, with fallback to environment variable
-    const apiKey = (import.meta as any).env?.VITE_GEMINI_API_KEY || 'AIzaSyD1DwNBYcgL8Yxw2_iV4LLX2WaURuXZiws';
-    
-    console.log('🤖 Calling Gemini API (fallback mode)');
-    console.log('🔑 API key exists:', !!apiKey);
-    
-    // If no API key, use fallback
-    if (!apiKey) {
-      console.warn('⚠️ API key not found. Using fallback responses.');
-      const fallback = fallbackRetirementBrain(input, conversationHistory);
-      console.log('📝 Fallback response:', fallback);
-      return fallback;
+  const callCoreAIBackend = async (input: string, _conversationHistory: Message[]): Promise<string> => {
+    const accessToken = session?.access_token ?? undefined;
+    if (!accessToken) {
+      return "Please sign in to use the assistant.";
     }
-
-    try {
-      // Initialize Gemini AI
-      const ai = new GoogleGenAI({ apiKey });
-      const model = (import.meta as any).env?.VITE_GEMINI_MODEL || 'gemini-2.0-flash-exp';
-
-      // Build conversation history for Gemini
-      const history = conversationHistory.slice(-6).map(msg => ({
-        role: msg.role === 'user' ? 'user' : 'model',
-        parts: [{ text: msg.content }]
-      }));
-
-      // Strict system prompt - informational only, no advice or transactions
-      const chat = ai.chats.create({
-        model: model,
-        config: {
-          systemInstruction: `You are a retirement information assistant for a US 401(k) participant portal.
-
-CRITICAL RESTRICTIONS:
-- Do NOT provide financial advice
-- Do NOT guide transactions or applications
-- Answer ONLY high-level informational questions
-- Do NOT modify application state
-- Do NOT suggest skipping steps in any process
-
-ALLOWED:
-- Explain retirement concepts (401(k), Roth, vesting, etc.)
-- Provide general information about IRS rules and limits
-- Answer "what is" or "how does" questions
-- Explain terminology
-
-NOT ALLOWED:
-- Financial advice ("should I", "is it good", "recommend")
-- Transaction guidance ("apply now", "skip this step")
-- Modifying workflows or processes
-- Suggesting alternatives to required steps
-
-Keep responses SHORT and CRISP: Maximum 2-3 sentences (under 50 words).
-Focus ONLY on US retirement topics.`
-        },
-        history: history
-      });
-
-      // Send message and get response
-      const result = await chat.sendMessage({ message: input });
-      let aiResponse = result.text?.trim();
-      
-      // Ensure response is short and crisp (max 3 sentences, ~50 words)
-      if (aiResponse) {
-        const sentences = aiResponse.split(/[.!?]+/).filter(s => s.trim().length > 0);
-        if (sentences.length > 3) {
-          aiResponse = sentences.slice(0, 3).join('. ').trim() + '.';
-        }
-        // Limit to ~50 words
-        const words = aiResponse.split(/\s+/);
-        if (words.length > 50) {
-          aiResponse = words.slice(0, 50).join(' ') + '...';
-        }
-      }
-
-      if (aiResponse) {
-        console.log('✅ Gemini API response received:', aiResponse);
-        console.log('📏 Response length:', aiResponse.length, 'words:', aiResponse.split(/\s+/).length);
-        return aiResponse;
-      } else {
-        throw new Error('No response from Gemini');
-      }
-    } catch (error: any) {
-      console.error('❌ Error calling Gemini API:', error);
-      console.log('🔄 Falling back to hardcoded responses');
-      const fallback = fallbackRetirementBrain(input, conversationHistory);
-      console.log('📝 Fallback response:', fallback);
-      return fallback;
-    }
+    const { sendCoreAIMessage } = await import("../services/coreAiService");
+    const res = await sendCoreAIMessage(input, {}, accessToken);
+    return res.reply;
   };
 
   /**
-   * Get AI Response - Main Routing Function
-   * 
-   * Enforced Routing Priority:
-   * a) Active loan flow → loan agent ONLY (no Gemini)
-   * b) Active enrollment flow → enrollment agent ONLY (no Gemini)
-   * c) No active flow → Gemini fallback
-   * 
-   * Why loan flows must be deterministic:
-   * - Financial transactions require regulatory compliance
-   * - Must collect specific information in a fixed order
-   * - Cannot allow AI to skip steps or modify workflow
-   * - Ensures data accuracy and auditability
-   * 
-   * Why Gemini is sandboxed as read-only fallback:
-   * - Gemini responses are non-deterministic (same input ≠ same output)
-   * - Cannot modify application state or interfere with workflows
-   * - Only used when no scripted flow is active (activeMode === 'NONE')
-   * - Provides informational answers only, never transactional guidance
-   * 
-   * State Safety:
-   * - Gemini responses never modify application state
-   * - Scripted flows always take priority over Gemini
-   * - Unrelated questions during active flows handled by agents (not Gemini)
+   * AI routing: scripted flows (loan, enrollment, withdrawal, vesting) run client-side;
+   * all other questions go to the same backend as Core AI (POST /api/core-ai).
    */
-  // Fallback retirement brain - returns short, crisp responses with suggestions when API fails
-  const fallbackRetirementBrain = (input: string, conversationHistory: Message[]): string => {
-    const text = input.toLowerCase();
-    const lastMessage = conversationHistory[conversationHistory.length - 1];
-
-    // Loan-related queries
-    if (text.includes("loan")) {
-      return "You can borrow up to 50% of your vested balance, max $50,000. Suggestion: Check your vested balance first, then apply through your plan portal.";
-    }
-
-    // Withdrawal-related queries
-    if (text.includes("withdraw") || text.includes("withdrawal") || text.includes("take out")) {
-      return "Withdraw penalty-free at 59½. Before that, 10% penalty plus taxes. Suggestion: Consider a loan instead—you pay it back with interest to yourself.";
-    }
-
-    // Contribution-related queries
-    if (text.includes("contribution") || text.includes("contribute") || text.includes("contribute more") || text.includes("increase contribution")) {
-      return "2024 limit is $23,000. If you're 50+, add $7,500 catch-up. Suggestion: Start with 6% to get full employer match, then increase 1% each quarter.";
-    }
-
-    // Enrollment-related queries
-    if (text.includes("enroll") || text.includes("enrollment") || text.includes("sign up") || text.includes("join")) {
-      return "Start with 6% to get full employer match. Suggestion: Enroll today and set up automatic increases each year.";
-    }
-
-    // Age-related queries
-    if (text.includes("age") || text.match(/\b(25|30|35|40|45|50|55|60|65)\b/)) {
-      const ageMatch = text.match(/\b(\d+)\b/);
-      const age = ageMatch ? parseInt(ageMatch[1]) : null;
-      
-      if (age) {
-        if (age < 30) {
-          return `At ${age}, start with 6% to get full employer match. Suggestion: Increase to 10-15% over the next 2-3 years.`;
-        } else if (age < 50) {
-          return `At ${age}, aim for 10-15% total (including match). Suggestion: Review your investment mix and consider increasing contributions annually.`;
-        } else if (age < 60) {
-          return `At ${age}, maximize contributions ($23,000/year). Suggestion: Add catch-up contributions if eligible, and plan for penalty-free withdrawals at 59½.`;
-        } else {
-          return `At ${age}, you can withdraw penalty-free. Suggestion: Plan withdrawals to minimize taxes and ensure RMDs start at 73.`;
-        }
-      }
-      return "Your age helps me recommend the best contribution rate. Suggestion: Share your age for personalized advice.";
-    }
-
-    // Balance-related queries
-    if (text.includes("balance") || text.includes("how much") || text.includes("account balance")) {
-      return "For loans, you can borrow up to 50% of your vested balance, max $50,000. Suggestion: Log into your account to check your exact vested balance.";
-    }
-
-    // Employer match queries
-    if (text.includes("match") || text.includes("employer match") || text.includes("company match")) {
-      return "Most plans match 50% up to 6% of salary. Contribute 6%, they add 3%—that's free money. Suggestion: Ensure you're contributing at least 6% to maximize the match.";
-    }
-
-    // Retirement age queries
-    if (text.includes("retirement age") || text.includes("when can i retire") || text.includes("retire")) {
-      return "Withdraw penalty-free at 59½. Many work longer to maximize savings. Suggestion: Use a retirement calculator to estimate your savings goal and timeline.";
-    }
-
-    // Tax-related queries
-    if (text.includes("tax") || text.includes("taxes") || text.includes("taxable")) {
-      return "Traditional 401(k): pay taxes when you withdraw. Roth 401(k): pay taxes now, withdraw tax-free after 59½. Suggestion: Consider splitting contributions between Traditional and Roth for tax flexibility.";
-    }
-
-    // Rollover queries
-    if (text.includes("rollover") || text.includes("roll over") || text.includes("transfer")) {
-      return "Rollovers move your 401(k) to an IRA or new employer's plan. Direct rollovers avoid taxes. Suggestion: Contact your plan administrator to initiate a direct rollover and avoid penalties.";
-    }
-
-    // Vesting queries
-    if (text.includes("vest") || text.includes("vesting") || text.includes("vested")) {
-      return "Your contributions are always 100% vested. Employer match typically vests over 3-6 years. Suggestion: Check your vesting schedule in your plan documents to see when you'll be fully vested.";
-    }
-
-    // General greeting or unclear query
-    if (text.includes("hello") || text.includes("hi") || text.includes("help") || text.length < 5) {
-      return "I can help with loans, withdrawals, contributions, and more. Suggestion: Ask about loans, withdrawals, or how to increase your contributions.";
-    }
-
-    // Default response for unrecognized queries
-    return "I can help with US retirement topics: loans, withdrawals, contributions, rollovers, and more. Suggestion: Try asking about loans, contributions, or withdrawals.";
-  };
-
   // Legacy handlers removed: all input must route through handleUserInput().
   const handleSubmit = async (text?: string) => {
     const input = (text ?? userText).trim();

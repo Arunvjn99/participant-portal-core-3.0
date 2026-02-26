@@ -6,7 +6,6 @@ import { useEnrollment } from "../../enrollment/context/EnrollmentContext";
 import { loadEnrollmentDraft, saveEnrollmentDraft } from "../../enrollment/enrollmentDraftStore";
 import { EnrollmentFooter } from "../../components/enrollment/EnrollmentFooter";
 import { EnrollmentPageContent } from "../../components/enrollment/EnrollmentPageContent";
-import { ContributionHero } from "../../components/enrollment/ContributionHero";
 import {
   PAYCHECKS_PER_YEAR,
   percentageToAnnualAmount,
@@ -14,6 +13,13 @@ import {
   deriveContribution,
 } from "../../enrollment/logic/contributionCalculator";
 import { calculateProjection } from "../../enrollment/logic/projectionCalculator";
+import {
+  rebalanceSources,
+  allocationToSources,
+  mergeLocks,
+  sourcesToAllocation,
+  getLockedIds,
+} from "../../enrollment/logic/sourceAllocationEngine";
 import type { ProjectionDataPoint } from "../../enrollment/logic/types";
 import { formatYAxisLabel, getYAxisTicks } from "../../utils/projectionChartAxis";
 
@@ -22,11 +28,12 @@ const SLIDER_MIN = 1;
 const SLIDER_MAX = 25;
 
 const PRESETS = [
+  { id: "safe", labelKey: "enrollment.presetSafe", percentage: 4 },
   { id: "match", labelKey: "enrollment.presetEmployerMatch", percentage: 6 },
-  { id: "safe", labelKey: "enrollment.presetSafe", percentage: 8 },
-  { id: "aggressive", labelKey: "enrollment.presetAggressive", percentage: 15 },
+  { id: "aggressive", labelKey: "enrollment.presetAggressive", percentage: 8 },
 ] as const;
 
+const SOURCE_IDS = ["preTax", "roth", "afterTax"] as const;
 const SOURCE_OPTIONS = [
   { id: "preTax", mainKey: "enrollment.preTax", subKey: "enrollment.preTaxSub", key: "preTax" as const },
   { id: "roth", mainKey: "enrollment.roth", subKey: "enrollment.rothSub", key: "roth" as const },
@@ -164,17 +171,26 @@ export const Contribution = () => {
     }
   };
 
-  const handleSourcePercentChange = (key: "preTax" | "roth" | "afterTax", value: number) => {
-    const next = { ...state.sourceAllocation, [key]: Math.min(100, Math.max(0, value)) };
-    const sum = next.preTax + next.roth + next.afterTax;
-    if (sum <= 100) setSourceAllocation(next);
-    else {
-      const otherKeys = (["preTax", "roth", "afterTax"] as const).filter((k) => k !== key);
-      const otherSum = otherKeys.reduce((s, k) => s + next[k], 0);
-      const capped = Math.min(100, Math.max(0, 100 - otherSum));
-      setSourceAllocation({ ...next, [key]: capped });
-    }
-  };
+  const [lockedSourceIds, setLockedSourceIds] = useState<Set<string>>(() => new Set());
+
+  const handleSourcePercentChange = useCallback(
+    (key: "preTax" | "roth" | "afterTax", value: number) => {
+      const allocation = state.sourceAllocation;
+      const sources = mergeLocks(
+        allocationToSources(allocation, [...SOURCE_IDS]),
+        lockedSourceIds
+      );
+      const result = rebalanceSources(sources, key, value);
+      const newAllocation = sourcesToAllocation(result, [...SOURCE_IDS]) as {
+        preTax: number;
+        roth: number;
+        afterTax: number;
+      };
+      setSourceAllocation(newAllocation);
+      setLockedSourceIds(getLockedIds(result));
+    },
+    [state.sourceAllocation, lockedSourceIds, setSourceAllocation]
+  );
 
   const canContinue = contributionPct > 0 && contributionPct <= 100;
 
@@ -215,12 +231,6 @@ export const Contribution = () => {
     <EnrollmentPageContent
       title={t("enrollment.designSavingsTitle")}
       subtitle={t("enrollment.designSavingsSubtitle")}
-      badge={
-        <ContributionHero
-          matchCap={state.assumptions.employerMatchCap}
-          matchEnabled={state.employerMatchEnabled}
-        />
-      }
     >
       {/* ── Main Grid ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
@@ -272,11 +282,6 @@ export const Contribution = () => {
             <div className="space-y-3">
               <div className="flex justify-between text-xs font-medium" style={{ color: "var(--enroll-text-muted)" }}>
                 <span>1%</span>
-                {state.assumptions.employerMatchCap > 0 && (
-                  <span className="font-semibold" style={{ color: "var(--enroll-brand)" }}>
-                    {t("enrollment.matchZone", { percent: state.assumptions.employerMatchCap })}
-                  </span>
-                )}
                 <span>25%</span>
               </div>
               <input
@@ -293,7 +298,7 @@ export const Contribution = () => {
               />
             </div>
 
-            {/* ── Percentage / Dollar Inputs ── */}
+            {/* ── Dollar/yr (front) / Percentage (after) Inputs ── */}
             <div
               className="rounded-xl transition-all duration-200"
               style={{
@@ -302,6 +307,29 @@ export const Contribution = () => {
               }}
             >
               <div className="flex items-stretch" style={{ borderColor: "var(--enroll-card-border)" }}>
+                <div className="flex flex-1 items-center gap-1.5 min-w-0 px-4 py-3">
+                  <span className="text-2xl font-bold shrink-0" style={{ color: "var(--enroll-text-muted)" }}>$</span>
+                  <input
+                    type="number"
+                    value={dollarInput > 0 ? Math.round(dollarInput).toString() : ""}
+                    onChange={handleDollarChange}
+                    onFocus={() => setFocusedInput("dollar")}
+                    onBlur={() => setFocusedInput(null)}
+                    placeholder="0"
+                    min="0"
+                    step="1"
+                    aria-label={t("enrollment.annualContributionAria")}
+                    className="w-full min-w-0 bg-transparent text-2xl font-bold focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    style={{ color: "var(--enroll-text-primary)" }}
+                  />
+                  <span className="text-lg font-semibold shrink-0" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.dollarPerYear")}</span>
+                </div>
+                <div
+                  className="flex shrink-0 items-center px-2"
+                  style={{ borderLeft: "1px solid var(--enroll-card-border)", borderRight: "1px solid var(--enroll-card-border)" }}
+                >
+                  <span className="text-xs font-medium" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.contributionOr")}</span>
+                </div>
                 <div className="flex flex-1 items-center gap-1.5 min-w-0 px-4 py-3">
                   <input
                     type="number"
@@ -318,28 +346,6 @@ export const Contribution = () => {
                     style={{ color: "var(--enroll-text-primary)" }}
                   />
                   <span className="text-lg font-semibold shrink-0" style={{ color: "var(--enroll-text-muted)" }}>%</span>
-                </div>
-                <div
-                  className="flex shrink-0 items-center px-2"
-                  style={{ borderLeft: "1px solid var(--enroll-card-border)", borderRight: "1px solid var(--enroll-card-border)" }}
-                >
-                  <span className="text-xs font-medium" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.contributionOr")}</span>
-                </div>
-                <div className="flex flex-1 items-center gap-1.5 min-w-0 px-4 py-3">
-                  <input
-                    type="number"
-                    value={dollarInput > 0 ? Math.round(dollarInput).toString() : ""}
-                    onChange={handleDollarChange}
-                    onFocus={() => setFocusedInput("dollar")}
-                    onBlur={() => setFocusedInput(null)}
-                    placeholder="0"
-                    min="0"
-                    step="1"
-                    aria-label={t("enrollment.annualContributionAria")}
-                    className="w-full min-w-0 bg-transparent text-2xl font-bold focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    style={{ color: "var(--enroll-text-primary)" }}
-                  />
-                  <span className="text-lg font-semibold shrink-0" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.dollarPerYear")}</span>
                 </div>
               </div>
             </div>
@@ -472,90 +478,129 @@ export const Contribution = () => {
                           </label>
                         </div>
                       </div>
-                      <div className="flex flex-col gap-3">
+                      <div className="flex flex-col gap-4">
                         {SOURCE_OPTIONS.map((opt) => {
                           const paycheckTotal = annualAmount / PAYCHECKS_PER_YEAR;
                           const sourcePerPaycheck = (state.sourceAllocation[opt.key] / 100) * paycheckTotal;
-                          const displayValue =
-                            state.sourcesViewMode === "percent"
-                              ? state.sourceAllocation[opt.key] > 0 ? state.sourceAllocation[opt.key] : ""
-                              : state.sourceAllocation[opt.key] > 0 ? Math.round(sourcePerPaycheck) : "";
+                          const pct = state.sourceAllocation[opt.key];
+                          const isSourceActive = pct > 0;
+                          const isSliderDisabled = !isSourceActive || !state.sourcesEditMode;
+                          const dollarValue = sourcePerPaycheck > 0 ? Math.round(sourcePerPaycheck) : "";
                           return (
-                            <div key={opt.id} className="flex justify-between items-center gap-4">
-                              <label
-                                className={`flex items-center gap-2 cursor-pointer ${!state.sourcesEditMode ? "opacity-80 cursor-default" : ""}`}
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={state.sourceAllocation[opt.key] > 0}
-                                  disabled={!state.sourcesEditMode}
-                                  onChange={(e) => {
-                                    const keys = ["preTax", "roth", "afterTax"] as const;
-                                    const current = state.sourceAllocation;
-                                    if (e.target.checked) {
-                                      const activeKeys = keys.filter((k) => current[k] > 0 || k === opt.key);
-                                      const count = activeKeys.length;
-                                      const equalShare = Math.round((100 / count) * 10) / 10;
-                                      const remainder = 100 - equalShare * (count - 1);
-                                      const next: { preTax: number; roth: number; afterTax: number } = { preTax: 0, roth: 0, afterTax: 0 };
-                                      activeKeys.forEach((k, i) => { next[k] = i === 0 ? remainder : equalShare; });
-                                      setSourceAllocation(next);
-                                    } else {
-                                      const next = { ...current, [opt.key]: 0 };
-                                      const remainingKeys = keys.filter((k) => next[k] > 0);
-                                      if (remainingKeys.length === 0) {
-                                        setSourceAllocation({ preTax: 100, roth: 0, afterTax: 0 });
-                                      } else {
-                                        const total = remainingKeys.reduce((s, k) => s + next[k], 0);
-                                        const scale = total > 0 ? 100 / total : 1;
-                                        remainingKeys.forEach((k) => { next[k] = Math.round(next[k] * scale * 10) / 10; });
-                                        const diff = 100 - remainingKeys.reduce((s, k) => s + next[k], 0);
-                                        if (diff !== 0 && remainingKeys[0]) next[remainingKeys[0]] += diff;
-                                        setSourceAllocation(next);
-                                      }
-                                    }
-                                  }}
-                                  className="h-4 w-4 shrink-0 rounded cursor-pointer disabled:cursor-not-allowed"
-                                  style={{ accentColor: "var(--enroll-brand)" }}
-                                />
-                                <div className="flex flex-col gap-0.5">
-                                  <span className="text-sm" style={{ color: "var(--enroll-text-primary)" }}>
-                                    <span className="font-semibold">{t(opt.mainKey)}</span>
-                                    {opt.subKey && <span className="font-normal" style={{ color: "var(--enroll-text-muted)" }}> {t(opt.subKey)}</span>}
-                                  </span>
-                                </div>
-                              </label>
-                              <div
-                                className="inline-flex w-24 shrink-0 overflow-hidden rounded-lg transition-colors"
-                                style={{ border: "1px solid var(--enroll-card-border)", background: "var(--enroll-card-bg)" }}
-                              >
-                                <input
-                                  type="number"
-                                  value={displayValue}
-                                  onChange={(e) => {
-                                    const v = parseFloat(e.target.value);
-                                    if (state.sourcesViewMode === "percent") {
-                                      handleSourcePercentChange(opt.key, isNaN(v) ? 0 : v);
-                                    } else if (salary > 0 && !isNaN(v) && v >= 0) {
-                                      const paycheckTotalVal = annualAmount / PAYCHECKS_PER_YEAR;
-                                      const pct = paycheckTotalVal > 0 ? (v / paycheckTotalVal) * 100 : 0;
-                                      handleSourcePercentChange(opt.key, Math.min(100, Math.max(0, pct)));
-                                    } else if (e.target.value === "") {
-                                      handleSourcePercentChange(opt.key, 0);
-                                    }
-                                  }}
-                                  min="0"
-                                  max={state.sourcesViewMode === "percent" ? "100" : undefined}
-                                  disabled={state.sourceAllocation[opt.key] === 0 || !state.sourcesEditMode}
-                                  className="min-w-0 flex-1 border-0 bg-transparent px-3 py-2 text-sm font-medium placeholder-[var(--color-textSecondary)] focus:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:opacity-60 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                                  style={{ color: "var(--enroll-text-primary)" }}
-                                />
-                                <span
-                                  className="flex shrink-0 items-center px-2.5 py-2 text-sm font-medium"
-                                  style={{ background: "var(--enroll-soft-bg)", color: "var(--enroll-text-secondary)" }}
+                            <div key={opt.id} className="flex flex-col gap-2">
+                              <div className="flex justify-between items-center gap-4">
+                                <label
+                                  className={`flex items-center gap-2 cursor-pointer ${!state.sourcesEditMode ? "opacity-80 cursor-default" : ""}`}
                                 >
-                                  {state.sourcesViewMode === "percent" ? "%" : "$"}
-                                </span>
+                                  <input
+                                    type="checkbox"
+                                    checked={isSourceActive}
+                                    disabled={!state.sourcesEditMode}
+                                    onChange={(e) => {
+                                      const keys = ["preTax", "roth", "afterTax"] as const;
+                                      const current = state.sourceAllocation;
+                                      if (e.target.checked) {
+                                        const activeKeys = keys.filter((k) => current[k] > 0 || k === opt.key);
+                                        const count = activeKeys.length;
+                                        const equalShare = Math.round((100 / count) * 10) / 10;
+                                        const remainder = 100 - equalShare * (count - 1);
+                                        const next: { preTax: number; roth: number; afterTax: number } = { preTax: 0, roth: 0, afterTax: 0 };
+                                        activeKeys.forEach((k, i) => { next[k] = i === 0 ? remainder : equalShare; });
+                                        setSourceAllocation(next);
+                                        setLockedSourceIds(new Set());
+                                      } else {
+                                        const next = { ...current, [opt.key]: 0 };
+                                        const remainingKeys = keys.filter((k) => next[k] > 0);
+                                        if (remainingKeys.length === 0) {
+                                          setSourceAllocation({ preTax: 100, roth: 0, afterTax: 0 });
+                                          setLockedSourceIds(new Set());
+                                        } else {
+                                          const total = remainingKeys.reduce((s, k) => s + next[k], 0);
+                                          const scale = total > 0 ? 100 / total : 1;
+                                          remainingKeys.forEach((k) => { next[k] = Math.round(next[k] * scale * 10) / 10; });
+                                          const diff = 100 - remainingKeys.reduce((s, k) => s + next[k], 0);
+                                          if (diff !== 0 && remainingKeys[0]) next[remainingKeys[0]] += diff;
+                                          setSourceAllocation(next);
+                                          setLockedSourceIds((prev) => {
+                                            const nextSet = new Set(prev);
+                                            nextSet.delete(opt.key);
+                                            return nextSet;
+                                          });
+                                        }
+                                      }
+                                    }}
+                                    className="h-4 w-4 shrink-0 rounded cursor-pointer disabled:cursor-not-allowed"
+                                    style={{ accentColor: "var(--enroll-brand)" }}
+                                  />
+                                  <div className="flex flex-col gap-0.5">
+                                    <span className="text-sm" style={{ color: "var(--enroll-text-primary)" }}>
+                                      <span className="font-semibold">{t(opt.mainKey)}</span>
+                                      {opt.subKey && <span className="font-normal" style={{ color: "var(--enroll-text-muted)" }}> {t(opt.subKey)}</span>}
+                                    </span>
+                                  </div>
+                                </label>
+                                {state.sourcesViewMode === "percent" ? (
+                                  <span
+                                    className="text-sm font-bold shrink-0 tabular-nums"
+                                    style={{ color: "var(--enroll-text-primary)" }}
+                                  >
+                                    {pct > 0 ? `${pct}%` : "0%"}
+                                  </span>
+                                ) : (
+                                  <div
+                                    className="inline-flex w-28 shrink-0 overflow-hidden rounded-lg transition-colors"
+                                    style={{ border: "1px solid var(--enroll-card-border)", background: "var(--enroll-card-bg)" }}
+                                  >
+                                    <span
+                                      className="flex shrink-0 items-center pl-3 pr-1.5 py-2 text-sm font-medium"
+                                      style={{ background: "var(--enroll-soft-bg)", color: "var(--enroll-text-secondary)" }}
+                                    >
+                                      $
+                                    </span>
+                                    <input
+                                      type="number"
+                                      value={dollarValue}
+                                      onChange={(e) => {
+                                        const v = parseFloat(e.target.value);
+                                        if (salary > 0 && !isNaN(v) && v >= 0 && paycheckTotal > 0) {
+                                          const pctFromDollar = (v / paycheckTotal) * 100;
+                                          handleSourcePercentChange(opt.key, Math.min(100, Math.max(0, pctFromDollar)));
+                                        } else if (e.target.value === "" || (typeof v === "number" && isNaN(v))) {
+                                          handleSourcePercentChange(opt.key, 0);
+                                        }
+                                      }}
+                                      min={0}
+                                      step={1}
+                                      disabled={!isSourceActive || !state.sourcesEditMode}
+                                      placeholder="0"
+                                      className="min-w-0 flex-1 border-0 bg-transparent px-2 py-2 text-sm font-bold tabular-nums placeholder-[var(--color-textSecondary)] focus:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:opacity-60 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                      style={{ color: "var(--enroll-text-primary)" }}
+                                    />
+                                  </div>
+                                )}
+                              </div>
+                              <div
+                                className="relative h-2 w-full rounded-full overflow-hidden"
+                                style={{ background: "var(--enroll-soft-bg)" }}
+                              >
+                                <div
+                                  className="absolute inset-y-0 left-0 h-2 rounded-full transition-all duration-200"
+                                  style={{
+                                    width: `${pct}%`,
+                                    background: "var(--enroll-brand)",
+                                  }}
+                                />
+                                <input
+                                  type="range"
+                                  min={0}
+                                  max={100}
+                                  step={1}
+                                  value={pct}
+                                  onChange={(e) => handleSourcePercentChange(opt.key, Number(e.target.value))}
+                                  disabled={isSliderDisabled}
+                                  aria-label={t(opt.mainKey)}
+                                  className="source-allocation-slider"
+                                />
                               </div>
                             </div>
                           );

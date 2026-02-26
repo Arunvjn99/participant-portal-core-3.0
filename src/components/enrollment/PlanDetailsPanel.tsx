@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { Check, X, TrendingUp, ShieldCheck, Unlock, Activity, Lock, User, Briefcase, Calendar, MapPin, PiggyBank, Clock } from "lucide-react";
+import { Check, X, Lock, User, Briefcase, Calendar, MapPin, PiggyBank, Clock } from "lucide-react";
 import type { PlanOption } from "../../types/enrollment";
 
 export interface PlanDetailsUserSnapshot {
@@ -38,16 +38,47 @@ const softBgStyle: React.CSSProperties = {
   border: "1px solid var(--enroll-card-border)",
 };
 
+function YourDetailsCard({ user }: { user: PlanDetailsUserSnapshot }) {
+  const { t } = useTranslation();
+  return (
+    <div className="p-5" style={cardStyle}>
+      <h4
+        className="text-[10px] font-bold uppercase tracking-widest mb-3 flex items-center gap-2"
+        style={{ color: "var(--enroll-text-muted)" }}
+      >
+        <User size={12} /> {t("enrollment.yourDetails")}
+      </h4>
+      <div className="grid grid-cols-3 gap-3">
+        <DetailCell icon={<User size={10} />} label={t("enrollment.age")} value={String(user.age)} />
+        <DetailCell icon={<Calendar size={10} />} label={t("enrollment.retiringAt")} value={String(user.retirementAge)} />
+        <DetailCell icon={<Briefcase size={10} />} label={t("enrollment.salary")} value={typeof user.salary === "number" ? formatCurrency(user.salary) : String(user.salary)} />
+        {user.yearsToRetire != null && user.yearsToRetire >= 0 && (
+          <DetailCell icon={<Clock size={10} />} label={t("enrollment.yearsToRetire")} value={String(user.yearsToRetire)} colSpan />
+        )}
+        {user.retirementLocation && (
+          <DetailCell icon={<MapPin size={10} />} label={t("enrollment.retirementLocation")} value={user.retirementLocation} colSpan />
+        )}
+        {user.otherSavings != null && user.otherSavings > 0 && (
+          <DetailCell icon={<PiggyBank size={10} />} label={t("enrollment.otherSavings")} value={formatCurrency(user.otherSavings)} colSpan />
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function PlanDetailsPanel({ plan, user, rationaleKey, rationale }: PlanDetailsPanelProps) {
   const { t } = useTranslation();
 
   if (!plan) {
     return (
-      <div
-        className="animate-fade-in flex flex-col items-center justify-center min-h-[320px] p-8 text-center"
-        style={{ ...cardStyle, opacity: 0.7 }}
-      >
-        <p className="text-sm" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.selectPlanToSeeDetails")}</p>
+      <div className="animate-fade-in space-y-6">
+        <div
+          className="p-6 flex flex-col items-center justify-center min-h-[120px] text-center"
+          style={{ ...cardStyle, opacity: 0.85 }}
+        >
+          <p className="text-sm" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.selectPlanToSeeDetails")}</p>
+        </div>
+        <YourDetailsCard user={user} />
       </div>
     );
   }
@@ -74,11 +105,9 @@ export function PlanDetailsPanel({ plan, user, rationaleKey, rationale }: PlanDe
     );
   }
 
-  const confidenceScore = plan.fitScore ?? 0;
-
   return (
     <div className="animate-fade-in space-y-6">
-      {/* Plan Overview */}
+      {/* Plan Overview — no match score / gamification */}
       <div className="p-6" style={cardStyle}>
         <h4
           className="text-[10px] font-bold uppercase tracking-widest mb-3"
@@ -92,73 +121,13 @@ export function PlanDetailsPanel({ plan, user, rationaleKey, rationale }: PlanDe
             : t("enrollment.solidOption")}
         </p>
         {(rationaleKey || (rationale != null && rationale !== "")) && (
-          <p className="text-sm leading-relaxed mb-4" style={{ color: "var(--enroll-text-secondary)" }}>
+          <p className="text-sm leading-relaxed" style={{ color: "var(--enroll-text-secondary)" }}>
             {rationaleKey ? t(rationaleKey, { years: user.yearsToRetire ?? 0 }) : rationale}
           </p>
         )}
-        <div
-          className="rounded-xl p-4 relative overflow-hidden group"
-          style={{
-            background: "rgb(var(--enroll-brand-rgb) / 0.06)",
-            border: "1px solid rgb(var(--enroll-brand-rgb) / 0.12)",
-          }}
-        >
-          <div className="relative z-10 space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Activity size={14} style={{ color: "var(--enroll-brand)" }} />
-                <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--enroll-brand)" }}>{t("enrollment.matchScore")}</span>
-              </div>
-              <span className="text-xl font-bold" style={{ color: "var(--enroll-brand)" }}>{confidenceScore}%</span>
-            </div>
-            <div
-              className="h-1.5 w-full rounded-full overflow-hidden"
-              style={{ background: "var(--enroll-soft-bg)" }}
-            >
-              <div
-                className="h-full transition-all duration-1000 ease-out"
-                style={{ width: `${Math.min(100, confidenceScore)}%`, background: "var(--enroll-brand)" }}
-              />
-            </div>
-            <p className="text-[11px] leading-relaxed" style={{ color: "var(--enroll-text-secondary)" }}>
-              {plan.isRecommended
-                ? t("enrollment.excellentTaxFree")
-                : t("enrollment.betterPaycheck")}
-            </p>
-          </div>
-        </div>
       </div>
 
-      {/* Your Details */}
-      <div className="p-5" style={cardStyle}>
-        <h4
-          className="text-[10px] font-bold uppercase tracking-widest mb-3 flex items-center gap-2"
-          style={{ color: "var(--enroll-text-muted)" }}
-        >
-          <User size={12} /> {t("enrollment.yourDetails")}
-        </h4>
-        <div className="grid grid-cols-3 gap-3">
-          <DetailCell icon={<User size={10} />} label={t("enrollment.age")} value={String(user.age)} />
-          <DetailCell icon={<Calendar size={10} />} label={t("enrollment.retiringAt")} value={String(user.retirementAge)} />
-          <DetailCell icon={<Briefcase size={10} />} label={t("enrollment.salary")} value={typeof user.salary === "number" ? formatCurrency(user.salary) : String(user.salary)} />
-          {user.yearsToRetire != null && user.yearsToRetire >= 0 && (
-            <DetailCell icon={<Clock size={10} />} label={t("enrollment.yearsToRetire")} value={String(user.yearsToRetire)} colSpan />
-          )}
-          {user.retirementLocation && (
-            <DetailCell icon={<MapPin size={10} />} label={t("enrollment.retirementLocation")} value={user.retirementLocation} colSpan />
-          )}
-          {user.otherSavings != null && user.otherSavings > 0 && (
-            <DetailCell icon={<PiggyBank size={10} />} label={t("enrollment.otherSavings")} value={formatCurrency(user.otherSavings)} colSpan />
-          )}
-        </div>
-      </div>
-
-      {/* Metrics */}
-      <div className="p-6 space-y-5" style={cardStyle}>
-        <MetricRow icon={<TrendingUp size={14} />} label={t("enrollment.growth")} value={confidenceScore > 90 ? t("enrollment.maximum") : t("enrollment.stable")} score={confidenceScore} />
-        <MetricRow icon={<ShieldCheck size={14} />} label={t("enrollment.taxBenefits")} value={confidenceScore > 90 ? t("enrollment.taxFree") : t("enrollment.payLater")} score={confidenceScore} />
-        <MetricRow icon={<Unlock size={14} />} label={t("enrollment.accessToMoney")} value={t("enrollment.flexible")} score={Math.min(100, (plan.benefits?.length ?? 0) * 25)} />
-      </div>
+      <YourDetailsCard user={user} />
 
       {/* Pros / Cons — hidden per product requirement */}
       {false && (
@@ -218,34 +187,6 @@ const DetailCell: React.FC<{
     </div>
     <div className="text-sm font-bold truncate" style={{ color: "var(--enroll-text-primary)" }} title={value}>
       {value}
-    </div>
-  </div>
-);
-
-const MetricRow: React.FC<{
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  score: number;
-}> = ({ icon, label, value, score }) => (
-  <div className="flex items-center gap-3">
-    <div
-      className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-      style={{ ...softBgStyle, color: "var(--enroll-text-muted)" }}
-    >
-      {icon}
-    </div>
-    <div className="flex-1">
-      <div className="flex justify-between items-baseline mb-1.5">
-        <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>{label}</span>
-        <span className="text-[10px] font-bold" style={{ color: "var(--enroll-text-primary)" }}>{value}</span>
-      </div>
-      <div className="h-1 w-full rounded-full overflow-hidden" style={{ background: "var(--enroll-soft-bg)" }}>
-        <div
-          className="h-full rounded-full transition-all duration-700"
-          style={{ width: `${Math.min(100, score)}%`, background: "var(--enroll-brand)" }}
-        />
-      </div>
     </div>
   </div>
 );

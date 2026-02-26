@@ -1,193 +1,132 @@
 /**
- * Core AI Controller — Scoped retirement assistant with Gemini backend.
- *
- * Hard scope boundaries:
- *  - Dashboard overview, retirement plans, contributions, investments
- *  - Beneficiaries, transactions, enrollment flow
- *
- * NOT a general AI chatbot. Rejects out-of-scope questions.
+ * Core AI Controller — Data-backed retirement assistant with Gemini.
+ * Uses structured prompt builder and deterministic confidence. Returns data_sources.
  */
 
 import { model } from "./geminiClient.js";
+import { buildStructuredPrompt } from "./promptBuilder.js";
 
-/* ── System prompt: strict scope ── */
-const SYSTEM_PROMPT = `You are Core AI, a retirement plan assistant inside a financial dashboard.
+const SYSTEM_PROMPT = `You are a US retirement assistant for a participant portal.
+- Use ONLY the provided structured data below. If a section says "Value unavailable", state that the information is not available. Never fabricate financial numbers.
+- Keep spoken_text concise (1-3 sentences). Be professional and encouraging.
+- Respond with valid JSON only, no markdown or extra text.`;
 
-You ONLY answer questions related to:
-- Retirement plans (Roth 401(k), Traditional 401(k), After-tax)
-- Contributions (how much to contribute, paycheck impact, auto increase, tax impact)
-- Investment allocations (fund selection, risk levels, rebalancing)
-- Employer match (match formula, vesting schedule, maximizing match)
-- Dashboard metrics (account balance, projected retirement value, on-track status)
-- Account balance and vested balance
-- Retirement projections and compound growth
-- Withdrawal rules and eligibility
-- Loan info within retirement plan context
-- Beneficiary designations
-- Transaction history within the plan
-- Enrollment flow guidance
+const JSON_SCHEMA = `Respond with exactly this JSON shape:
+{
+  "type": "<intent type, e.g. balance_answer>",
+  "spoken_text": "<short answer for the user>",
+  "ui_data": { "<key>": <value> for any numbers or facts to show in UI, e.g. balance, vested_balance, or {} },
+  "confidence": "high" | "medium" | "low"
+}`;
 
-If a question is unrelated to retirement planning or dashboard features, politely decline and say:
-"I can help with your retirement plan, contributions, investments, or dashboard details. For other requests, please contact support."
-
-Rules:
-- Never provide legal advice, medical advice, political opinions, or general knowledge outside the product.
-- Keep responses concise (2-4 sentences), clear, and professional.
-- Do not fabricate data. Use provided user context when available.
-- If user context includes specific numbers (balance, contribution rate), reference them naturally.
-- Always be encouraging about retirement savings.
-- If the user asks about a specific plan feature, explain it simply.`;
-
-/* ── Intent guard: pre-filter before Gemini call ── */
-const ALLOWED_TOPICS = [
-  "plan",
-  "roth",
-  "traditional",
-  "401k",
-  "401(k)",
-  "contribution",
-  "invest",
-  "allocation",
-  "fund",
-  "balance",
-  "retirement",
-  "retire",
-  "match",
-  "employer",
-  "dashboard",
-  "account",
-  "vesting",
-  "vested",
-  "withdrawal",
-  "withdraw",
-  "loan",
-  "beneficiary",
-  "transaction",
-  "enrollment",
-  "enroll",
-  "paycheck",
-  "salary",
-  "tax",
-  "rmd",
-  "projection",
-  "compound",
-  "growth",
-  "risk",
-  "conservative",
-  "moderate",
-  "aggressive",
-  "rebalance",
-  "rollover",
-  "distribution",
-  "hardship",
-  "catch-up",
-  "limit",
-  "maximum",
-  "auto increase",
-  "target date",
-  "index fund",
-  "expense ratio",
-  "fee",
-  "performance",
-  "return",
-  "diversif",
-  "portfolio",
-  "age",
-  "how much",
-  "overview",
-  "summary",
-  "status",
-  "payroll",
-  "percent",
-  "rate of return",
-  "annuity",
-  "ira",
-  "pension",
-  "social security",
-  "fiduciary",
-  "401a",
-  "403b",
-  "457",
-  "qdro",
-  "saver",
-  "saving",
-];
-
-/* ── Greeting detection (allow friendly greetings without topic keywords) ── */
-const GREETING_PATTERNS = [
-  /^(hi|hello|hey|good morning|good afternoon|good evening|howdy|what's up|sup)\b/i,
-  /^(thanks|thank you|ok|okay|got it|sure|yes|no|please)\b/i,
-];
-
-function isAllowedTopic(message) {
-  const lower = message.toLowerCase();
-
-  /* Allow greetings */
-  if (GREETING_PATTERNS.some((p) => p.test(lower))) {
-    return true;
-  }
-
-  /* Check for allowed topic keywords */
-  return ALLOWED_TOPICS.some((topic) => lower.includes(topic));
+/**
+ * Deterministic confidence from data sources. Overrides model output.
+ * high = retirement_accounts or plan_rules present
+ * medium = retirement_knowledge only
+ * low = no data or partial
+ */
+export function computeDeterministicConfidence(sources) {
+  if (!Array.isArray(sources)) return "low";
+  const has = (name) => sources.includes(name);
+  if (has("retirement_accounts") || has("plan_rules")) return "high";
+  if (has("retirement_knowledge") && sources.length === 1) return "medium";
+  return "low";
 }
 
-/* ── Out-of-scope response ── */
-const OUT_OF_SCOPE_RESPONSE =
-  "I can help with your retirement plan, contributions, investments, or dashboard details. For other requests, please contact support.";
-
-/* ── Generate reply via Gemini ── */
-export async function generateCoreReply(userMessage, userContext) {
-  /* 1. Intent guard — reject before calling Gemini */
-  if (!isAllowedTopic(userMessage)) {
-    return {
-      reply: OUT_OF_SCOPE_RESPONSE,
-      filtered: true,
-    };
+function parseStructuredResponse(text, intent) {
+  const trimmed = text.trim();
+  const jsonMatch = trimmed.match(/\{[\s\S]*\}/);
+  if (jsonMatch) {
+    try {
+      const parsed = JSON.parse(jsonMatch[0]);
+      return {
+        type: parsed.type ?? intent,
+        spoken_text: parsed.spoken_text ?? trimmed,
+        ui_data: parsed.ui_data != null ? parsed.ui_data : {},
+      };
+    } catch (_) {
+      /* fall through */
+    }
   }
+  return {
+    type: intent,
+    spoken_text: trimmed || "I couldn't generate a response. Please try again.",
+    ui_data: {},
+  };
+}
 
-  /* 2. If Gemini model not available, return graceful fallback */
+/**
+ * Generate data-backed reply. Intent, data, and sources from intentResolver + retirementService.
+ * Confidence is deterministic from sources; data_sources returned for API and logging.
+ * @param {string} userMessage
+ * @param {{ intent: string, data: object, serverContext: object, sources: string[] }} options
+ * @returns {Promise<{ reply, filtered, type, spoken_text, ui_data, confidence, data_sources }>}
+ */
+export async function generateCoreReply(userMessage, options = {}) {
+  const { intent, data = {}, serverContext, sources = [] } = options;
+
   if (!model) {
     return {
       reply: "I'm currently unable to process your request. Please try again later or contact support.",
+      filtered: false,
+      type: intent,
+      spoken_text: "I'm currently unable to process your request. Please try again later or contact support.",
+      ui_data: {},
+      confidence: "low",
+      data_sources: sources,
       error: "Gemini model not initialized",
     };
   }
 
-  /* 3. Build prompt with user context */
-  const contextBlock = userContext
-    ? `\nUser context:\n${JSON.stringify(userContext, null, 2)}\n`
-    : "";
-
+  const contextBlock = buildStructuredPrompt(intent, data, serverContext, userMessage);
   const fullPrompt = `${SYSTEM_PROMPT}
+
 ${contextBlock}
-User question:
-${userMessage}`;
+
+${JSON_SCHEMA}`;
 
   try {
     const result = await model.generateContent(fullPrompt);
     const response = await result.response;
     const text = response.text();
+    const structured = parseStructuredResponse(text, intent);
+
+    const confidence = computeDeterministicConfidence(sources);
 
     return {
-      reply: text.trim(),
+      reply: structured.spoken_text,
       filtered: false,
+      type: structured.type,
+      spoken_text: structured.spoken_text,
+      ui_data: structured.ui_data,
+      confidence,
+      data_sources: sources,
     };
   } catch (error) {
     console.error("Gemini API error:", error.message);
 
-    /* Rate-limit / quota error — give user a clear message */
     if (error.status === 429 || error.message?.includes("429")) {
       return {
         reply: "I'm receiving a lot of questions right now. Please wait a moment and try again.",
+        filtered: false,
+        type: intent,
+        spoken_text: "I'm receiving a lot of questions right now. Please wait a moment and try again.",
+        ui_data: {},
+        confidence: "low",
+        data_sources: sources,
         error: "rate_limited",
       };
     }
 
     return {
       reply: "I'm having trouble right now. Please try again in a moment.",
+      filtered: false,
+      type: intent,
+      spoken_text: "I'm having trouble right now. Please try again in a moment.",
+      ui_data: {},
+      confidence: "low",
+      data_sources: sources,
       error: error.message,
     };
   }
 }
-
-export { isAllowedTopic };
