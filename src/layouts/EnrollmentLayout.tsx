@@ -1,61 +1,43 @@
 import { Outlet, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { DashboardLayout } from "./DashboardLayout";
 import { DashboardHeader } from "../components/dashboard/DashboardHeader";
 import { EnrollmentHeaderWithStepper } from "../components/enrollment/EnrollmentHeaderWithStepper";
 import { EnrollmentProvider } from "../enrollment/context/EnrollmentContext";
-import { pathToStep, isEnrollmentStepPath } from "../enrollment/enrollmentStepPaths";
-import { ChoosePlan } from "../pages/enrollment/ChoosePlan";
-import { Contribution } from "../pages/enrollment/Contribution";
-import { FutureContributions } from "../pages/enrollment/FutureContributions";
-import { EnrollmentInvestmentsGuard } from "../components/enrollment/EnrollmentInvestmentsGuard";
-import { EnrollmentInvestmentsContent } from "../components/enrollment/EnrollmentInvestmentsContent";
-import { EnrollmentReviewContent } from "../components/enrollment/EnrollmentReviewContent";
+import { getStepIndex, isEnrollmentStepPath, ENROLLMENT_STEP_PATHS, ENROLLMENT_STEP_LABEL_KEYS } from "../enrollment/enrollmentStepPaths";
 
 function useIsEnrollmentStepPath(): boolean {
   const { pathname } = useLocation();
   return isEnrollmentStepPath(pathname);
 }
 
-/** Render the correct enrollment step by pathname so navigation always shows the right page (works around Outlet not updating in some cases). */
-function EnrollmentStepContent() {
-  const { pathname } = useLocation();
-  const normalized = pathname.replace(/\/$/, "") || "/";
-  switch (normalized) {
-    case "/enrollment/choose-plan":
-      return <ChoosePlan />;
-    case "/enrollment/contribution":
-      return <Contribution />;
-    case "/enrollment/future-contributions":
-      return <FutureContributions />;
-    case "/enrollment/investments":
-      return (
-        <EnrollmentInvestmentsGuard>
-          <EnrollmentInvestmentsContent />
-        </EnrollmentInvestmentsGuard>
-      );
-    case "/enrollment/review":
-      return <EnrollmentReviewContent />;
-    default:
-      return <Outlet />;
-  }
-}
-
+/**
+ * Use Outlet for step content so the router controls which page is shown.
+ * When navigate() is called (e.g. Contribution → Auto Increase), the router
+ * updates and Outlet renders the matched route element immediately.
+ */
 function EnrollmentStepLayout() {
   const location = useLocation();
+  const { t } = useTranslation();
   const isStep = useIsEnrollmentStepPath();
   const pathname = location.pathname;
-  const step = pathToStep(pathname);
+  const step = getStepIndex(pathname);
+  const stepLabels = ENROLLMENT_STEP_PATHS.map((p) => t(ENROLLMENT_STEP_LABEL_KEYS[p] ?? ""));
 
   if (isStep) {
     return (
       <DashboardLayout
         header={<DashboardHeader />}
-        subHeader={<EnrollmentHeaderWithStepper activeStep={step} />}
+        subHeader={
+          <EnrollmentHeaderWithStepper
+            activeStep={step}
+            totalSteps={ENROLLMENT_STEP_PATHS.length}
+            stepLabels={stepLabels}
+          />
+        }
         transparentBackground
       >
-        <div key={pathname}>
-          <EnrollmentStepContent />
-        </div>
+        <Outlet key={pathname} />
       </DashboardLayout>
     );
   }
@@ -68,11 +50,11 @@ function EnrollmentStepLayout() {
 
 /**
  * EnrollmentLayout - Wraps enrollment routes with EnrollmentProvider.
- * For step routes (choose-plan, contribution, future-contributions, investments, review),
+ * For step routes (choose-plan, contribution, auto-increase, investments, review),
  * wraps with DashboardLayout using the global DashboardHeader + enrollment stepper bar.
  * Seeds draft when available.
  *
- * Key by pathname so that when the URL changes (e.g. Contribution → Future Contributions),
+ * Key by pathname so that when the URL changes (e.g. Contribution → Auto Increase),
  * the step layout remounts and always shows the correct page without requiring a reload.
  */
 export const EnrollmentLayout = () => {

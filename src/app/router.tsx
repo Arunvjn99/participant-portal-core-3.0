@@ -118,8 +118,12 @@ export const router = createBrowserRouter([
             element: <Contribution />,
           },
           {
-            path: "future-contributions",
+            path: "auto-increase",
             element: <FutureContributions />,
+          },
+          {
+            path: "future-contributions",
+            element: <Navigate to="/enrollment/auto-increase" replace />,
           },
           {
             path: "investments",

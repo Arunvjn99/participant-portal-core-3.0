@@ -44,20 +44,20 @@ export const HeroSection = () => {
         >
           <motion.div
             variants={fadeUp}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--color-success)]/10 border border-[var(--color-success)]/10 w-fit mb-4 sm:mb-6"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/80 text-white w-fit mb-4 sm:mb-6"
           >
-            <div className="w-2 h-2 rounded-full bg-[var(--color-success)] animate-pulse" />
-            <span className="text-xs font-bold text-[var(--color-success)] uppercase tracking-wide">
+            <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
+            <span className="text-xs font-bold uppercase tracking-wide">
               {t("dashboard.enrollmentOpen")}
             </span>
           </motion.div>
 
           <motion.h2
             variants={fadeUp}
-            className="text-xl md:text-2xl font-medium text-[var(--color-textSecondary)] mb-3"
+            className="font-medium text-[var(--color-textSecondary)] mb-3"
           >
-            <span className="block">{t("dashboard.greetingTitle")}</span>
-            <span className="block font-semibold text-[var(--color-text)]">{displayName}</span>
+            <span className="block text-base">{t("dashboard.greetingTitle")}</span>
+            <span className="block text-2xl md:text-3xl font-semibold text-[var(--color-text)]">{displayName}</span>
           </motion.h2>
 
           <motion.h1

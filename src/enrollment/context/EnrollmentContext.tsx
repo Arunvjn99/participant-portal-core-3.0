@@ -41,7 +41,7 @@ interface EnrollmentState {
   
   // Auto-increase
   autoIncrease: AutoIncreaseSettings;
-  
+
   // Profile data (from previous steps)
   currentAge: number;
   retirementAge: number;

@@ -1,16 +1,12 @@
 import { useMemo, useState, useCallback, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEnrollment } from "../../enrollment/context/EnrollmentContext";
 import { EnrollmentPageContent } from "../../components/enrollment/EnrollmentPageContent";
+import { EnrollmentFooter } from "../../components/enrollment/EnrollmentFooter";
 import Button from "../../components/ui/Button";
 import { Modal } from "../../components/ui/Modal";
-import {
-  loadEnrollmentDraft,
-  saveEnrollmentDraft,
-  ENROLLMENT_SAVED_TOAST_KEY,
-} from "../../enrollment/enrollmentDraftStore";
+import { loadEnrollmentDraft, saveEnrollmentDraft } from "../../enrollment/enrollmentDraftStore";
 import {
   PAYCHECKS_PER_YEAR,
   percentageToAnnualAmount,
@@ -140,7 +136,6 @@ function AutoIncreaseBanner({
    ═══════════════════════════════════════════════════════════ */
 export const FutureContributions = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { state, setAutoIncrease, setContributionAmount, setContributionType } = useEnrollment();
 
   const salary = state.salary || 75000;
@@ -273,22 +268,26 @@ export const FutureContributions = () => {
 
   const handleContinue = useCallback(() => {
     const draft = loadEnrollmentDraft();
-    /* POC: no validation — allow continuing to investments without contribution check */
-    if (draft) {
-      saveEnrollmentDraft({
-        ...draft,
-        autoIncrease: autoIncreaseEnabled
-          ? {
-              enabled: true,
-              annualIncreasePct: state.autoIncrease.percentage,
-              stopAtPct: Math.min(50, state.autoIncrease.maxPercentage),
-              minimumFloorPct: state.autoIncrease.minimumFloor ?? undefined,
-            }
-          : { enabled: false, annualIncreasePct: 0, stopAtPct: 0 },
-      });
-    }
-    navigate("/enrollment/investments");
-  }, [autoIncreaseEnabled, state.autoIncrease.percentage, state.autoIncrease.maxPercentage, state.autoIncrease.minimumFloor, navigate]);
+    if (!draft) return;
+    const contributionAmount =
+      draft.contributionAmount != null && draft.contributionAmount > 0
+        ? draft.contributionAmount
+        : effectivePct;
+    const contributionType = draft.contributionType ?? "percentage";
+    saveEnrollmentDraft({
+      ...draft,
+      contributionType,
+      contributionAmount,
+      autoIncrease: autoIncreaseEnabled
+        ? {
+            enabled: true,
+            annualIncreasePct: state.autoIncrease.percentage,
+            stopAtPct: Math.min(50, state.autoIncrease.maxPercentage),
+            minimumFloorPct: state.autoIncrease.minimumFloor ?? undefined,
+          }
+        : { enabled: false, annualIncreasePct: 0, stopAtPct: 0 },
+    });
+  }, [autoIncreaseEnabled, state.autoIncrease.percentage, state.autoIncrease.maxPercentage, state.autoIncrease.minimumFloor, effectivePct]);
 
   const handleContributionPctChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const v = parseFloat(e.target.value);
@@ -323,29 +322,6 @@ export const FutureContributions = () => {
   const delta = withAutoEnd - baselineEnd;
   const deltaPct = baselineEnd > 0 ? (delta / baselineEnd) * 100 : 0;
 
-  const handleBack = useCallback(() => {
-    navigate("/enrollment/contribution");
-  }, [navigate]);
-
-  const handleSaveAndExit = useCallback(() => {
-    const draft = loadEnrollmentDraft();
-    if (draft) {
-      saveEnrollmentDraft({
-        ...draft,
-        autoIncrease: autoIncreaseEnabled
-          ? {
-              enabled: true,
-              annualIncreasePct: state.autoIncrease.percentage,
-              stopAtPct: Math.min(50, state.autoIncrease.maxPercentage),
-              minimumFloorPct: state.autoIncrease.minimumFloor ?? undefined,
-            }
-          : { enabled: false, annualIncreasePct: 0, stopAtPct: 0 },
-      });
-      sessionStorage.setItem(ENROLLMENT_SAVED_TOAST_KEY, "1");
-    }
-    navigate("/dashboard");
-  }, [navigate, autoIncreaseEnabled, state.autoIncrease.percentage, state.autoIncrease.maxPercentage, state.autoIncrease.minimumFloor]);
-
   const comparisonDataForChart = ai.enabled ? projectionWithAuto : projectionHypotheticalAuto;
 
   const handleEnableAutoIncrease = useCallback(() => {
@@ -361,7 +337,42 @@ export const FutureContributions = () => {
     setShowSkipModal(false);
     setAutoIncrease({ enabled: false });
     setUserSkippedAutoIncrease(true);
+    const draft = loadEnrollmentDraft();
+    if (draft) {
+      saveEnrollmentDraft({
+        ...draft,
+        autoIncrease: { enabled: false, annualIncreasePct: 0, stopAtPct: 0 },
+      });
+    }
   }, [setAutoIncrease]);
+
+  const draft = loadEnrollmentDraft();
+  const showDisabledState =
+    (state.autoIncrease.enabled === false && userSkippedAutoIncrease) ||
+    (draft?.autoIncrease != null && draft.autoIncrease.enabled === false);
+
+  if (showDisabledState) {
+    return (
+      <EnrollmentPageContent
+        title={t("enrollment.autoIncreaseNotEnabledTitle")}
+        subtitle={t("enrollment.autoIncreaseNotEnabledDescription")}
+      >
+        <div className="enrollment-container">
+          <p className="text-base leading-relaxed mb-8" style={{ color: "var(--enroll-text-secondary)" }}>
+            {t("enrollment.autoIncreaseNotEnabledDescription")}
+          </p>
+          <EnrollmentFooter
+            primaryLabel={t("enrollment.continueToInvestmentElection")}
+            onPrimary={handleContinue}
+            getDraftSnapshot={() => ({
+              autoIncrease: { enabled: false, annualIncreasePct: 0, stopAtPct: 0 },
+            })}
+            inContent
+          />
+        </div>
+      </EnrollmentPageContent>
+    );
+  }
 
   return (
     <>
@@ -635,36 +646,13 @@ export const FutureContributions = () => {
                 </div>
               </div>
 
-              {/* CTA row — matches Contribution / EnrollmentFooter structure */}
-              <div className="enrollment-footer enrollment-footer--in-content" role="contentinfo">
-                <div className="enrollment-footer__inner">
-                  <div className="enrollment-footer__left">
-                    <Button type="button" onClick={handleBack} className="enrollment-footer__back transition-opacity hover:opacity-90">
-                      {t("enrollment.footerBack")}
-                    </Button>
-                  </div>
-                  <div className="enrollment-footer__right">
-                    <Button type="button" onClick={handleSaveAndExit} className="enrollment-footer__save-exit transition-opacity hover:opacity-90">
-                      {t("enrollment.footerSaveAndExit")}
-                    </Button>
-                    <Button
-                      type="button"
-                      onClick={handleContinue}
-                      disabled={!isValidAutoIncrease}
-                      className="enrollment-footer__primary transition-opacity hover:opacity-95 disabled:opacity-50"
-                    >
-                      {t("enrollment.continueToInvestmentElection")}
-                    </Button>
-                  </div>
-                </div>
-              </div>
             </div>
             </div>
           )}
         </div>
 
-        {/* When auto-increase NOT enabled: banner + contribution inputs + chart only (no mini cards, no paycheck card, no boxed balance) */}
-        {!autoIncreaseEnabled && (
+        {/* When auto-increase NOT enabled and not skipped: contribution inputs + chart */}
+        {!autoIncreaseEnabled && !userSkippedAutoIncrease && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
             <div className="p-6 rounded-2xl" style={cardStyle}>
               <p className="text-[10px] font-bold uppercase tracking-widest mb-3" style={{ color: "var(--enroll-text-muted)" }}>
@@ -723,35 +711,30 @@ export const FutureContributions = () => {
           </div>
         )}
 
-        {!autoIncreaseEnabled && (
-          <>
-            <div className="auto-increase-reinforcement mb-8">
-              Most participants increase their contributions by 1% annually.
-            </div>
-            <div className="enrollment-footer enrollment-footer--in-content" role="contentinfo">
-              <div className="enrollment-footer__inner">
-                <div className="enrollment-footer__left">
-                  <Button type="button" onClick={handleBack} className="enrollment-footer__back transition-opacity hover:opacity-90">
-                    {t("enrollment.footerBack")}
-                  </Button>
-                </div>
-                <div className="enrollment-footer__right">
-                  <Button type="button" onClick={handleSaveAndExit} className="enrollment-footer__save-exit transition-opacity hover:opacity-90">
-                    {t("enrollment.footerSaveAndExit")}
-                  </Button>
-                  <Button
-                    type="button"
-                    onClick={handleContinue}
-                    disabled={!autoIncreaseEnabled && !userSkippedAutoIncrease}
-                    className="enrollment-footer__primary transition-opacity hover:opacity-95 disabled:opacity-50"
-                  >
-                    {t("enrollment.continueToInvestmentElection")}
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </>
+        {!autoIncreaseEnabled && !userSkippedAutoIncrease && (
+          <div className="auto-increase-reinforcement mb-8">
+            Most participants increase their contributions by 1% annually.
+          </div>
         )}
+
+        <EnrollmentFooter
+          primaryLabel={t("enrollment.continueToInvestmentElection")}
+          primaryDisabled={(!autoIncreaseEnabled && !userSkippedAutoIncrease) || (autoIncreaseEnabled && !isValidAutoIncrease)}
+          onPrimary={handleContinue}
+          getDraftSnapshot={() =>
+            autoIncreaseEnabled
+              ? {
+                  autoIncrease: {
+                    enabled: true,
+                    annualIncreasePct: state.autoIncrease.percentage,
+                    stopAtPct: Math.min(50, state.autoIncrease.maxPercentage),
+                    minimumFloorPct: state.autoIncrease.minimumFloor ?? undefined,
+                  },
+                }
+              : { autoIncrease: { enabled: false, annualIncreasePct: 0, stopAtPct: 0 } }
+          }
+          inContent
+        />
         </div>
       </EnrollmentPageContent>
 

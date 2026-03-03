@@ -44,8 +44,8 @@ export const PostEnrollmentDashboard = () => {
         <section className="post-enrollment-dashboard__zone-a">
           <div className="flex flex-wrap items-center gap-3">
             <h1 className="post-enrollment-dashboard__greeting">
-              <span className="block">{t("dashboard.greetingTitle")}</span>
-              <span className="block font-semibold text-[var(--color-text)]">{displayName}</span>
+              <span className="block text-base font-medium text-[var(--color-text-secondary)]">{t("dashboard.greetingTitle")}</span>
+              <span className="block text-2xl md:text-3xl font-semibold text-[var(--color-text)]">{displayName}</span>
             </h1>
             <div
               className="h-10 w-10 rounded-full border-2 border-[var(--color-border)] bg-[var(--color-background-secondary)]"

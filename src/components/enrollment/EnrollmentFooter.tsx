@@ -6,16 +6,13 @@ import {
   saveEnrollmentDraft,
   ENROLLMENT_SAVED_TOAST_KEY,
 } from "../../enrollment/enrollmentDraftStore";
-import { pathToStep, isEnrollmentStepPath, ENROLLMENT_STEP_PATHS } from "../../enrollment/enrollmentStepPaths";
-
-export type EnrollmentStep = 0 | 1 | 2 | 3 | 4;
+import { getStepIndex, isEnrollmentStepPath, ENROLLMENT_STEP_PATHS } from "../../enrollment/enrollmentStepPaths";
 
 interface EnrollmentFooterProps {
-  /** Step index (0–4). When on an enrollment step path, this is overridden by pathname so Back stays in sync with URL. */
-  step: EnrollmentStep;
   primaryLabel: string;
   primaryDisabled?: boolean;
-  onPrimary: () => void;
+  /** Side effects before navigate (e.g. save draft). Footer drives Next route from pathname. */
+  onPrimary?: () => void;
   summaryText?: string;
   /** When true, summary text uses error styling */
   summaryError?: boolean;
@@ -25,13 +22,10 @@ interface EnrollmentFooterProps {
 }
 
 /**
- * EnrollmentFooter - Inline CTA section for enrollment steps (scrolls with content).
- * Left: Back (disabled on step 0)
- * Center: Optional contextual summary
- * Right: Save & Exit + Primary CTA
+ * EnrollmentFooter - Pathname-driven Next/Back. All steps use fixed ENROLLMENT_STEP_PATHS.
+ * Back → prev path; Primary → onPrimary() then navigate(next path). No step prop.
  */
 export const EnrollmentFooter = ({
-  step: stepProp,
   primaryLabel,
   primaryDisabled = false,
   onPrimary,
@@ -43,14 +37,27 @@ export const EnrollmentFooter = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const pathDerivedStep = pathToStep(pathname);
+  const currentStepIndex = getStepIndex(pathname);
   const onStepPath = isEnrollmentStepPath(pathname);
-  const step = onStepPath ? pathDerivedStep : stepProp;
+  const normalizedPath = pathname.replace(/\/$/, "") || "/";
+
+  const nextPath = onStepPath ? ENROLLMENT_STEP_PATHS[currentStepIndex + 1] : undefined;
+  let prevPath = currentStepIndex > 0 ? ENROLLMENT_STEP_PATHS[currentStepIndex - 1] : undefined;
+  // Defensive: ensure Contribution page always has Back to choose-plan (handles pathname/step mismatch)
+  if (!prevPath && normalizedPath === "/enrollment/contribution") {
+    prevPath = "/enrollment/choose-plan";
+  }
 
   const handleBack = () => {
-    if (step <= 0) return;
-    const prevPath = ENROLLMENT_STEP_PATHS[step - 1];
     if (prevPath) navigate(prevPath);
+  };
+
+  const handlePrimary = () => {
+    onPrimary?.();
+    if (nextPath) {
+      // Full page navigation so the next step always loads (avoids client router not updating the view)
+      window.location.href = nextPath;
+    }
   };
 
   const handleSaveAndExit = () => {
@@ -63,7 +70,7 @@ export const EnrollmentFooter = ({
     navigate("/dashboard");
   };
 
-  const isFirstStep = step === 0;
+  const isFirstStep = currentStepIndex === 0 && prevPath === undefined;
 
   return (
     <footer
@@ -98,17 +105,33 @@ export const EnrollmentFooter = ({
           >
             {t("enrollment.footerSaveAndExit")}
           </Button>
-          <Button
-            type="button"
-            onClick={onPrimary}
-            disabled={primaryDisabled}
-            className="enrollment-footer__primary"
-          >
-            {primaryLabel}
-          </Button>
+          {nextPath ? (
+            <a
+              href={nextPath}
+              onClick={(e) => {
+                e.preventDefault();
+                if (primaryDisabled) return;
+                handlePrimary(); // saves draft then sets window.location.href
+              }}
+              className="button enrollment-footer__primary"
+              aria-disabled={primaryDisabled}
+              style={primaryDisabled ? { pointerEvents: "none", opacity: 0.6 } : undefined}
+              role="button"
+            >
+              {primaryLabel}
+            </a>
+          ) : (
+            <Button
+              type="button"
+              onClick={() => handlePrimary()}
+              disabled={primaryDisabled}
+              className="enrollment-footer__primary"
+            >
+              {primaryLabel}
+            </Button>
+          )}
         </div>
       </div>
     </footer>
   );
 };
-

@@ -177,7 +177,7 @@ export function FundAllocationSection() {
         {t("enrollment.fundAllocation")}
       </h2>
 
-      {/* Toggle: Customize my allocation */}
+      {/* Toggle: I choose my investments */}
       <div
         className="mb-4 p-4 rounded-xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
         style={{ ...cardStyle, background: "var(--enroll-soft-bg)" }}
@@ -194,49 +194,23 @@ export function FundAllocationSection() {
           type="button"
           role="switch"
           aria-checked={isCustomAllocationEnabled}
+          aria-label={t("enrollment.customizeMyAllocation")}
           onClick={() => handleToggleCustom(!isCustomAllocationEnabled)}
-          className="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--enroll-brand)]"
+          className="relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--enroll-brand)]"
           style={{
             background: isCustomAllocationEnabled ? "var(--enroll-brand)" : "var(--enroll-card-border)",
           }}
         >
           <span
-            className="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition"
+            className="pointer-events-none inline-block h-5 w-5 shrink-0 rounded-full bg-white shadow-sm transition-transform"
             style={{
               transform: isCustomAllocationEnabled ? "translateX(1.25rem)" : "translateX(0.125rem)",
-              marginTop: 2,
             }}
           />
         </button>
       </div>
 
       <div className="p-5 space-y-5" style={cardStyle}>
-        {/* "I choose my investments" card */}
-        <div
-          className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 rounded-xl"
-          style={{ background: "var(--enroll-soft-bg)", border: "1px solid var(--enroll-card-border)" }}
-        >
-          <div className="flex items-center gap-3">
-            <div
-              className="flex h-8 w-8 items-center justify-center rounded-lg shrink-0"
-              style={{ background: "rgb(var(--enroll-brand-rgb) / 0.1)", color: "var(--enroll-brand)" }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <line x1="12" y1="1" x2="12" y2="23" />
-                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-              </svg>
-            </div>
-            <div>
-              <p className="text-sm font-semibold" style={{ color: "var(--enroll-text-primary)" }}>
-                {t("enrollment.iChooseMyInvestments")}
-              </p>
-              <p className="text-[11px]" style={{ color: "var(--enroll-text-muted)" }}>
-                {t("enrollment.customizeRecommendedAllocation")}
-              </p>
-            </div>
-          </div>
-        </div>
-
         {/* Source rows */}
         <div className="space-y-3">
           {activeSources.map((source) => (

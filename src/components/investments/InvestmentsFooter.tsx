@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useInvestment } from "../../context/InvestmentContext";
 import { loadEnrollmentDraft, saveEnrollmentDraft } from "../../enrollment/enrollmentDraftStore";
@@ -6,11 +6,10 @@ import { EnrollmentFooter } from "../enrollment/EnrollmentFooter";
 
 /**
  * InvestmentsFooter - Renders EnrollmentFooter for enrollment flow.
- * Primary action confirms allocation and navigates to Review.
+ * Primary confirms allocation and saves draft; footer drives route to Review.
  */
 export const InvestmentsFooter = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const location = useLocation();
   const { canConfirmAllocation, confirmAllocation, getInvestmentSnapshot } = useInvestment();
 
@@ -26,7 +25,6 @@ export const InvestmentsFooter = () => {
         investment: getInvestmentSnapshot(),
       });
     }
-    navigate("/enrollment/review");
   };
 
   if (!isEnrollmentFlow) return null;
@@ -37,7 +35,6 @@ export const InvestmentsFooter = () => {
 
   return (
     <EnrollmentFooter
-      step={3}
       primaryLabel={t("enrollment.continueToReview")}
       primaryDisabled={!canConfirmAllocation}
       onPrimary={handleContinue}

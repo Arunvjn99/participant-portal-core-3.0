@@ -69,16 +69,15 @@ export const HeroEnrollmentCard = ({
             className="flex flex-1 flex-col items-start gap-4 lg:order-1"
           >
             {enrollmentBadge && (
-              <span className="rounded-full bg-[var(--color-success)] px-4 py-1.5 text-xs font-semibold text-white">
+              <span className="rounded-full bg-green-500/80 px-4 py-1.5 text-xs font-semibold text-white">
                 {enrollmentBadge}
               </span>
             )}
-            <p className="text-sm font-medium text-[var(--color-textSecondary)]">
+            <p className="font-medium text-[var(--color-textSecondary)]">
               {greetingTitle != null && userName != null ? (
                 <>
-                  {greetingTitle}
-                  <br />
-                  <span className="font-semibold text-[var(--color-text)]">{userName}</span>
+                  <span className="block text-sm">{greetingTitle}</span>
+                  <span className="block text-xl font-semibold text-[var(--color-text)]">{userName}</span>
                 </>
               ) : (
                 greeting

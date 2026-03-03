@@ -3,8 +3,12 @@ import { useTranslation } from "react-i18next";
 import { EnrollmentStepper } from "./EnrollmentStepper";
 
 export interface EnrollmentHeaderWithStepperProps {
-  /** Current step index (0-based). Plan=0, Contribution=1, Auto Increase=2, Investment=3, Review=4 */
+  /** Current step index (0-based) within the resolved steps. */
   activeStep: number;
+  /** Total number of steps (when using dynamic steps). When provided, stepLabels should match length. */
+  totalSteps?: number;
+  /** Labels for each step; when provided, used instead of default 5-step labels. */
+  stepLabels?: string[];
 }
 
 function useCompactStepper() {
@@ -36,23 +40,33 @@ function useDesktopStepper() {
  * The global DashboardHeader is rendered separately as the main `header`.
  * This component only renders the stepper progress bar.
  */
-export function EnrollmentHeaderWithStepper({ activeStep }: EnrollmentHeaderWithStepperProps) {
+const DEFAULT_STEP_LABEL_KEYS = [
+  "enrollment.stepperPlan",
+  "enrollment.stepperContribution",
+  "enrollment.stepperAutoIncrease",
+  "enrollment.stepperInvestment",
+  "enrollment.stepperReview",
+] as const;
+
+export function EnrollmentHeaderWithStepper({
+  activeStep,
+  totalSteps: totalStepsProp,
+  stepLabels: stepLabelsProp,
+}: EnrollmentHeaderWithStepperProps) {
   const { t } = useTranslation();
   const compact = useCompactStepper();
   const desktop = useDesktopStepper();
-  const stepLabels = [
-    t("enrollment.stepperPlan"),
-    t("enrollment.stepperContribution"),
-    t("enrollment.stepperAutoIncrease"),
-    t("enrollment.stepperInvestment"),
-    t("enrollment.stepperReview"),
-  ];
+  const stepLabels =
+    stepLabelsProp ??
+    DEFAULT_STEP_LABEL_KEYS.map((key) => t(key));
+  const totalSteps = totalStepsProp ?? stepLabels.length;
 
   return (
     <div className="bg-[var(--color-surface)] py-3 mb-0">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <EnrollmentStepper
           currentStep={activeStep}
+          totalSteps={totalSteps}
           stepLabels={stepLabels}
           compact={!desktop && compact}
         />

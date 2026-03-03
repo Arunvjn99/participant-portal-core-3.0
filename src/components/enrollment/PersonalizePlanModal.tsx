@@ -69,29 +69,6 @@ function parseCurrencyInput(value: string): number {
 
 const stepTransition = { duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] };
 
-function GrowthIllustration() {
-  return (
-    <svg width="120" height="100" viewBox="0 0 120 100" fill="none" className="premium-wizard__illustration" aria-hidden>
-      <motion.path
-        d="M20 80 C30 70, 40 65, 50 55 C60 45, 65 40, 75 30 C85 20, 95 15, 105 10"
-        stroke="url(#growthGrad)"
-        strokeWidth="2"
-        strokeLinecap="round"
-        fill="none"
-        initial={{ pathLength: 0, opacity: 0 }}
-        animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 1.5, ease: "easeOut", delay: 0.3 }}
-      />
-      <defs>
-        <linearGradient id="growthGrad" x1="20" y1="80" x2="105" y2="10">
-          <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.3" />
-          <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0.8" />
-        </linearGradient>
-      </defs>
-    </svg>
-  );
-}
-
 const STEP_LABELS = ["Age", "Location", "Savings"];
 
 function StepIndicator({ currentStep }: { currentStep: number }) {
@@ -390,19 +367,15 @@ export const PersonalizePlanModal = ({ isOpen, onClose, userName = "there" }: Pe
   return (
     <Modal isOpen={isOpen} onClose={handleCloseAttempt} closeOnOverlayClick={false} dialogClassName="premium-wizard__dialog" wizard>
       <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.96 }} transition={{ duration: 0.3 }} className="premium-wizard">
-        <div className="premium-wizard__header">
-          <div className="premium-wizard__header-bg" />
-          <div className="relative flex items-center justify-between px-6 py-5 sm:px-8 sm:py-6">
-            <div className="flex-1 min-w-0 z-[1]">
-              <p className="text-xs font-medium tracking-wide uppercase text-[var(--color-primary)] opacity-80 mb-1">Welcome back,</p>
-              <h2 className="text-2xl sm:text-3xl font-bold text-[var(--color-text)] tracking-tight">{userName}</h2>
-              <p className="text-sm text-[var(--color-text-secondary)] mt-1 leading-relaxed">Let's personalize your retirement journey.</p>
-            </div>
-            <div className="shrink-0 z-[1] hidden sm:block"><GrowthIllustration /></div>
-            <button type="button" onClick={handleCloseAttempt} className="premium-wizard__close-btn" aria-label="Close">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
-            </button>
+        <div className="relative flex items-center justify-between px-6 py-4 sm:px-8 sm:py-5 border-b border-[var(--color-border)]">
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-medium tracking-wide uppercase text-[var(--color-primary)] opacity-80 mb-0.5">Welcome back,</p>
+            <h2 className="text-xl sm:text-2xl font-bold text-[var(--color-text)] tracking-tight">{userName}</h2>
+            <p className="text-sm text-[var(--color-text-secondary)] mt-0.5 leading-relaxed">Let's personalize your retirement journey.</p>
           </div>
+          <button type="button" onClick={handleCloseAttempt} className="premium-wizard__close-btn" aria-label="Close">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+          </button>
         </div>
         <div className="px-6 pt-4 pb-2 sm:px-8"><StepIndicator currentStep={step} /></div>
         <div className="flex-1 min-h-0 overflow-y-auto px-6 py-4 sm:px-8 sm:py-5">

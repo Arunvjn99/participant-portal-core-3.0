@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { useEnrollment } from "../../enrollment/context/EnrollmentContext";
-import { loadEnrollmentDraft, saveEnrollmentDraft, ENROLLMENT_SAVED_TOAST_KEY } from "../../enrollment/enrollmentDraftStore";
+import { EnrollmentFooter } from "../../components/enrollment/EnrollmentFooter";
+import { loadEnrollmentDraft, saveEnrollmentDraft } from "../../enrollment/enrollmentDraftStore";
 import { useCoreAIModalOptional } from "../../context/CoreAIModalContext";
 import Button from "../../components/ui/Button";
 import { EnrollmentPageContent } from "../../components/enrollment/EnrollmentPageContent";
@@ -234,25 +235,14 @@ export const Contribution = () => {
     }
   }, [contributionPct, state.sourceAllocation]);
 
-  const handleNext = useCallback(() => {
-    saveDraftForNextStep();
-    navigate("/enrollment/future-contributions");
-  }, [navigate, saveDraftForNextStep]);
-
-  const handleBack = () => navigate("/enrollment/choose-plan");
-  const handleSaveAndExit = () => {
-    const draft = loadEnrollmentDraft();
-    if (draft) {
-      saveEnrollmentDraft({
-        ...draft,
-        contributionType: "percentage",
-        contributionAmount: contributionPct,
-        sourceAllocation: state.sourceAllocation,
-      });
-      sessionStorage.setItem(ENROLLMENT_SAVED_TOAST_KEY, "1");
-    }
-    navigate("/dashboard");
-  };
+  const getDraftSnapshot = useCallback(
+    () => ({
+      contributionType: "percentage" as const,
+      contributionAmount: contributionPct,
+      sourceAllocation: state.sourceAllocation,
+    }),
+    [contributionPct, state.sourceAllocation]
+  );
 
   const sliderPct = ((Math.min(SLIDER_MAX, Math.max(SLIDER_MIN, contributionPct)) - SLIDER_MIN) / (SLIDER_MAX - SLIDER_MIN)) * 100;
   const [focusedInput, setFocusedInput] = useState<"pct" | "dollar" | null>(null);
@@ -268,27 +258,25 @@ export const Contribution = () => {
     <EnrollmentPageContent
       headerContent={
         <div className="space-y-2">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <h1 className="text-xl md:text-2xl font-bold leading-tight" style={{ color: "var(--enroll-text-primary)" }}>
-                {t("enrollment.designSavingsTitle")}
-              </h1>
-              <p className="mt-1 text-base leading-relaxed max-w-xl" style={{ color: "var(--enroll-text-secondary)" }}>
-                {t("enrollment.contributionPageSubtitle")}
-              </p>
-            </div>
-            {coreAI && (
-              <button
-                type="button"
-                onClick={() => coreAI.openWithPrompt(CONTRIBUTION_ASK_AI_PROMPT)}
-                className="shrink-0 flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium transition-colors hover:opacity-80"
-                style={{ color: "var(--enroll-brand)" }}
-                aria-label={t("enrollment.whatIsContribution")}
-              >
-                <Info className="h-4 w-4" aria-hidden />
-                <span>{t("enrollment.whatIsContribution")}</span>
-              </button>
-            )}
+          {coreAI && (
+            <button
+              type="button"
+              onClick={() => coreAI.openWithPrompt(CONTRIBUTION_ASK_AI_PROMPT)}
+              className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium transition-colors hover:opacity-80"
+              style={{ color: "var(--enroll-brand)" }}
+              aria-label={t("enrollment.whatIsContribution")}
+            >
+              <Info className="h-4 w-4" aria-hidden />
+              <span>{t("enrollment.whatIsContribution")}</span>
+            </button>
+          )}
+          <div>
+            <h1 className="text-xl md:text-2xl font-bold leading-tight" style={{ color: "var(--enroll-text-primary)" }}>
+              {t("enrollment.designSavingsTitle")}
+            </h1>
+            <p className="mt-1 text-base leading-relaxed max-w-xl" style={{ color: "var(--enroll-text-secondary)" }}>
+              {t("enrollment.contributionPageSubtitle")}
+            </p>
           </div>
         </div>
       }
@@ -735,36 +723,12 @@ export const Contribution = () => {
         </motion.div>
       </div>
 
-      {/* CTA at bottom of content — same structure as Future Contributions */}
-      <div className="enrollment-footer enrollment-footer--in-content" role="contentinfo">
-        <div className="enrollment-footer__inner">
-          <div className="enrollment-footer__left">
-            <Button
-              type="button"
-              onClick={handleBack}
-              className="enrollment-footer__back transition-opacity hover:opacity-90"
-            >
-              {t("enrollment.footerBack")}
-            </Button>
-          </div>
-          <div className="enrollment-footer__right">
-            <Button
-              type="button"
-              onClick={handleSaveAndExit}
-              className="enrollment-footer__save-exit transition-opacity hover:opacity-90"
-            >
-              {t("enrollment.footerSaveAndExit")}
-            </Button>
-            <Button
-              type="button"
-              onClick={handleNext}
-              className="enrollment-footer__primary transition-opacity hover:opacity-95"
-            >
-              {t("enrollment.continueToAutoIncrease")}
-            </Button>
-          </div>
-        </div>
-      </div>
+      <EnrollmentFooter
+        primaryLabel={t("enrollment.continueToAutoIncrease")}
+        onPrimary={saveDraftForNextStep}
+        getDraftSnapshot={getDraftSnapshot}
+        inContent
+      />
       </div>
     </EnrollmentPageContent>
   );

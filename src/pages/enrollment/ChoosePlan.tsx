@@ -7,6 +7,7 @@ import { getPlanRecommendation } from "../../enrollment/logic/planRecommendation
 import { useCoreAIModalOptional } from "../../context/CoreAIModalContext";
 import { useUser } from "../../context/UserContext";
 import { PersonalizePlanModal } from "../../components/enrollment/PersonalizePlanModal";
+import { EnrollmentFooter } from "../../components/enrollment/EnrollmentFooter";
 import { User, Clock, CheckCircle2, Check, MessageCircle, TrendingUp, Shield, Info } from "lucide-react";
 
 const FALLBACK_AGE = 30;
@@ -78,8 +79,7 @@ export const ChoosePlan = () => {
       selectedPlanId: state.selectedPlan,
       selectedPlanDbId: state.selectedPlanDbId ?? undefined,
     });
-    navigate("/enrollment/contribution");
-  }, [navigate, state.selectedPlan, state.selectedPlanDbId, state.currentAge, state.retirementAge, state.salary, t]);
+  }, [state.selectedPlan, state.selectedPlanDbId, state.currentAge, state.retirementAge, state.salary, t]);
 
   const handleClosePersonalize = useCallback(() => {
     setIsPersonalizeOpen(false);
@@ -365,25 +365,11 @@ export const ChoosePlan = () => {
           </div>
         </div>
 
-        <div className="mt-8 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-          <button
-            type="button"
-            disabled
-            className="w-full sm:w-auto order-2 sm:order-1 px-5 py-2.5 rounded-2xl text-sm font-medium border border-[var(--color-border)] cursor-not-allowed opacity-70 bg-transparent"
-            style={{ color: "var(--color-textSecondary)" }}
-            aria-label={t("enrollment.footerBackDisabledAria")}
-          >
-            {t("enrollment.footerBack")}
-          </button>
-          <button
-            type="button"
-            onClick={handleContinue}
-            className="w-full sm:w-auto order-1 sm:order-2 px-12 py-5 rounded-2xl text-sm font-semibold text-white shadow-xl transition-all hover:opacity-95"
-            style={{ background: "var(--color-primary)" }}
-          >
-            {t("enrollment.continueToContributions")} →
-          </button>
-        </div>
+        <EnrollmentFooter
+          primaryLabel={t("enrollment.continueToContributions") + " →"}
+          primaryDisabled={state.selectedPlan == null}
+          onPrimary={handleContinue}
+        />
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { DashboardCard } from "../dashboard/DashboardCard";
 import Button from "../ui/Button";
 import { cn } from "@/lib/utils";
@@ -29,6 +30,7 @@ export const PlanSelectionCard = ({
   isSelected = false,
   onSelect,
 }: PlanSelectionCardProps) => {
+  const { t } = useTranslation();
   if (isRecommended) {
     return (
       <DashboardCard
@@ -85,7 +87,7 @@ export const PlanSelectionCard = ({
                   className="plan-selection-card__button plan-selection-card__button--secondary"
                   aria-label={`Select ${planName}`}
                 >
-                  Select Plan
+                  {t("enrollment.selectPlan")}
                 </Button>
               )}
             </div>
@@ -146,7 +148,7 @@ export const PlanSelectionCard = ({
                   className="plan-selection-card__button plan-selection-card__button--secondary"
                   aria-label={`Select ${planName}`}
                 >
-                  Select Plan
+                  {t("enrollment.selectPlan")}
                 </Button>
               )}
             </div>
