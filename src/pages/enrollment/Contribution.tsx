@@ -1,30 +1,21 @@
-import { useMemo, useCallback, useState, useRef, useEffect } from "react";
+import { useMemo, useCallback, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { useEnrollment } from "../../enrollment/context/EnrollmentContext";
+import { useContributionStore } from "../../enrollment/context/useContributionStore";
 import { EnrollmentFooter } from "../../components/enrollment/EnrollmentFooter";
 import { loadEnrollmentDraft, saveEnrollmentDraft } from "../../enrollment/enrollmentDraftStore";
 import { useCoreAIModalOptional } from "../../context/CoreAIModalContext";
-import Button from "../../components/ui/Button";
 import { EnrollmentPageContent } from "../../components/enrollment/EnrollmentPageContent";
-import { FinancialSlider } from "../../components/FinancialSlider";
-import { SegmentedToggle } from "../../components/ui/SegmentedToggle";
-import { Info } from "lucide-react";
 import {
-  PAYCHECKS_PER_YEAR,
-  percentageToAnnualAmount,
-  annualAmountToPercentage,
-  deriveContribution,
-} from "../../enrollment/logic/contributionCalculator";
-import { calculateProjection } from "../../enrollment/logic/projectionCalculator";
-import {
-  rebalanceSources,
-  allocationToSources,
-  mergeLocks,
-  sourcesToAllocation,
-  getLockedIds,
-} from "../../enrollment/logic/sourceAllocationEngine";
+  AIInsightBanner,
+  ContributionInputCard,
+  TaxSplitSection,
+  ProjectionCard,
+  ContributionSummaryCard,
+} from "../../components/enrollment/contribution";
+import type { QuickSelectOption } from "../../components/enrollment/contribution";
+import { PAYCHECKS_PER_YEAR, annualAmountToPercentage } from "../../enrollment/logic/contributionCalculator";
 import type { ProjectionDataPoint } from "../../enrollment/logic/types";
 import { formatYAxisLabel, getYAxisTicks } from "../../utils/projectionChartAxis";
 
@@ -32,13 +23,12 @@ import { formatYAxisLabel, getYAxisTicks } from "../../utils/projectionChartAxis
 const SLIDER_MIN = 1;
 const SLIDER_MAX = 25;
 
-const PRESETS = [
-  { id: "safe", labelKey: "enrollment.presetSafe", percentage: 4 },
-  { id: "match", labelKey: "enrollment.presetEmployerMatch", percentage: 6 },
-  { id: "aggressive", labelKey: "enrollment.presetAggressive", percentage: 8 },
-] as const;
+const PRESETS: QuickSelectOption[] = [
+  { id: "safe", labelKey: "enrollment.preset4Safe", percentage: 4 },
+  { id: "match", labelKey: "enrollment.preset6Match", percentage: 6 },
+  { id: "aggressive", labelKey: "enrollment.preset15Aggressive", percentage: 15 },
+];
 
-const SOURCE_IDS = ["preTax", "roth", "afterTax"] as const;
 const SOURCE_OPTIONS = [
   { id: "preTax", mainKey: "enrollment.preTax", subKey: "enrollment.preTaxSub", key: "preTax" as const },
   { id: "roth", mainKey: "enrollment.roth", subKey: "enrollment.rothSub", key: "roth" as const },
@@ -67,18 +57,23 @@ export const Contribution = () => {
   const coreAI = useCoreAIModalOptional();
   const {
     state,
+    selectedPlanId,
+    salary,
+    currentAge,
+    retirementAge,
+    contributionPct,
+    derived,
+    projectionBaseline,
+    sourceAllocation,
+    allocationValid,
     setContributionType,
     setContributionAmount,
     setSourceAllocation,
     setSourcesEditMode,
     setSourcesViewMode,
-    perPaycheck,
-  } = useEnrollment();
-
-  const selectedPlanId = state.selectedPlan;
-  const salary = state.salary || 72000;
-  const currentAge = state.currentAge || 40;
-  const retirementAge = state.retirementAge || 67;
+    handleSourcePercentChange,
+    handleSourceEffectivePctChange,
+  } = useContributionStore();
 
   useEffect(() => {
     if (state.isInitialized && !selectedPlanId) {
@@ -86,46 +81,8 @@ export const Contribution = () => {
     }
   }, [state.isInitialized, selectedPlanId, navigate]);
 
-  const contributionPct =
-    state.contributionType === "percentage"
-      ? state.contributionAmount
-      : salary > 0
-        ? annualAmountToPercentage(salary, state.contributionAmount * PAYCHECKS_PER_YEAR)
-        : 0;
-  const annualAmount = salary > 0 ? percentageToAnnualAmount(salary, contributionPct) : 0;
+  const annualAmount = salary > 0 ? (salary * contributionPct) / 100 : 0;
   const dollarInput = annualAmount;
-
-  const derived = useMemo(
-    () =>
-      deriveContribution({
-        contributionType: "percentage",
-        contributionValue: contributionPct,
-        annualSalary: salary,
-        paychecksPerYear: PAYCHECKS_PER_YEAR,
-        employerMatchEnabled: state.employerMatchEnabled,
-        employerMatchCap: state.assumptions.employerMatchCap,
-        employerMatchPercentage: state.assumptions.employerMatchPercentage,
-        currentAge,
-        retirementAge,
-      }),
-    [contributionPct, salary, state.employerMatchEnabled, state.assumptions.employerMatchCap, state.assumptions.employerMatchPercentage, currentAge, retirementAge]
-  );
-
-  const projectionBaseline = useMemo(
-    () =>
-      calculateProjection({
-        currentAge,
-        retirementAge,
-        currentBalance: state.currentBalance || 0,
-        monthlyContribution: derived.monthlyContribution,
-        employerMatch: state.employerMatchEnabled ? derived.employerMatchMonthly : 0,
-        annualReturnRate: state.assumptions.annualReturnRate,
-        inflationRate: state.assumptions.inflationRate,
-      }),
-    [currentAge, retirementAge, state.currentBalance, derived.monthlyContribution, derived.employerMatchMonthly, state.employerMatchEnabled, state.assumptions.annualReturnRate, state.assumptions.inflationRate]
-  );
-
-  const activePreset = PRESETS.find((p) => p.percentage === contributionPct)?.id ?? null;
 
   const formatCurrency = useCallback(
     (n: number) =>
@@ -150,7 +107,8 @@ export const Contribution = () => {
   const handleDollarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const v = parseFloat(e.target.value);
     if (!isNaN(v) && v >= 0 && salary > 0) {
-      const pct = annualAmountToPercentage(salary, v);
+      const annual = v * 12;
+      const pct = annualAmountToPercentage(salary, annual);
       setContributionType("percentage");
       setContributionAmount(Math.min(100, Math.max(0, pct)));
     } else if (e.target.value === "") {
@@ -167,57 +125,30 @@ export const Contribution = () => {
     }
   };
 
-  const [lockedSourceIds, setLockedSourceIds] = useState<Set<string>>(() => new Set());
-  const sourceTotal = state.sourceAllocation.preTax + state.sourceAllocation.roth + state.sourceAllocation.afterTax;
-  const hasUserEditedAllocationRef = useRef(false);
-  const prevContributionPctRef = useRef<number | null>(null);
-
-  /* Sync: Contribution % is source of truth. When contribution % changes (not on mount) and
-   * user has not edited allocation, set default 100% Pre-tax. If user has edited, split
-   * is unchanged so effective % scales proportionally. */
-  useEffect(() => {
-    const prev = prevContributionPctRef.current;
-    prevContributionPctRef.current = contributionPct;
-    if (prev === null) return; // skip initial mount
-    if (!hasUserEditedAllocationRef.current) {
-      setSourceAllocation({ preTax: 100, roth: 0, afterTax: 0 });
+  const maxMonthlyDollar = salary > 0 ? Math.floor((salary / 12) * 0.25) : 500;
+  const handleDollarSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const monthly = parseFloat(e.target.value);
+    if (!isNaN(monthly) && salary > 0) {
+      const annual = Math.min(maxMonthlyDollar * 12, Math.max(0, monthly) * 12);
+      const pct = annualAmountToPercentage(salary, annual);
+      setContributionType("percentage");
+      setContributionAmount(Math.min(100, Math.max(0, pct)));
     }
-  }, [contributionPct, setSourceAllocation]);
+  };
 
-  const handleSourcePercentChange = useCallback(
-    (key: "preTax" | "roth" | "afterTax", value: number) => {
-      const allocation = state.sourceAllocation;
-      const sources = mergeLocks(
-        allocationToSources(allocation, [...SOURCE_IDS]),
-        lockedSourceIds
-      );
-      const result = rebalanceSources(sources, key, value);
-      const newAllocation = sourcesToAllocation(result, [...SOURCE_IDS]) as {
-        preTax: number;
-        roth: number;
-        afterTax: number;
-      };
-      hasUserEditedAllocationRef.current = true;
-      setSourceAllocation(newAllocation);
-      setLockedSourceIds(getLockedIds(result));
-    },
-    [state.sourceAllocation, lockedSourceIds, setSourceAllocation]
-  );
-
-  /** Set source by effective % of salary; converts to split and rebalances. Clamps so allocation sum ≤ 100. */
-  const handleSourceEffectivePctChange = useCallback(
-    (key: "preTax" | "roth" | "afterTax", effectivePct: number) => {
-      if (contributionPct <= 0) {
+  const handleSourceToggle = useCallback(
+    (key: "preTax" | "roth" | "afterTax", enabled: boolean) => {
+      if (!enabled) {
         handleSourcePercentChange(key, 0);
         return;
       }
-      const splitValue = Math.min(100, Math.max(0, (effectivePct / contributionPct) * 100));
-      handleSourcePercentChange(key, Math.round(splitValue * 100) / 100);
+      const a = sourceAllocation;
+      const activeCount = (a.preTax > 0 ? 1 : 0) + (a.roth > 0 ? 1 : 0) + (a.afterTax > 0 ? 1 : 0);
+      const newValue = Math.round((100 / (activeCount + 1)) * 10) / 10;
+      handleSourcePercentChange(key, newValue);
     },
-    [contributionPct, handleSourcePercentChange]
+    [sourceAllocation, handleSourcePercentChange]
   );
-
-  const allocationValid = Math.abs(sourceTotal - 100) < 0.01;
 
   const saveDraftForNextStep = useCallback(() => {
     try {
@@ -227,515 +158,238 @@ export const Contribution = () => {
           ...draft,
           contributionType: "percentage",
           contributionAmount: contributionPct,
-          sourceAllocation: state.sourceAllocation,
+          sourceAllocation,
         });
       }
     } catch (_) {
       // ignore
     }
-  }, [contributionPct, state.sourceAllocation]);
+  }, [contributionPct, sourceAllocation]);
 
   const getDraftSnapshot = useCallback(
     () => ({
       contributionType: "percentage" as const,
       contributionAmount: contributionPct,
-      sourceAllocation: state.sourceAllocation,
+      sourceAllocation,
     }),
-    [contributionPct, state.sourceAllocation]
+    [contributionPct, sourceAllocation]
   );
 
-  const sliderPct = ((Math.min(SLIDER_MAX, Math.max(SLIDER_MIN, contributionPct)) - SLIDER_MIN) / (SLIDER_MAX - SLIDER_MIN)) * 100;
-  const [focusedInput, setFocusedInput] = useState<"pct" | "dollar" | null>(null);
-  const monthlyAmount = annualAmount / 12;
-  const inputsActive = focusedInput !== null;
-  const employerMatchPerPaycheck = derived.employerMatchMonthly / 2;
-  const totalPerPaycheck = perPaycheck + employerMatchPerPaycheck;
+  const [contributionInputMode, setContributionInputMode] = useState<"percentage" | "fixed">("percentage");
+  const monthlyAmount = derived.monthlyContribution;
   const projectedTotal = projectionBaseline.dataPoints.length > 0
     ? projectionBaseline.dataPoints[projectionBaseline.dataPoints.length - 1].balance
     : 0;
 
+  const fullMatchAmountFormatted = formatCurrency(derived.employerMatchMonthly * 12);
+  const monthlyPaycheckFormatted = formatCurrency(salary / 12);
+  const savingPerMonthFormatted = t("enrollment.youSavingPerMonth", { amount: formatCurrency(monthlyAmount) });
+
+  const taxSplitAskAIPrompt = "Explain pre-tax, Roth, and after-tax contributions and how to split my contribution.";
+  const taxSplitItems = useMemo(() => {
+    const paycheckTotal = annualAmount / PAYCHECKS_PER_YEAR;
+    return SOURCE_OPTIONS.map((opt) => {
+      const splitPct = sourceAllocation[opt.key];
+      const sourcePerPaycheck = (splitPct / 100) * paycheckTotal;
+      const dollarPerMonth = (sourcePerPaycheck * PAYCHECKS_PER_YEAR) / 12;
+      return {
+        id: opt.id,
+        labelKey: opt.mainKey,
+        percent: Math.round(splitPct * 10) / 10,
+        dollarPerMonth,
+        dollarPerMonthFormatted: formatCurrency(dollarPerMonth),
+        active: splitPct > 0,
+        onAskAI: coreAI ? () => coreAI.openWithPrompt(taxSplitAskAIPrompt) : undefined,
+      };
+    });
+  }, [sourceAllocation, annualAmount, contributionPct, formatCurrency, coreAI]);
+
+  const segmentWidths: [number, number, number] = [
+    sourceAllocation.preTax,
+    sourceAllocation.roth,
+    sourceAllocation.afterTax,
+  ];
+
+  const summaryLine = t("enrollment.summaryYouEmployerTotal", {
+    you: formatCurrency(derived.monthlyContribution),
+    employer: formatCurrency(derived.employerMatchMonthly),
+    total: formatCurrency(derived.totalMonthlyInvestment),
+  });
+  const annualSummaryLine = t("enrollment.annualSummaryLine", {
+    amount: formatCurrency(derived.totalMonthlyInvestment * 12),
+  });
+
+  const planName =
+    selectedPlanId === "roth_401k"
+      ? t("enrollment.planRoth401kTitle")
+      : selectedPlanId === "traditional_401k"
+        ? t("enrollment.planTraditional401kTitle")
+        : t("enrollment.contributionSubtitle");
+
   return (
     <EnrollmentPageContent
       headerContent={
-        <div className="space-y-2">
-          {coreAI && (
-            <button
-              type="button"
-              onClick={() => coreAI.openWithPrompt(CONTRIBUTION_ASK_AI_PROMPT)}
-              className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium transition-colors hover:opacity-80"
-              style={{ color: "var(--enroll-brand)" }}
-              aria-label={t("enrollment.whatIsContribution")}
-            >
-              <Info className="h-4 w-4" aria-hidden />
-              <span>{t("enrollment.whatIsContribution")}</span>
-            </button>
-          )}
-          <div>
-            <h1 className="text-xl md:text-2xl font-bold leading-tight" style={{ color: "var(--enroll-text-primary)" }}>
-              {t("enrollment.designSavingsTitle")}
-            </h1>
-            <p className="mt-1 text-base leading-relaxed max-w-xl" style={{ color: "var(--enroll-text-secondary)" }}>
-              {t("enrollment.contributionPageSubtitle")}
-            </p>
-          </div>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="relative"
+        >
+          <div
+            className="absolute -left-4 top-0 w-1 h-12 rounded-full"
+            style={{ background: "linear-gradient(to bottom, var(--enroll-brand), var(--enroll-accent))" }}
+            aria-hidden
+          />
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2 pl-2" style={{ color: "var(--enroll-text-primary)" }}>
+            {t("enrollment.contributionTitle")}
+          </h1>
+          <p className="text-base pl-2" style={{ color: "var(--enroll-text-secondary)" }}>
+            {t("enrollment.contributionSubtitleToPlan", { plan: planName })}
+          </p>
+        </motion.div>
       }
     >
-      <div className="enrollment-container">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start space-y-8 lg:space-y-0">
-        {/* ═══ LEFT: Contribution builder (2 cols) ═══ */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, delay: 0.05 }}
-          className="lg:col-span-2 space-y-8"
-        >
-          {/* ── Contribution builder card (dominant) ── */}
-          <div className="rounded-2xl border shadow-sm p-6 sm:p-8 space-y-6" style={{ borderColor: "var(--enroll-card-border)", background: "var(--enroll-card-bg)" }}>
-            <div>
-              <span className="text-sm font-medium" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.quickPresets")}</span>
-              <div className="flex flex-wrap items-center gap-3 mt-2">
-                {PRESETS.map((p) => (
-                  <button
-                    key={p.id}
-                    type="button"
-                    onClick={() => handlePreset(p.percentage)}
-                    className="rounded-full px-5 py-2 text-sm font-medium transition-all duration-200"
-                    style={{
-                      background: activePreset === p.id
-                        ? (p.id === "safe" || p.id === "match" ? "rgb(var(--enroll-accent-rgb) / 0.08)" : "rgb(var(--enroll-brand-rgb) / 0.08)")
-                        : "var(--enroll-soft-bg)",
-                      color: activePreset === p.id
-                        ? (p.id === "safe" || p.id === "match" ? "var(--enroll-accent)" : "var(--enroll-brand)")
-                        : "var(--enroll-text-secondary)",
-                      border: `1px solid ${activePreset === p.id
-                        ? (p.id === "safe" || p.id === "match" ? "rgb(var(--enroll-accent-rgb) / 0.2)" : "rgb(var(--enroll-brand-rgb) / 0.2)")
-                        : "var(--enroll-card-border)"}`,
-                    }}
-                  >
-                    {t(p.labelKey)}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Current % prominent above slider */}
-            <div className="space-y-4">
-              <p className="text-4xl font-semibold tabular-nums" style={{ color: "var(--enroll-brand)" }}>
-                {contributionPct > 0 ? `${contributionPct}%` : "0%"}
-              </p>
-              <div className="space-y-3">
-                <div className="flex justify-between text-sm font-medium" style={{ color: "var(--enroll-text-muted)" }}>
-                  <span>{SLIDER_MIN}%</span>
-                  <span>{SLIDER_MAX}%</span>
-                </div>
-                <input
-                  type="range"
-                  min={SLIDER_MIN}
-                  max={SLIDER_MAX}
-                  value={Math.min(SLIDER_MAX, Math.max(SLIDER_MIN, contributionPct))}
-                  onChange={handleSliderChange}
-                  aria-label={t("enrollment.contributionPercentageAria")}
-                  className="contribution-page-slider"
-                  style={{
-                    background: `linear-gradient(to right, var(--enroll-brand) 0%, var(--enroll-brand) ${sliderPct}%, var(--enroll-soft-bg) ${sliderPct}%, var(--enroll-soft-bg) 100%)`,
-                  } as React.CSSProperties}
+      <div className="contribution-page-figma-wrapper">
+        <div className="contribution-page-figma flex flex-col gap-10 pt-0">
+          {/* Layout from figma-dump ContributionStep: grid with AI + main card (left), projection + summary (right) */}
+          <div className="enrollment-container contribution-page-figma__content max-w-[1200px] mx-auto w-full">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+          {/* ═══ LEFT: AI banner + one card (Set Contribution + Tax Strategy) ═══ */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.05 }}
+            className="flex flex-col gap-6 lg:col-span-2"
+          >
+            <AIInsightBanner
+              variant="figma"
+              contributionPercent={contributionPct}
+              employerMatchCap={state.assumptions.employerMatchCap}
+              fullMatchAmountFormatted={fullMatchAmountFormatted}
+            />
+            <ContributionInputCard
+              title={t("enrollment.setYourContribution")}
+              subtext={t("enrollment.setContributionSubtext")}
+              onAskAI={coreAI ? () => coreAI.openWithPrompt(CONTRIBUTION_ASK_AI_PROMPT) : undefined}
+              askAiAriaLabel={t("enrollment.whatIsContribution")}
+              quickSelectOptions={PRESETS}
+              activePercentage={contributionPct}
+              onQuickSelect={handlePreset}
+              contributionType={contributionInputMode}
+              onContributionTypeChange={setContributionInputMode}
+              percentageValue={contributionPct}
+              onPercentageChange={handlePercentageChange}
+              dollarValue={dollarInput}
+              onDollarChange={handleDollarChange}
+              sliderMin={SLIDER_MIN}
+              sliderMax={SLIDER_MAX}
+              onSliderChange={handleSliderChange}
+              sliderAriaLabel={t("enrollment.contributionPercentageAria")}
+              dollarSliderValue={monthlyAmount}
+              dollarSliderMin={0}
+              dollarSliderMax={maxMonthlyDollar}
+              onDollarSliderChange={handleDollarSliderChange}
+              monthlyPaycheckFormatted={monthlyPaycheckFormatted}
+              savingPerMonthFormatted={savingPerMonthFormatted}
+              savingBadgeLabel={t("enrollment.buildingYourFuture")}
+              bottomSection={
+                <TaxSplitSection
+                  variant="figma"
+                  editMode={state.sourcesEditMode}
+                  title={t("enrollment.taxStrategyTitle")}
+                  subtext={t("enrollment.taxStrategySubtext")}
+                  items={taxSplitItems}
+                  onEditSplit={() => setSourcesEditMode(!state.sourcesEditMode)}
+                  editSplitAriaLabel={t("enrollment.editContributionSplit")}
+                  segmentWidths={segmentWidths}
+                  onSourcePercentChange={handleSourcePercentChange}
+                  onSourceToggle={handleSourceToggle}
                 />
-              </div>
-            </div>
+              }
+            />
+          </motion.div>
 
-            {/* Dollar/yr and Percentage inputs */}
-            <div
-              className="rounded-xl transition-all duration-200"
-              style={{
-                border: inputsActive ? "1px solid var(--enroll-brand)" : "1px solid var(--enroll-card-border)",
-                background: "var(--enroll-card-bg)",
-              }}
-            >
-              <div className="flex items-stretch" style={{ borderColor: "var(--enroll-card-border)" }}>
-                <div className="flex flex-1 items-center gap-1.5 min-w-0 px-4 py-3">
-                  <span className="text-2xl font-bold shrink-0" style={{ color: "var(--enroll-text-muted)" }}>$</span>
-                  <input
-                    type="number"
-                    value={dollarInput > 0 ? Math.round(dollarInput).toString() : ""}
-                    onChange={handleDollarChange}
-                    onFocus={() => setFocusedInput("dollar")}
-                    onBlur={() => setFocusedInput(null)}
-                    placeholder="0"
-                    min="0"
-                    step="1"
-                    aria-label={t("enrollment.annualContributionAria")}
-                    className="w-full min-w-0 bg-transparent text-2xl font-bold focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    style={{ color: "var(--enroll-text-primary)" }}
-                  />
-                  <span className="text-lg font-semibold shrink-0" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.dollarPerYear")}</span>
-                </div>
-                <div
-                  className="flex shrink-0 items-center px-2"
-                  style={{ borderLeft: "1px solid var(--enroll-card-border)", borderRight: "1px solid var(--enroll-card-border)" }}
-                >
-                  <span className="text-xs font-medium" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.contributionOr")}</span>
-                </div>
-                <div className="flex flex-1 items-center gap-1.5 min-w-0 px-4 py-3">
-                  <input
-                    type="number"
-                    value={contributionPct > 0 ? contributionPct : ""}
-                    onChange={handlePercentageChange}
-                    onFocus={() => setFocusedInput("pct")}
-                    onBlur={() => setFocusedInput(null)}
-                    placeholder="0"
-                    min="0"
-                    max="100"
-                    step="0.1"
-                    aria-label={t("enrollment.contributionPercentageAria")}
-                    className="w-full min-w-0 bg-transparent text-2xl font-bold focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    style={{ color: "var(--enroll-text-primary)" }}
-                  />
-                  <span className="text-lg font-semibold shrink-0" style={{ color: "var(--enroll-text-muted)" }}>%</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Split contributions — merged into same card, always visible */}
-            <div className="pt-6 space-y-5" style={{ borderTop: "1px solid var(--enroll-card-border)" }}>
-              <div>
-                <h3 className="text-lg font-semibold" style={{ color: "var(--enroll-text-primary)" }}>
-                  {t("enrollment.splitContributionsTitle")}
-                </h3>
-                <p className="text-sm mt-1" style={{ color: "var(--enroll-text-muted)" }}>
-                  {t("enrollment.splitContributionsSupporting")}
-                </p>
-              </div>
-                    <div className="space-y-5">
-                      <div className="flex flex-wrap justify-between items-center gap-3 sm:gap-4">
-                        <span className="text-sm font-semibold shrink-0" style={{ color: "var(--enroll-text-primary)" }}>
-                          {t("enrollment.contributionSources")}
-                        </span>
-                        <div className="flex flex-wrap items-center gap-3 shrink-0 min-w-0">
-                          <SegmentedToggle<"dollar" | "percent">
-                            options={[
-                              { value: "dollar", label: "$" },
-                              { value: "percent", label: "%" },
-                            ]}
-                            value={state.sourcesViewMode}
-                            onChange={setSourcesViewMode}
-                            aria-label={t("enrollment.sourcesInputMode")}
-                          />
-                          <label className="flex items-center gap-2 cursor-pointer shrink-0">
-                            <span className="text-xs font-medium" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.edit")}</span>
-                            <div className="relative inline-flex h-5 w-9 shrink-0 cursor-pointer">
-                              <input
-                                type="checkbox"
-                                checked={state.sourcesEditMode}
-                                onChange={(e) => setSourcesEditMode(e.target.checked)}
-                                className="peer sr-only"
-                              />
-                              <span className="relative block h-full w-full rounded-full transition-colors after:absolute after:left-0.5 after:top-0.5 after:h-4 after:w-4 after:rounded-full after:bg-surface-primary after:shadow-sm after:transition-transform after:content-[''] peer-checked:after:translate-x-4"
-                                style={{
-                                  background: state.sourcesEditMode ? "var(--enroll-brand)" : "var(--enroll-soft-bg)",
-                                  border: state.sourcesEditMode ? "none" : "1px solid var(--enroll-card-border)",
-                                }}
-                              />
-                            </div>
-                          </label>
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-5">
-                        {SOURCE_OPTIONS.map((opt) => {
-                          const paycheckTotal = annualAmount / PAYCHECKS_PER_YEAR;
-                          const splitPct = state.sourceAllocation[opt.key];
-                          const effectivePctOfSalary = (splitPct / 100) * contributionPct;
-                          const sourcePerPaycheck = (splitPct / 100) * paycheckTotal;
-                          const isSourceActive = splitPct > 0;
-                          const isSliderDisabled = !isSourceActive || !state.sourcesEditMode;
-                          const dollarValue = sourcePerPaycheck > 0 ? Math.round(sourcePerPaycheck) : "";
-                          return (
-                            <div key={opt.id} className="flex flex-col gap-2 min-w-0">
-                              <div className="flex justify-between items-center gap-4 min-w-0">
-                                <label
-                                  className={`flex items-center gap-2 cursor-pointer min-w-0 ${!state.sourcesEditMode ? "opacity-80 cursor-default" : ""}`}
-                                >
-                                  <input
-                                    type="checkbox"
-                                    checked={isSourceActive}
-                                    disabled={!state.sourcesEditMode}
-                                    onChange={(e) => {
-                                      const keys = ["preTax", "roth", "afterTax"] as const;
-                                      const current = state.sourceAllocation;
-                                      if (e.target.checked) {
-                                        const activeKeys = keys.filter((k) => current[k] > 0 || k === opt.key);
-                                        const count = activeKeys.length;
-                                        const equalShare = Math.round((100 / count) * 10) / 10;
-                                        const remainder = 100 - equalShare * (count - 1);
-                                        const next: { preTax: number; roth: number; afterTax: number } = { preTax: 0, roth: 0, afterTax: 0 };
-                                        activeKeys.forEach((k, i) => { next[k] = i === 0 ? remainder : equalShare; });
-                                        setSourceAllocation(next);
-                                        setLockedSourceIds(new Set());
-                                      } else {
-                                        const next = { ...current, [opt.key]: 0 };
-                                        const remainingKeys = keys.filter((k) => next[k] > 0);
-                                        if (remainingKeys.length === 0) {
-                                          setSourceAllocation({ preTax: 100, roth: 0, afterTax: 0 });
-                                          setLockedSourceIds(new Set());
-                                        } else {
-                                          const total = remainingKeys.reduce((s, k) => s + next[k], 0);
-                                          const scale = total > 0 ? 100 / total : 1;
-                                          remainingKeys.forEach((k) => { next[k] = Math.round(next[k] * scale * 10) / 10; });
-                                          const diff = 100 - remainingKeys.reduce((s, k) => s + next[k], 0);
-                                          if (diff !== 0 && remainingKeys[0]) next[remainingKeys[0]] += diff;
-                                          setSourceAllocation(next);
-                                          setLockedSourceIds((prev) => {
-                                            const nextSet = new Set(prev);
-                                            nextSet.delete(opt.key);
-                                            return nextSet;
-                                          });
-                                        }
-                                      }
-                                    }}
-                                    className="h-4 w-4 shrink-0 rounded cursor-pointer disabled:cursor-not-allowed"
-                                    style={{ accentColor: "var(--enroll-brand)" }}
-                                  />
-                                  <div className="flex flex-col gap-0.5">
-                                    <span className="text-sm" style={{ color: "var(--enroll-text-primary)" }}>
-                                      <span className="font-semibold">{t(opt.mainKey)}</span>
-                                      {opt.subKey && <span className="font-normal" style={{ color: "var(--enroll-text-muted)" }}> {t(opt.subKey)}</span>}
-                                    </span>
-                                  </div>
-                                </label>
-                                <div className="flex flex-wrap items-center gap-2 shrink-0 min-w-0">
-                                  {state.sourcesViewMode === "percent" ? (
-                                    <div className="inline-flex overflow-hidden rounded-lg border border-[var(--enroll-card-border)] bg-[var(--enroll-card-bg)]">
-                                      <input
-                                        type="number"
-                                        min={0}
-                                        max={contributionPct}
-                                        step={0.1}
-                                        value={effectivePctOfSalary > 0 ? (Math.round(effectivePctOfSalary * 100) / 100) : ""}
-                                        onChange={(e) => {
-                                          const v = parseFloat(e.target.value);
-                                          if (!isNaN(v) && v >= 0) {
-                                            handleSourceEffectivePctChange(opt.key, Math.min(contributionPct, v));
-                                          } else if (e.target.value === "") {
-                                            handleSourceEffectivePctChange(opt.key, 0);
-                                          }
-                                        }}
-                                        disabled={!isSourceActive || !state.sourcesEditMode}
-                                        placeholder="0"
-                                        className="w-16 sm:w-20 border-0 bg-transparent px-2 py-1.5 text-sm font-semibold tabular-nums focus:outline-none focus:ring-0 disabled:opacity-60 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                                        style={{ color: "var(--enroll-text-primary)" }}
-                                      />
-                                      <span className="flex items-center pr-2 text-sm font-medium" style={{ color: "var(--enroll-text-muted)" }}>%</span>
-                                    </div>
-                                  ) : (
-                                    <div className="inline-flex overflow-hidden rounded-lg border border-[var(--enroll-card-border)] bg-[var(--enroll-card-bg)]">
-                                      <span className="flex items-center pl-2 text-sm font-medium shrink-0" style={{ color: "var(--enroll-text-secondary)" }}>$</span>
-                                      <input
-                                        type="number"
-                                        value={dollarValue}
-                                        onChange={(e) => {
-                                          const v = parseFloat(e.target.value);
-                                          if (salary > 0 && !isNaN(v) && v >= 0 && paycheckTotal > 0) {
-                                            const pctFromDollar = (v / paycheckTotal) * 100;
-                                            handleSourcePercentChange(opt.key, Math.min(100, Math.max(0, pctFromDollar)));
-                                          } else if (e.target.value === "" || (typeof v === "number" && isNaN(v))) {
-                                            handleSourcePercentChange(opt.key, 0);
-                                          }
-                                        }}
-                                        min={0}
-                                        step={1}
-                                        disabled={!isSourceActive || !state.sourcesEditMode}
-                                        placeholder="0"
-                                        className="w-16 sm:w-20 min-w-0 border-0 bg-transparent px-2 py-1.5 text-sm font-semibold tabular-nums focus:outline-none focus:ring-0 disabled:opacity-60 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                                        style={{ color: "var(--enroll-text-primary)" }}
-                                      />
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                              <div className="mt-1 min-w-0 w-full">
-                                <FinancialSlider
-                                  value={splitPct}
-                                  fillPercent={splitPct}
-                                  min={0}
-                                  max={100}
-                                  step={0.5}
-                                  disabled={isSliderDisabled}
-                                  onChange={(e) => handleSourcePercentChange(opt.key, Number(e.target.value))}
-                                  aria-label={t(opt.mainKey)}
-                                  minLabel={t("enrollment.sliderMinLabel")}
-                                  maxLabel={t("enrollment.sliderMaxLabel")}
-                                />
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                      <div className="flex items-center justify-between pt-2" style={{ borderTop: "1px solid var(--enroll-card-border)" }}>
-                        <span className="text-sm font-medium" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.totalContributionOfSalary")}</span>
-                        <span
-                          className="text-sm font-bold tabular-nums"
-                          style={{ color: allocationValid ? "var(--enroll-text-primary)" : "var(--color-warning)" }}
-                        >
-                          {Math.round(contributionPct * 10) / 10}%
-                        </span>
-                      </div>
-                      {!allocationValid && (
-                        <p className="text-sm mt-2" style={{ color: "var(--color-danger)" }}>
-                          Allocation must total 100% to continue.
-                        </p>
-                      )}
-                    </div>
+          {/* ═══ RIGHT: Projection + Summary ═══ */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.1 }}
+            className="space-y-6 lg:sticky lg:top-24"
+          >
+            <ProjectionCard
+              title={t("enrollment.retirementProjection")}
+              legendContributionsLabel={t("enrollment.yourContributionsLegend", { defaultValue: "Your Contributions" })}
+              legendTotalLabel={t("enrollment.totalValueLegend", { defaultValue: "Total Value" })}
+              projectedValueFormatted={
+                projectedTotal > 0
+                  ? new Intl.NumberFormat(locale, { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(projectedTotal)
+                  : "—"
+              }
+              projectedValueAtAgeLabel={t("enrollment.projectedValueAtAge", { age: retirementAge })}
+              inYearsLabel={t("enrollment.inYears", { years: retirementAge - currentAge })}
+              contributionsFormatted={
+                projectionBaseline.totalContributions > 0
+                  ? new Intl.NumberFormat(locale, { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(projectionBaseline.totalContributions)
+                  : undefined
+              }
+              growthFormatted={
+                projectionBaseline.totalGrowth > 0
+                  ? new Intl.NumberFormat(locale, { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(projectionBaseline.totalGrowth)
+                  : undefined
+              }
+              chart={
+                projectedTotal > 0 ? (
+                  <div className="contrib-chart-wrapper">
+                    <ProjectionLineChart baseline={projectionBaseline.dataPoints} locale={locale} />
+                  </div>
+                ) : (
+                  <div className="contrib-chart-empty">
+                    <p className="contrib-chart-empty__text text-sm">
+                      {t("enrollment.startContributingToSeeProjection")}
+                    </p>
+                  </div>
+                )
+              }
+              contributionsLabel={t("enrollment.contributionsBreakdown")}
+              growthLabel={t("enrollment.growthBreakdown")}
+              disclaimer={t("enrollment.disclaimerProjection", {
+                return: state.assumptions.annualReturnRate,
+              })}
+            />
+            <ContributionSummaryCard
+              summaryLine={summaryLine}
+              emphasizeTotal
+              annualSummaryLine={annualSummaryLine}
+              variant="figma"
+              progressBar={
+                derived.totalMonthlyInvestment > 0
+                  ? {
+                      youPercent: derived.monthlyContribution / derived.totalMonthlyInvestment,
+                      employerPercent: derived.employerMatchMonthly / derived.totalMonthlyInvestment,
+                    }
+                  : undefined
+              }
+            />
+          </motion.div>
             </div>
           </div>
-        </motion.div>
-
-        {/* ═══ RIGHT: Outcome panel (1 col) ═══ */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, delay: 0.1 }}
-          className="lg:col-span-1"
-        >
-          <div className="lg:sticky lg:top-24 space-y-6">
-            {/* Per Paycheck card — strong hierarchy: primary total, support blocks, future view, tax note. Subtle gradient behind total. */}
-            <div
-              className="rounded-2xl border shadow-sm overflow-hidden"
-              style={{
-                borderColor: "var(--enroll-card-border)",
-                background: "var(--enroll-card-bg)",
-              }}
-            >
-              <div className="p-6">
-                {/* Top: primary focus — large total with subtle gradient highlight */}
-                <div
-                  className="relative rounded-xl p-4 sm:p-5"
-                  style={{
-                    background: "linear-gradient(135deg, rgb(var(--enroll-brand-rgb) / 0.06) 0%, transparent 60%)",
-                  }}
-                >
-                  <p className="text-3xl sm:text-4xl font-bold tabular-nums tracking-tight" style={{ color: "var(--enroll-text-primary)" }}>
-                    {formatCurrency(totalPerPaycheck)}
-                  </p>
-                  <p className="mt-1 text-sm font-medium" style={{ color: "var(--enroll-text-secondary)" }}>
-                    {t("enrollment.totalPerPaycheckLabel")}
-                  </p>
-                </div>
-
-                {/* Second layer: You contribute | Employer adds — equal weight, employer with accent */}
-                <div className="mt-5 grid grid-cols-2 gap-3 sm:gap-4">
-                  <div className="rounded-xl p-4" style={{ background: "var(--enroll-soft-bg)" }}>
-                    <p className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>
-                      {t("enrollment.youContributeShort")}
-                    </p>
-                    <p className="mt-1 text-lg font-semibold tabular-nums" style={{ color: "var(--enroll-text-primary)" }}>
-                      {formatCurrency(perPaycheck)}
-                    </p>
-                  </div>
-                  <div className="rounded-xl p-4" style={{ background: "var(--enroll-soft-bg)" }}>
-                    <p className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--enroll-text-muted)" }}>
-                      {t("enrollment.employerAddsShort")}
-                    </p>
-                    <p className="mt-1 text-lg font-semibold tabular-nums" style={{ color: "var(--enroll-accent)" }}>
-                      {formatCurrency(employerMatchPerPaycheck)}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Third layer: future view — smaller weight */}
-                <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-baseline">
-                  <div>
-                    <p className="text-xs font-medium" style={{ color: "var(--enroll-text-muted)" }}>
-                      {t("enrollment.estimatedMonthlyTotal")}
-                    </p>
-                    <p className="text-sm font-semibold tabular-nums mt-0.5" style={{ color: "var(--enroll-text-primary)" }}>
-                      {formatCurrency(derived.totalMonthlyInvestment)}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-medium" style={{ color: "var(--enroll-text-muted)" }}>
-                      {t("enrollment.projectedAnnualTotal")}
-                    </p>
-                    <p className="text-sm font-semibold tabular-nums mt-0.5" style={{ color: "var(--enroll-text-primary)" }}>
-                      {formatCurrency(derived.totalMonthlyInvestment * 12)}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Bottom: subtle tax note */}
-                {state.sourceAllocation.preTax > 0 && (
-                  <p className="mt-4 pt-4 text-xs leading-relaxed border-t border-[var(--enroll-card-border)]" style={{ color: "var(--enroll-text-muted)" }}>
-                    {t("enrollment.preTaxLowersTaxable")}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Projected at retirement */}
-            <div
-              className="rounded-2xl border shadow-sm p-6 md:p-8"
-              style={{ borderColor: "var(--enroll-card-border)", background: "var(--enroll-card-bg)" }}
-            >
-              <h3
-                className="text-xs font-semibold uppercase tracking-wider mb-1"
-                style={{ color: "var(--enroll-text-muted)" }}
-              >
-                {t("enrollment.projectedAtRetirement")}
-              </h3>
-              {projectedTotal > 0 ? (
-                <>
-                  <motion.p
-                    key={Math.round(projectedTotal)}
-                    initial={{ opacity: 0, y: 6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="text-4xl font-bold tabular-nums"
-                    style={{ color: "var(--enroll-text-primary)" }}
-                  >
-                    {new Intl.NumberFormat(locale, { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(projectedTotal)}
-                  </motion.p>
-                  <p className="text-sm mt-1" style={{ color: "var(--enroll-text-muted)" }}>
-                    {t("enrollment.byAgeYears", { age: retirementAge, years: retirementAge - currentAge })}
-                  </p>
-                  <div
-                    className="mt-6 rounded-xl p-4"
-                    style={{
-                      background: "rgb(var(--enroll-brand-rgb) / 0.04)",
-                      border: "1px solid rgb(var(--enroll-brand-rgb) / 0.08)",
-                    }}
-                  >
-                    <div className="min-h-[180px]">
-                      <ProjectionLineChart baseline={projectionBaseline.dataPoints} locale={locale} />
-                    </div>
-                  </div>
-                  <p className="text-xs leading-relaxed mt-3" style={{ color: "var(--enroll-text-muted)" }}>
-                    {t("enrollment.assumesReturnInflation", { return: state.assumptions.annualReturnRate, inflation: state.assumptions.inflationRate })}
-                  </p>
-                </>
-              ) : (
-                <div className="mt-4 rounded-xl p-6 min-h-[180px] flex flex-col items-center justify-center text-center" style={{ background: "var(--enroll-soft-bg)", border: "1px solid var(--enroll-card-border)" }}>
-                  <p className="text-sm" style={{ color: "var(--enroll-text-muted)" }}>
-                    {t("enrollment.startContributingToSeeProjection")}
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        </motion.div>
+        </div>
       </div>
 
       <EnrollmentFooter
         primaryLabel={t("enrollment.continueToAutoIncrease")}
+        primaryDisabled={!allocationValid}
         onPrimary={saveDraftForNextStep}
         getDraftSnapshot={getDraftSnapshot}
         inContent
+        hideSaveAndExit
       />
-      </div>
     </EnrollmentPageContent>
   );
 };
 
 /* ═══════════════════════════════════════════════════════════════
-   Projection Line Chart (unchanged logic)
+   Projection Area Chart — Figma: two series (Your Contributions + Total Value)
    ═══════════════════════════════════════════════════════════════ */
 
 function ProjectionLineChart({ baseline, locale }: { baseline: ProjectionDataPoint[]; locale: string }) {
@@ -747,7 +401,7 @@ function ProjectionLineChart({ baseline, locale }: { baseline: ProjectionDataPoi
   );
   const [tooltip, setTooltip] = useState<{ index: number; x: number; y: number } | null>(null);
   const points = baseline.length;
-  if (points === 0) return <div className="flex items-center justify-center min-h-[160px] text-sm" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.noData")}</div>;
+  if (points === 0) return <div className="flex items-center justify-center min-h-[160px] text-sm contrib-chart-no-data">{t("enrollment.noData")}</div>;
 
   const maxBalance = Math.max(...baseline.map((p) => p.balance));
   const yTicks = getYAxisTicks(maxBalance);
@@ -770,12 +424,21 @@ function ProjectionLineChart({ baseline, locale }: { baseline: ProjectionDataPoi
     setTooltip({ index, x: e.clientX - rect.left, y: e.clientY - rect.top });
   };
 
-  const path = baseline
+  const pathBalance = baseline
     .map((p, i) => `${i === 0 ? "M" : "L"} ${xScale(i)} ${yScale(p.balance)}`)
     .join(" ");
+  const pathContributions = baseline
+    .map((p, i) => `${i === 0 ? "M" : "L"} ${xScale(i)} ${yScale(p.contributions)}`)
+    .join(" ");
+  const areaTotalValue = `${pathBalance} L ${xScale(points - 1)} ${h - padding.bottom} L ${padding.left} ${h - padding.bottom} Z`;
+  const areaContributions = `${pathContributions} L ${xScale(points - 1)} ${h - padding.bottom} L ${padding.left} ${h - padding.bottom} Z`;
 
-  const areaPath = `${path} L ${xScale(points - 1)} ${h - padding.bottom} L ${padding.left} ${h - padding.bottom} Z`;
-  const currentYear = new Date().getFullYear();
+  const xAxisLabels: { index: number; label: string }[] = [];
+  for (let i = 0; i < points; i++) {
+    if (i === 0) xAxisLabels.push({ index: i, label: t("enrollment.chartNow", { defaultValue: "Now" }) });
+    else if (i === points - 1 || baseline[i].year % 2 === 0)
+      xAxisLabels.push({ index: i, label: t("enrollment.chartYear", { year: baseline[i].year, defaultValue: `Year ${baseline[i].year}` }) });
+  }
 
   return (
     <div className="relative">
@@ -787,9 +450,13 @@ function ProjectionLineChart({ baseline, locale }: { baseline: ProjectionDataPoi
         onMouseLeave={() => setTooltip(null)}
       >
         <defs>
-          <linearGradient id="contrib-chart-gradient-baseline" x1="0" y1="1" x2="0" y2="0">
-            <stop offset="0%" stopColor="var(--enroll-brand)" stopOpacity="0.12" />
-            <stop offset="100%" stopColor="var(--enroll-brand)" stopOpacity="0" />
+          <linearGradient id="contrib-chart-value" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="5%" stopColor="var(--enroll-accent)" stopOpacity="0.8" />
+            <stop offset="95%" stopColor="var(--enroll-accent)" stopOpacity="0.1" />
+          </linearGradient>
+          <linearGradient id="contrib-chart-contributions" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="5%" stopColor="var(--enroll-brand)" stopOpacity="0.6" />
+            <stop offset="95%" stopColor="var(--enroll-brand)" stopOpacity="0.05" />
           </linearGradient>
         </defs>
 
@@ -803,31 +470,32 @@ function ProjectionLineChart({ baseline, locale }: { baseline: ProjectionDataPoi
           ))}
         </g>
 
-        <g fill="currentColor" className="contrib-chart-axis-text">
-          <text x={xScale(0)} y={h - 10} textAnchor="start" fontSize="10">{currentYear}</text>
-          <text x={xScale(baseline.length - 1)} y={h - 10} textAnchor="end" fontSize="10">{currentYear + baseline[baseline.length - 1].year}</text>
-        </g>
+        {xAxisLabels.map(({ index: i, label }) => (
+          <g key={i} fill="currentColor" className="contrib-chart-axis-text">
+            <text x={xScale(i)} y={h - 10} textAnchor={i === 0 ? "start" : i === points - 1 ? "end" : "middle"} dominantBaseline="hanging" fontSize="10">{label}</text>
+          </g>
+        ))}
 
-        <path d={areaPath} fill="url(#contrib-chart-gradient-baseline)" />
-        <path d={path} fill="none" stroke="var(--enroll-brand)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d={areaTotalValue} fill="url(#contrib-chart-value)" stroke="var(--enroll-accent)" strokeWidth={2} strokeLinejoin="round" />
+        <path d={areaContributions} fill="url(#contrib-chart-contributions)" stroke="var(--enroll-brand)" strokeWidth={2} strokeLinejoin="round" />
       </svg>
       {tooltip && (
         <div
-          className="pointer-events-none absolute z-10 rounded-lg px-3 py-2 text-sm"
+          className="contrib-chart-tooltip pointer-events-none absolute z-10 rounded-lg px-3 py-2 text-sm"
           style={{
             left: tooltip.x + 12,
             top: tooltip.y + 12,
             transform: "translate(0, -50%)",
-            background: "var(--enroll-card-bg)",
-            border: "1px solid var(--enroll-card-border)",
-            boxShadow: "var(--enroll-elevation-2)",
           }}
         >
-          <div className="font-medium" style={{ color: "var(--enroll-text-primary)" }}>
+          <div className="font-medium contrib-chart-tooltip__label">
             {t("enrollment.yearLabel", { year: new Date().getFullYear() + baseline[tooltip.index].year })}
           </div>
-          <div className="font-semibold" style={{ color: "var(--enroll-brand)" }}>
-            {formatTooltipCurrency(baseline[tooltip.index].balance)}
+          <div className="font-semibold contrib-chart-tooltip__value">
+            {t("enrollment.yourContributionsLegend", { defaultValue: "Your Contributions" })}: {formatTooltipCurrency(baseline[tooltip.index].contributions)}
+          </div>
+          <div className="font-semibold contrib-chart-tooltip__value">
+            {t("enrollment.totalValueLegend", { defaultValue: "Total Value" })}: {formatTooltipCurrency(baseline[tooltip.index].balance)}
           </div>
         </div>
       )}

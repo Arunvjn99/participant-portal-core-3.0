@@ -215,9 +215,9 @@ export function LoanGuidedFlow({ open, onClose, data }: LoanGuidedFlowProps) {
           <MetricTile label={t("transactionHub.loanSim.projectedBalance")} value={fmt.currency(animProjected, true)} color="var(--color-primary)" large />
 
           {/* Chart */}
-          <div className="h-44 w-full rounded-lg border border-[var(--color-border)] p-3" style={{ backgroundColor: "var(--color-surface)" }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={calc.chartData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
+          <div className="h-44 min-h-[176px] w-full rounded-lg border border-[var(--color-border)] p-3" style={{ backgroundColor: "var(--color-surface)" }}>
+            <ResponsiveContainer width="100%" height={176}>
+              <AreaChart data={calc.chartData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }} isAnimationActive={false}>
                 <defs>
                   <linearGradient id="gfGradBase" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="var(--color-success)" stopOpacity={0.15} />

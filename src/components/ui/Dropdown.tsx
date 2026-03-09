@@ -18,6 +18,8 @@ interface DropdownProps {
   error?: string;
   disabled?: boolean;
   size?: "default" | "compact";
+  /** Optional class for the root wrapper (e.g. to set trigger height) */
+  className?: string;
 }
 
 export const Dropdown = ({
@@ -31,6 +33,7 @@ export const Dropdown = ({
   error,
   disabled = false,
   size = "default",
+  className,
 }: DropdownProps) => {
   const generatedId = useId();
   const inputId = id ?? name ?? generatedId;
@@ -102,7 +105,7 @@ export const Dropdown = ({
   };
 
   return (
-    <div className="w-full">
+    <div className={cn("w-full", className)}>
       {label ? (
         <label htmlFor={inputId} className="mb-1.5 block text-sm font-medium text-[var(--color-text)]">
           {label}

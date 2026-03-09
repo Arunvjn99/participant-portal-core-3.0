@@ -18,6 +18,7 @@ import type { ProjectionDataPoint } from "../../enrollment/logic/types";
 import { formatYAxisLabel, getYAxisTicks } from "../../utils/projectionChartAxis";
 import type { IncrementCycle } from "../../enrollment/logic/types";
 import { FinancialSlider } from "../../components/FinancialSlider";
+import { TrendingUp, Rocket, BadgeDollarSign, ShieldCheck, Clock, Sparkles } from "lucide-react";
 
 /* ── Shared card style ── */
 const cardStyle: React.CSSProperties = {
@@ -59,12 +60,17 @@ const formatCurrency = (n: number) =>
     maximumFractionDigits: 0,
   }).format(Number.isFinite(n) && n >= 0 ? n : 0);
 
-/* ── Persuasion mode: hero banner only ── */
-function AutoIncreaseBanner({
+/* ── Education screen: two-card comparison (from Retirement Plan Selection App) ── */
+const YEARS_EDUCATION = 10;
+
+function AutoIncreaseEducationScreen({
   t,
   delta,
   withAutoEnd,
   baselineEnd,
+  currentPct,
+  maxCap,
+  monthlyImpact,
   onEnable,
   onSkipClick,
 }: {
@@ -72,62 +78,215 @@ function AutoIncreaseBanner({
   delta: number;
   withAutoEnd: number;
   baselineEnd: number;
+  currentPct: number;
+  maxCap: number;
+  monthlyImpact: number;
   onEnable: () => void;
   onSkipClick: () => void;
 }) {
   return (
-    <section className="auto-increase-hero-region" aria-label={t("enrollment.autoIncreaseBoostLabel")}>
-      <div className="auto-increase-hero-card relative rounded-2xl p-6 md:p-10 overflow-hidden">
-        <div className="auto-increase-hero-gradient absolute inset-0 rounded-2xl" aria-hidden />
-        <div className="relative max-w-3xl">
-          <div className="auto-increase-hero-left">
-            <p className="auto-increase-hero-label">{t("enrollment.autoIncreaseBoostLabel")}</p>
-            <h1 className="auto-increase-hero-title">
-              {t("enrollment.autoIncreaseHeroTitlePersonal", { amount: formatCurrency(delta) })}
-            </h1>
-            <p className="auto-increase-hero-subtext">{t("enrollment.autoIncreaseHeroSubtextPersonal")}</p>
-            <div className="auto-increase-projection-block">
-              <div className="auto-increase-projection-row">
-                <span className="auto-increase-projection-with-auto">{formatCurrency(withAutoEnd)}</span>
-                <span className="auto-increase-projection-with-auto-label">
-                  {t("enrollment.projectedBalanceWithAuto")}
-                </span>
-              </div>
-              <p className="auto-increase-projection-baseline">
-                {t("enrollment.projectedWithoutAuto")}: {formatCurrency(baselineEnd)}
-              </p>
-              {delta > 0 && (
-                <span className="auto-increase-delta-badge inline-flex items-center w-fit" aria-hidden>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                    <path d="M12 19V5M5 12l7-7 7 7" />
-                  </svg>
-                  {t("enrollment.additionalSavingsDelta", { amount: formatCurrency(delta) })}
-                </span>
-              )}
-            </div>
+    <div className="max-w-5xl mx-auto">
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="mb-5"
+      >
+        <div className="relative">
+          <div
+            className="absolute -left-4 top-0 w-1 h-12 rounded-full"
+            style={{ background: "linear-gradient(to bottom, var(--enroll-brand), var(--enroll-accent))" }}
+          />
+          <h2 className="text-[30px] font-bold mb-2 leading-9" style={{ color: "var(--enroll-text-primary)" }}>
+            {t("enrollment.autoIncreaseEducationTitle")}
+          </h2>
+          <p className="text-base" style={{ color: "var(--enroll-text-secondary)" }}>
+            {t("enrollment.autoIncreaseEducationSubtitle")}
+          </p>
+        </div>
+      </motion.div>
+
+      {/* AI Insight */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+        className="mb-4 rounded-[10px] p-4 border"
+        style={{
+          background: "linear-gradient(to right, var(--enroll-soft-bg), rgba(250,245,255,0.5), var(--enroll-soft-bg))",
+          borderColor: "rgb(var(--enroll-brand-rgb) / 0.25)",
+        }}
+      >
+        <div className="flex items-center gap-3">
+          <div
+            className="w-9 h-9 rounded-[10px] flex items-center justify-center flex-shrink-0 shadow-sm"
+            style={{ background: "linear-gradient(135deg, var(--enroll-brand), var(--enroll-accent))" }}
+          >
+            <Sparkles className="w-5 h-5 text-white" />
           </div>
-          <div className="mt-6 flex flex-col sm:flex-row gap-3">
-            <button
-              type="button"
-              onClick={onEnable}
-              className="auto-increase-hero-cta-primary h-10 px-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--enroll-brand)]"
+          <p className="text-sm leading-relaxed" style={{ color: "var(--enroll-text-secondary)" }}>
+            <span className="font-bold" style={{ color: "var(--enroll-accent)" }}>AI Insight</span>
+            {" — "}
+            {t("enrollment.autoIncreaseAiInsight", { amount: formatCurrency(delta), years: YEARS_EDUCATION })}
+          </p>
+        </div>
+      </motion.div>
+
+      {/* Two comparison cards */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.15 }}
+        className="rounded-3xl border p-6 shadow-xl mb-4"
+        style={{
+          background: "var(--enroll-card-bg)",
+          borderColor: "var(--enroll-card-border)",
+        }}
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          {/* Without Auto Increase */}
+          <div
+            className="text-center rounded-2xl p-5 border relative"
+            style={{
+              background: "rgba(249,250,251,0.5)",
+              borderColor: "rgba(229,231,235,0.5)",
+            }}
+          >
+            <div
+              className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-3 border"
+              style={{ background: "var(--enroll-card-bg)", borderColor: "var(--enroll-card-border)" }}
             >
-              {t("enrollment.enableAutoIncreaseCta")}
-            </button>
+              <TrendingUp className="w-6 h-6" style={{ color: "var(--enroll-text-muted)" }} />
+            </div>
+            <h3 className="text-lg font-bold mb-2 leading-7" style={{ color: "var(--enroll-text-primary)" }}>
+              {t("enrollment.keepItSteady")}
+            </h3>
+            <div className="text-xs uppercase tracking-wider mb-2 font-semibold" style={{ color: "var(--enroll-text-muted)" }}>
+              {t("enrollment.withoutAutoIncreaseLabel")}
+            </div>
+            <div className="text-4xl font-bold mb-1.5 leading-10" style={{ color: "var(--enroll-text-secondary)" }}>
+              {formatCurrency(baselineEnd)}
+            </div>
+            <div className="text-sm mb-4 leading-5" style={{ color: "var(--enroll-text-muted)" }}>
+              {t("enrollment.stayAtForYears", { percent: Math.round(currentPct), years: YEARS_EDUCATION })}
+            </div>
             <button
               type="button"
               onClick={onSkipClick}
-              className="auto-increase-hero-cta-secondary h-10 px-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--enroll-brand)]"
+              className="w-full h-11 border-2 rounded-lg font-semibold text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--enroll-brand)]"
+              style={{
+                borderColor: "var(--enroll-card-border)",
+                color: "var(--enroll-text-primary)",
+              }}
             >
               {t("enrollment.skipForNow")}
             </button>
           </div>
-          <p className="text-sm mt-3" style={{ color: "var(--enroll-text-muted)" }}>
-            {t("enrollment.autoIncreaseTrustCopy")}
-          </p>
+
+          {/* With Auto Increase - RECOMMENDED */}
+          <div
+            className="text-center relative rounded-2xl p-5 border"
+            style={{
+              background: "linear-gradient(147deg, rgba(236,253,245,0.6), rgba(239,246,255,0.4))",
+              borderColor: "rgba(164,244,207,0.5)",
+            }}
+          >
+            <div
+              className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1.5 text-white text-xs font-bold rounded-full shadow-md h-6 flex items-center"
+              style={{ background: "var(--enroll-brand)" }}
+            >
+              {t("enrollment.recommended")}
+            </div>
+            <div
+              className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-3 border"
+              style={{
+                background: "linear-gradient(135deg, rgb(var(--enroll-accent-rgb) / 0.2), rgb(var(--enroll-brand-rgb) / 0.15))",
+                borderColor: "rgb(var(--enroll-accent-rgb) / 0.4)",
+              }}
+            >
+              <Rocket className="w-6 h-6" style={{ color: "var(--enroll-brand)" }} />
+            </div>
+            <h3 className="text-lg font-bold mb-2 leading-7" style={{ color: "var(--enroll-brand)" }}>
+              {t("enrollment.growGradually")}
+            </h3>
+            <div className="text-xs uppercase tracking-wider mb-2 font-semibold" style={{ color: "var(--enroll-brand)" }}>
+              {t("enrollment.withAutoIncreaseLabel")}
+            </div>
+            <div className="text-4xl font-bold mb-1.5 leading-10" style={{ color: "var(--enroll-brand)" }}>
+              {formatCurrency(withAutoEnd)}
+            </div>
+            <div className="text-sm mb-4 leading-5" style={{ color: "var(--enroll-text-secondary)" }}>
+              {t("enrollment.growFromTo", { current: Math.round(currentPct), max: maxCap })}
+            </div>
+            <button
+              type="button"
+              onClick={onEnable}
+              className="w-full h-[58px] text-white shadow-sm rounded-[10px] transition-colors flex flex-col items-center justify-center gap-0.5 font-semibold text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white/50"
+              style={{ background: "var(--enroll-brand)" }}
+            >
+              <span>{t("enrollment.enableAutoIncreaseCta")}</span>
+              <span className="text-xs font-normal opacity-90">{t("enrollment.enableAutoIncreaseYes")}</span>
+            </button>
+          </div>
         </div>
-      </div>
-    </section>
+
+        {/* Difference highlight */}
+        <div
+          className="relative rounded-2xl p-6 mb-6 overflow-hidden border"
+          style={{
+            background: "linear-gradient(147deg, rgb(var(--enroll-accent-rgb) / 0.12), rgb(var(--enroll-brand-rgb) / 0.08))",
+            borderColor: "rgb(var(--enroll-accent-rgb) / 0.25)",
+          }}
+        >
+          <div className="relative text-center">
+            <div className="text-sm font-semibold mb-1.5" style={{ color: "var(--enroll-brand)" }}>
+              {t("enrollment.strengthenFuture")}
+            </div>
+            <div className="text-5xl font-black mb-1.5" style={{ color: "var(--enroll-brand)" }}>
+              +{formatCurrency(delta)}
+            </div>
+            <div className="text-base" style={{ color: "var(--enroll-text-secondary)" }}>
+              {t("enrollment.overYearsWithAutoIncrease", { years: YEARS_EDUCATION })}
+            </div>
+          </div>
+        </div>
+
+        {/* Benefit pills */}
+        <div className="flex gap-2.5 justify-center flex-wrap mb-4">
+          <div
+            className="flex items-center gap-2 px-4 py-2 rounded-full border h-[38px]"
+            style={{ background: "rgb(var(--enroll-accent-rgb) / 0.12)", borderColor: "rgb(var(--enroll-accent-rgb) / 0.3)" }}
+          >
+            <BadgeDollarSign className="w-4 h-4" style={{ color: "var(--enroll-brand)" }} />
+            <span className="text-sm font-medium" style={{ color: "var(--enroll-brand)" }}>
+              {t("enrollment.onlyXMoMore", { amount: monthlyImpact })}
+            </span>
+          </div>
+          <div
+            className="flex items-center gap-2 px-4 py-2 rounded-full border h-[38px]"
+            style={{ background: "rgb(var(--enroll-brand-rgb) / 0.1)", borderColor: "rgb(var(--enroll-brand-rgb) / 0.25)" }}
+          >
+            <ShieldCheck className="w-4 h-4" style={{ color: "var(--enroll-accent)" }} />
+            <span className="text-sm font-medium" style={{ color: "var(--enroll-accent)" }}>
+              {t("enrollment.pauseAnytime")}
+            </span>
+          </div>
+          <div
+            className="flex items-center gap-2 px-4 py-2 rounded-full border h-[38px]"
+            style={{ background: "rgb(var(--enroll-brand-rgb) / 0.08)", borderColor: "rgb(var(--enroll-brand-rgb) / 0.2)" }}
+          >
+            <Clock className="w-4 h-4" style={{ color: "var(--enroll-accent)" }} />
+            <span className="text-sm font-medium" style={{ color: "var(--enroll-accent)" }}>
+              {t("enrollment.fullyAutomatic")}
+            </span>
+          </div>
+        </div>
+
+        <p className="text-center text-sm leading-5" style={{ color: "var(--enroll-text-muted)" }}>
+          {t("enrollment.changeLaterInPlanSettings")}
+        </p>
+      </motion.div>
+    </div>
   );
 }
 
@@ -385,11 +544,14 @@ export const FutureContributions = () => {
         {/* ═══ STATE 1: Persuasion (banner) | STATE 2: Configuration (increment + chart side-by-side) ═══ */}
         <div className="auto-increase-state-transition">
           {!autoIncreaseEnabled && !userSkippedAutoIncrease && (
-            <AutoIncreaseBanner
+            <AutoIncreaseEducationScreen
               t={t}
               delta={delta}
               withAutoEnd={withAutoEnd}
               baselineEnd={baselineEnd}
+              currentPct={effectivePct}
+              maxCap={Math.max(15, Math.ceil(effectivePct))}
+              monthlyImpact={Math.round((salary * 2) / 100 / 12)}
               onEnable={() => {
                 setAutoIncreaseEnabled(true);
                 handleEnableAutoIncrease();

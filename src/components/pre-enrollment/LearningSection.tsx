@@ -24,7 +24,7 @@ export const LearningSection = () => {
       </div>
 
       <div className="relative w-full overflow-x-auto pb-4 sm:pb-6 scrollbar-hide -mx-1 px-1">
-        <div className="flex gap-3 sm:gap-4 md:gap-5 w-max">
+        <div className="flex items-start gap-3 sm:gap-4 md:gap-5 w-max">
           {RESOURCES.map((resource) => {
             const title = t(`preEnrollment.resource${resource.id}Title` as const);
             const category = t(`preEnrollment.resource${resource.id}Category` as const);

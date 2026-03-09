@@ -16,6 +16,12 @@ export default defineConfig({
         target: 'http://localhost:3001',
         changeOrigin: true,
       },
+      '/core-ai': {
+        target: 'https://aruncspl.app.n8n.cloud',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/core-ai/, '/webhook/core-ai'),
+      },
     },
   },
 })

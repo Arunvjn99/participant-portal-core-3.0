@@ -10,19 +10,9 @@ import { useSpeechRecognition } from "./useSpeechRecognition";
 import { useTextToSpeech } from "./useTextToSpeech";
 import { routeMessage, type ActiveFlowState } from "./flows/flowRouter";
 import { useAuth } from "../../context/AuthContext";
+import { useEnrollmentOptional } from "../../enrollment/context/EnrollmentContext";
 import { sendCoreAIMessage } from "../../services/coreAiService";
 import type { ChatMessage } from "./MessageBubble";
-
-/* ── Enrollment context (safe import — not all pages have it) ── */
-const useEnrollmentSafe = () => {
-  try {
-    const { useEnrollment } = require("../../enrollment/context/EnrollmentContext");
-    return useEnrollment();
-  } catch (err) {
-    if (import.meta.env.DEV) console.error("[CoreAssistantModal] useEnrollment safe import failed:", err);
-    return null;
-  }
-};
 
 /* ── Props ── */
 export interface CoreAssistantModalProps {
@@ -63,7 +53,7 @@ export function CoreAssistantModal({ isOpen, onClose, initialPrompt, onInitialPr
   const navigate = useNavigate();
   const location = useLocation();
   const { session } = useAuth();
-  const enrollment = useEnrollmentSafe();
+  const enrollment = useEnrollmentOptional();
 
   /* ── State ── */
   const [messages, setMessages] = useState<ChatMessage[]>([]);

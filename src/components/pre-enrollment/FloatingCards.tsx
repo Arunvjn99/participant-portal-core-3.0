@@ -45,9 +45,9 @@ export const FloatingCards = () => {
           </div>
         </div>
 
-        <div className="h-28 md:h-40 xl:h-48 w-full -ml-2">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data}>
+        <div className="h-28 md:h-40 xl:h-48 min-h-[112px] w-full -ml-2">
+          <ResponsiveContainer width="100%" height={112} minHeight={112}>
+            <AreaChart data={data} isAnimationActive={false}>
               <defs>
                 <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="var(--brand-primary)" stopOpacity={0.3} />

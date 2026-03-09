@@ -1,7 +1,12 @@
 export { HeroSection } from "./HeroSection";
+export type { HeroSectionProps } from "./HeroSection";
 export { HeroSkeleton } from "./HeroSkeleton";
 export { LearningSection } from "./LearningSection";
 export { LearningSkeleton } from "./LearningSkeleton";
 export { AdvisorSection } from "./AdvisorSection";
 export { AdvisorSkeleton } from "./AdvisorSkeleton";
 export { FloatingCards } from "./FloatingCards";
+export { InsightCards } from "./InsightCards";
+export { EnrollmentStepsStrip } from "./EnrollmentStepsStrip";
+export { LearningBanner } from "./LearningBanner";
+export { FAQSection } from "./FAQSection";

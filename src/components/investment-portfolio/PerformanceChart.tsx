@@ -59,11 +59,12 @@ export const PerformanceChart: React.FC<Props> = ({ data, timeRange }) => {
         </div>
       </div>
 
-      <div className="min-h-[300px] w-full flex-1">
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="min-h-[300px] h-[300px] w-full flex-1">
+        <ResponsiveContainer width="100%" height={300} minHeight={300}>
           <LineChart
             data={data}
             margin={{ top: 10, right: 10, bottom: 0, left: 0 }}
+            isAnimationActive={false}
           >
             <CartesianGrid
               vertical={false}

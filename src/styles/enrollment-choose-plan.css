@@ -1,0 +1,192 @@
+/**
+ * Choose Plan flow – aligned with Retirement Plan Selection App reference.
+ * Uses enrollment design tokens (--enroll-*) so light/dark and layout apply correctly.
+ */
+
+/* ─── PlanCard (reference design: card uses enrollment tokens) ─── */
+.choose-plan-card {
+  border-radius: var(--radius-xl, var(--enroll-card-radius, 16px));
+  padding: var(--space-card, 26px);
+  border-width: 2px;
+  border-style: solid;
+  border-color: var(--enroll-card-border);
+  background: var(--enroll-card-bg);
+  box-shadow: var(--enroll-elevation-1);
+}
+
+.choose-plan-card[data-selected="true"] {
+  border-color: var(--enroll-brand);
+  box-shadow: var(--enroll-elevation-2);
+}
+
+.choose-plan-card__badge {
+  top: calc(var(--space-sm, 8px) * -1.5);
+  height: 30px;
+  background: var(--enroll-brand);
+  box-shadow: var(--enroll-elevation-2);
+  font-size: var(--font-size-xs, 12px);
+  color: #fff;
+}
+
+.choose-plan-card__benefit-item .lucide,
+.choose-plan-card__key-benefits-heading .lucide {
+  color: var(--enroll-accent);
+}
+
+.choose-plan-card__title {
+  font-size: var(--font-size-xl, 24px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--enroll-text-primary);
+}
+
+.choose-plan-card__description {
+  font-size: var(--font-size-sm, 14px);
+  color: var(--enroll-text-secondary);
+}
+
+.choose-plan-card__icon-wrap--selected {
+  background: linear-gradient(135deg, rgb(var(--enroll-brand-rgb) / 0.12), rgb(var(--enroll-accent-rgb) / 0.08));
+}
+
+.choose-plan-card__icon-wrap--unselected {
+  background: linear-gradient(135deg, rgb(var(--enroll-brand-rgb) / 0.1), rgb(var(--enroll-accent-rgb) / 0.06));
+}
+
+.choose-plan-card__key-benefits-heading {
+  font-size: var(--font-size-sm, 14px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--enroll-text-primary);
+}
+
+.choose-plan-card__benefits-col {
+  border-color: var(--enroll-card-border);
+}
+
+.choose-plan-card__benefit-item {
+  border-color: var(--enroll-card-border);
+  background: var(--enroll-soft-bg);
+}
+
+.choose-plan-card__benefit-text {
+  font-size: var(--font-size-sm, 14px);
+  color: var(--enroll-text-secondary);
+}
+
+.choose-plan-card__selected-pill {
+  background: rgb(var(--enroll-accent-rgb) / 0.15);
+  border-color: var(--enroll-accent);
+  color: var(--enroll-accent);
+  font-size: var(--font-size-sm, 14px);
+}
+
+.choose-plan-card__select-pill {
+  background: var(--enroll-soft-bg);
+  color: var(--enroll-text-primary);
+  font-size: var(--font-size-sm, 14px);
+}
+
+.choose-plan-card__ask-ai-btn,
+.choose-plan-card .ask-ai-btn-gradient {
+  border-color: rgb(var(--enroll-brand-rgb) / 0.25);
+  color: var(--enroll-brand);
+}
+
+.choose-plan-card__ask-ai-btn:hover {
+  border-color: var(--enroll-brand);
+}
+
+.choose-plan-card:focus-visible {
+  --tw-ring-color: var(--enroll-brand);
+}
+
+/* ─── HelpSectionCard (enrollment theme) ─── */
+.help-section-card {
+  border-color: var(--enroll-card-border);
+  background: var(--enroll-soft-bg);
+}
+
+.help-section-card--enroll {
+  border-color: var(--enroll-card-border);
+  background: var(--enroll-soft-bg);
+}
+
+.help-section-card__title {
+  font-size: var(--font-size-xl, 24px);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--enroll-text-primary);
+}
+
+.help-section-card__description {
+  font-size: var(--font-size-md, 16px);
+  color: var(--enroll-text-secondary);
+}
+
+.help-section-card__inner {
+  padding: var(--space-help-padding, 33px);
+}
+
+.help-section-card__icon-wrap {
+  background: rgb(var(--enroll-brand-rgb) / 0.12);
+  color: var(--enroll-brand);
+}
+
+.help-section-card__button {
+  background: var(--enroll-soft-bg);
+  color: var(--enroll-text-primary);
+  font-size: var(--font-size-sm, 14px);
+  border: 1px solid var(--enroll-card-border);
+}
+
+.help-section-card__button:hover {
+  background: var(--enroll-card-bg);
+  border-color: var(--enroll-brand);
+}
+
+/* ─── SectionHeadingWithAccent (used elsewhere) ─── */
+/* Card elevation and hover (used across Contribution, Auto Increase, Readiness, Review) */
+.enrollment-card {
+  box-shadow: var(--enroll-elevation-2);
+  transition: box-shadow 0.15s ease-out, transform 0.15s ease-out;
+}
+.enrollment-card:hover {
+  box-shadow: var(--enroll-elevation-3);
+  transform: translateY(-2px);
+}
+
+.section-heading-accent__bar {
+  left: calc(var(--space-md, 16px) * -1);
+  height: 64px;
+  background: linear-gradient(180deg, var(--enroll-brand) 0%, var(--enroll-accent) 100%);
+}
+
+.section-heading-accent__title {
+  font-size: var(--font-size-2xl, 36px);
+  font-weight: var(--font-weight-bold, 700);
+  background: linear-gradient(90deg, var(--enroll-brand) 0%, var(--enroll-accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.section-heading-accent__subtitle {
+  font-size: var(--font-size-lg, 18px);
+  color: var(--enroll-text-secondary);
+}
+
+/* Choose Plan page content wrapper */
+.choose-plan-page__content {
+  padding-top: 0;
+  min-height: 60vh;
+}
+
+.choose-plan-icon-roth {
+  color: var(--enroll-brand);
+}
+
+.choose-plan-icon-traditional {
+  color: var(--enroll-accent);
+}
+
+.choose-plan-icon-help {
+  color: var(--enroll-brand);
+}

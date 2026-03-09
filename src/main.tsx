@@ -5,10 +5,14 @@ import { RouterProvider } from "react-router-dom";
 import { I18nextProvider, useTranslation } from "react-i18next";
 import i18n from "./i18n";
 import "./theme/tokens.css";
+import "./styles/tokens.css";
+import "./styles/enrollment-choose-plan.css";
+import "./styles/contribution-page-figma.css";
 import "./theme/light.css";
 import "./theme/dark.css";
 import "./theme/enrollment-dark.css";
 import "./index.css";
+import "./features/personalization/personalization-wizard.css";
 import { loadUXtweak } from "./utils/uxtweakLoader";
 import { loadUXsniff } from "./utils/uxsniffLoader";
 import { loadClarity } from "./lib/analytics/clarity";
@@ -33,6 +37,7 @@ const effectiveTheme =
       : "light";
 document.documentElement.classList.remove("light", "dark");
 document.documentElement.classList.add(effectiveTheme);
+document.documentElement.setAttribute("data-theme", effectiveTheme);
 
 /** Keys router to current language so all route content remounts and picks up new translations. */
 function RootWithLanguageKey() {

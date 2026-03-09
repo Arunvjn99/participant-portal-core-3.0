@@ -1,7 +1,9 @@
 /**
  * Core AI Service — Frontend client for the data-backed retirement assistant.
- * All AI goes through /api/core-ai with JWT. No local mock or fallback.
+ * In development, Vite proxies /core-ai to the n8n webhook to avoid CORS.
  */
+
+const CORE_AI_ENDPOINT = "/core-ai";
 
 export interface CoreAIRequest {
   message: string;
@@ -22,56 +24,69 @@ export interface CoreAIResponse {
 }
 
 /**
- * Send a user message to the Core AI backend.
- * Requires a valid Supabase JWT. Backend resolves intent, fetches DB data, and returns structured response.
+ * Send a user message to the n8n webhook (Core AI).
+ * Payload: { message, context }. Webhook returns { reply }.
  */
 export async function sendCoreAIMessage(
   message: string,
   context?: CoreAIRequest["context"],
-  accessToken?: string | null
+  _accessToken?: string | null
 ): Promise<CoreAIResponse> {
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
-  if (accessToken) {
-    headers["Authorization"] = `Bearer ${accessToken}`;
-  }
+  const payload = { message, context: context ?? {} };
 
   try {
-    const response = await fetch("/api/core-ai", {
+    console.log("[Core AI] endpoint:", CORE_AI_ENDPOINT);
+    console.log("[Core AI] request payload:", payload);
+
+    const response = await fetch(CORE_AI_ENDPOINT, {
       method: "POST",
-      headers,
-      body: JSON.stringify({ message, context: context ?? {} }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message,
+        context: context ?? {},
+      }),
     });
 
-    if (response.status === 401) {
-      return {
-        reply: "Please sign in to use Core AI.",
-        filtered: false,
-        isFallback: false,
-      };
-    }
-
     if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
+      const text = await response.text();
+      console.error("[Core AI] server error:", text);
+      throw new Error(`AI request failed with status ${response.status}`);
     }
 
-    const data = await response.json();
+    let data: Record<string, unknown>;
+    const text = await response.text();
+    try {
+      data = JSON.parse(text) as Record<string, unknown>;
+    } catch {
+      console.error("[Core AI] invalid JSON response:", text);
+      throw new Error("AI server returned invalid JSON");
+    }
+
+    console.log("[Core AI] raw response:", data);
+
+    const reply =
+      (data.reply as string) ||
+      (data.content as { parts?: Array<{ text?: string }> })?.parts?.[0]?.text ||
+      (data.text as string) ||
+      (data.message as string) ||
+      "No response from AI";
 
     return {
-      reply: data.reply ?? data.spoken_text ?? "",
-      filtered: data.filtered ?? false,
+      reply,
+      type: "text",
+      confidence: "high",
+      filtered: false,
       isFallback: false,
-      type: data.type,
-      spoken_text: data.spoken_text ?? data.reply,
-      ui_data: data.ui_data ?? {},
-      confidence: data.confidence,
-      data_sources: Array.isArray(data.data_sources) ? data.data_sources : undefined,
+      spoken_text: reply,
     };
   } catch (error) {
-    console.warn("Core AI backend unavailable:", (error as Error).message);
+    console.error("Core AI request failed:", error);
     return {
-      reply: "Core AI is temporarily unavailable. Please try again later.",
-      filtered: false,
+      reply: "Core AI is temporarily unavailable.",
       isFallback: true,
+      filtered: false,
     };
   }
 }

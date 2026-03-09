@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { DashboardLayout } from "../../layouts/DashboardLayout";
 import { DashboardHeader } from "../../components/dashboard/DashboardHeader";
@@ -15,14 +16,49 @@ import { AdvisorCard } from "../../components/dashboard/AdvisorCard";
 import { ValuePropGrid } from "../../components/dashboard/ValuePropGrid";
 import { ValuePropCard } from "../../components/dashboard/ValuePropCard";
 import { ScrollIndicator } from "../../components/ui/ScrollIndicator";
+import { PersonalizationWizard, PERSONALIZATION_COMPLETE_KEY } from "../../features/personalization";
+
+function getFirstName(name: string | undefined): string {
+  if (!name?.trim()) return "there";
+  return name.trim().split(/\s+/)[0] ?? "there";
+}
+
+function getDefaultAgeAndBirth(): { currentAge: number; birthDateDisplay: string; birthYear: number } {
+  const currentAge = 31;
+  const currentYear = new Date().getFullYear();
+  const birthYear = currentYear - currentAge;
+  const birthDateDisplay = `January 1, ${birthYear}`;
+  return { currentAge, birthDateDisplay, birthYear };
+}
 
 export const Dashboard = () => {
   const { t } = useTranslation();
   const { profile } = useUser();
+  const [personalizationOpen, setPersonalizationOpen] = useState(false);
+
+  useEffect(() => {
+    if (!profile) return;
+    try {
+      if (localStorage.getItem(PERSONALIZATION_COMPLETE_KEY) === "true") return;
+    } catch {
+      return;
+    }
+    setPersonalizationOpen(true);
+  }, [profile]);
+
+  const { currentAge, birthDateDisplay, birthYear } = getDefaultAgeAndBirth();
 
   return (
     <DashboardLayout header={<DashboardHeader />}>
       <SaveToast />
+      <PersonalizationWizard
+        isOpen={personalizationOpen}
+        onClose={() => setPersonalizationOpen(false)}
+        firstName={getFirstName(profile?.name)}
+        currentAge={currentAge}
+        birthDateDisplay={birthDateDisplay}
+        birthYear={birthYear}
+      />
       <div>
       <div className="relative" data-hero-section>
         <HeroEnrollmentCard

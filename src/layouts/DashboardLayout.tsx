@@ -8,7 +8,7 @@ interface DashboardLayoutProps {
   children: ReactNode;
   /** When true, reduces top padding so content sits closer to header/stepper (e.g. enrollment steps). */
   mainCompactTop?: boolean;
-  /** When true, do not apply bg-background so a parent page wrapper can provide the background. */
+  /** When true, do not apply page background so a parent page wrapper can provide the background. */
   transparentBackground?: boolean;
 }
 
@@ -32,7 +32,7 @@ export const DashboardLayout = ({
 }: DashboardLayoutProps) => {
   const mainPadding = mainCompactTop
     ? "pt-3 pb-24 md:pt-4 md:pb-24"
-    : "py-6 pb-24 md:py-8 md:pb-24";
+    : "pb-24";
 
   const headerClass = subHeader
     ? HEADER_BASE
@@ -47,10 +47,9 @@ export const DashboardLayout = ({
             {subHeader}
           </header>
         )}
-        <div className="flex-1 min-h-0 overflow-x-hidden bg-[var(--color-background)]">
-          <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 pt-4 pb-12 sm:px-6 md:pb-16 lg:px-8">
-            {children}
-          </div>
+        {/* No max-w wrapper so enrollment pages can full-bleed (EnrollmentPageContent owns max-w-7xl). */}
+        <div className="flex-1 min-h-0 overflow-x-hidden">
+          {children}
         </div>
         <Footer />
       </div>
@@ -58,7 +57,7 @@ export const DashboardLayout = ({
   }
 
   return (
-    <div className="dashboard-layout flex min-h-screen flex-col bg-background">
+    <div className="dashboard-layout flex min-h-screen flex-col bg-[var(--color-background-secondary)]">
       {(header || subHeader) && (
         <header className={headerClass}>
           {header}
@@ -68,7 +67,7 @@ export const DashboardLayout = ({
       <main
         className={`dashboard-layout__main flex-1 min-h-0 overflow-x-hidden ${mainPadding}`}
       >
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 sm:gap-6 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-7xl px-6 py-8">
           {children}
         </div>
       </main>

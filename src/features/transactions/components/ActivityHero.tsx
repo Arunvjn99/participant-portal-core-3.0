@@ -208,10 +208,10 @@ export const ActivityHero = memo(function ActivityHero({
             </div>
           </div>
 
-          <div className="h-[200px] w-full lg:h-[220px]">
+          <div className="h-[200px] w-full min-h-[200px] lg:h-[220px] lg:min-h-[220px]">
             {mounted && (
-              <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={data} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
+              <ResponsiveContainer width="100%" height={200} minHeight={200}>
+                <ComposedChart data={data} margin={{ top: 10, right: 0, left: -20, bottom: 0 }} isAnimationActive={false}>
                   <defs>
                     <linearGradient id="txnBalanceGradient" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="var(--enroll-brand)" stopOpacity={0.15} />
@@ -234,7 +234,7 @@ export const ActivityHero = memo(function ActivityHero({
                     fill="var(--color-success)"
                     radius={[4, 4, 0, 0]}
                     fillOpacity={0.8}
-                    animationDuration={1500}
+                    isAnimationActive={false}
                   />
                   <Area
                     type="monotone"
@@ -244,7 +244,7 @@ export const ActivityHero = memo(function ActivityHero({
                     fill="url(#txnBalanceGradient)"
                     fillOpacity={1}
                     activeDot={{ r: 6, strokeWidth: 4, stroke: "var(--color-text-inverse)", fill: "var(--enroll-brand)" }}
-                    animationDuration={2000}
+                    isAnimationActive={false}
                   />
                 </ComposedChart>
               </ResponsiveContainer>

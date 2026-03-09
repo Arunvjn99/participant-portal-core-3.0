@@ -1,10 +1,20 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Compass } from "lucide-react";
-import { FloatingCards } from "./FloatingCards";
+import { ArrowRight, Info } from "lucide-react";
+import Button from "../ui/Button";
 import { PersonalizePlanModal } from "../enrollment/PersonalizePlanModal";
 import { useUser } from "../../context/UserContext";
+
+const HERO_ILLUSTRATION_SRC = "/image/hero-dashboard-illustration.png";
+
+export interface HeroSectionProps {
+  /** When set, primary CTA navigates to this path instead of opening the personalization modal. */
+  primaryCtaTo?: string;
+  /** When set, primary CTA calls this callback (e.g. open Personalize wizard) instead of linking. Takes precedence over primaryCtaTo. */
+  onPrimaryClick?: () => void;
+}
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -18,127 +28,133 @@ const staggerContainer = {
   },
 };
 
-export const HeroSection = () => {
+export const HeroSection = ({ primaryCtaTo, onPrimaryClick }: HeroSectionProps = {}) => {
   const { t } = useTranslation();
   const { profile } = useUser();
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const displayName = profile?.name || "there";
+  const handlePrimary = onPrimaryClick ?? (() => setIsWizardOpen(true));
+  const useLink = !onPrimaryClick && primaryCtaTo;
 
   return (
     <>
-    <section className="relative w-full overflow-hidden rounded-2xl">
-      {/* Background depth – radial gradients + optional noise */}
-      <div
-        className="pre-enrollment-hero-bg pre-enrollment-hero-noise absolute inset-0 -z-10"
-        aria-hidden
-      />
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent via-transparent to-[var(--surface-1)]/80" />
+      <section className="relative w-full overflow-hidden rounded-2xl">
+        {/* Background depth – radial gradients + optional noise */}
+        <div
+          className="pre-enrollment-hero-bg pre-enrollment-hero-noise absolute inset-0 -z-10"
+          aria-hidden
+        />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent via-transparent to-[var(--surface-1)]/80" />
 
-      <div className="relative flex flex-col lg:flex-row lg:items-center gap-8 sm:gap-10 lg:gap-16 pt-8 pb-10 sm:pt-14 sm:pb-16 lg:pt-20 lg:pb-24 px-0 min-h-0">
-        {/* Left: content */}
-        <motion.div
-          className="flex-1 w-full min-w-0 flex flex-col justify-center min-h-0"
-          variants={staggerContainer}
-          initial="initial"
-          animate="animate"
-        >
+        <div className="relative grid lg:grid-cols-2 gap-12 items-center py-12">
+          {/* Left: content */}
           <motion.div
-            variants={fadeUp}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/80 text-white w-fit mb-4 sm:mb-6"
+            className="flex flex-col justify-center min-h-0 space-y-6"
+            variants={staggerContainer}
+            initial="initial"
+            animate="animate"
           >
-            <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
-            <span className="text-xs font-bold uppercase tracking-wide">
-              {t("dashboard.enrollmentOpen")}
-            </span>
+            <motion.div variants={fadeUp} className="space-y-1">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--color-success)]/10 border border-[var(--color-success)]/20 text-[var(--color-success)] w-fit">
+                <div className="w-2 h-2 rounded-full bg-[var(--color-success)] animate-pulse" />
+                <span className="text-xs font-bold uppercase tracking-wide">
+                  {t("dashboard.enrollmentOpenUntil", "Enrollment open until Oct 31")}
+                </span>
+              </div>
+            </motion.div>
+
+            <motion.div variants={fadeUp} className="space-y-0">
+              <p className="text-body-sm text-[var(--color-text-secondary)]">
+                {t("dashboard.greetingTitle")} {displayName}
+              </p>
+              <h1 className="text-5xl lg:text-6xl font-bold text-[var(--color-text)] leading-tight mt-1">
+                {t("dashboard.heroTitlePart1")}{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--brand-primary)] to-[var(--color-primary)]">
+                  {t("dashboard.heroTitlePart2")}
+                </span>
+              </h1>
+            </motion.div>
+
+            <motion.p
+              variants={fadeUp}
+              className="text-heading-md text-[var(--color-text-secondary)] max-w-lg"
+            >
+              {t("dashboard.heroSubtitle")}
+            </motion.p>
+
+            <motion.div
+              variants={fadeUp}
+              className="flex gap-3 mt-6"
+            >
+              {useLink ? (
+                <Link
+                  to={primaryCtaTo!}
+                  className="button button--primary group inline-flex items-center justify-center gap-2 h-11 px-5 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-2"
+                >
+                  {t("dashboard.startMyRegistration", "Start my registration")}
+                  <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+                </Link>
+              ) : (
+                <Button
+                  type="button"
+                  variant="primary"
+                  onClick={handlePrimary}
+                  className="group h-11 px-5 rounded-lg shadow-sm"
+                >
+                  {t("dashboard.startMyRegistration", "Start my registration")}
+                  <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+                </Button>
+              )}
+              <Button
+                type="button"
+                variant="outline"
+                className="h-11 px-5 rounded-lg"
+              >
+                <Info size={18} />
+                {t("dashboard.learnMoreAboutRegistration", "Learn more about registration")}
+              </Button>
+            </motion.div>
+
+            <motion.span
+              variants={fadeUp}
+              className="inline-flex w-fit items-center rounded-full border border-[var(--color-border)] bg-[var(--color-background-secondary)] px-4 py-2 text-body text-[var(--color-text-secondary)]"
+            >
+              {t("dashboard.takesMinutes")}
+            </motion.span>
           </motion.div>
 
-          <motion.h2
-            variants={fadeUp}
-            className="font-medium text-[var(--color-textSecondary)] mb-3"
-          >
-            <span className="block text-base">{t("dashboard.greetingTitle")}</span>
-            <span className="block text-2xl md:text-3xl font-semibold text-[var(--color-text)]">{displayName}</span>
-          </motion.h2>
-
-          <motion.h1
-            variants={fadeUp}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-display font-bold text-[var(--color-text)] leading-[1.08] tracking-tight mb-4 sm:mb-6"
-          >
-            {t("dashboard.heroTitlePart1")}{" "}
-            <br className="hidden sm:inline" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--brand-primary)] to-[var(--color-primary)]">
-              {t("dashboard.heroTitlePart2")}
-            </span>
-          </motion.h1>
-
-          <motion.p
-            variants={fadeUp}
-            className="text-sm sm:text-base md:text-lg text-[var(--color-textSecondary)] max-w-lg leading-relaxed mb-6 sm:mb-8 md:mb-10"
-          >
-            {t("dashboard.heroSubtitle")}
-          </motion.p>
-
+          {/* Right: hero illustration – no card wrapper */}
           <motion.div
-            variants={fadeUp}
-            className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8 sm:mb-10"
+            className="relative flex items-center justify-end"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.15 }}
           >
-            <motion.button
-              type="button"
-              onClick={() => setIsWizardOpen(true)}
-              className="group relative inline-flex items-center justify-center gap-2 px-5 py-3 sm:px-6 sm:py-3.5 md:px-8 md:py-4 w-full sm:w-auto bg-primary hover:bg-primary-hover text-white rounded-2xl font-semibold text-sm sm:text-base shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-            >
-              {t("dashboard.startEnrollment")}
-              <ArrowRight
-                size={18}
-                className="transition-transform duration-300 group-hover:translate-x-1"
-              />
-            </motion.button>
-
-            <motion.button
-              type="button"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center justify-center gap-2 px-5 py-3 sm:px-6 sm:py-3.5 md:px-8 md:py-4 w-full sm:w-auto bg-[var(--color-surface)] text-[var(--color-text)] border-2 border-[var(--color-border)] rounded-2xl font-semibold text-sm sm:text-base hover:bg-[var(--color-surface)] hover:border-[var(--color-border)] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--border-subtle)] focus:ring-offset-2"
-            >
-              <Compass size={18} />
-              {t("dashboard.exploreOptions")}
-            </motion.button>
-          </motion.div>
-          <motion.span
-            variants={fadeUp}
-            className="inline-flex w-fit items-center rounded-full border border-[var(--color-border)] bg-[var(--color-background-secondary)] px-4 py-1.5 text-sm font-medium text-[var(--color-textSecondary)]"
-          >
-            {t("dashboard.takesMinutes")}
-          </motion.span>
-        </motion.div>
-
-        {/* Right: floating cards (desktop) / fallback card (mobile/tablet) */}
-        <motion.div
-          className="flex-1 w-full min-w-0 relative flex items-center justify-center shrink-0 lg:shrink"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
-        >
-          {/* Floating cards: visible from md (768px) up with responsive layout */}
-          <div className="hidden md:block w-full min-h-[380px] md:h-[480px] lg:h-[520px] xl:h-[600px] relative">
-            <FloatingCards />
-          </div>
-          {/* Mobile-only fallback (below md) */}
-          <div className="md:hidden w-full max-w-[260px] sm:max-w-[320px] aspect-square bg-gradient-to-br from-[var(--brand-primary)]/10 to-[var(--color-primary)]/5 rounded-2xl sm:rounded-3xl flex items-center justify-center relative overflow-hidden shadow-lg mx-auto">
-            <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" />
-            <div className="text-center p-6 sm:p-8">
-              <h3 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)] mb-2">$1.2M</h3>
-              <p className="text-sm sm:text-base text-[var(--text-secondary)] font-medium">{t("dashboard.projectedFutureValue")}</p>
+            <img
+              src={HERO_ILLUSTRATION_SRC}
+              alt={t("dashboard.heroIllustrationAlt", "Retirement dashboard illustration")}
+              className="w-[560px] lg:w-[640px] object-contain"
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = "none";
+                const parent = (e.target as HTMLImageElement).parentElement;
+                const placeholder = parent?.querySelector("[data-hero-placeholder]") as HTMLElement;
+                if (placeholder) placeholder.classList.remove("hidden");
+              }}
+              width={560}
+              height={440}
+              fetchPriority="high"
+            />
+            <div data-hero-placeholder className="hidden absolute inset-0 flex items-center justify-center text-[var(--color-text-secondary)] text-body-sm">
+              {t("dashboard.heroIllustrationPlaceholder", "Illustration placeholder")}
             </div>
-          </div>
-        </motion.div>
-      </div>
-    </section>
-    <PersonalizePlanModal
-      isOpen={isWizardOpen}
-      onClose={() => setIsWizardOpen(false)}
-      userName={displayName}
-    />
+          </motion.div>
+        </div>
+      </section>
+      <PersonalizePlanModal
+        isOpen={isWizardOpen}
+        onClose={() => setIsWizardOpen(false)}
+        userName={displayName}
+      />
     </>
   );
 };

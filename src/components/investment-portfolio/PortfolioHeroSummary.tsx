@@ -140,9 +140,9 @@ export const PortfolioHeroSummary: React.FC<Props> = ({ data, chartData }) => {
             </div>
           }
         >
-          <div className="h-[220px] w-full -mx-1">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={projectedData} margin={{ top: 8, right: 8, bottom: 0, left: -20 }}>
+          <div className="h-[220px] min-h-[220px] w-full -mx-1">
+            <ResponsiveContainer width="100%" height={220}>
+              <LineChart data={projectedData} margin={{ top: 8, right: 8, bottom: 0, left: -20 }} isAnimationActive={false}>
                 <CartesianGrid vertical={false} stroke="var(--color-border)" strokeDasharray="3 3" />
                 <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: "var(--color-text-tertiary)", fontSize: 10 }} />
                 <YAxis

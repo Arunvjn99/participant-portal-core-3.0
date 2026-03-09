@@ -1,18 +1,21 @@
 import * as React from "react";
 
-const STEPS = ["Plan", "Contribution", "Auto Increase", "Investment", "Review"];
+const DEFAULT_STEPS = ["Plan", "Contribution", "Auto Increase", "Investment", "Review"];
 
-const GREEN = "var(--color-success, #10b981)";
-const PRIMARY = "var(--color-primary, #2563eb)";
-const GREY_LINE = "var(--color-border, #e5e7eb)";
-const GREY_LABEL = "var(--color-text-secondary, #6b7280)";
-const LABEL_ACTIVE = "var(--color-text, #111827)";
+const COMPLETED_BG = "var(--color-success, #10b981)";
+const ACTIVE_BG = "var(--enroll-brand, #4f46e5)";
+const CONNECTOR_DONE = "var(--color-success, #10b981)";
+const CONNECTOR_UPCOMING = "var(--enroll-card-border, #e5e7eb)";
+const LABEL_ACTIVE = "var(--enroll-text-primary, #111827)";
+const LABEL_UPCOMING = "var(--enroll-text-secondary, #6b7280)";
 
 export interface HeaderStepperProps {
   /** Current step index (0-based). */
   activeStep: number;
   /** When true, show compact "Step X of Y" instead of full labels (e.g. small screens). */
   compact?: boolean;
+  /** Step labels (default: Plan, Contribution, Auto Increase, Investment, Review). Use for 6-step flow to include Readiness. */
+  stepLabels?: string[];
 }
 
 function Connector({ completed }: { completed: boolean }) {
@@ -20,7 +23,7 @@ function Connector({ completed }: { completed: boolean }) {
     <div
       className="header-stepper__connector"
       style={{
-        backgroundColor: completed ? GREEN : GREY_LINE,
+        backgroundColor: completed ? CONNECTOR_DONE : CONNECTOR_UPCOMING,
       }}
       aria-hidden
     />
@@ -46,14 +49,14 @@ function StepNode({
       <div
         className="header-stepper__node"
         style={{
-          backgroundColor: isCompleted ? GREEN : isActive ? PRIMARY : "transparent",
-          borderColor: isCompleted || isActive ? "transparent" : GREY_LINE,
-          color: isCompleted || isActive ? "var(--color-text-inverse)" : GREY_LABEL,
+          backgroundColor: isCompleted ? COMPLETED_BG : isActive ? ACTIVE_BG : "transparent",
+          borderColor: isCompleted || isActive ? "transparent" : CONNECTOR_UPCOMING,
+          color: isCompleted || isActive ? "var(--color-text-inverse, #fff)" : LABEL_UPCOMING,
         }}
         aria-hidden
       >
         {isCompleted ? (
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <polyline points="20 6 9 17 4 12" />
           </svg>
         ) : (
@@ -64,7 +67,7 @@ function StepNode({
         <span
           className="header-stepper__label"
           style={{
-            color: isActive ? LABEL_ACTIVE : GREY_LABEL,
+            color: isActive ? LABEL_ACTIVE : LABEL_UPCOMING,
             fontWeight: isActive ? 600 : 400,
           }}
         >
@@ -80,8 +83,13 @@ function StepNode({
  * Completed = green + check; Active = primary + number; Upcoming = grey outline.
  * Labels inline; non-clickable; flat, no gradients/shadows.
  */
-export function HeaderStepper({ activeStep, compact = false }: HeaderStepperProps) {
-  const safeActive = Math.min(Math.max(activeStep, 0), STEPS.length - 1);
+export function HeaderStepper({
+  activeStep,
+  compact = false,
+  stepLabels = DEFAULT_STEPS,
+}: HeaderStepperProps) {
+  const steps = stepLabels.length > 0 ? stepLabels : DEFAULT_STEPS;
+  const safeActive = Math.min(Math.max(activeStep, 0), steps.length - 1);
 
   return (
     <div
@@ -89,27 +97,27 @@ export function HeaderStepper({ activeStep, compact = false }: HeaderStepperProp
       role="progressbar"
       aria-valuenow={safeActive + 1}
       aria-valuemin={1}
-      aria-valuemax={STEPS.length}
-      aria-label={compact ? `Step ${safeActive + 1} of ${STEPS.length}` : undefined}
+      aria-valuemax={steps.length}
+      aria-label={compact ? `Step ${safeActive + 1} of ${steps.length}` : undefined}
     >
       {compact ? (
         <span className="header-stepper__compact">
-          Step {safeActive + 1} of {STEPS.length}
+          Step {safeActive + 1} of {steps.length}
         </span>
       ) : (
         <div className="header-stepper__track">
-          {STEPS.map((label, index) => {
+          {steps.map((label, index) => {
             const status =
               index < safeActive ? "completed" : index === safeActive ? "active" : "upcoming";
             return (
-              <React.Fragment key={label}>
+              <React.Fragment key={`${label}-${index}`}>
                 <StepNode
                   stepIndex={index}
                   status={status}
                   label={label}
                   compact={compact}
                 />
-                {index < STEPS.length - 1 && (
+                {index < steps.length - 1 && (
                   <Connector completed={index < safeActive} />
                 )}
               </React.Fragment>

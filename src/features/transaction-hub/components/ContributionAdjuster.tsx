@@ -154,9 +154,9 @@ export function ContributionAdjuster({ data }: ContributionAdjusterProps) {
         <span className="text-xs font-medium uppercase tracking-wide text-[var(--color-text-secondary)]">
           {t("transactionHub.loanSim.projection")}
         </span>
-        <div className="h-64 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
+        <div className="h-64 min-h-[256px] w-full">
+          <ResponsiveContainer width="100%" height={256}>
+            <BarChart data={chartData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }} isAnimationActive={false}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" strokeOpacity={0.5} />
               <XAxis dataKey="month" tick={{ fill: "var(--color-text-tertiary)", fontSize: 10 }} tickLine={false} axisLine={false} />
               <YAxis tick={{ fill: "var(--color-text-tertiary)", fontSize: 10 }} tickLine={false} axisLine={false} tickFormatter={(v: number) => `$${(v / 1000).toFixed(0)}k`} width={45} />

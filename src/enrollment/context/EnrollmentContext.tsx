@@ -9,6 +9,12 @@ import type {
 import type { InvestmentProfile } from "../types/investmentProfile";
 import { deriveContribution } from "../logic/contributionCalculator";
 import { loadEnrollmentDraft } from "../enrollmentDraftStore";
+import {
+  loadPersonalizeDraft,
+  salaryRangeToAnnualSalary,
+  savingsEstimateToBalance,
+} from "../../features/enrollment/personalize/personalizeDraftStore";
+import { getAgeFromDOB } from "../../features/enrollment/personalize/usePersonalizeState";
 
 // Normalized plan IDs - stable enum values
 export type SelectedPlanId = "traditional_401k" | "roth_401k" | "roth_ira" | null;
@@ -123,32 +129,47 @@ const DEFAULT_STATE: EnrollmentState = {
   investmentProfileCompleted: false,
 };
 
-/** Build initial state from draft so Provider + Outlet are always in the tree (no null gate). */
+/** Build initial state from enrollment draft + personalize draft (no null gate). */
 function getInitialEnrollmentState(): EnrollmentState {
   const draft = loadEnrollmentDraft();
-  if (!draft) return { ...DEFAULT_STATE };
+  const personalize = loadPersonalizeDraft();
+
+  const base: EnrollmentState = draft
+    ? {
+        ...DEFAULT_STATE,
+        selectedPlan: draft.selectedPlanId ?? DEFAULT_STATE.selectedPlan,
+        selectedPlanDbId: draft.selectedPlanDbId ?? DEFAULT_STATE.selectedPlanDbId,
+        salary: draft.annualSalary ?? DEFAULT_STATE.salary,
+        contributionType: draft.contributionType ?? DEFAULT_STATE.contributionType,
+        contributionAmount: draft.contributionAmount ?? DEFAULT_STATE.contributionAmount,
+        sourceAllocation: draft.sourceAllocation ?? DEFAULT_STATE.sourceAllocation,
+        currentAge: draft.currentAge ?? DEFAULT_STATE.currentAge,
+        retirementAge: draft.retirementAge ?? DEFAULT_STATE.retirementAge,
+        currentBalance: draft.otherSavings?.amount ?? DEFAULT_STATE.currentBalance,
+        investmentProfile: draft.investmentProfile ?? DEFAULT_STATE.investmentProfile,
+        investmentProfileCompleted: draft.investmentProfileCompleted ?? DEFAULT_STATE.investmentProfileCompleted,
+        autoIncrease: draft.autoIncrease
+          ? {
+              ...DEFAULT_STATE.autoIncrease,
+              enabled: draft.autoIncrease.enabled,
+              percentage: draft.autoIncrease.annualIncreasePct ?? DEFAULT_STATE.autoIncrease.percentage,
+              maxPercentage: draft.autoIncrease.stopAtPct ?? DEFAULT_STATE.autoIncrease.maxPercentage,
+              minimumFloor: draft.autoIncrease.minimumFloorPct,
+            }
+          : DEFAULT_STATE.autoIncrease,
+      }
+    : { ...DEFAULT_STATE };
+
+  if (!personalize) return base;
+
   return {
-    ...DEFAULT_STATE,
-    selectedPlan: draft.selectedPlanId ?? DEFAULT_STATE.selectedPlan,
-    selectedPlanDbId: draft.selectedPlanDbId ?? DEFAULT_STATE.selectedPlanDbId,
-    salary: draft.annualSalary ?? DEFAULT_STATE.salary,
-    contributionType: draft.contributionType ?? DEFAULT_STATE.contributionType,
-    contributionAmount: draft.contributionAmount ?? DEFAULT_STATE.contributionAmount,
-    sourceAllocation: draft.sourceAllocation ?? DEFAULT_STATE.sourceAllocation,
-    currentAge: draft.currentAge ?? DEFAULT_STATE.currentAge,
-    retirementAge: draft.retirementAge ?? DEFAULT_STATE.retirementAge,
-    currentBalance: draft.otherSavings?.amount ?? DEFAULT_STATE.currentBalance,
-    investmentProfile: draft.investmentProfile ?? DEFAULT_STATE.investmentProfile,
-    investmentProfileCompleted: draft.investmentProfileCompleted ?? DEFAULT_STATE.investmentProfileCompleted,
-    autoIncrease: draft.autoIncrease
-      ? {
-          ...DEFAULT_STATE.autoIncrease,
-          enabled: draft.autoIncrease.enabled,
-          percentage: draft.autoIncrease.annualIncreasePct ?? DEFAULT_STATE.autoIncrease.percentage,
-          maxPercentage: draft.autoIncrease.stopAtPct ?? DEFAULT_STATE.autoIncrease.maxPercentage,
-          minimumFloor: draft.autoIncrease.minimumFloorPct,
-        }
-      : DEFAULT_STATE.autoIncrease,
+    ...base,
+    currentAge: getAgeFromDOB(personalize.dateOfBirth),
+    retirementAge: personalize.retirementAge,
+    salary: base.salary || salaryRangeToAnnualSalary(personalize.salaryRange),
+    currentBalance:
+      base.currentBalance ??
+      (personalize.savingsAmount != null ? personalize.savingsAmount : savingsEstimateToBalance(personalize.savingsEstimate)),
   };
 }
 

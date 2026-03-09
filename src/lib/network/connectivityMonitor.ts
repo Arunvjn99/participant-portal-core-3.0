@@ -28,7 +28,8 @@ async function runHealthCheck(url: string, anonKey: string): Promise<boolean> {
       },
       HEALTH_CHECK_TIMEOUT_MS
     );
-    return response.ok || response.status === 401; // 401 = endpoint exists, auth required
+    // 401 = endpoint reachable but unauthenticated (expected when not logged in); browser may still log "401" in console
+    return response.ok || response.status === 401;
   } catch {
     return false;
   }

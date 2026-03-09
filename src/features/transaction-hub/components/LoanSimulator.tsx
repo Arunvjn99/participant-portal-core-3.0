@@ -199,9 +199,9 @@ export function LoanSimulator({ data }: LoanSimulatorProps) {
           <span className="text-xs font-medium uppercase tracking-wide text-[var(--color-text-secondary)]">
             {t("transactionHub.loanSim.projection")}
           </span>
-          <div className="h-40 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={calc.chartData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
+          <div className="h-40 min-h-[160px] w-full">
+            <ResponsiveContainer width="100%" height={160}>
+              <AreaChart data={calc.chartData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }} isAnimationActive={false}>
                 <defs>
                   <linearGradient id="gradBase" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="var(--color-success)" stopOpacity={0.2} />

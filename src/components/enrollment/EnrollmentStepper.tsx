@@ -90,56 +90,45 @@ export function EnrollmentStepper({
           const isLast = index === stepsCount - 1;
           const isCompleted = index < safeActive;
           const isCurrent = index === safeActive;
-          const Icon = stepIcons[index] ?? FileCheck;
 
           return (
             <React.Fragment key={`${label}-${index}`}>
               <div className="flex items-center gap-3 shrink-0">
                 <div
                   className={`
-                    flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold transition-all duration-500
+                    flex items-center justify-center w-9 h-9 rounded-full text-sm font-semibold transition-all duration-500
                     ${
                       isCompleted
-                        ? "bg-[var(--color-success)] text-white scale-100"
+                        ? "text-white scale-100"
                         : isCurrent
-                          ? "text-white scale-110"
-                          : "bg-[var(--color-surface)] border-2 border-[var(--color-border)] text-[var(--color-textSecondary)] scale-100"
+                          ? "text-white scale-100"
+                          : "text-white scale-100"
                     }
                   `}
-                  style={isCurrent ? { backgroundColor: "var(--color-primary)" } : undefined}
+                  style={{
+                    backgroundColor: isCompleted || isCurrent ? "var(--enroll-brand)" : "var(--enroll-text-muted)",
+                  }}
                 >
                   {isCompleted ? (
-                    <Check size={14} strokeWidth={3} />
+                    <Check size={20} strokeWidth={3} />
                   ) : (
-                    <Icon size={14} strokeWidth={isCurrent ? 2.5 : 2} />
+                    <span>{index + 1}</span>
                   )}
                 </div>
                 <span
                   className={`
-                    text-sm font-medium whitespace-nowrap transition-colors duration-300
-                    ${
-                      isCurrent
-                        ? "text-[var(--color-text)] font-bold block"
-                        : isCompleted
-                          ? "text-[var(--color-text)] hidden sm:block"
-                          : "text-[var(--color-textSecondary)] hidden sm:block"
-                    }
+                    text-base font-medium whitespace-nowrap transition-colors duration-300
+                    ${isCurrent ? "font-medium" : isCompleted ? "hidden sm:block" : "hidden sm:block"}
                   `}
+                  style={{
+                    color: isCurrent || isCompleted ? "var(--enroll-text-primary)" : "var(--enroll-text-muted)",
+                  }}
                 >
                   {label}
                 </span>
               </div>
               {!isLast && (
-                <div
-                  className={`
-                    flex-1 mx-2 sm:mx-4 h-0 border-t-2 transition-all duration-500
-                    ${
-                      isCompleted
-                        ? "border-[var(--color-success)] border-solid"
-                        : "border-[var(--color-border)] border-dotted"
-                    }
-                  `}
-                />
+                <div className="flex-1 min-w-0 mx-3 h-px" style={{ backgroundColor: "var(--enroll-card-border)" }} aria-hidden />
               )}
             </React.Fragment>
           );

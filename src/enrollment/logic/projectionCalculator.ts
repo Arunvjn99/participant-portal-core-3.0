@@ -8,19 +8,22 @@ import { calculateMonthlyContribution } from "./contributionCalculator";
 import { applyAutoIncrease } from "./applyAutoIncrease";
 
 /**
- * Calculate retirement projection based on contribution and assumptions
- * 
- * If auto-increase is enabled, contribution amounts increase each year
- * according to the auto-increase settings.
+ * Calculate retirement projection with monthly compounding.
+ * Formula: FV = PMT * (((1 + r/12)^(n) - 1) / (r/12)) for each segment; we iterate monthly.
+ * r = annualReturnRate (e.g. 7%), n = months to retirement.
+ * Includes employer contribution in total monthly PMT.
  */
 export const calculateProjection = (input: ProjectionInput): ProjectionResult => {
   const yearsToRetirement = Math.max(0, input.retirementAge - input.currentAge);
+  const totalMonths = Math.floor(yearsToRetirement * 12);
   const dataPoints: ProjectionDataPoint[] = [];
   let currentBalance = Number.isFinite(input.currentBalance) ? input.currentBalance : 0;
   let totalContributions = 0;
   const monthlyEmployerMatch = Number.isFinite(input.employerMatch) ? (input.employerMatch || 0) : 0;
+  const r = Number.isFinite(input.annualReturnRate) ? input.annualReturnRate / 100 : 0;
+  const monthlyRate = r / 12;
 
-  // If auto-increase is enabled, calculate yearly contribution percentages
+  // If auto-increase is enabled, we still use yearly steps for dataPoints but compound monthly within each year
   let yearlyPercentages: number[] | null = null;
   if (input.autoIncrease?.enabled && input.autoIncrease.contributionType === "percentage") {
     yearlyPercentages = applyAutoIncrease(
@@ -31,16 +34,17 @@ export const calculateProjection = (input: ProjectionInput): ProjectionResult =>
     );
   }
 
+  let monthIndex = 0;
+  const initialBalance = currentBalance;
+
   for (let year = 0; year <= yearsToRetirement; year++) {
     const age = input.currentAge + year;
 
-    // Calculate contribution for this year
     let monthlyContribution = input.monthlyContribution;
     let monthlyEmployer = monthlyEmployerMatch;
 
     if (yearlyPercentages && input.autoIncrease) {
-      // Use auto-increase percentage for this year
-      const yearPercentage = yearlyPercentages[year] || yearlyPercentages[yearlyPercentages.length - 1];
+      const yearPercentage = yearlyPercentages[year] ?? yearlyPercentages[yearlyPercentages.length - 1];
       const contributionInput: ContributionInput = {
         salary: input.autoIncrease.salary,
         contributionType: "percentage",
@@ -55,23 +59,25 @@ export const calculateProjection = (input: ProjectionInput): ProjectionResult =>
     }
 
     const totalMonthlyContribution = monthlyContribution + monthlyEmployer;
-    const annualContribution = totalMonthlyContribution * 12;
-    totalContributions += annualContribution;
 
-    // Apply growth for the year
-    currentBalance = currentBalance * (1 + input.annualReturnRate / 100);
-    currentBalance += annualContribution;
+    // Compound monthly for this year (12 months)
+    const monthsThisYear = year < yearsToRetirement ? 12 : Math.max(0, totalMonths - year * 12);
+    for (let m = 0; m < monthsThisYear; m++) {
+      currentBalance = currentBalance * (1 + monthlyRate) + totalMonthlyContribution;
+      totalContributions += totalMonthlyContribution;
+      monthIndex++;
+    }
 
     dataPoints.push({
       age,
       year,
       balance: currentBalance,
       contributions: totalContributions,
-      growth: currentBalance - input.currentBalance - totalContributions,
+      growth: currentBalance - initialBalance - totalContributions,
     });
   }
 
-  const totalGrowth = currentBalance - (Number.isFinite(input.currentBalance) ? input.currentBalance : 0) - totalContributions;
+  const totalGrowth = currentBalance - (Number.isFinite(initialBalance) ? initialBalance : 0) - totalContributions;
 
   return {
     dataPoints,

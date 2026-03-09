@@ -55,7 +55,7 @@ export const LearningResourcesCarousel = ({ children }: LearningResourcesCarouse
       {/* Scroll container */}
       <div
         ref={scrollRef}
-        className="flex flex-1 items-stretch gap-4 overflow-x-auto scroll-smooth scrollbar-hide snap-x snap-mandatory px-4 py-2 md:px-12"
+        className="flex flex-1 items-stretch gap-4 overflow-x-auto scroll-smooth scrollbar-hide snap-x snap-mandatory px-4 py-2 md:px-12 [&>*]:flex-shrink-0"
         role="list"
         aria-label="Learning resources"
       >

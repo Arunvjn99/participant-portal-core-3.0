@@ -39,6 +39,7 @@ const ThemeContext = createContext<ThemeContextValue | null>(null);
 function applyThemeClass(effective: EffectiveMode) {
   document.documentElement.classList.remove("light", "dark");
   document.documentElement.classList.add(effective);
+  document.documentElement.setAttribute("data-theme", effective);
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {

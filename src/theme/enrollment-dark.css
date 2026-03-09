@@ -97,6 +97,95 @@
   color: var(--color-text);
 }
 
+/* ========== Choose Plan (Figma) – PlanCard, HelpSectionCard, SectionHeading ========== */
+.dark .choose-plan-card {
+  background: var(--enroll-card-bg);
+  border-color: var(--enroll-card-border);
+  box-shadow: var(--enroll-elevation-2);
+}
+
+.dark .choose-plan-card[data-selected="true"] {
+  border-color: var(--enroll-brand);
+  box-shadow: var(--enroll-elevation-2);
+}
+
+.dark .choose-plan-card .choose-plan-card__title,
+.dark .choose-plan-card .choose-plan-card__key-benefits-heading {
+  color: var(--enroll-text-primary);
+}
+
+.dark .choose-plan-card .choose-plan-card__description {
+  color: var(--enroll-text-secondary);
+}
+
+/* Choose Plan page – help section card */
+.dark .choose-plan-page__content .help-section-card--enroll {
+  background: var(--enroll-soft-bg);
+  border-color: var(--enroll-card-border);
+}
+
+/* Contribution page – reference header (accent bar, title, subtitle) */
+.dark .contribution-page-figma .relative h2 {
+  color: var(--enroll-text-primary);
+}
+
+.dark .contribution-page-figma .relative p {
+  color: var(--enroll-text-secondary);
+}
+
+.dark .choose-plan-card .choose-plan-card__benefit-item {
+  background: var(--color-background-tertiary);
+  border-color: var(--color-border);
+}
+
+.dark .choose-plan-card .choose-plan-card__benefit-text {
+  color: var(--color-text-secondary);
+}
+
+.dark .choose-plan-card .choose-plan-card__benefits-col {
+  border-color: var(--color-border);
+}
+
+.dark .choose-plan-card .choose-plan-card__icon-wrap--selected {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.25) 100%);
+}
+
+.dark .choose-plan-card .choose-plan-card__icon-wrap--unselected {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(147, 51, 234, 0.2) 100%);
+}
+
+.dark .choose-plan-card .choose-plan-card__select-pill {
+  background: var(--color-background-tertiary);
+  color: var(--color-text-secondary);
+}
+
+.dark .help-section-card {
+  background: linear-gradient(171.35deg, var(--color-background-secondary) 0%, rgba(30, 58, 138, 0.12) 100%);
+  border-color: var(--color-border);
+}
+
+.dark .help-section-card .help-section-card__title {
+  color: var(--color-text);
+}
+
+.dark .help-section-card .help-section-card__description {
+  color: var(--color-text-secondary);
+}
+
+.dark .help-section-card .help-section-card__button {
+  background: var(--color-background-tertiary);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.dark .help-section-card .help-section-card__button:hover {
+  background: var(--color-surface);
+}
+
+.dark .section-heading-accent .section-heading-accent__subtitle {
+  color: var(--color-text-secondary);
+}
+
 /* ========== Contribution Page ========== */
 .dark .contrib-section-card {
   background: var(--color-surface);
@@ -589,6 +678,65 @@
 .dark .investments-footer {
   background-color: var(--color-background);
   border-top-color: var(--color-border);
+}
+
+/* ========== Contribution Page (Figma) ========== */
+.dark .contribution-page-figma-wrapper {
+  background: var(--enroll-bg);
+}
+
+.dark .contribution-page-figma-wrapper::before,
+.dark .contribution-page-figma-wrapper::after {
+  opacity: 0.12;
+}
+
+.dark .contribution-page-figma__content .contrib-input-card-figma,
+.dark .contribution-page-figma__content .contrib-tax-figma__row,
+.dark .contribution-page-figma__content .contrib-toggle-figma__btn--active {
+  background: var(--enroll-card-bg);
+}
+
+.dark .contribution-page-figma__content .contrib-savings-box-figma {
+  background: var(--enroll-success-tint-bg);
+  border-color: var(--enroll-success-tint-border);
+}
+
+.dark .contribution-page-figma__content .contrib-savings-box-figma__title,
+.dark .contribution-page-figma__content .contrib-savings-box-figma__amount {
+  color: var(--enroll-text-secondary);
+}
+
+.dark .contribution-page-figma__content .contrib-slider-figma input[type="range"]::-webkit-slider-thumb,
+.dark .contribution-page-figma__content .contrib-slider-figma input[type="range"]::-moz-range-thumb {
+  background: var(--enroll-brand);
+}
+
+.dark .contribution-page-figma__content .contrib-value-figma__input {
+  background: var(--enroll-card-bg);
+  border-color: var(--enroll-card-border);
+  color: var(--enroll-brand);
+}
+
+.dark .contribution-page-figma__content .contrib-tax-figma__edit-btn {
+  background: var(--enroll-card-bg);
+  border-color: var(--enroll-brand);
+  color: var(--enroll-brand);
+}
+
+.dark .contribution-page-figma__content .contrib-tax-figma__done-btn {
+  background: var(--enroll-brand);
+  color: var(--color-text-inverse);
+}
+
+.dark .projection-card-figma,
+.dark .contrib-summary-card-figma {
+  background: var(--enroll-card-bg);
+  border-color: var(--enroll-card-border);
+}
+
+/* ========== Enrollment page background (all steps) ========== */
+.dark .enrollment-page-content {
+  background: var(--enroll-bg) !important;
 }
 
 /* ========== Review Page (Step 4/4) ========== */

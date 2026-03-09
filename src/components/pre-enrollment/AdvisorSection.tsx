@@ -23,8 +23,9 @@ export const AdvisorSection = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
         <AdvisorOptionCard
+          borderAccent="blue"
           title={t("preEnrollment.humanAdvisorTitle")}
           description={t("preEnrollment.humanAdvisorDescription")}
           badge={t("preEnrollment.humanAdvisorBadge")}
@@ -54,6 +55,7 @@ export const AdvisorSection = () => {
         />
 
         <AdvisorOptionCard
+          borderAccent="purple"
           title={t("preEnrollment.aiAdvisorTitle")}
           description={t("preEnrollment.aiAdvisorDescription")}
           badge={t("preEnrollment.aiAdvisorBadge")}
@@ -62,8 +64,8 @@ export const AdvisorSection = () => {
             onClick: () => coreAI?.open(),
           }}
           icon={
-            <div className="w-14 h-14 rounded-2xl bg-[var(--color-primary)]/10 flex items-center justify-center">
-              <Bot size={28} className="text-[var(--color-primary)]" />
+            <div className="w-12 h-12 rounded-2xl bg-[var(--color-primary)]/10 flex items-center justify-center">
+              <Bot size={24} className="text-[var(--color-primary)]" />
             </div>
           }
           highlight

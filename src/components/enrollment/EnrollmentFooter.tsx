@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Button from "../ui/Button";
 import {
   loadEnrollmentDraft,
@@ -19,6 +20,12 @@ interface EnrollmentFooterProps {
   getDraftSnapshot?: () => Record<string, unknown>;
   /** When true, use in-content styling (border-top, spacing) for use inside step content */
   inContent?: boolean;
+  /** When true, hide "Save & Exit" so footer matches figma (Back + Continue only) */
+  hideSaveAndExit?: boolean;
+  /** Optional step paths (e.g. ENROLLMENT_V2_STEP_PATHS). When provided, next/back use these instead of ENROLLMENT_STEP_PATHS. */
+  stepPaths?: readonly string[];
+  /** When true, show arrow icon after primary button label (e.g. "Continue to Contribution" →) */
+  primaryShowArrow?: boolean;
 }
 
 /**
@@ -33,19 +40,32 @@ export const EnrollmentFooter = ({
   summaryError = false,
   getDraftSnapshot,
   inContent = false,
+  hideSaveAndExit = false,
+  stepPaths,
+  primaryShowArrow = false,
 }: EnrollmentFooterProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const currentStepIndex = getStepIndex(pathname);
-  const onStepPath = isEnrollmentStepPath(pathname);
   const normalizedPath = pathname.replace(/\/$/, "") || "/";
 
-  const nextPath = onStepPath ? ENROLLMENT_STEP_PATHS[currentStepIndex + 1] : undefined;
-  let prevPath = currentStepIndex > 0 ? ENROLLMENT_STEP_PATHS[currentStepIndex - 1] : undefined;
+  const paths = stepPaths ?? ENROLLMENT_STEP_PATHS;
+  const currentStepIndex = stepPaths
+    ? paths.findIndex((p) => normalizedPath === p || normalizedPath.startsWith(p + "/"))
+    : getStepIndex(pathname);
+  const resolvedIndex = currentStepIndex >= 0 ? currentStepIndex : 0;
+  const onStepPath = stepPaths
+    ? resolvedIndex >= 0 && resolvedIndex < paths.length
+    : isEnrollmentStepPath(pathname);
+
+  const nextPath = onStepPath ? paths[resolvedIndex + 1] : undefined;
+  let prevPath = resolvedIndex > 0 ? paths[resolvedIndex - 1] : undefined;
   // Defensive: ensure Contribution page always has Back to choose-plan (handles pathname/step mismatch)
   if (!prevPath && normalizedPath === "/enrollment/contribution") {
     prevPath = "/enrollment/choose-plan";
+  }
+  if (!prevPath && normalizedPath === "/enrollment-v2/contribution") {
+    prevPath = "/enrollment-v2/choose-plan";
   }
 
   const handleBack = () => {
@@ -70,11 +90,14 @@ export const EnrollmentFooter = ({
     navigate("/dashboard");
   };
 
-  const isFirstStep = currentStepIndex === 0 && prevPath === undefined;
+  const isFirstStep = resolvedIndex === 0 && prevPath === undefined;
+  const isContributionPage =
+    normalizedPath === "/enrollment/contribution" || normalizedPath === "/enrollment-v2/contribution";
+  const showPrimaryArrow = primaryShowArrow || isContributionPage;
 
   return (
     <footer
-      className={`enrollment-footer${inContent ? " enrollment-footer--in-content" : ""}`}
+      className={`enrollment-footer${inContent ? " enrollment-footer--in-content" : ""}${isContributionPage ? " enrollment-footer--contribution" : ""}`}
       role="contentinfo"
       aria-label={t("enrollment.footerAria")}
     >
@@ -87,6 +110,7 @@ export const EnrollmentFooter = ({
             className="enrollment-footer__back"
             aria-label={isFirstStep ? t("enrollment.footerBackDisabledAria") : t("enrollment.footerBackAria")}
           >
+            {isContributionPage ? <ChevronLeft className="enrollment-footer__back-icon" aria-hidden /> : null}
             {t("enrollment.footerBack")}
           </Button>
         </div>
@@ -98,13 +122,15 @@ export const EnrollmentFooter = ({
           )}
         </div>
         <div className="enrollment-footer__right">
-          <Button
-            type="button"
-            onClick={handleSaveAndExit}
-            className="enrollment-footer__save-exit"
-          >
-            {t("enrollment.footerSaveAndExit")}
-          </Button>
+          {!hideSaveAndExit && (
+            <Button
+              type="button"
+              onClick={handleSaveAndExit}
+              className="enrollment-footer__save-exit"
+            >
+              {t("enrollment.footerSaveAndExit")}
+            </Button>
+          )}
           {nextPath ? (
             <a
               href={nextPath}
@@ -115,10 +141,10 @@ export const EnrollmentFooter = ({
               }}
               className="button enrollment-footer__primary"
               aria-disabled={primaryDisabled}
-              style={primaryDisabled ? { pointerEvents: "none", opacity: 0.6 } : undefined}
               role="button"
             >
               {primaryLabel}
+              {showPrimaryArrow ? <ChevronRight className="enrollment-footer__primary-icon" aria-hidden /> : null}
             </a>
           ) : (
             <Button
@@ -128,6 +154,7 @@ export const EnrollmentFooter = ({
               className="enrollment-footer__primary"
             >
               {primaryLabel}
+              {showPrimaryArrow ? <ChevronRight className="enrollment-footer__primary-icon" aria-hidden /> : null}
             </Button>
           )}
         </div>

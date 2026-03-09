@@ -172,6 +172,8 @@
 
   /* Page background */
   --enroll-bg: #f8fafc;
+  /* Figma: soft gradient for enrollment step pages (blue → white → purple tint) */
+  --enroll-page-bg-gradient: linear-gradient(140.75deg, #eff6ff 0%, #ffffff 50%, #faf5ff 100%);
 
   /* Brand */
   --enroll-brand: #4f46e5;
@@ -212,6 +214,49 @@
   --enroll-donut-track: var(--enroll-card-border);
   --enroll-donut-fill: var(--enroll-brand);
   --enroll-donut-text: var(--enroll-brand);
+
+  /* ── Contribution page (Figma) — all reference global theme ── */
+  --contrib-page-bg: var(--enroll-bg);
+  --contrib-section-heading-bar: linear-gradient(180deg, var(--enroll-brand) 0%, var(--color-primary) 100%);
+  --contrib-ai-banner-bg: linear-gradient(135deg, rgb(var(--enroll-brand-rgb) / 0.08) 0%, rgb(var(--enroll-accent-rgb) / 0.06) 100%);
+  --contrib-ai-banner-border: rgb(var(--enroll-brand-rgb) / 0.12);
+  --contrib-ai-banner-radius: 14px;
+  --contrib-ai-icon-bg: linear-gradient(135deg, var(--enroll-brand) 0%, var(--color-primary) 100%);
+  --contrib-ai-icon-color: var(--color-text-inverse);
+  --contrib-ai-icon-shadow: var(--enroll-elevation-2);
+  --contrib-ai-title-gradient: linear-gradient(90deg, var(--enroll-brand) 0%, var(--color-primary) 100%);
+  --contrib-quick-active-bg: rgb(var(--enroll-accent-rgb) / 0.1);
+  --contrib-quick-active-border: rgb(var(--enroll-accent-rgb) / 0.25);
+  --contrib-quick-active-text: var(--enroll-accent);
+  --contrib-savings-pill-bg: rgb(var(--enroll-accent-rgb) / 0.06);
+  --contrib-savings-pill-border: rgb(var(--enroll-accent-rgb) / 0.15);
+  --contrib-savings-label: var(--enroll-accent);
+  --contrib-ask-ai-bg: rgb(var(--enroll-brand-rgb) / 0.1);
+  --contrib-ask-ai-text: var(--enroll-brand);
+  --contrib-ask-ai-pretax-bg: rgb(var(--enroll-brand-rgb) / 0.1);
+  --contrib-ask-ai-pretax-text: var(--enroll-brand);
+  --contrib-ask-ai-roth-bg: var(--enroll-soft-bg);
+  --contrib-ask-ai-roth-text: var(--contrib-tax-roth);
+  --contrib-ask-ai-aftertax-bg: rgb(var(--enroll-accent-rgb) / 0.1);
+  --contrib-ask-ai-aftertax-text: var(--enroll-accent);
+  --contrib-input-border: var(--enroll-card-border);
+  --contrib-input-value: var(--enroll-text-primary);
+  --contrib-edit-split-border: var(--enroll-brand);
+  --contrib-edit-split-text: var(--enroll-brand);
+  --contrib-card-shadow: var(--enroll-elevation-2);
+  --contrib-slider-track: var(--enroll-soft-bg);
+  --contrib-slider-thumb: var(--enroll-brand);
+  --contrib-slider-thumb-shadow: var(--shadow-sm);
+  --contrib-tax-row-bg: var(--enroll-soft-bg);
+  --contrib-tax-row-border: var(--enroll-card-border);
+  --contrib-tax-bar-bg: var(--enroll-soft-bg);
+  --contrib-tax-pretax: var(--enroll-brand);
+  --contrib-tax-roth: var(--chart-5);
+  --contrib-tax-aftertax: var(--enroll-accent);
+  --contrib-footer-primary-bg: linear-gradient(90deg, var(--enroll-brand) 0%, var(--color-primary) 100%);
+  --contrib-footer-primary-color: var(--color-text-inverse);
+  --contrib-footer-primary-shadow: var(--enroll-elevation-2);
+  --contrib-footer-primary-focus: var(--enroll-brand);
 
   /* ── Dashboard Command Center Design System ── */
   --color-bg-primary: var(--enroll-bg);

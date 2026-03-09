@@ -1,0 +1,904 @@
+/**
+ * Contribution page — theme-only. No hex, no inline colors.
+ * All values from src/theme/tokens.css (--enroll-*, --contrib-*, --color-*, --spacing-*, --shadow-*).
+ */
+
+.contribution-page-figma-wrapper {
+  background: var(--contrib-page-bg);
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.contribution-page-figma-wrapper::before,
+.contribution-page-figma-wrapper::after {
+  content: "";
+  position: absolute;
+  width: 384px;
+  height: 384px;
+  border-radius: 50%;
+  filter: blur(64px);
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+.contribution-page-figma-wrapper::before {
+  background: linear-gradient(135deg, var(--color-background-secondary) 0%, var(--color-background-tertiary) 100%);
+  top: -192px;
+  left: -192px;
+}
+
+.contribution-page-figma-wrapper::after {
+  background: linear-gradient(-45deg, var(--color-background-tertiary) 0%, var(--color-background-secondary) 100%);
+  bottom: -192px;
+  right: -192px;
+}
+
+/* Page heading */
+.contribution-page-figma .section-heading-accent {
+  padding-left: var(--spacing-4);
+}
+
+.contribution-page-figma .section-heading-accent__bar {
+  left: calc(-1 * var(--spacing-4));
+  top: 0;
+  width: 4px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  background: var(--contrib-section-heading-bar);
+}
+
+.contribution-page-figma .section-heading-accent__title {
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 36px;
+  letter-spacing: 0.4px;
+  color: var(--enroll-text-primary);
+  -webkit-text-fill-color: var(--enroll-text-primary);
+  background: none;
+  background-clip: unset;
+}
+
+.contribution-page-figma .section-heading-accent__subtitle {
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: -0.31px;
+  color: var(--enroll-text-muted);
+  margin-top: var(--spacing-2);
+}
+
+/* AI Insight banner */
+.contribution-page-figma__content .contrib-ai-banner-figma {
+  border: 1px solid var(--contrib-ai-banner-border);
+  border-radius: var(--contrib-ai-banner-radius);
+  background: var(--contrib-ai-banner-bg);
+  padding: var(--spacing-5);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  gap: var(--spacing-3);
+  align-items: flex-start;
+}
+
+.contribution-page-figma__content .contrib-ai-banner-figma__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--contrib-ai-icon-bg);
+  color: var(--contrib-ai-icon-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: var(--contrib-ai-icon-shadow);
+}
+
+.contribution-page-figma__content .contrib-ai-banner-figma__title {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: -0.31px;
+  background: var(--contrib-ai-title-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.contribution-page-figma__content .contrib-ai-banner-figma__message {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.15px;
+  color: var(--enroll-text-secondary);
+  margin-top: var(--spacing-1);
+}
+
+/* Set Your Contribution card */
+.contribution-page-figma__content .contrib-input-card-figma {
+  background: var(--enroll-card-bg);
+  border: 1px solid var(--enroll-card-border);
+  border-radius: var(--enroll-card-radius);
+  box-shadow: var(--contrib-card-shadow);
+  padding: var(--spacing-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.contribution-page-figma__content .contrib-input-card-figma__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+}
+
+.contribution-page-figma__content .contrib-input-card-figma__title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.45px;
+  color: var(--enroll-text-primary);
+  line-height: 28px;
+  margin: 0;
+}
+
+.contribution-page-figma__content .contrib-input-card-figma__subtext {
+  font-size: 14px;
+  color: var(--enroll-text-muted);
+  letter-spacing: -0.15px;
+  margin: 2px 0 0;
+}
+
+.contribution-page-figma__content .contrib-input-card-figma__ask-ai {
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--contrib-ask-ai-text);
+  background: var(--contrib-ask-ai-bg);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+}
+
+.contribution-page-figma__content .contrib-input-card-figma__monthly-paycheck {
+  text-align: right;
+}
+
+.contribution-page-figma__content .contrib-input-card-figma__monthly-paycheck-label {
+  font-size: 12px;
+  color: var(--enroll-text-muted);
+  line-height: 16px;
+}
+
+.contribution-page-figma__content .contrib-input-card-figma__monthly-paycheck-value {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.44px;
+  color: var(--enroll-text-primary);
+  line-height: 28px;
+}
+
+/* Quick presets */
+.contribution-page-figma__content .contrib-quick-figma {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-2);
+  width: 100%;
+}
+
+.contribution-page-figma__content .contrib-quick-figma .contrib-toggle-figma {
+  margin-left: auto;
+}
+
+.contribution-page-figma__content .contrib-quick-figma__label {
+  font-size: 14px;
+  color: var(--enroll-text-muted);
+  margin: 0;
+}
+
+.contribution-page-figma__content .contrib-quick-figma__btn {
+  height: 32px;
+  padding: 5px 13px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--enroll-card-border);
+  background: var(--enroll-card-bg);
+  color: var(--enroll-text-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.contribution-page-figma__content .contrib-quick-figma__btn:hover {
+  border-color: var(--enroll-brand);
+  color: var(--enroll-brand);
+}
+
+.contribution-page-figma__content .contrib-quick-figma__btn--active {
+  background: var(--contrib-quick-active-bg);
+  border-color: var(--contrib-quick-active-border);
+  color: var(--contrib-quick-active-text);
+}
+
+.contribution-page-figma__content .contrib-quick-figma__btn--active.contrib-quick-figma__btn--safe {
+  background: rgb(var(--enroll-brand-rgb) / 0.12);
+  border-color: rgb(var(--enroll-brand-rgb) / 0.35);
+  color: var(--enroll-brand);
+}
+
+.contribution-page-figma__content .contrib-quick-figma__btn--active.contrib-quick-figma__btn--match {
+  background: rgb(var(--enroll-accent-rgb) / 0.12);
+  border-color: rgb(var(--enroll-accent-rgb) / 0.35);
+  color: var(--enroll-accent);
+}
+
+.contribution-page-figma__content .contrib-quick-figma__btn--active.contrib-quick-figma__btn--aggressive {
+  background: rgb(var(--enroll-accent-rgb) / 0.18);
+  border-color: rgb(var(--enroll-accent-rgb) / 0.4);
+  color: var(--enroll-accent);
+}
+
+/* % / $ toggle */
+.contribution-page-figma__content .contrib-toggle-figma {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  height: 36px;
+  padding: var(--spacing-1);
+  background: var(--enroll-soft-bg);
+  border-radius: 10px;
+  width: 92px;
+}
+
+.contribution-page-figma__content .contrib-toggle-figma__btn {
+  flex: 1;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--enroll-text-muted);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.contribution-page-figma__content .contrib-toggle-figma__btn--active {
+  background: var(--enroll-card-bg);
+  color: var(--enroll-text-primary);
+  box-shadow: var(--enroll-elevation-1);
+}
+
+/* Your Contribution value row */
+.contribution-page-figma__content .contrib-value-row-figma {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+}
+
+.contribution-page-figma__content .contrib-value-figma__label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--enroll-text-secondary);
+  letter-spacing: -0.15px;
+  margin: 0 0 6px;
+}
+
+.contribution-page-figma__content .contrib-value-figma__input-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-3);
+}
+
+.contribution-page-figma__content .contrib-value-figma__input {
+  width: 144px;
+  height: 76px;
+  padding: var(--spacing-2) var(--spacing-3);
+  border: 2px solid var(--contrib-input-border);
+  border-radius: 10px;
+  background: var(--enroll-card-bg);
+  font-size: 48px;
+  font-weight: 700;
+  letter-spacing: 0.35px;
+  color: var(--enroll-brand);
+  text-align: center;
+  box-shadow: var(--enroll-elevation-1);
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.contribution-page-figma__content .contrib-value-figma__input::-webkit-outer-spin-button,
+.contribution-page-figma__content .contrib-value-figma__input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.contribution-page-figma__content .contrib-value-figma__input:focus {
+  outline: none;
+  border-color: var(--enroll-brand);
+}
+
+.contribution-page-figma__content .contrib-value-figma__suffix {
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--enroll-text-muted);
+  letter-spacing: 0.07px;
+}
+
+/* Savings box */
+.contribution-page-figma__content .contrib-savings-box-figma {
+  background: var(--contrib-savings-pill-bg);
+  border: 1px solid var(--contrib-savings-pill-border);
+  border-radius: 10px;
+  padding: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  max-width: 201px;
+}
+
+.contribution-page-figma__content .contrib-savings-box-figma__title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--contrib-savings-label);
+  line-height: 16px;
+}
+
+.contribution-page-figma__content .contrib-savings-box-figma__amount {
+  font-size: 14px;
+  color: var(--enroll-text-secondary);
+  line-height: 20px;
+}
+
+.contribution-page-figma__content .contrib-savings-box-figma__amount strong {
+  font-weight: 700;
+}
+
+/* Slider — theme only; --slider-pct set by JS for fill */
+.contribution-page-figma__content .contrib-slider-figma {
+  padding-top: 10px;
+}
+
+.contribution-page-figma__content .contrib-slider-figma input[type="range"],
+.contribution-slider {
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(
+    to right,
+    var(--contrib-slider-thumb) 0%,
+    var(--contrib-slider-thumb) var(--slider-pct, 0%),
+    var(--contrib-slider-track) var(--slider-pct, 0%),
+    var(--contrib-slider-track) 100%
+  );
+}
+
+.contribution-page-figma__content .contrib-slider-figma input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--contrib-slider-thumb);
+  cursor: pointer;
+  box-shadow: var(--contrib-slider-thumb-shadow);
+  transition: transform 0.15s ease;
+}
+
+.contribution-page-figma__content .contrib-slider-figma input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.05);
+}
+
+.contribution-page-figma__content .contrib-slider-figma input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--contrib-slider-thumb);
+  cursor: pointer;
+  border: none;
+  box-shadow: var(--contrib-slider-thumb-shadow);
+}
+
+.contribution-page-figma__content .contrib-slider-figma__labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--spacing-2);
+  font-size: 12px;
+  color: var(--enroll-text-muted);
+}
+
+/* Global enrollment range slider (reference Retirement App .custom-slider) – theme-aware */
+.contribution-page-figma__content input[type="range"].custom-slider,
+.enrollment-container input[type="range"].custom-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  height: 8px;
+  border-radius: var(--radius-full);
+}
+
+.contribution-page-figma__content input[type="range"].custom-slider::-webkit-slider-thumb,
+.enrollment-container input[type="range"].custom-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--contrib-slider-thumb, var(--enroll-brand));
+  cursor: pointer;
+  border: 3px solid var(--enroll-card-bg);
+  box-shadow: var(--enroll-elevation-1);
+}
+
+.contribution-page-figma__content input[type="range"].custom-slider::-moz-range-thumb,
+.enrollment-container input[type="range"].custom-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--contrib-slider-thumb, var(--enroll-brand));
+  cursor: pointer;
+  border: 3px solid var(--enroll-card-bg);
+  box-shadow: var(--enroll-elevation-1);
+}
+
+.contribution-page-figma__content input[type="range"].custom-slider::-webkit-slider-runnable-track,
+.enrollment-container input[type="range"].custom-slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+}
+
+.contribution-page-figma__content input[type="range"].custom-slider::-moz-range-track,
+.enrollment-container input[type="range"].custom-slider::-moz-range-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+}
+
+/* Tax Strategy */
+.contribution-page-figma__content .contrib-tax-figma__title {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  letter-spacing: -0.31px;
+  color: var(--enroll-text-primary);
+  margin: 0;
+}
+
+.contribution-page-figma__content .contrib-tax-figma__subtext {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--enroll-text-muted);
+  margin: 0;
+}
+
+.contribution-page-figma__content .contrib-tax-figma__edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  border: 1px solid var(--contrib-edit-split-border);
+  color: var(--contrib-edit-split-text);
+  background: var(--enroll-card-bg);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-2) 10px;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: var(--enroll-elevation-1);
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.contribution-page-figma__content .contrib-tax-figma__edit-btn:hover {
+  opacity: 0.9;
+}
+
+.contribution-page-figma__content .contrib-tax-figma__done-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  height: 36px;
+  padding: 0 10px;
+  border: none;
+  border-radius: var(--radius-lg);
+  background: var(--contrib-footer-primary-bg);
+  color: var(--contrib-footer-primary-color);
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: var(--contrib-footer-primary-shadow);
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.contribution-page-figma__content .contrib-tax-figma__done-btn:hover {
+  opacity: 0.9;
+}
+
+.contribution-page-figma__content .contrib-tax-figma__edit-icon--rotated {
+  transform: rotate(90deg);
+}
+
+.contribution-page-figma__content .contrib-tax-figma__checkbox {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 2px solid var(--enroll-card-border);
+  accent-color: var(--enroll-brand);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.contribution-page-figma__content .contrib-tax-figma__checkbox:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.contribution-page-figma__content .contrib-tax-figma__row-slider {
+  padding-top: 2px;
+}
+
+.contribution-page-figma__content .contrib-tax-figma__row-slider .contrib-tax-figma__slider,
+.contribution-page-figma__content .contrib-tax-figma__row-slider .contribution-slider {
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(
+    to right,
+    var(--contrib-slider-thumb) 0%,
+    var(--contrib-slider-thumb) var(--slider-pct, 0%),
+    var(--contrib-slider-track) var(--slider-pct, 0%),
+    var(--contrib-slider-track) 100%
+  );
+}
+
+.contribution-page-figma__content .contrib-tax-figma__row-bar {
+  margin-top: var(--spacing-1);
+  background: var(--contrib-tax-bar-bg);
+}
+
+.contrib-tax-default__edit {
+  border-color: var(--contrib-edit-split-border);
+  color: var(--contrib-edit-split-text);
+}
+
+.contribution-page-figma__content .contrib-tax-figma__row {
+  background: var(--contrib-tax-row-bg);
+  border: 1px solid var(--contrib-tax-row-border);
+  border-radius: 10px;
+  padding: 11px;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+}
+
+.contribution-page-figma__content .contrib-tax-figma__row--inactive {
+  min-height: 52px;
+  border-color: var(--enroll-card-border);
+}
+
+.contribution-page-figma__content .contrib-tax-figma__row-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--enroll-text-primary);
+  letter-spacing: -0.15px;
+}
+
+.contribution-page-figma__content .contrib-tax-figma__ask-ai {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.contribution-page-figma__content .contrib-tax-figma__active {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--enroll-text-muted);
+}
+
+.contribution-page-figma__content .contrib-tax-figma__pct {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.15px;
+}
+
+.contribution-page-figma__content .contrib-tax-figma__mo {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--enroll-text-muted);
+}
+
+.contribution-page-figma__content .contrib-tax-figma__bar {
+  height: 12px;
+  border-radius: var(--radius-full);
+  background: var(--contrib-tax-bar-bg);
+}
+
+/* Footer */
+.enrollment-footer--contribution .enrollment-footer__back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.enrollment-footer--contribution .enrollment-footer__back-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.enrollment-footer--contribution .enrollment-footer__primary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  min-height: 44px;
+  padding: 10px var(--spacing-5);
+  border: none;
+  border-radius: var(--radius-lg);
+  background: var(--contrib-footer-primary-bg);
+  color: var(--contrib-footer-primary-color);
+  font-size: 0.9375em;
+  font-weight: 600;
+  box-shadow: var(--contrib-footer-primary-shadow);
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.enrollment-footer--contribution .enrollment-footer__primary:hover:not(:disabled):not([aria-disabled="true"]) {
+  opacity: 0.95;
+}
+
+.enrollment-footer--contribution .enrollment-footer__primary:focus-visible {
+  outline: 2px solid var(--contrib-footer-primary-focus);
+  outline-offset: 2px;
+}
+
+.enrollment-footer--contribution .enrollment-footer__primary-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* Projection card — theme only */
+.projection-card-figma {
+  background: var(--enroll-card-bg);
+  border: 1px solid var(--enroll-card-border);
+  border-radius: var(--enroll-card-radius);
+  box-shadow: var(--contrib-card-shadow);
+  padding: var(--spacing-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.projection-card-figma__icon {
+  background: rgb(var(--enroll-accent-rgb) / 0.15);
+  color: var(--enroll-accent);
+}
+
+.projection-card-figma__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--enroll-text-primary);
+}
+
+.projection-card-figma__legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.projection-card-figma__legend-dot--contrib {
+  background: var(--enroll-brand);
+}
+
+.projection-card-figma__legend-dot--total {
+  background: var(--enroll-accent);
+}
+
+.projection-card-figma__value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--enroll-accent);
+}
+
+.projection-card-figma__muted {
+  font-size: 14px;
+  color: var(--enroll-text-muted);
+}
+
+.projection-card-figma__contributions-box {
+  background: rgb(var(--enroll-brand-rgb) / 0.1);
+  color: var(--enroll-brand);
+}
+
+.projection-card-figma__growth-box {
+  background: rgb(var(--enroll-accent-rgb) / 0.1);
+  color: var(--enroll-accent);
+}
+
+.projection-card-figma__disclaimer {
+  font-size: 12px;
+  color: var(--enroll-text-muted);
+}
+
+/* Summary card (figma variant) */
+.contrib-summary-card-figma {
+  background: var(--enroll-card-bg);
+  border: 1px solid var(--enroll-card-border);
+  border-radius: var(--enroll-card-radius);
+  box-shadow: var(--contrib-card-shadow);
+  padding: var(--spacing-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.contrib-summary-card-figma__line {
+  font-size: 14px;
+  color: var(--enroll-text-primary);
+}
+
+.contrib-summary-card-figma__total {
+  font-weight: 700;
+  color: var(--enroll-brand);
+}
+
+.contrib-summary-card-figma__annual {
+  font-size: 12px;
+  color: var(--enroll-text-muted);
+}
+
+/* Figma: gradient strip wrapper + progress bar (You / Employer) */
+.contrib-summary-card-figma__strip {
+  background: linear-gradient(
+    to right,
+    var(--contrib-summary-strip-from, var(--enroll-soft-bg)),
+    var(--contrib-summary-strip-to, rgb(var(--enroll-brand-rgb) / 0.08))
+  );
+  border-radius: var(--enroll-card-radius);
+  padding: 1px;
+  box-shadow: var(--contrib-card-shadow);
+}
+
+.contrib-summary-card-figma__bar-wrap {
+  display: flex;
+  width: 100%;
+  height: 8px;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  background: var(--contrib-summary-bar-bg, var(--enroll-soft-bg));
+  margin-bottom: var(--spacing-2);
+}
+
+.contrib-summary-card-figma__bar {
+  height: 100%;
+  min-width: 2px;
+  transition: width 0.2s ease;
+}
+
+.contrib-summary-card-figma__bar--you {
+  background: var(--enroll-brand);
+}
+
+.contrib-summary-card-figma__bar--employer {
+  background: var(--enroll-accent);
+}
+
+.contrib-summary-card-default {
+  background: var(--enroll-card-bg);
+  border: 1px solid var(--enroll-card-border);
+  border-radius: var(--enroll-card-radius);
+  box-shadow: var(--enroll-elevation-2);
+}
+
+.contrib-summary-card-default p {
+  color: var(--enroll-text-primary);
+}
+
+.contrib-summary-card-default .text-xs {
+  color: var(--enroll-text-muted);
+}
+
+/* Chart wrapper and empty state */
+.contrib-chart-wrapper {
+  background: rgb(var(--enroll-brand-rgb) / 0.04);
+  border: 1px solid rgb(var(--enroll-brand-rgb) / 0.08);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-4);
+}
+
+.contrib-chart-empty {
+  background: var(--enroll-soft-bg);
+  border: 1px solid var(--enroll-card-border);
+  border-radius: var(--radius-xl);
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--spacing-6);
+}
+
+.contrib-chart-empty__text {
+  font-size: 14px;
+  color: var(--enroll-text-muted);
+}
+
+.contrib-chart-tooltip {
+  background: var(--enroll-card-bg);
+  border: 1px solid var(--enroll-card-border);
+  box-shadow: var(--enroll-elevation-2);
+}
+
+.contrib-chart-tooltip__label {
+  color: var(--enroll-text-primary);
+}
+
+.contrib-chart-tooltip__value {
+  color: var(--enroll-brand);
+}
+
+.contrib-chart-no-data {
+  font-size: 14px;
+  color: var(--enroll-text-muted);
+}
+
+/* AI Insight banner (default variant) — theme only */
+.contrib-ai-banner {
+  background: var(--contrib-ai-banner-bg);
+  border: 1px solid var(--contrib-ai-banner-border);
+  border-radius: var(--contrib-ai-banner-radius);
+  box-shadow: var(--enroll-elevation-1);
+}
+
+.contrib-ai-banner__icon {
+  background: var(--contrib-ai-icon-bg);
+  color: var(--contrib-ai-icon-color);
+  box-shadow: var(--contrib-ai-icon-shadow);
+}
+
+.contrib-ai-banner__title {
+  color: var(--enroll-text-primary);
+}
+
+.contrib-ai-banner__message {
+  color: var(--enroll-text-secondary);
+}
+
+/* Quick select buttons — theme only */
+.contrib-quick-select-btn {
+  background: var(--enroll-card-bg);
+  color: var(--enroll-text-primary);
+  border: 1px solid var(--enroll-card-border);
+}
+
+.contrib-quick-select-btn--active {
+  background: var(--contrib-quick-active-bg);
+  color: var(--contrib-quick-active-text);
+  border-color: var(--contrib-quick-active-border);
+}
+
+/* Tax split segment colors (theme) */
+.contrib-tax-figma__row-bar--pretax { background: var(--contrib-tax-pretax); }
+.contrib-tax-figma__row-bar--roth { background: var(--contrib-tax-roth); }
+.contrib-tax-figma__row-bar--aftertax { background: var(--contrib-tax-aftertax); }
+.contrib-tax-figma__pct--pretax { color: var(--contrib-tax-pretax); }
+.contrib-tax-figma__pct--roth { color: var(--contrib-tax-roth); }
+.contrib-tax-figma__pct--aftertax { color: var(--contrib-tax-aftertax); }
+.contrib-tax-figma__ask-ai--pretax { background: var(--contrib-ask-ai-pretax-bg); color: var(--contrib-ask-ai-pretax-text); }
+.contrib-tax-figma__ask-ai--roth { background: var(--contrib-ask-ai-roth-bg); color: var(--contrib-ask-ai-roth-text); }
+.contrib-tax-figma__ask-ai--aftertax { background: var(--contrib-ask-ai-aftertax-bg); color: var(--contrib-ask-ai-aftertax-text); }
+.contrib-tax-figma__dot--pretax { background: var(--contrib-tax-pretax); }
+.contrib-tax-figma__dot--roth { background: var(--contrib-tax-roth); }
+.contrib-tax-figma__dot--aftertax { background: var(--contrib-tax-aftertax); }
+.contrib-tax-figma__segment--0 { background: var(--contrib-tax-pretax); }
+.contrib-tax-figma__segment--1 { background: var(--contrib-tax-roth); }
+.contrib-tax-figma__segment--2 { background: var(--contrib-tax-aftertax); }

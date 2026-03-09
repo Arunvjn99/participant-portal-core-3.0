@@ -1,9 +1,11 @@
 import type { ReactNode } from "react";
+import { motion } from "framer-motion";
+import { PageHeader } from "../../enrollment-v2/components/PageHeader";
 
 interface EnrollmentPageContentProps {
-  /** Page title (32px bold). Omit when using headerContent. */
+  /** Page title (H1). Omit when using headerContent. */
   title?: string;
-  /** Optional subtitle (16px secondary) */
+  /** Optional subtitle (text-base muted) */
   subtitle?: string;
   /** Optional badge above the title */
   badge?: ReactNode;
@@ -14,11 +16,10 @@ interface EnrollmentPageContentProps {
 
 /**
  * Shared inner wrapper for all enrollment step pages.
- * Provides consistent max-width, spacing, heading scale, and page background
- * using the enrollment design tokens.
+ * Uses PageHeader for consistent typography (text-3xl font-semibold tracking-tight / text-base muted).
+ * Provides full-bleed enrollment background via design tokens.
  *
  * NOTE: This does NOT replace the route-level EnrollmentLayout.
- * It wraps the page content inside each step page.
  */
 export function EnrollmentPageContent({
   title,
@@ -27,36 +28,61 @@ export function EnrollmentPageContent({
   headerContent,
   children,
 }: EnrollmentPageContentProps) {
-  return (
-    <div className="w-full min-h-0 pb-12" style={{ background: "var(--enroll-bg)" }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-12">
-        {/* Same spacing as Choose Plan: stepper → pt-4 → H1 → mb-4 → content */}
-        <header className="mb-4">
-          {headerContent ? (
-            headerContent
-          ) : (
-            <>
-              {badge && <div className="mb-2">{badge}</div>}
-              <h1
-                className="text-xl md:text-2xl font-bold leading-tight"
-                style={{ color: "var(--enroll-text-primary)" }}
-              >
-                {title}
-              </h1>
-              {subtitle && (
-                <p
-                  className="mt-1 text-base leading-relaxed"
-                  style={{ color: "var(--enroll-text-secondary)" }}
-                >
-                  {subtitle}
-                </p>
-              )}
-            </>
-          )}
-        </header>
+  const hasHeader = title != null || headerContent != null;
 
-        {/* ── Page body ── */}
-        {children}
+  return (
+    <div
+      className="enrollment-page-content min-h-[60vh] pb-12 w-screen relative left-1/2 -translate-x-1/2 overflow-hidden"
+      style={{
+        background: "linear-gradient(140deg, rgb(var(--enroll-brand-rgb) / 0.06) 0%, var(--enroll-soft-bg) 35%, var(--enroll-bg) 65%, rgb(var(--enroll-accent-rgb) / 0.05) 100%)",
+      }}
+    >
+      {/* Subtle blurred gradient orbs for depth (token-based, no layout impact) */}
+      <div
+        className="absolute pointer-events-none inset-0 overflow-hidden"
+        aria-hidden
+      >
+        <div
+          className="absolute rounded-full opacity-30"
+          style={{
+            width: "min(80vw, 600px)",
+            height: "min(80vw, 600px)",
+            top: "-20%",
+            left: "-10%",
+            background: "radial-gradient(circle, rgb(var(--enroll-brand-rgb) / 0.15) 0%, transparent 70%)",
+            filter: "blur(60px)",
+          }}
+        />
+        <div
+          className="absolute rounded-full opacity-25"
+          style={{
+            width: "min(70vw, 500px)",
+            height: "min(70vw, 500px)",
+            bottom: "-15%",
+            right: "-5%",
+            background: "radial-gradient(circle, rgb(var(--enroll-accent-rgb) / 0.12) 0%, transparent 70%)",
+            filter: "blur(50px)",
+          }}
+        />
+      </div>
+      <div className="relative max-w-6xl mx-auto px-6 py-8">
+        {hasHeader && (
+          <div className="mb-6">
+            {headerContent != null ? (
+              headerContent
+            ) : (
+              <PageHeader title={title!} subtitle={subtitle} badge={badge} />
+            )}
+          </div>
+        )}
+
+        <motion.div
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.18, ease: "easeOut" }}
+        >
+          {children}
+        </motion.div>
       </div>
     </div>
   );

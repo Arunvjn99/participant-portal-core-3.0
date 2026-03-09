@@ -1,0 +1,172 @@
+/**
+ * Central design tokens for UI stabilization.
+ * Reuses existing theme values; semantic names for enrollment + shared UI.
+ * Dark overrides via [data-theme="dark"] (and .dark for compatibility).
+ */
+
+:root {
+  /* ─── COLORS (semantic; map from existing theme + audit) ─── */
+  --color-bg-primary: var(--enroll-bg, #f8fafc);
+  --color-bg-secondary: var(--color-background-secondary, #f9fafb);
+  --color-surface: var(--color-surface, #ffffff);
+  --color-surface-elevated: var(--color-surface-elevated, #ffffff);
+  --color-border: var(--color-border, #e5e7eb);
+  --color-border-active: #155dfc;
+  --color-text-primary: var(--enroll-text-primary, #101828);
+  --color-text-secondary: var(--enroll-text-secondary, #4a5565);
+  --color-accent: #155dfc;
+  --color-accent-soft: #eff6ff;
+  --color-accent-soft-alt: #dbeafe;
+  --color-accent-icon-roth: #2b7fff;
+  --color-accent-icon-traditional: #9810fa;
+  --color-success: #008236;
+  --color-success-bg: #dcfce7;
+  --color-success-border: #00a63e;
+  --color-warning: var(--color-warning, #f59e0b);
+
+  /* Enrollment / plan card specific (gradients as tokens) */
+  --gradient-card-bg: linear-gradient(167.2deg, var(--color-surface) 0%, var(--color-surface) 50%, rgba(249, 250, 251, 0.3) 100%);
+  --gradient-badge: linear-gradient(90deg, #155dfc 0%, #1447e6 100%);
+  --gradient-heading: linear-gradient(90deg, rgb(21, 93, 252) 0%, rgb(152, 16, 250) 100%);
+  --gradient-accent-bar: linear-gradient(180deg, rgb(21, 93, 252) 0%, rgb(152, 16, 250) 100%);
+  --gradient-help-card: linear-gradient(171.35deg, rgb(248, 250, 252) 0%, rgb(239, 246, 255) 100%);
+  --gradient-icon-selected: linear-gradient(135deg, rgb(239, 246, 255) 0%, rgb(219, 234, 254) 100%);
+  --gradient-icon-unselected: linear-gradient(135deg, rgb(250, 245, 255) 0%, rgb(243, 232, 255) 100%);
+  --gradient-selected-pill: linear-gradient(90deg, #dcfce7 0%, #d0fae5 100%);
+  --gradient-benefit-row: linear-gradient(172deg, rgb(249, 250, 251) 0%, rgb(248, 250, 252) 100%);
+
+  /* ─── SPACING SCALE ─── */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-card: 26px;
+  --space-xl: 32px;
+  --space-2xl: 40px;
+  --space-3xl: 48px;
+  --space-help-padding: 33px;
+
+  /* ─── RADIUS ─── */
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+
+  /* ─── SHADOW ─── */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-badge: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+
+  /* ─── TYPOGRAPHY ─── */
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 24px;
+  --font-size-2xl: 36px;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* ─── LAYOUT (max-widths; use in components as max-width) ─── */
+  --layout-content-max: 1144px;
+  --layout-container-max: 1200px;
+  --layout-footer-max: 1440px;
+
+  /* ─── GLOBAL SEMANTIC ALIASES (design system audit) ─── */
+  --color-primary-light: var(--color-accent-soft, #eff6ff);
+  --color-card: var(--color-surface-elevated, var(--color-surface));
+}
+
+/* ─── TYPOGRAPHY SCALE (utility classes) ─── */
+.text-heading-xl {
+  font-size: var(--font-size-2xl, 2.25rem);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: 1.2;
+  color: var(--color-text-primary, var(--color-text));
+}
+.text-heading-lg {
+  font-size: var(--font-size-xl, 1.5rem);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: 1.25;
+  color: var(--color-text-primary, var(--color-text));
+}
+.text-heading-md {
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 1.3;
+  color: var(--color-text-primary, var(--color-text));
+}
+.text-heading-sm {
+  font-size: var(--font-size-md, 1rem);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 1.4;
+  color: var(--color-text-primary, var(--color-text));
+}
+.text-body {
+  font-size: var(--font-size-md, 1rem);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: 1.5;
+  color: var(--color-text-primary, var(--color-text));
+}
+.text-body-sm {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: 1.5;
+  color: var(--color-text-primary, var(--color-text));
+}
+.text-caption {
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 1.4;
+  color: var(--color-text-secondary, var(--enroll-text-secondary));
+}
+
+/* Dark theme: color overrides only (surface layering, AA contrast) */
+[data-theme="dark"],
+.dark {
+  --color-bg-primary: var(--enroll-bg);
+  --color-bg-secondary: var(--color-background-secondary);
+  --color-surface: var(--color-surface);
+  --color-surface-elevated: var(--color-surface-elevated);
+  --color-border: var(--color-border);
+  --color-border-active: var(--color-primary);
+  --color-text-primary: var(--enroll-text-primary);
+  --color-text-secondary: var(--enroll-text-secondary);
+  --color-accent: var(--color-primary);
+  --color-accent-soft: rgba(59, 130, 246, 0.15);
+  --color-accent-soft-alt: rgba(59, 130, 246, 0.2);
+  --color-success: #34d399;
+  --color-success-bg: rgba(16, 185, 129, 0.2);
+  --color-success-border: #34d399;
+
+  --gradient-card-bg: linear-gradient(167.2deg, var(--color-surface) 0%, var(--color-surface) 50%, rgba(30, 41, 59, 0.4) 100%);
+  --gradient-help-card: linear-gradient(171.35deg, var(--color-background-secondary) 0%, rgba(30, 58, 138, 0.12) 100%);
+  --gradient-icon-selected: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.25) 100%);
+  --gradient-icon-unselected: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(147, 51, 234, 0.2) 100%);
+}
+
+/* ── Personalize wizard: semantic tokens (light/dark from theme) ── */
+:root {
+  --wizard-accent: var(--color-primary);
+  --wizard-success: var(--color-success);
+  --wizard-border: var(--color-border);
+  --wizard-text: var(--color-text-primary, var(--color-text));
+  --wizard-text-muted: var(--color-text-secondary);
+  --wizard-surface: var(--color-surface);
+  --wizard-header-gradient: linear-gradient(170.87deg, var(--color-primary) 0%, var(--color-accent) 100%);
+}
+
+[data-theme="dark"],
+.dark {
+  --wizard-accent: var(--color-primary);
+  --wizard-success: var(--color-success);
+  --wizard-border: var(--color-border);
+  --wizard-text: var(--color-text-primary);
+  --wizard-text-muted: var(--color-text-secondary);
+  --wizard-surface: var(--color-surface);
+  --wizard-header-gradient: linear-gradient(170.87deg, var(--color-primary) 0%, var(--color-accent) 100%);
+}

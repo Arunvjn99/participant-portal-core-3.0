@@ -1,0 +1,17 @@
+export { InvestmentPage } from "./InvestmentPage";
+export { AIRecommendationCard } from "./AIRecommendationCard";
+export { InvestmentHelpBanner } from "./InvestmentHelpBanner";
+export { AllocationSourceCard } from "./AllocationSourceCard";
+export type { SourceAllocation } from "./AllocationSourceCard";
+export { AllocationRow } from "./AllocationRow";
+export type { AllocationRowProps } from "./AllocationRow";
+export { InvestorProfileCard } from "./InvestorProfileCard";
+export { AllocationSummaryChart } from "./AllocationSummaryChart";
+export type { FundSegment } from "./AllocationSummaryChart";
+export { RetirementProjectionCard } from "./RetirementProjectionCard";
+export { AllocationEditorModal } from "./AllocationEditorModal";
+export type { AllocationEditorModalProps } from "./AllocationEditorModal";
+export { FundAllocationRow } from "./FundAllocationRow";
+export { FundSearchInput } from "./FundSearchInput";
+export { FundSlider } from "./FundSlider";
+export type { Fund, Portfolio, PortfolioSource } from "./types";
