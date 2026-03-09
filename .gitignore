@@ -5,9 +5,12 @@ node_modules/
 dist/
 .netlify/
 
-# Environment variables
+# Environment variables (never commit secrets)
 .env
 .env.local
+.env.development
+.env.production
+.env.staging
 .env.*.local
 server/.env
 

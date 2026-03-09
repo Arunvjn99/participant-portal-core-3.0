@@ -24,6 +24,8 @@ import { OtpProvider } from "./context/OtpContext";
 import { UserProvider } from "./context/UserContext";
 import { NetworkProvider } from "./lib/network/networkContext";
 import { NetworkBanner } from "./components/system/NetworkBanner";
+import { SupabaseEnvWarning } from "./components/system/SupabaseEnvWarning";
+import { EnvironmentBadge } from "./components/system/EnvironmentBadge";
 
 // Initialize theme from localStorage before first paint (avoids flash)
 const savedTheme = localStorage.getItem("theme");
@@ -45,6 +47,8 @@ function RootWithLanguageKey() {
   return (
     <NetworkProvider>
       <NetworkBanner />
+      <EnvironmentBadge />
+      <SupabaseEnvWarning />
       <AuthProvider>
         <OtpProvider>
           <ThemeProvider>
