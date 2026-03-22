@@ -1,4 +1,6 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import type { ReactNode } from "react";
+import { createBrowserRouter, Navigate, Outlet, useLocation, useParams } from "react-router-dom";
+import { isValidVersion } from "@/core/version";
 import { Login } from "../pages/auth/Login";
 import { VerifyCode } from "../pages/auth/VerifyCode";
 import { ForgotPassword } from "../pages/auth/ForgotPassword";
@@ -6,32 +8,70 @@ import { ForgotPasswordVerify } from "../pages/auth/ForgotPasswordVerify";
 import { ResetPassword } from "../pages/auth/ResetPassword";
 import { HelpCenter } from "../pages/auth/HelpCenter";
 import { Signup } from "../pages/auth/Signup";
-import { PreEnrollment } from "../pages/dashboard/PreEnrollment";
 import { Dashboard } from "../pages/dashboard/Dashboard";
+import { VersionedDashboard } from "../pages/dashboard/VersionedDashboard";
 import { PostEnrollmentDashboard } from "../pages/dashboard/PostEnrollmentDashboard";
 import { DemoDashboard } from "../pages/dashboard/DemoDashboard";
 import { InvestmentPortfolioPage } from "../pages/dashboard/InvestmentPortfolioPage";
 import { Profile } from "../pages/profile/Profile";
 import { EnrollmentManagement } from "../pages/enrollment/EnrollmentManagement";
 import { PlanDetailManagement } from "../pages/enrollment/PlanDetailManagement";
-import { ChoosePlan } from "../pages/enrollment/ChoosePlan";
 import { PlansPage } from "../pages/enrollment/PlansPage";
-import { Contribution } from "../pages/enrollment/Contribution";
+import {
+  VersionedChoosePlan,
+  VersionedContribution,
+  VersionedEnrollmentInvestments,
+  VersionedEnrollmentReviewContent,
+} from "../pages/enrollment/VersionedEnrollmentSteps";
+import { VersionedEnrollment } from "../pages/enrollment/VersionedEnrollment";
 import { FutureContributions } from "../pages/enrollment/FutureContributions";
 import { TransactionsPage } from "../pages/transactions/TransactionsPage";
 import { TransactionAnalysis } from "../pages/transactions/TransactionAnalysis";
 import { TransactionApplicationRouter } from "../pages/transactions/applications/TransactionApplicationRouter";
-import { EnrollmentLayout } from "../layouts/EnrollmentLayout";
 import { InvestmentProvider } from "../context/InvestmentContext";
 import InvestmentsLayout from "../app/investments/layout";
 import InvestmentsPage from "../app/investments/page";
-import { EnrollmentInvestmentsGuard } from "../components/enrollment/EnrollmentInvestmentsGuard";
-import { EnrollmentInvestmentsContent } from "../components/enrollment/EnrollmentInvestmentsContent";
-import { EnrollmentReviewContent } from "../components/enrollment/EnrollmentReviewContent";
 import { RootLayout } from "../layouts/RootLayout";
 import { ProtectedRoute } from "../components/auth/ProtectedRoute";
 import { ThemeSettings } from "../pages/settings/ThemeSettings";
 import { SettingsHub } from "../pages/settings/SettingsHub";
+import { PreEnrollmentDashboardTest } from "../pages/PreEnrollmentDashboardTest";
+import { AIAssetsPage } from "../pages/ai-assets";
+
+/** Redirects `/enrollment` and `/enrollment/*` to `/v1/enrollment` equivalents (preserves subpath + query). */
+function LegacyEnrollmentRedirect() {
+  const { pathname, search } = useLocation();
+  const sub = pathname.startsWith("/enrollment/") ? pathname.slice("/enrollment".length) : "";
+  const to = sub ? `/v1/enrollment${sub}` : "/v1/enrollment";
+  return <Navigate to={`${to}${search}`} replace />;
+}
+
+/** Redirects `/transactions` and `/transactions/*` to `/v1/transactions` equivalents (preserves subpath + query). */
+function LegacyTransactionsRedirect() {
+  const { pathname, search } = useLocation();
+  const sub = pathname.startsWith("/transactions/") ? pathname.slice("/transactions".length) : "";
+  const to = sub ? `/v1/transactions${sub}` : "/v1/transactions";
+  return <Navigate to={`${to}${search}`} replace />;
+}
+
+function ProtectedTransactionsOutlet() {
+  return (
+    <ProtectedRoute>
+      <Outlet />
+    </ProtectedRoute>
+  );
+}
+
+/** Invalid `/:version/*` → same path under `/v1` (preserves subpath + query). */
+function ValidatedVersionRoute({ children }: { children: ReactNode }) {
+  const { version } = useParams();
+  const { pathname, search } = useLocation();
+  if (!isValidVersion(version ?? "")) {
+    const to = pathname.replace(/^\/[^/]+/, "/v1");
+    return <Navigate to={`${to}${search}`} replace />;
+  }
+  return <>{children}</>;
+}
 
 /**
  * Router configuration using createBrowserRouter (React Router v6+)
@@ -43,11 +83,31 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Login />,
+        element: <Navigate to="/v1/login" replace />,
+      },
+      {
+        path: "/login",
+        element: <Navigate to="/v1/login" replace />,
       },
       {
         path: "/verify",
-        element: <VerifyCode />,
+        element: <Navigate to="/v1/verify" replace />,
+      },
+      {
+        path: "/:version/login",
+        element: (
+          <ValidatedVersionRoute>
+            <Login />
+          </ValidatedVersionRoute>
+        ),
+      },
+      {
+        path: "/:version/verify",
+        element: (
+          <ValidatedVersionRoute>
+            <VerifyCode />
+          </ValidatedVersionRoute>
+        ),
       },
       {
         path: "/forgot",
@@ -71,11 +131,29 @@ export const router = createBrowserRouter([
       },
       {
         path: "/dashboard",
-        element: <ProtectedRoute><PreEnrollment /></ProtectedRoute>,
+        element: (
+          <ProtectedRoute>
+            <Navigate to="/v1/dashboard" replace />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/:version/dashboard",
+        element: (
+          <ValidatedVersionRoute>
+            <ProtectedRoute>
+              <VersionedDashboard />
+            </ProtectedRoute>
+          </ValidatedVersionRoute>
+        ),
       },
       {
         path: "/demo",
         element: <DemoDashboard />,
+      },
+      {
+        path: "/test/pre-enrollment-dashboard",
+        element: <PreEnrollmentDashboardTest />,
       },
       {
         path: "/dashboard/classic",
@@ -95,7 +173,21 @@ export const router = createBrowserRouter([
       },
       {
         path: "/enrollment",
-        element: <ProtectedRoute><EnrollmentLayout /></ProtectedRoute>,
+        element: <LegacyEnrollmentRedirect />,
+      },
+      {
+        path: "/enrollment/*",
+        element: <LegacyEnrollmentRedirect />,
+      },
+      {
+        path: "/:version/enrollment",
+        element: (
+          <ValidatedVersionRoute>
+            <ProtectedRoute>
+              <VersionedEnrollment />
+            </ProtectedRoute>
+          </ValidatedVersionRoute>
+        ),
         children: [
           {
             index: true,
@@ -107,7 +199,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "choose-plan",
-            element: <ChoosePlan />,
+            element: <VersionedChoosePlan />,
           },
           {
             path: "plans",
@@ -115,7 +207,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "contribution",
-            element: <Contribution />,
+            element: <VersionedContribution />,
           },
           {
             path: "auto-increase",
@@ -123,45 +215,55 @@ export const router = createBrowserRouter([
           },
           {
             path: "future-contributions",
-            element: <Navigate to="/enrollment/auto-increase" replace />,
+            element: <Navigate to="../auto-increase" replace />,
           },
           {
             path: "investments",
-            element: (
-              <EnrollmentInvestmentsGuard>
-                <EnrollmentInvestmentsContent />
-              </EnrollmentInvestmentsGuard>
-            ),
+            element: <VersionedEnrollmentInvestments />,
           },
           {
             path: "review",
-            element: <EnrollmentReviewContent />,
+            element: <VersionedEnrollmentReviewContent />,
           },
         ],
       },
       {
         path: "/transactions",
-        element: <ProtectedRoute><TransactionsPage /></ProtectedRoute>,
+        element: <LegacyTransactionsRedirect />,
       },
       {
-        path: "/transactions/loan/new",
+        path: "/transactions/*",
+        element: <LegacyTransactionsRedirect />,
+      },
+      {
+        path: "/:version/transactions",
         element: (
-          <ProtectedRoute>
-            <Navigate to="/transactions/loan/start" replace />
-          </ProtectedRoute>
+          <ValidatedVersionRoute>
+            <ProtectedTransactionsOutlet />
+          </ValidatedVersionRoute>
         ),
-      },
-      {
-        path: "/transactions/:transactionType/start",
-        element: <ProtectedRoute><TransactionApplicationRouter /></ProtectedRoute>,
-      },
-      {
-        path: "/transactions/:transactionType/:transactionId",
-        element: <ProtectedRoute><TransactionApplicationRouter /></ProtectedRoute>,
-      },
-      {
-        path: "/transactions/:transactionId",
-        element: <ProtectedRoute><TransactionAnalysis /></ProtectedRoute>,
+        children: [
+          {
+            index: true,
+            element: <TransactionsPage />,
+          },
+          {
+            path: "loan/new",
+            element: <Navigate to="loan/start" replace />,
+          },
+          {
+            path: ":transactionType/start",
+            element: <TransactionApplicationRouter />,
+          },
+          {
+            path: ":transactionType/:transactionId",
+            element: <TransactionApplicationRouter />,
+          },
+          {
+            path: ":transactionId",
+            element: <TransactionAnalysis />,
+          },
+        ],
       },
       {
         path: "/settings",
@@ -170,6 +272,14 @@ export const router = createBrowserRouter([
       {
         path: "/settings/theme",
         element: <ProtectedRoute><ThemeSettings /></ProtectedRoute>,
+      },
+      {
+        path: "/ai-assets",
+        element: (
+          <ProtectedRoute>
+            <AIAssetsPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/investments",

@@ -5,8 +5,19 @@ import { RouteErrorBoundary } from "../components/RouteErrorBoundary";
 import { SplashScreen } from "../components/SplashScreen";
 import { useAISettings } from "../context/AISettingsContext";
 import { CoreAIModalProvider } from "../context/CoreAIModalContext";
+import { GlobalSearchHost } from "@/components/search/GlobalSearchHost";
 
-const HIDE_CORE_AI_PATHS = ["/", "/dashboard"];
+const HIDE_CORE_AI_PATHS = [
+  "/",
+  "/dashboard",
+  "/v1/dashboard",
+  "/v2/dashboard",
+  "/v1/login",
+  "/v2/login",
+  "/v1/verify",
+  "/v2/verify",
+  "/test/pre-enrollment-dashboard",
+];
 
 /**
  * Root layout - wraps all routes. Renders Outlet + global floating components.
@@ -26,6 +37,7 @@ export const RootLayout = () => {
       <RouteErrorBoundary>
         <Outlet />
       </RouteErrorBoundary>
+      <GlobalSearchHost />
       {showCoreAI && <CoreAIFab />}
       <DemoSwitcher />
     </CoreAIModalProvider>

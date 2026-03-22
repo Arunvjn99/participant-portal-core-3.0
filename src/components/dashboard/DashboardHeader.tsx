@@ -10,6 +10,10 @@ import { useUser } from "@/context/UserContext";
 import { useTheme } from "@/context/ThemeContext";
 import { FeedbackModal } from "@/components/feedback/FeedbackModal";
 import { NotificationPanel } from "@/components/dashboard/NotificationPanel";
+import { branding } from "@/config/branding";
+import { getRoutingVersion, stripRoutingVersionPrefix, withVersion } from "@/core/version";
+import { GlobalSearch } from "@/components/search/GlobalSearch";
+import { requestOpenGlobalSearch } from "@/hooks/useGlobalSearch";
 
 /* ────────────────────────────── Nav config ────────────────────────────── */
 
@@ -18,11 +22,11 @@ import { NotificationPanel } from "@/components/dashboard/NotificationPanel";
  * persona is active, otherwise to /dashboard. labelKey is the i18n key.
  */
 /** Order: Dashboard, Retirement Plan, Transactions, Investment Portfolio, Account. */
-function getNavLinks(isDemoMode: boolean) {
+function getNavLinks(isDemoMode: boolean, version: string) {
   return [
-    { to: isDemoMode ? "/demo" : "/dashboard", labelKey: "nav.dashboard" as const },
-    { to: "/enrollment", labelKey: "nav.retirementPlan" as const },
-    { to: "/transactions", labelKey: "nav.transactions" as const },
+    { to: isDemoMode ? "/demo" : withVersion(version, "/dashboard"), labelKey: "nav.dashboard" as const },
+    { to: withVersion(version, "/enrollment"), labelKey: "nav.retirementPlan" as const },
+    { to: withVersion(version, "/transactions"), labelKey: "nav.transactions" as const },
     { to: "/dashboard/investment-portfolio", labelKey: "nav.investmentPortfolio" as const },
     { to: "/profile", labelKey: "nav.account" as const },
   ] as const;
@@ -122,15 +126,27 @@ export const DashboardHeader = () => {
     performLogout();
   }, [performLogout]);
 
-  const NAV_LINKS = getNavLinks(!!demoUser);
+  const routeVersion = getRoutingVersion(location.pathname);
+  const NAV_LINKS = getNavLinks(!!demoUser, routeVersion);
 
   const isActive = (to: string) => {
     if (to === "/dashboard/investment-portfolio")
       return location.pathname === "/dashboard/investment-portfolio";
-    if (to === "/dashboard" || to === "/demo")
-      return location.pathname === "/dashboard" || location.pathname === "/demo" || location.pathname === "/dashboard/classic" || location.pathname === "/dashboard/post-enrollment";
-    if (to === "/transactions") return location.pathname.startsWith("/transactions");
-    if (to === "/enrollment") return location.pathname.startsWith("/enrollment");
+    if (to === "/demo")
+      return location.pathname === "/demo";
+    if (to.endsWith("/dashboard"))
+      return (
+        location.pathname === to ||
+        location.pathname === "/dashboard" ||
+        location.pathname === "/v1/dashboard" ||
+        location.pathname === "/v2/dashboard" ||
+        location.pathname === "/dashboard/classic" ||
+        location.pathname === "/dashboard/post-enrollment"
+      );
+    if (stripRoutingVersionPrefix(to) === "/transactions")
+      return stripRoutingVersionPrefix(location.pathname).startsWith("/transactions");
+    if (stripRoutingVersionPrefix(to) === "/enrollment")
+      return stripRoutingVersionPrefix(location.pathname).startsWith("/enrollment");
     return location.pathname === to;
   };
 
@@ -141,53 +157,64 @@ export const DashboardHeader = () => {
   return (
     <>
       <div>
-      <div className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:h-16 lg:px-8">
-        {/* ── Left: Client logo only (primary brand); CORE logo removed per brand hierarchy ── */}
-        {isAuthenticated && (
-          <div className="flex items-center shrink-0">
-            {tenantLogo ? (
-              <img
-                src={tenantLogo}
-                alt="Company Logo"
-                className="h-8 w-auto max-w-[160px] object-contain"
-              />
-            ) : (
-              <span className="text-sm font-semibold text-[var(--color-text-secondary)]" aria-hidden>Dashboard</span>
-            )}
-          </div>
-        )}
+      <div className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between gap-2 px-4 sm:px-6 lg:h-16 lg:px-8">
+        {/* ── Left: Logo (tenant when available, else app logo) ── */}
+        <div className="flex items-center shrink-0">
+          <Link
+            to={isAuthenticated ? withVersion(routeVersion, "/dashboard") : "/"}
+            className="flex items-center focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-2 rounded-md"
+            aria-label={branding.authAppName}
+          >
+            <img
+              src={tenantLogo || branding.logo.src}
+              alt={branding.logo.alt}
+              className="h-8 w-auto max-w-[160px] object-contain"
+            />
+          </Link>
+        </div>
 
-        {/* ── Center: Desktop nav (visible at lg+) ── */}
-        <nav
-          className="hidden lg:flex items-center gap-1"
-          aria-label="Main navigation"
-        >
-          {NAV_LINKS.map(({ to, labelKey }) => {
-            const active = isActive(to);
-            return (
-              <Link
-                key={labelKey}
-                to={to}
-                className={`relative px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors ${
-                  active
-                    ? "text-[var(--color-primary)] font-semibold"
-                    : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface)]"
-                }`}
-              >
-                {t(labelKey)}
-                {active && (
-                  <span
-                    className="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 w-8 rounded-full bg-[var(--color-primary)]"
-                    aria-hidden
-                  />
-                )}
-              </Link>
-            );
-          })}
-        </nav>
+        {/* ── Center: Desktop nav + global search (lg+) ── */}
+        <div className="hidden min-w-0 flex-1 items-center gap-3 px-2 lg:flex lg:gap-4">
+          <nav className="flex shrink-0 items-center gap-1" aria-label="Main navigation">
+            {NAV_LINKS.map(({ to, labelKey }) => {
+              const active = isActive(to);
+              return (
+                <Link
+                  key={labelKey}
+                  to={to}
+                  className={`relative whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium transition-colors xl:px-4 ${
+                    active
+                      ? "font-semibold text-[var(--color-primary)]"
+                      : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)] hover:text-[var(--color-text-primary)]"
+                  }`}
+                >
+                  {t(labelKey)}
+                  {active && (
+                    <span
+                      className="absolute bottom-0 left-1/2 h-0.5 w-8 -translate-x-1/2 rounded-full bg-[var(--color-primary)]"
+                      aria-hidden
+                    />
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
+          <GlobalSearch routeVersion={routeVersion} />
+        </div>
 
         {/* ── Right: Actions ── */}
         <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={() => requestOpenGlobalSearch()}
+            className={`${ICON_BTN} lg:hidden`}
+            aria-label="Open command palette"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <circle cx="11" cy="11" r="8" />
+              <path d="M21 21l-4.35-4.35" />
+            </svg>
+          </button>
           <LanguageSwitcher />
           {/* Demo Mode badge */}
           {demoUser && (

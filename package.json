@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:server": "cd server && node --watch index.js",
+    "dev:server": "cd server && npm run dev",
+    "dev:image-server": "cd server && node dev-server.js",
     "dev:all": "concurrently \"npm run dev\" \"npm run dev:server\"",
     "build": "vite build",
     "build:check": "tsc -b && vite build",

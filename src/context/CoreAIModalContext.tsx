@@ -1,5 +1,6 @@
 import * as React from "react";
 import { CoreAssistantModal } from "../components/core-ai/CoreAssistantModal";
+import { CORE_AI_SEARCH_EVENT, OPEN_AI_ASSISTANT_EVENT } from "@/core/search/aiBridge";
 
 export interface CoreAIModalContextValue {
   isOpen: boolean;
@@ -47,6 +48,26 @@ export function CoreAIModalProvider({ children }: { children: React.ReactNode })
   const clearInitialPrompt = React.useCallback(() => {
     setInitialPrompt(null);
   }, []);
+
+  /* Global search / command palette → Core AI (decoupled via window events) */
+  React.useEffect(() => {
+    const onOpenAssistant = () => {
+      open();
+    };
+
+    const onCoreAISearch = (e: Event) => {
+      const prompt = (e as CustomEvent<{ prompt?: string }>).detail?.prompt;
+      if (typeof prompt !== "string" || !prompt.trim()) return;
+      openWithPrompt(prompt.trim());
+    };
+
+    window.addEventListener(OPEN_AI_ASSISTANT_EVENT, onOpenAssistant);
+    window.addEventListener(CORE_AI_SEARCH_EVENT, onCoreAISearch as EventListener);
+    return () => {
+      window.removeEventListener(OPEN_AI_ASSISTANT_EVENT, onOpenAssistant);
+      window.removeEventListener(CORE_AI_SEARCH_EVENT, onCoreAISearch as EventListener);
+    };
+  }, [open, openWithPrompt]);
 
   const value: CoreAIModalContextValue = React.useMemo(
     () => ({ isOpen, open, close, openWithPrompt, initialPrompt, clearInitialPrompt }),

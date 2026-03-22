@@ -1,6 +1,8 @@
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
-import { useCoreAIModal } from "../../context/CoreAIModalContext";
+import { Bot } from "lucide-react";
+import { useCoreAIModal } from "@/context/CoreAIModalContext";
+import { useResolvedUIAsset } from "@/hooks/useResolvedUIAsset";
 
 /**
  * CoreAIFab — Single floating "Ask Core AI" pill button.
@@ -12,6 +14,7 @@ import { useCoreAIModal } from "../../context/CoreAIModalContext";
 export const CoreAIFab = () => {
   const { t } = useTranslation();
   const { isOpen, open } = useCoreAIModal();
+  const aiAssistantUrl = useResolvedUIAsset("aiAssistant");
 
   return (
     <AnimatePresence>
@@ -36,16 +39,27 @@ export const CoreAIFab = () => {
             className="core-ai-fab-btn elevation-3 relative flex items-center gap-2.5 rounded-full px-5 py-3 text-white transition-all duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
             aria-label={t("coreAi.fabAria")}
           >
-            <motion.img
-              src="/image/bella-icon.png"
-              alt=""
-              width={28}
-              height={28}
-              className="h-7 w-7 object-contain"
-              aria-hidden="true"
-              animate={{ scale: [1, 1.08, 1] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            />
+            {aiAssistantUrl.trim() ? (
+              <motion.img
+                src={aiAssistantUrl}
+                alt=""
+                width={28}
+                height={28}
+                className="h-7 w-7 object-contain"
+                aria-hidden="true"
+                animate={{ scale: [1, 1.08, 1] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              />
+            ) : (
+              <motion.span
+                className="flex h-7 w-7 items-center justify-center"
+                aria-hidden="true"
+                animate={{ scale: [1, 1.08, 1] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <Bot className="h-6 w-6 text-white" strokeWidth={2} />
+              </motion.span>
+            )}
             <span className="text-sm font-semibold">{t("coreAi.fabLabel")}</span>
           </button>
         </motion.div>

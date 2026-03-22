@@ -20,6 +20,10 @@ export default {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
         },
+        "palette-in": {
+          "0%": { opacity: "0", transform: "scale(0.96) translateY(-6px)" },
+          "100%": { opacity: "1", transform: "scale(1) translateY(0)" },
+        },
       },
       animation: {
         "bella-pulse": "bella-pulse 2.5s ease-in-out infinite",
@@ -27,6 +31,7 @@ export default {
         "float-delayed": "float 6s ease-in-out 3s infinite",
         "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "fade-in": "fade-in 0.3s ease-out forwards",
+        "palette-in": "palette-in 0.2s ease-out forwards",
       },
       colors: {
         /* Theme engine: all colors from CSS variables (branding_json + dark mode) */
