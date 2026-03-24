@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { useReducedMotion } from "framer-motion";
-import type { LoanFlowData, LoanPlanConfig } from "../../../types/loan";
-import { calculateLoan } from "../../../utils/loanCalculator";
+import type { LoanFlowData, LoanPlanConfig } from "@/types/loan";
+import { calculateLoan } from "@/utils/loanCalculator";
 import {
   LoanStepLayout,
   LoanSummaryCard,
@@ -10,7 +10,7 @@ import {
   AmortizationTable,
   InvestmentBreakdownTable,
 } from "../index";
-import { DEFAULT_LOAN_PLAN_CONFIG } from "../../../config/loanPlanConfig";
+import { DEFAULT_LOAN_PLAN_CONFIG } from "@/config/loanPlanConfig";
 
 interface LoanReviewStepProps {
   data: LoanFlowData;

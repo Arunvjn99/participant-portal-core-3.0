@@ -71,6 +71,13 @@ export function UserProvider({ children }: { children: ReactNode }) {
     setProfileLoading(true);
 
     const fetchUserData = async () => {
+      if (!supabase) {
+        setProfile(null);
+        setCompany(null);
+        setBrandingLoading(false);
+        setProfileLoading(false);
+        return;
+      }
       if (import.meta.env.DEV) console.log("[user-diag] fetching profile for", authUser.id);
       const { data: profileData, error: profileError } = await supabase
         .from("profiles")

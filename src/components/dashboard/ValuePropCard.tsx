@@ -1,5 +1,5 @@
 import { DashboardCard } from "./DashboardCard";
-import { DollarIcon, ShieldIcon, ChartIcon } from "../../assets/dashboard/icons";
+import { DollarIcon, ShieldIcon, ChartIcon } from "@/assets/dashboard/icons";
 
 type ValuePropIconType = "dollar" | "shield" | "chart";
 

@@ -24,6 +24,18 @@ export default {
           "0%": { opacity: "0", transform: "scale(0.96) translateY(-6px)" },
           "100%": { opacity: "1", transform: "scale(1) translateY(0)" },
         },
+        "ai-assistant-breathe": {
+          "0%, 100%": { transform: "scale(1)" },
+          "50%": { transform: "scale(1.02)" },
+        },
+        "hero-search-panel": {
+          "0%": { opacity: "0", transform: "translateY(-6px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "hero-ai-icon-pulse": {
+          "0%, 100%": { transform: "scale(1)" },
+          "50%": { transform: "scale(1.05)" },
+        },
       },
       animation: {
         "bella-pulse": "bella-pulse 2.5s ease-in-out infinite",
@@ -32,6 +44,9 @@ export default {
         "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "fade-in": "fade-in 0.3s ease-out forwards",
         "palette-in": "palette-in 0.2s ease-out forwards",
+        "ai-assistant-breathe": "ai-assistant-breathe 2.5s ease-in-out infinite",
+        "hero-search-panel": "hero-search-panel 0.2s ease-out forwards",
+        "hero-ai-icon-pulse": "hero-ai-icon-pulse 2s ease-in-out infinite",
       },
       colors: {
         /* Theme engine: all colors from CSS variables (branding_json + dark mode) */

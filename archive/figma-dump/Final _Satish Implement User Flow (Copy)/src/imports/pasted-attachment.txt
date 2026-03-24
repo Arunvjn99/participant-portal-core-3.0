@@ -1,0 +1,115 @@
+Refine the Retirement Readiness screen to improve clarity, actionability, and emotional understanding of the readiness score.
+
+The current design shows a readiness score and several numbers but does not clearly explain what the score means or how users can improve it.
+
+The goal is to turn the screen into a clear financial progress indicator rather than a static analytics report.
+
+---
+
+READINESS SCORE CONTEXT
+
+Keep the readiness score visualization but add explanatory text directly below it.
+
+Example:
+
+You are 57% on track for your retirement goal.
+
+Add a benchmark reference:
+
+Most participants your age aim for a readiness score of 65 or higher.
+
+This helps users understand whether their score is good or needs improvement.
+
+---
+
+CONNECT SCORE TO OUTCOME
+
+Place the projected retirement value closer to the readiness score.
+
+Example:
+
+Projected retirement balance
+$459,000
+
+This should appear directly below the readiness score to reinforce the relationship between the score and financial outcome.
+
+---
+
+ADD SCORE DRIVERS
+
+Introduce a section explaining what factors influence the readiness score.
+
+Example:
+
+What impacts your readiness
+
+Contribution rate
+Employer match
+Investment growth
+Time horizon
+
+Display these as small indicators to help users understand how their choices affect the score.
+
+---
+
+IMPROVE AI INSIGHT SECTION
+
+Convert the AI insight into an actionable improvement card.
+
+Example:
+
+Increase your contribution by 2%
+
+New readiness score: 71
+Additional retirement savings: +$1,700/year
+
+Provide an action button:
+
+Apply change
+
+---
+
+ADD IMPROVEMENT OPTIONS
+
+Include a short list of ways users can improve their readiness score.
+
+Example:
+
+Increase contribution by 2% → +14 readiness score
+Enable auto increase → +9 readiness score
+Delay retirement by 2 years → +11 readiness score
+
+This allows users to see different paths to improvement.
+
+---
+
+INFORMATION HIERARCHY
+
+The page structure should follow this order:
+
+Readiness Score
+Score Meaning
+Projected Retirement Outcome
+Ways to Improve
+Contribution Metrics
+Next Step
+
+---
+
+PRIMARY ACTION
+
+Keep the main action:
+
+Continue to Review
+
+This confirms the user's setup and proceeds to the final confirmation step.
+
+---
+
+UX GOAL
+
+The readiness screen should feel like a financial health check that helps users understand:
+
+How prepared they are for retirement
+What their projected outcome looks like
+What actions could improve their future savings

@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import type { PortfolioData, Plan } from "../../types/investmentPortfolio";
+import type { PortfolioData, Plan } from "@/types/investmentPortfolio";
 import { ArrowUpRight, ArrowDownRight, Filter } from "lucide-react";
 
 interface Props {

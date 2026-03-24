@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { Modal } from "../ui/Modal";
 import { Input } from "../ui/Input";
 import Button from "../ui/Button";
-import { MOCK_FUNDS } from "../../data/mockFunds";
+import { MOCK_FUNDS } from "@/data/mockFunds";
 
 interface FundSearchModalProps {
   isOpen: boolean;

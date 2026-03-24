@@ -1,20 +1,27 @@
 import { useCallback, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import Button from "../ui/Button";
+import { useAIAssistantStore } from "@/stores/aiAssistantStore";
 
 interface AIAdvisorModalProps {
   open: boolean;
   onClose: () => void;
 }
 
+const REVIEW_OPTIMIZE_PROMPT =
+  "I'm on the enrollment review step before I submit. Help me sanity-check my plan choice, contribution rate, and investment allocation.";
+
 /**
- * AI Advisor modal - AI + Human advisor options for "Optimize your score" CTA.
+ * Chooser: open Core AI with enrollment context, or dismiss. No fake “connect” actions.
  */
 export const AIAdvisorModal = ({ open, onClose }: AIAdvisorModalProps) => {
+  const { t } = useTranslation();
+
   const handleEscape = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     },
-    [onClose]
+    [onClose],
   );
 
   useEffect(() => {
@@ -38,40 +45,38 @@ export const AIAdvisorModal = ({ open, onClose }: AIAdvisorModalProps) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="ai-advisor-modal-title"
     >
       <div className="w-full max-w-md rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-xl">
         <h2 id="ai-advisor-modal-title" className="text-xl font-semibold text-[var(--color-text)]">
-          Optimize Your Portfolio
+          {t("aiSystem.askCoreAI")}
         </h2>
         <p className="mt-3 text-[var(--color-textSecondary)]">
-          Get personalized guidance from our AI advisor or connect with a human expert to optimize
-          your retirement investments.
+          {t("aiSystem.aiAdvisorModalBody")}
         </p>
         <div className="mt-6 flex flex-col gap-3">
           <Button
             type="button"
-            onClick={onClose}
-            className="w-full"
+            className="ai-assistant w-full rounded-full border-0 font-semibold text-white shadow-md"
+            onClick={() => {
+              useAIAssistantStore.getState().openAIModal({ prompt: REVIEW_OPTIMIZE_PROMPT, autoSend: true });
+              onClose();
+            }}
           >
-            Connect with AI Advisor
+            {t("aiSystem.askCoreAI")}
           </Button>
-          <Button
-            type="button"
-            onClick={onClose}
-            className="button--outline w-full"
-          >
-            Schedule Human Advisor Call
+          <Button type="button" onClick={onClose} className="button--outline w-full">
+            {t("aiSystem.scheduleHumanAdvisor")}
           </Button>
           <button
             type="button"
             onClick={onClose}
             className="mt-2 text-sm text-[var(--color-textSecondary)] hover:text-[var(--color-text)]"
           >
-            Maybe later
+            {t("aiSystem.maybeLater")}
           </button>
         </div>
       </div>

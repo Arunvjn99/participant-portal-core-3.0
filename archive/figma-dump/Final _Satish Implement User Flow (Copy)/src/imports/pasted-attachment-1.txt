@@ -1,0 +1,151 @@
+Improve the existing Plan Selection screen in the retirement enrollment flow without changing the overall layout or design system.
+
+The goal is to improve user clarity, trust, and decision confidence.
+
+Keep the current visual style and card layout.
+
+---
+
+CHANGE RECOMMENDATION LABEL
+
+Replace the "Recommended" badge on the Traditional 401(k) card.
+
+New badge text:
+Most Common Choice
+
+Add tooltip or helper text:
+
+Chosen by most employees because it reduces taxable income today.
+
+Do not show this badge if the employer offers only one plan.
+
+---
+
+ADD EMPLOYER MATCH CONTEXT
+
+Add a small informational banner above the plan cards.
+
+Example message:
+
+Your employer matches contributions up to 6%.
+
+This prepares users for the next contribution step and increases motivation to continue.
+
+Style:
+Subtle information card with icon.
+
+---
+
+ADD REASSURANCE MESSAGE
+
+Below the plan cards add a small reassurance line:
+
+You can change this plan later from your account settings.
+
+This reduces anxiety about making the wrong choice.
+
+---
+
+IMPROVE CARD INTERACTION
+
+Ensure the entire card is selectable, not just the button.
+
+When a user clicks anywhere on a card:
+• The card becomes highlighted
+• The border becomes stronger
+• The selection state becomes clear
+
+Primary action button inside card remains visible.
+
+---
+
+IMPROVE BUTTON COPY
+
+Update button text.
+
+Traditional card:
+Continue with Traditional 401(k)
+
+Roth card:
+Choose Roth 401(k)
+
+Buttons should feel contextual and action-oriented.
+
+---
+
+IMPROVE CARD CONTENT HIERARCHY
+
+Reorder content inside each card.
+
+New order:
+
+Plan title
+Short description
+Primary action button
+Key benefits list
+
+Users typically click before reading detailed benefits.
+
+---
+
+IMPROVE AI ASSISTANCE SECTION
+
+Update the helper section below the cards.
+
+Change title:
+
+Not sure which plan is right for you?
+
+Add description:
+
+Our AI assistant can help explain the differences.
+
+Buttons:
+
+Ask AI
+Compare Plans
+
+Ensure this section visually appears secondary to the main decision cards.
+
+---
+
+SUPPORT SINGLE-PLAN EMPLOYERS
+
+If the employer only offers one plan:
+
+Hide the comparison layout.
+
+Instead show a confirmation card:
+
+Your employer offers a Traditional 401(k) retirement plan.
+
+Short description:
+This plan allows tax-deferred retirement savings.
+
+Primary button:
+Continue to Contributions
+
+---
+
+VISUAL IMPROVEMENTS
+
+Add subtle visual emphasis to the "Most Common Choice" card.
+
+Use:
+• light background tint
+• slightly stronger shadow
+• clear selection state
+
+Maintain a clean fintech design style.
+
+---
+
+FINAL RESULT
+
+The plan selection screen should:
+
+• Clearly present retirement plan options
+• Reduce decision anxiety
+• Provide social proof instead of forced recommendation
+• Prepare users for the contribution step
+• Support both single-plan and multi-plan employers

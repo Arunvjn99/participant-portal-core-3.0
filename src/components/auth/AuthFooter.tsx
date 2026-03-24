@@ -1,4 +1,4 @@
-import { branding } from "../../config/branding";
+import { branding } from "@/config/branding";
 
 /** Footer for auth pages: copyright (left), Privacy (center), CORE logo (right). Aligned with card padding rhythm. */
 export const AuthFooter = () => {

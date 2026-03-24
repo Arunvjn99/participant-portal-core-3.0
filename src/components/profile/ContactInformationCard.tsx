@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Input } from "../ui/Input";
 import Button from "../ui/Button";
 import { ProfileCard } from "./ProfileCard";
-import type { ContactInformation } from "../../data/mockProfile";
+import type { ContactInformation } from "@/data/mockProfile";
 
 interface ContactInformationCardProps {
   data: ContactInformation;

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ProfileCard } from "./ProfileCard";
-import type { EmploymentClassification } from "../../data/mockProfile";
+import type { EmploymentClassification } from "@/data/mockProfile";
 
 interface EmploymentClassificationCardProps {
   data: EmploymentClassification;

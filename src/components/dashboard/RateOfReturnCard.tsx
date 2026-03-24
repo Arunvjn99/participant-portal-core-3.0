@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { getRoutingVersion, withVersion } from "@/core/version";
 
 interface RateOfReturnCardProps {
   confidencePct: number;
@@ -24,6 +25,8 @@ const formatCurrency = (n: number) =>
  */
 export const RateOfReturnCard = ({ confidencePct, message, timeRange: initialRange }: RateOfReturnCardProps) => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const version = getRoutingVersion(pathname);
   const [timeRange, setTimeRange] = useState(initialRange);
   const [tooltip, setTooltip] = useState<{ index: number; x: number; y: number } | null>(null);
 
@@ -195,7 +198,7 @@ export const RateOfReturnCard = ({ confidencePct, message, timeRange: initialRan
       <button
         type="button"
         className="ped-ror__btn w-full rounded-lg bg-[var(--color-success)] px-4 py-3 font-medium text-white hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--color-success)] focus:ring-offset-2"
-        onClick={() => navigate("/enrollment/investments")}
+        onClick={() => navigate(withVersion(version, "/enrollment/investments"))}
       >
         Maintain Strategy
       </button>

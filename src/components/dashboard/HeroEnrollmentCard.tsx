@@ -4,8 +4,8 @@ import Button from "../ui/Button";
 import { PersonalizePlanModal } from "../enrollment/PersonalizePlanModal";
 import { ArrowUpRightIcon } from "@/assets/dashboard/icons";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { useCanHover } from "@/hooks/useCanHover";
 import { useResolvedUIAsset } from "@/hooks/useResolvedUIAsset";
+import { isVideoAssetUrl } from "@/lib/isVideoAssetUrl";
 
 interface HeroEnrollmentCardProps {
   /** Single-line greeting (legacy). If greetingTitle + userName are set, they are shown on two lines instead. */
@@ -48,7 +48,9 @@ export const HeroEnrollmentCard = ({
 }: HeroEnrollmentCardProps) => {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const reduced = useReducedMotion();
-  const canHover = useCanHover();
+  const defaultHeroSrc = useResolvedUIAsset("dashboardHero");
+  const effectiveHeroSrc = (heroImageSrc ?? defaultHeroSrc).trim();
+  const heroIsVideo = effectiveHeroSrc ? isVideoAssetUrl(effectiveHeroSrc) : false;
 
   const handleEnrollClick = () => {
     setIsWizardOpen(true);
@@ -110,15 +112,28 @@ export const HeroEnrollmentCard = ({
           >
             <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-[var(--color-background)]">
               {effectiveHeroSrc.trim() ? (
-                <img
-                  src={effectiveHeroSrc}
-                  alt=""
-                  className="h-full w-full object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src =
-                      "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect fill='%94a3b8' width='400' height='300'/%3E%3Ctext fill='%64748b' font-family='sans-serif' font-size='18' x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle'%3EIllustration%3C/text%3E%3C/svg%3E";
-                  }}
-                />
+                heroIsVideo ? (
+                  <video
+                    src={effectiveHeroSrc}
+                    className="h-full w-full object-cover"
+                    autoPlay={!reduced}
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                    aria-hidden
+                  />
+                ) : (
+                  <img
+                    src={effectiveHeroSrc}
+                    alt=""
+                    className="h-full w-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src =
+                        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect fill='%94a3b8' width='400' height='300'/%3E%3Ctext fill='%64748b' font-family='sans-serif' font-size='18' x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle'%3EIllustration%3C/text%3E%3C/svg%3E";
+                    }}
+                  />
+                )
               ) : null}
               {/* Floating insight card - stagger last */}
               <motion.div

@@ -1,10 +1,11 @@
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { getRoutingVersion, withVersion } from "@/core/version";
 import { motion } from "framer-motion";
-import { AnimatedNumber } from "../../shared/AnimatedNumber";
-import { CARD_STYLE, fmtCurrency } from "../../core/types";
-import type { ModuleProps } from "../../core/types";
+import { AnimatedNumber } from "@/components/dashboard/shared/AnimatedNumber";
+import { CARD_STYLE, fmtCurrency } from "@/components/dashboard/core/types";
+import type { ModuleProps } from "@/components/dashboard/core/types";
 
 /**
  * LoanLiquidityPanel — Borrowing power, risk state, impact warning, repayment info.
@@ -12,6 +13,8 @@ import type { ModuleProps } from "../../core/types";
 export const LoanLiquidityPanel = memo(function LoanLiquidityPanel({ engine }: ModuleProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const version = getRoutingVersion(pathname);
 
   const statusConfig = {
     healthy: { labelKey: "dashboard.loanHealthyLiquidity" as const, color: "var(--enroll-accent)", bgToken: "enroll-accent-rgb" },
@@ -99,7 +102,7 @@ export const LoanLiquidityPanel = memo(function LoanLiquidityPanel({ engine }: M
 
       <button
         type="button"
-        onClick={() => navigate("/transactions/loan/start")}
+        onClick={() => navigate(withVersion(version, "/transactions/loan/eligibility"))}
         className="mt-3 w-full text-[11px] font-semibold py-2 rounded-xl border-none cursor-pointer transition-colors"
         style={{
           background: "rgb(var(--enroll-brand-rgb) / 0.06)",

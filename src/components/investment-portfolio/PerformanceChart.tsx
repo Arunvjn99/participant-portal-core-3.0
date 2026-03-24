@@ -11,7 +11,7 @@ import {
   Legend,
   ReferenceDot,
 } from "recharts";
-import type { ChartDataPoint } from "../../types/investmentPortfolio";
+import type { ChartDataPoint } from "@/types/investmentPortfolio";
 
 interface Props {
   data: ChartDataPoint[];

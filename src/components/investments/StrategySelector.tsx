@@ -1,4 +1,4 @@
-import type { InvestmentStrategy } from "../../types/investment";
+import type { InvestmentStrategy } from "@/types/investment";
 
 interface StrategySelectorProps {
   selectedStrategy: InvestmentStrategy;

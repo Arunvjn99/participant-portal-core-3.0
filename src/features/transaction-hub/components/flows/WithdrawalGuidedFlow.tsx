@@ -1,10 +1,10 @@
 import { useState, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { GuidedFlowDrawer } from "../GuidedFlowDrawer";
-import { useAnimatedNumber } from "../../hooks/useAnimatedNumber";
-import { useLocaleFormat } from "../../hooks/useLocaleFormat";
-import { calculateWithdrawalNet, calculateOpportunityCost } from "../../utils/calculations";
-import type { HubFinancialData } from "../../data/mockHubData";
+import { useAnimatedNumber } from "@/features/transaction-hub/hooks/useAnimatedNumber";
+import { useLocaleFormat } from "@/features/transaction-hub/hooks/useLocaleFormat";
+import { calculateWithdrawalNet, calculateOpportunityCost } from "@/features/transaction-hub/utils/calculations";
+import type { HubFinancialData } from "@/features/transaction-hub/data/mockHubData";
 
 interface WithdrawalGuidedFlowProps {
   open: boolean;

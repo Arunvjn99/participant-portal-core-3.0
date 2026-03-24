@@ -1,4 +1,36 @@
 {
+  "aiSystem": {
+    "askCoreAIAboutThis": "Ask Core AI about this →",
+    "askCoreAI": "Ask Core AI",
+    "aiInsight": "AI Insight",
+    "aiRecommendation": "AI Recommendation",
+    "aiAssistant": "AI Assistant",
+    "sampleInsightBadge": "Sample insight",
+    "sampleInsightDisclaimer": "Illustrative demo text — not personalized advice or a live model response.",
+    "privacyNote": "Core AI uses your questions and plan context to generate answers. You can turn AI features off below; the FAB and some entry points respect your choice.",
+    "coreAIToggle": "Show Core AI entry points (floating button & search)",
+    "insightsToggle": "Show AI Recommendation cards (dashboard & related views)",
+    "profileSectionTitle": "AI & Personalization",
+    "profileSectionIntro": "Control how AI appears in your participant experience.",
+    "profileAskCoreAIPrompt": "Explain how Core AI works in this portal and what I should (and should not) use it for.",
+    "enrollmentContributionHint": "Even a 1% higher deferral can meaningfully increase retirement income over decades.",
+    "enrollmentContributionHintTitle": "AI Insight",
+    "enrollmentInvestHintTitle": "AI Insight",
+    "enrollmentInvestHint": "Spreading investments across asset classes can help manage risk for your timeline.",
+    "enrollmentReviewHintTitle": "AI Insight",
+    "enrollmentReviewHint": "Confirm your elections match your goals before you submit; you can usually change investments later per plan rules.",
+    "loanSimAiBody": "Loan balances reduce invested assets and can affect long-term growth. Ask Core AI to walk through tradeoffs for your situation.",
+    "feesAiBody": "Fees reduce the net amount you receive. Ask Core AI to explain how these charges work and what to verify with your plan.",
+    "txDetailAiBody": "Ask Core AI to explain how this transaction may affect taxes, vesting, or your retirement timeline.",
+    "invPageAiInsightTitle": "AI Insight",
+    "invPageAiInsightBody": "This portfolio view uses illustrative data. Ask Core AI for education on diversification, risk, and next steps — not as a substitute for professional advice.",
+    "dashboardEmptyInsightTitle": "AI Insight",
+    "dashboardEmptyInsightBody": "When you enroll and contribute, we will surface personalized AI Recommendations here.",
+    "dashboardEmptyInsightPrompt": "What kind of retirement actions should I consider after I enroll in my 401(k)?",
+    "aiAdvisorModalBody": "Get a guided walkthrough in Core AI, or schedule time with a human specialist. Core AI answers are informational—not tax or legal advice.",
+    "scheduleHumanAdvisor": "Schedule human advisor",
+    "maybeLater": "Maybe later"
+  },
   "dashboard": {
     "greeting": "Good Morning, {{name}}",
     "greetingTitle": "Good Morning",
@@ -35,7 +67,7 @@
     "heroTakeAction": "Take Action",
     "heroFloatingProjectedAt65": "Projected at 65",
     "heroFloatingOnTrack": "On Track",
-    "heroFloatingSmartRec": "Smart Recommendation",
+    "heroFloatingSmartRec": "AI Recommendation",
     "heroFloatingRothSuggestion": "Roth 401(k) suggested for your profile.",
     "heroFloatingYourContribution": "Your Contribution",
     "heroFloatingEmployerMatchMax": "Employer match maximized at 6%",
@@ -48,9 +80,9 @@
     "snapshotThisYear": "this year",
     "activityRecent": "Recent Activity",
     "activityViewAll": "View all →",
-    "insightsTitle": "AI Insights",
+    "insightsTitle": "AI Recommendations",
     "insightsApplySuggestion": "Apply Suggestion",
-    "insightsGeneratedFromPlan": "Insights generated from your plan data.",
+    "insightsGeneratedFromPlan": "Deterministic recommendations from your plan data — Ask Core AI for a deeper conversation.",
     "loanTitle": "Loan & Liquidity",
     "loanHealthyLiquidity": "Healthy Liquidity",
     "loanModerate": "Moderate",
@@ -239,8 +271,102 @@
     "hindi": "हिन्दी",
     "language": "Language"
   },
+  "floatingSearch": {
+    "placeholder": "Search or ask anything about your account...",
+    "openAria": "Open search and AI assistant"
+  },
+  "dashboardOverview": {
+    "pageTitle": "Overview",
+    "welcome": "Welcome back, {{name}}. Here's your retirement summary.",
+    "exportReport": "Export Report",
+    "exportDone": "Report ready — check your downloads.",
+    "balance": {
+      "growth": "↗ {{pct}}% this quarter",
+      "onTrack": "On track",
+      "vestedBalance": "Vested balance",
+      "retirement": "Retirement",
+      "retirementYear": "Est. {{year}}",
+      "pctVested": "% Vested"
+    },
+    "alert": {
+      "hint": "Opens transaction center for this request."
+    },
+    "readiness": {
+      "onTrack": "On track",
+      "description": "Projected to replace 75% of pre-retirement income.",
+      "simulator": "Launch simulator"
+    },
+    "quick": {
+      "title": "Quick actions",
+      "changeContribution": "Change contribution",
+      "transfer": "Transfer funds",
+      "rebalance": "Rebalance",
+      "rollover": "Start rollover",
+      "profile": "Update profile"
+    },
+    "learning": {
+      "title": "Learn about retirement planning",
+      "videoAria": "Play featured retirement video",
+      "minRead": "{{n}} min read",
+      "a1": "401(k) basics",
+      "a2": "Understanding employer match",
+      "a3": "Choosing your investment strategy"
+    },
+    "contributions": {
+      "title": "Monthly contributions",
+      "you": "You ({{pct}}%)",
+      "employer": "Employer ({{pct}}%)",
+      "total": "Total / mo",
+      "active": "Active"
+    },
+    "portfolio": {
+      "title": "Portfolio allocation",
+      "strategy": "Moderately aggressive",
+      "us": "U.S. stocks",
+      "intl": "International stocks",
+      "bonds": "Bonds",
+      "cash": "Cash"
+    },
+    "activity": {
+      "title": "Recent activity",
+      "viewAll": "View all",
+      "i1Title": "Contribution",
+      "i1Detail": "Pre-tax deferral",
+      "i2Title": "Employer match",
+      "i2Detail": "Company contribution",
+      "i3Title": "Rebalance",
+      "i3Detail": "Allocation update"
+    },
+    "next": {
+      "title": "Next best actions",
+      "beneficiary": "Add a beneficiary",
+      "risk": "Review risk tolerance",
+      "required": "Required"
+    },
+    "advisor": {
+      "role": "Senior wealth advisor",
+      "bio": "Sarah helps participants align savings, risk, and income goals with a clear, step-by-step plan.",
+      "rating": " Rating",
+      "experience": " Experience",
+      "clients": " Clients",
+      "message": "Message",
+      "schedule": "Schedule call"
+    },
+    "loan": {
+      "title": "Active loan",
+      "requestNew": "Request new",
+      "active": "Active",
+      "remaining": "Remaining: {{amount}}",
+      "nextPayment": "Next payment: {{detail}}",
+      "paidOff": "{{pct}}% paid off"
+    }
+  },
   "nav": {
+    "goToSearch": "Search",
     "dashboard": "Dashboard",
+    "more": "More",
+    "investments": "Investments",
+    "mainNav": "Main navigation",
     "enrollment": "Enrollment",
     "retirementPlan": "Retirement Plan",
     "profile": "Profile",
@@ -304,6 +430,34 @@
     "learnAtYourPace": "Understand your retirement plan",
     "learnSubtitle": "Explore key concepts to make informed decisions about your retirement benefits.",
     "viewLibrary": "View library",
+    "recommendedLearningTitle": "Recommended Learning",
+    "exploreLearningCta": "Explore learning",
+    "heroSearchPlaceholder": "Ask about your plan, investments, or next steps…",
+    "heroSearchTrending": "Trending searches",
+    "heroSearchSubmitAria": "Open search",
+    "heroSearchChip1": "Contribution limits",
+    "heroSearchChip2": "Roth vs Traditional",
+    "heroSearchChip3": "Investment options",
+    "heroSearchChip4": "Withdrawal rules",
+    "premium": {
+      "featuredTag": "Featured learning",
+      "featuredTitleBefore": "How much is",
+      "featuredTitleHighlight": "enough?",
+      "needAssistanceTitle": "Need Assistance?",
+      "beta": "Beta",
+      "aiInputLabel": "Message for Core AI",
+      "aiInputPlaceholder": "Ask anything about your plan…",
+      "aiSubmit": "Ask",
+      "surfaceStatLabel": "Growth",
+      "surfaceStatValue": "+12%",
+      "startLearningCta": "Start learning",
+      "saveForLaterCta": "Save for later",
+      "savedForLaterCta": "Saved for later"
+    },
+    "resource3LearningTeaser": "Finding the right contribution rate for your goals.",
+    "learnAboutPlanCta": "Learn about the plan",
+    "scheduleCallCta": "Schedule call",
+    "startChattingCta": "Start chatting",
     "needGuidance": "Speak with a retirement specialist",
     "needGuidanceSubtitle": "Schedule a one-on-one conversation to review your plan options and get personalized guidance.",
     "guidanceTitle": "How would you like guidance today?",
@@ -445,7 +599,10 @@
       "loans": "Loans",
       "liquidity": "Liquidity",
       "eligibility": "Eligibility",
+      "simulator": "Simulator",
       "configuration": "Configuration",
+      "fees": "Fees",
+      "documents": "Documents",
       "review": "Review",
       "confirmation": "Confirmation",
       "loanConfiguration": "Loan Configuration",
@@ -746,8 +903,8 @@
       "earlier": "Earlier"
     },
     "insights": {
-      "smartPriorityInsights": "Smart Priority Insights",
-      "aiGeneratedToday": "AI Generated • Today",
+      "smartPriorityInsights": "AI Insight",
+      "aiGeneratedToday": "Activity-based summary",
       "impactGrowth": "Growth Impact",
       "impactRisk": "Risk Impact",
       "impactPending": "Pending Impact",
@@ -790,7 +947,8 @@
       "typeLoan": "Loan",
       "typeWithdrawal": "Withdrawal",
       "typeTransfer": "Transfer",
-      "typeRollover": "Rollover"
+      "typeRollover": "Rollover",
+      "typeRebalance": "Rebalance"
     },
     "card": {
       "typeLoan": "Loan",
@@ -946,7 +1104,9 @@
     "stepperPlan": "Plan",
     "stepperContribution": "Contribution",
     "stepperAutoIncrease": "Auto Increase",
+    "stepperSource": "Source",
     "stepperInvestment": "Investment",
+    "stepperReadiness": "Readiness",
     "stepperReview": "Review",
     "stepperStepOf": "Step {{current}} of {{total}}",
     "footerBack": "Back",
@@ -1744,7 +1904,7 @@
       "all": "All"
     },
     "insights": {
-      "title": "Intelligent Insights",
+      "title": "AI Insight",
       "loanFrequency": "You have taken {{count}} loans in {{years}} years.",
       "withdrawalMatchImpact": "Your withdrawal reduced your employer match by {{amount}}.",
       "contributionSuggestion": "Consider reducing your contribution rate instead of taking a loan.",

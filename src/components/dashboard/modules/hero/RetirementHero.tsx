@@ -1,11 +1,12 @@
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ConfidenceGauge } from "../../shared/ConfidenceGauge";
-import { AnimatedNumber } from "../../shared/AnimatedNumber";
-import { CARD_STYLE, fmtCurrency } from "../../core/types";
-import type { ModuleProps } from "../../core/types";
+import { ConfidenceGauge } from "@/components/dashboard/shared/ConfidenceGauge";
+import { AnimatedNumber } from "@/components/dashboard/shared/AnimatedNumber";
+import { CARD_STYLE, fmtCurrency } from "@/components/dashboard/core/types";
+import type { ModuleProps } from "@/components/dashboard/core/types";
+import { getRoutingVersion, withVersion } from "@/core/version";
 
 /**
  * RetirementHero — Premium full-width hero.
@@ -15,6 +16,8 @@ import type { ModuleProps } from "../../core/types";
 export const RetirementHero = memo(function RetirementHero({ engine }: ModuleProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const version = getRoutingVersion(pathname);
 
   return (
     <motion.div
@@ -130,7 +133,7 @@ export const RetirementHero = memo(function RetirementHero({ engine }: ModulePro
             </div>
             <button
               type="button"
-              onClick={() => navigate("/enrollment/contribution")}
+              onClick={() => navigate(withVersion(version, "/enrollment/contribution"))}
               className="text-xs font-semibold px-4 py-2 rounded-xl border-none cursor-pointer transition-all"
               style={{
                 background: "var(--enroll-brand)",

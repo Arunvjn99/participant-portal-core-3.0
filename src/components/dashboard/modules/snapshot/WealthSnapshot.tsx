@@ -1,8 +1,8 @@
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
-import { MetricCard } from "../../shared/MetricCard";
-import { CARD_STYLE, fmtCurrency } from "../../core/types";
-import type { ModuleProps } from "../../core/types";
+import { MetricCard } from "@/components/dashboard/shared/MetricCard";
+import { CARD_STYLE, fmtCurrency } from "@/components/dashboard/core/types";
+import type { ModuleProps } from "@/components/dashboard/core/types";
 
 /**
  * WealthSnapshot — Plan overview with balance breakdown and key metrics.

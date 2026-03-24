@@ -1,17 +1,25 @@
 import type { PortfolioData, Plan } from "../types/investmentPortfolio";
 
+export type PerformanceIntelligence = {
+  explanation: string;
+  optimization: string;
+  /** True when copy is static demo text (not a live model). */
+  isSample: boolean;
+};
+
 /**
- * Plan Intelligence for investment portfolio (from lumina-retirement).
- * Uses fallback insights when no Gemini API key is configured.
+ * Portfolio narrative for the investment portfolio UI.
+ * Returns deterministic sample text until a real model/API is wired.
  */
 export const getPerformanceIntelligence = async (
   _data: PortfolioData,
   _plans: Plan[]
-): Promise<{ explanation: string; optimization: string }> => {
+): Promise<PerformanceIntelligence> => {
   return {
     explanation:
-      "Your portfolio alpha of +2.5% is primarily driven by the aggressive equity weighting in your 401(k), which captured recent tech sector momentum.",
+      "Sample insight: illustrative attribution narrative for demo — not personalized to your holdings.",
     optimization:
-      "Consider rebalancing the Roth IRA account to lock in recent small-cap gains and maintain your target risk profile.",
+      "Sample insight: illustrative rebalancing idea for demo — confirm any changes with your plan materials or advisor.",
+    isSample: true,
   };
 };

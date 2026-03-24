@@ -965,17 +965,11 @@ export default function BellaScreen(props?: BellaScreenProps) {
   };
 
   /**
-   * All reasoning is server-side. Bella only handles UI/voice.
-   * Single pipeline: POST /api/core-ai (same as Core AI modal).
+   * Scripted local replies when no Bella flow is active (no external API).
    */
   const callCoreAIBackend = async (input: string, _conversationHistory: Message[]): Promise<string> => {
-    const accessToken = session?.access_token ?? undefined;
-    if (!accessToken) {
-      return "Please sign in to use the assistant.";
-    }
-    const { sendCoreAIMessage } = await import("../services/coreAiService");
-    const res = await sendCoreAIMessage(input, {}, accessToken);
-    return res.reply;
+    const { getLocalAssistantReply } = await import("../core/ai/bellaLocalReply");
+    return getLocalAssistantReply(input);
   };
 
   /**

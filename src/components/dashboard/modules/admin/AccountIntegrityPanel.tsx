@@ -1,8 +1,8 @@
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { CARD_STYLE } from "../../core/types";
-import type { ModuleProps } from "../../core/types";
+import { CARD_STYLE } from "@/components/dashboard/core/types";
+import type { ModuleProps } from "@/components/dashboard/core/types";
 
 /**
  * AccountIntegrityPanel — Onboarding progress, account health, badges.

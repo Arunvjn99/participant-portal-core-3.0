@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   AuthLayout,
@@ -8,15 +8,16 @@ import {
   AuthInput,
   AuthPasswordInput,
   AuthButton,
-} from "../../components/auth";
-import { Logo } from "../../components/brand/Logo";
-import { useAuth } from "../../context/AuthContext";
-import { useOtp } from "../../context/OtpContext";
-import { useNetwork } from "../../lib/network/networkContext";
-import { supabase } from "../../lib/supabase";
+} from "@/components/auth";
+import { Logo } from "@/components/brand/Logo";
+import { useAuth } from "@/context/AuthContext";
+import { useOtp } from "@/context/OtpContext";
+import { useNetwork } from "@/lib/network/networkContext";
+import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 import { personas, SCENARIO_LABELS } from "@/mock/personas";
 import { setDemoUser } from "@/hooks/useDemoUser";
 import type { PersonaProfile } from "@/mock/personas";
+import { DEFAULT_VERSION, withVersion } from "@/core/version";
 
 const DOMAIN_LOOKUP_DEBOUNCE_MS = 500;
 
@@ -38,12 +39,15 @@ const SCENARIO_COLORS: Record<string, string> = {
 export const Login = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { version: versionParam } = useParams<{ version: string }>();
+  const version = versionParam ?? DEFAULT_VERSION;
   const { user, loading: authLoading, signIn } = useAuth();
   const { isOtpVerified } = useOtp();
   const { status: networkStatus } = useNetwork();
   const [showDemoPanel, setShowDemoPanel] = useState(false);
 
   const canReachServer = networkStatus === "healthy";
+  const supabaseReady = isSupabaseConfigured();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -55,9 +59,9 @@ export const Login = () => {
   useEffect(() => {
     if (authLoading) return;
     if (user && isOtpVerified) {
-      navigate("/dashboard", { replace: true });
+      navigate(withVersion(version, "/dashboard"), { replace: true });
     }
-  }, [authLoading, user, isOtpVerified, navigate]);
+  }, [authLoading, user, isOtpVerified, navigate, version]);
 
   /* ── Email domain → company logo preview (debounced; no theme change) ── */
   useEffect(() => {
@@ -97,6 +101,10 @@ export const Login = () => {
 
   const handleLogin = async () => {
     setError(null);
+    if (!supabaseReady) {
+      setError("Supabase not configured. Use Explore Demo below or add .env — see README.");
+      return;
+    }
     if (!canReachServer) return;
     if (!email.trim() || !password) {
       setError("Please enter your email and password.");
@@ -105,7 +113,7 @@ export const Login = () => {
     setSubmitting(true);
     try {
       await signIn(email, password);
-      navigate("/verify?mode=login", { replace: true });
+      navigate(`${withVersion(version, "/verify")}?mode=login`, { replace: true });
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Login failed. Please try again.");
     } finally {
@@ -142,7 +150,18 @@ export const Login = () => {
           />
         </div>
       )}
-      {!canReachServer && (
+      {!supabaseReady && (
+        <div
+          role="status"
+          className="rounded-lg border border-[var(--color-border)] bg-[var(--color-background-secondary)] px-4 py-3 text-sm text-[var(--color-text)]"
+        >
+          Running in demo mode (no backend). Email login is disabled until you configure{" "}
+          <code className="rounded bg-[var(--color-surface)] px-1 text-xs">VITE_SUPABASE_URL</code> and{" "}
+          <code className="rounded bg-[var(--color-surface)] px-1 text-xs">VITE_SUPABASE_ANON_KEY</code> in{" "}
+          <code className="rounded bg-[var(--color-surface)] px-1 text-xs">.env</code> — see README.
+        </div>
+      )}
+      {supabaseReady && !canReachServer && (
         <div
           role="alert"
           className="rounded-lg border border-[var(--color-warning)]/30 bg-[var(--color-warning)]/10 px-4 py-3 text-sm text-[var(--color-warning)]"
@@ -185,7 +204,7 @@ export const Login = () => {
         </div>
         <AuthButton
           onClick={handleLogin}
-          disabled={submitting || !canReachServer}
+          disabled={submitting || !supabaseReady || !canReachServer}
           className="w-full"
         >
           {submitting ? t("auth.loggingIn", "Logging in…") : t("auth.login")}

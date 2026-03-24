@@ -1,9 +1,9 @@
 import { memo, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Card, CardContent } from "../../../components/ui/card";
-import { SectionHeader } from "../../../components/dashboard/shared/SectionHeader";
-import { ProgressBar } from "../../../components/dashboard/shared/ProgressBar";
-import { StatusBadge } from "../../../components/dashboard/shared/StatusBadge";
+import { Card, CardContent } from "@/components/ui/card";
+import { SectionHeader } from "@/components/dashboard/shared/SectionHeader";
+import { ProgressBar } from "@/components/dashboard/shared/ProgressBar";
+import { StatusBadge } from "@/components/dashboard/shared/StatusBadge";
 import type { TransactionLifecycleStatus } from "../types";
 
 interface InProgressItem {

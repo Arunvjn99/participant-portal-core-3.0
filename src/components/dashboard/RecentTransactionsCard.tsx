@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import type { Transaction } from "../../data/enrollmentSummary";
+import { useNavigate, useLocation } from "react-router-dom";
+import { getRoutingVersion, withVersion } from "@/core/version";
+import type { Transaction } from "@/data/enrollmentSummary";
 
 interface RecentTransactionsCardProps {
   transactions: Transaction[];
@@ -66,6 +67,8 @@ const TYPE_ICONS: Record<Transaction["type"], React.ReactNode> = {
 
 export const RecentTransactionsCard = ({ transactions }: RecentTransactionsCardProps) => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const version = getRoutingVersion(pathname);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
 
@@ -83,7 +86,7 @@ export const RecentTransactionsCard = ({ transactions }: RecentTransactionsCardP
         <button
           type="button"
           className="text-sm font-medium text-[var(--color-primary)] hover:underline"
-          onClick={() => navigate("/transactions")}
+          onClick={() => navigate(withVersion(version, "/transactions"))}
         >
           See all
         </button>

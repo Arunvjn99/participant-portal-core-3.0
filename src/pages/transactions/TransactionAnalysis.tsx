@@ -1,288 +1,113 @@
-import type { CSSProperties } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { DashboardLayout } from "../../layouts/DashboardLayout";
-import { DashboardHeader } from "../../components/dashboard/DashboardHeader";
-import { TransactionFlowLayout } from "../../components/transactions/TransactionFlowLayout";
-import { TransactionStepCard } from "../../components/transactions/TransactionStepCard";
-import { RetirementImpact } from "../../components/transactions/RetirementImpact";
-import { WarningBanner } from "../../components/transactions/WarningBanner";
-import { TransactionStepper } from "../../components/transactions/TransactionStepper";
-import { transactionStore } from "../../data/transactionStore";
-import { getTransactionById } from "../../data/mockTransactions";
-import Button from "../../components/ui/Button";
-import type { TransactionType } from "../../types/transactions";
+import { DashboardLayout } from "@/layouts/DashboardLayout";
+import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { StatusBadge } from "@/components/transactions/StatusBadge";
+import { getRoutingVersion, withVersion } from "@/core/version";
+import { getTransaction } from "@/services/transactionService";
+import type { Transaction } from "@/types/transactions";
+import { FlowNavButtons } from "@/components/transactions/FigmaFlowUI";
+import { AiCoreBridgeButton } from "@/components/ai/AiCoreBridgeButton";
 
-const TYPE_KEYS: Record<TransactionType, string> = {
-  loan: "transactions.loanApplication",
-  withdrawal: "transactions.withdrawalApplication",
-  distribution: "transactions.distributionApplication",
-  rollover: "transactions.rolloverApplication",
-  transfer: "transactions.transferApplication",
-  rebalance: "transactions.rebalanceApplication",
-};
+function formatMoney(n: number) {
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(n);
+}
 
-const STATUS_KEYS: Record<string, string> = {
-  draft: "transactions.analysis.statusDraft",
-  active: "transactions.analysis.statusActive",
-  completed: "transactions.analysis.statusCompleted",
-  cancelled: "transactions.analysis.statusCancelled",
-};
+function detailStatus(t: Transaction): "completed" | "pending" | "failed" | "draft" {
+  if (t.status === "draft") return "draft";
+  if (t.status === "completed" || t.status === "funded") return "completed";
+  if (t.status === "rejected" || t.status === "cancelled") return "failed";
+  return "pending";
+}
 
-const EXPLANATION_KEYS: Record<TransactionType, string> = {
-  loan: "transactions.analysis.explanationLoan",
-  withdrawal: "transactions.analysis.explanationWithdrawal",
-  distribution: "transactions.analysis.explanationDistribution",
-  rollover: "transactions.analysis.explanationRollover",
-  transfer: "transactions.analysis.explanationTransfer",
-  rebalance: "transactions.analysis.explanationRebalance",
-};
-
-const formatCurrency = (amount: number) =>
-  new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amount);
-
-const SummaryRow = ({
-  label,
-  value,
-  valueStyle,
-}: {
-  label: string;
-  value: string;
-  valueStyle?: CSSProperties;
-}) => (
-  <div
-    className="flex justify-between items-center py-2 border-b last:border-b-0"
-    style={{ borderColor: "var(--enroll-card-border)" }}
-  >
-    <span className="text-[0.9375em] font-medium" style={{ color: "var(--enroll-text-muted)" }}>
-      {label}
-    </span>
-    <span
-      className="text-[0.9375em] font-medium"
-      style={valueStyle ?? { color: "var(--enroll-text-primary)" }}
-    >
-      {value}
-    </span>
-  </div>
-);
-
-export const TransactionAnalysis = () => {
+export function TransactionAnalysis() {
   const { t } = useTranslation();
   const { transactionId } = useParams<{ transactionId: string }>();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const version = getRoutingVersion(pathname);
+  const tx = transactionId ? getTransaction(transactionId) : undefined;
 
-  if (!transactionId) {
+  const back = () => navigate(withVersion(version, "/transactions"));
+
+  if (!transactionId || !tx) {
     return (
-      <DashboardLayout header={<DashboardHeader />} transparentBackground>
-        <TransactionFlowLayout title={t("transactions.analysis.transactionDetails")} onBack={() => navigate("/transactions")}>
-          <TransactionStepCard title={t("transactions.analysis.notFound")}>
-            <p>{t("transactions.analysis.transactionNotFound")}</p>
-          </TransactionStepCard>
-        </TransactionFlowLayout>
+      <DashboardLayout header={<DashboardHeader />}>
+        <div className="mx-auto w-full max-w-[75rem] px-6 py-12">
+          <h2 style={{ fontSize: 26, fontWeight: 800, color: "var(--foreground)", marginBottom: 8 }}>Transaction not found</h2>
+          <p style={{ fontSize: 14, color: "var(--color-text-secondary)", marginBottom: 24 }}>This link may be expired or invalid.</p>
+          <button
+            type="button"
+            onClick={back}
+            style={{ background: "var(--color-primary)", color: "var(--btn-primary-text)", padding: "10px 20px", borderRadius: 10, fontSize: 13, fontWeight: 600, border: "none", cursor: "pointer" }}
+          >
+            Back to Transaction Center
+          </button>
+        </div>
       </DashboardLayout>
     );
   }
 
-  // Use transactionStore first (drafts, flow-created), then mock data
-  const transaction =
-    transactionStore.getTransaction(transactionId) ?? getTransactionById(transactionId);
-
-  if (!transaction) {
-    return (
-      <DashboardLayout header={<DashboardHeader />} transparentBackground>
-        <TransactionFlowLayout title={t("transactions.analysis.transactionDetails")} onBack={() => navigate("/transactions")}>
-          <TransactionStepCard title={t("transactions.analysis.notFound")}>
-            <p>{t("transactions.analysis.transactionNotFound")}</p>
-          </TransactionStepCard>
-        </TransactionFlowLayout>
-      </DashboardLayout>
-    );
-  }
-
-  const handleAction = () => {
-    switch (transaction.status) {
-      case "draft":
-      case "active":
-        navigate(`/transactions/${transaction.type}/${transaction.id}`);
-        break;
-      case "completed":
-        // Placeholder: in production would open documents
-        console.log("View documents");
-        break;
-      default:
-        navigate("/transactions");
-    }
-  };
-
-  const getActionLabel = (): string => {
-    switch (transaction.status) {
-      case "draft":
-        return t("transactions.analysis.resumeTransaction");
-      case "active":
-        return t("transactions.analysis.trackStatus");
-      case "completed":
-        return t("transactions.analysis.viewDocuments");
-      default:
-        return t("transactions.analysis.viewDetails");
-    }
-  };
-
-  const getStatusStyle = (): CSSProperties | undefined => {
-    if (transaction.status === "completed")
-      return { color: "var(--color-success, #22c55e)" };
-    if (transaction.status === "active") return { color: "var(--enroll-brand)" };
-    return undefined;
-  };
+  const status = detailStatus(tx);
+  const metrics = [
+    { label: "Amount", value: formatMoney(tx.amount) },
+    ...(tx.netAmount != null ? [{ label: "Net Amount", value: formatMoney(tx.netAmount) }] : []),
+    ...(tx.fees != null ? [{ label: "Fees", value: formatMoney(tx.fees) }] : []),
+  ];
 
   return (
-    <DashboardLayout header={<DashboardHeader />} transparentBackground>
-      <TransactionFlowLayout
-        title={t("transactions.analysis.transactionDetails")}
-        subtitle={t(TYPE_KEYS[transaction.type])}
-        onBack={() => navigate("/transactions")}
-      >
-        <div className="space-y-6">
-          <TransactionStepCard title={t("transactions.analysis.transactionSummary")}>
-            <div className="space-y-0">
-              <SummaryRow label={t("transactions.analysis.type")} value={t(TYPE_KEYS[transaction.type])} />
-              <SummaryRow
-                label={t("transactions.analysis.status")}
-                value={STATUS_KEYS[transaction.status] ? t(STATUS_KEYS[transaction.status]) : transaction.status}
-                valueStyle={getStatusStyle()}
-              />
-              <SummaryRow label={t("transactions.analysis.amount")} value={formatCurrency(transaction.amount ?? 0)} />
-              <SummaryRow
-                label={t("transactions.analysis.dateInitiated")}
-                value={new Date(transaction.dateInitiated).toLocaleDateString()}
-              />
-              {transaction.dateCompleted && (
-                <SummaryRow
-                  label={t("transactions.analysis.dateCompleted")}
-                  value={new Date(transaction.dateCompleted).toLocaleDateString()}
-                />
-              )}
-              {transaction.processingTime && (
-                <SummaryRow label={t("transactions.analysis.processingTime")} value={transaction.processingTime} />
-              )}
+    <DashboardLayout header={<DashboardHeader />}>
+      <div className="mx-auto w-full max-w-[75rem] px-6 py-10 space-y-5">
+        <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h2 style={{ fontSize: 26, fontWeight: 800, color: "var(--foreground)", letterSpacing: "-0.5px", marginBottom: 6 }}>
+                {tx.displayName ?? `${tx.type} request`}
+              </h2>
+              <p style={{ fontSize: 13, fontWeight: 500, color: "var(--color-text-secondary)" }}>
+                Started {tx.dateInitiated} · Reference {tx.id.slice(0, 8)}
+              </p>
             </div>
-          </TransactionStepCard>
-
-          <TransactionStepCard title={t("transactions.analysis.whatThisDoes")}>
-            <p
-              className="text-[0.9375em] leading-relaxed"
-              style={{ color: "var(--enroll-text-secondary)" }}
-            >
-              {t(EXPLANATION_KEYS[transaction.type])}
-            </p>
-          </TransactionStepCard>
-
-          <RetirementImpact
-            level={transaction.retirementImpact.level}
-            rationale={transaction.retirementImpact.rationale}
-          />
-
-          {(transaction.grossAmount ||
-            (transaction.fees !== undefined && transaction.fees > 0) ||
-            (transaction.taxWithholding !== undefined && transaction.taxWithholding > 0) ||
-            transaction.netAmount ||
-            transaction.repaymentInfo) && (
-            <TransactionStepCard title={t("transactions.analysis.financialBreakdown")}>
-              <div className="space-y-0">
-                {transaction.grossAmount && (
-                  <SummaryRow label={t("transactions.analysis.grossAmount")} value={formatCurrency(transaction.grossAmount)} />
-                )}
-                {transaction.fees !== undefined && transaction.fees > 0 && (
-                  <SummaryRow label={t("transactions.analysis.fees")} value={formatCurrency(transaction.fees)} />
-                )}
-                {transaction.taxWithholding !== undefined && transaction.taxWithholding > 0 && (
-                  <SummaryRow
-                    label={t("transactions.analysis.taxWithholding")}
-                    value={formatCurrency(transaction.taxWithholding)}
-                  />
-                )}
-                {transaction.netAmount && (
-                  <SummaryRow
-                    label={t("transactions.analysis.netAmount")}
-                    value={formatCurrency(transaction.netAmount)}
-                    valueStyle={{ color: "var(--enroll-text-primary)", fontWeight: 600 }}
-                  />
-                )}
-                {transaction.repaymentInfo && (
-                  <div className="mt-4 pt-4 border-t" style={{ borderColor: "var(--enroll-card-border)" }}>
-                    <h3
-                      className="text-sm font-semibold mb-3"
-                      style={{ color: "var(--enroll-text-primary)" }}
-                    >
-                      {t("transactions.analysis.repaymentInformation")}
-                    </h3>
-                    <div className="space-y-0">
-                      <SummaryRow
-                        label={t("transactions.analysis.monthlyPayment")}
-                        value={formatCurrency(transaction.repaymentInfo.monthlyPayment)}
-                      />
-                      <SummaryRow
-                        label={t("transactions.analysis.term")}
-                        value={t("transactions.analysis.termMonths", { months: transaction.repaymentInfo.termMonths })}
-                      />
-                      <SummaryRow
-                        label={t("transactions.analysis.interestRate")}
-                        value={`${transaction.repaymentInfo.interestRate}%`}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            </TransactionStepCard>
-          )}
-
-          <TransactionStepCard title={t("transactions.analysis.timelineAndCompliance")}>
-            {transaction.milestones && (
-              <div className="mb-4">
-                <TransactionStepper milestones={transaction.milestones} status={transaction.status} />
-              </div>
-            )}
-            {transaction.isIrreversible && (
-              <WarningBanner
-                message={t("transactions.analysis.irreversibleWarning")}
-                type="warning"
-              />
-            )}
-            {transaction.legalConfirmations && transaction.legalConfirmations.length > 0 && (
-              <div className="mt-4">
-                <h3
-                  className="text-sm font-semibold mb-2"
-                  style={{ color: "var(--enroll-text-primary)" }}
-                >
-                  {t("transactions.analysis.legalConfirmations")}
-                </h3>
-                <ul className="list-disc list-inside space-y-1" style={{ color: "var(--enroll-text-secondary)" }}>
-                  {transaction.legalConfirmations.map((confirmation, index) => (
-                    <li key={index}>{confirmation}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </TransactionStepCard>
-
-          <div className="pt-4">
-            <Button
-              onClick={handleAction}
-              className="min-w-[200px]"
-              style={{
-                background: "var(--enroll-brand)",
-                color: "var(--color-text-inverse)",
-              }}
-            >
-              {getActionLabel()}
-            </Button>
+            <StatusBadge variant={status}>{status}</StatusBadge>
           </div>
-        </div>
-      </TransactionFlowLayout>
+        </motion.div>
+
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.05 }}>
+          <div style={{ background: "var(--card-bg)", borderRadius: 16, border: "1px solid var(--border)", padding: "24px 28px" }}>
+            <h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--foreground)", marginBottom: 20 }}>Transaction Details</h3>
+            <div className="grid grid-cols-3 gap-6">
+              {metrics.map((m) => (
+                <div key={m.label}>
+                  <p style={{ fontSize: 12, fontWeight: 500, color: "var(--color-text-secondary)", marginBottom: 4 }}>{m.label}</p>
+                  <p style={{ fontSize: 20, fontWeight: 800, color: "var(--foreground)", letterSpacing: "-0.3px" }}>{m.value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}>
+          <div className="ai-insight rounded-[14px] p-5">
+            <p className="ai-insight__label">{t("aiSystem.aiInsight")}</p>
+            <p className="ai-insight__body mt-2 text-[var(--foreground)]">
+              {tx.retirementImpact?.rationale ??
+                t("aiSystem.txDetailAiBody")}
+            </p>
+            <AiCoreBridgeButton
+              className="mt-3"
+              prompt={`Transaction: ${tx.displayName ?? tx.type}, amount ${formatMoney(tx.amount)}, status ${status}. ${tx.retirementImpact?.rationale ?? ""} ${t("aiSystem.txDetailAiBody")}`}
+            />
+          </div>
+        </motion.div>
+
+        <FlowNavButtons
+          backLabel="Back to Transaction Center"
+          nextLabel="Close"
+          onBack={back}
+          onNext={back}
+        />
+      </div>
     </DashboardLayout>
   );
-};
+}

@@ -1,8 +1,8 @@
 import { useMemo } from "react";
-import type { LoanFlowData, LoanPlanConfig, LoanFundAllocation } from "../../../types/loan";
+import type { LoanFlowData, LoanPlanConfig, LoanFundAllocation } from "@/types/loan";
 import { LoanStepLayout, LoanSummaryCard, InvestmentBreakdownTable } from "../index";
-import { DEFAULT_LOAN_PLAN_CONFIG } from "../../../config/loanPlanConfig";
-import { MOCK_FUNDS } from "../../../data/mockFunds";
+import { DEFAULT_LOAN_PLAN_CONFIG } from "@/config/loanPlanConfig";
+import { MOCK_FUNDS } from "@/data/mockFunds";
 
 interface InvestmentBreakdownStepProps {
   data: LoanFlowData;

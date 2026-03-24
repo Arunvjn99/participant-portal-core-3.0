@@ -1,6 +1,6 @@
-import type { LoanFlowData, LoanPlanConfig } from "../../../types/loan";
+import type { LoanFlowData, LoanPlanConfig } from "@/types/loan";
 import { LoanStepLayout, LoanSummaryCard, BankDetailsForm } from "../index";
-import { DEFAULT_LOAN_PLAN_CONFIG } from "../../../config/loanPlanConfig";
+import { DEFAULT_LOAN_PLAN_CONFIG } from "@/config/loanPlanConfig";
 
 interface PaymentSetupStepProps {
   data: LoanFlowData;

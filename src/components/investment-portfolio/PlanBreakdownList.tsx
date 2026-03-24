@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import type { Plan } from "../../types/investmentPortfolio";
+import type { Plan } from "@/types/investmentPortfolio";
 import { Shield, Zap } from "lucide-react";
 
 interface Props {

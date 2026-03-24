@@ -1,10 +1,11 @@
 import { memo, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { AllocationChart } from "../../../investments/AllocationChart";
-import { CARD_STYLE } from "../../core/types";
-import type { ModuleProps } from "../../core/types";
+import { AllocationChart } from "@/components/investments/AllocationChart";
+import { CARD_STYLE } from "@/components/dashboard/core/types";
+import type { ModuleProps } from "@/components/dashboard/core/types";
+import { getRoutingVersion, withVersion } from "@/core/version";
 
 /**
  * InvestmentHealth — Allocation donut, risk alignment, diversification score, hover insights.
@@ -12,6 +13,8 @@ import type { ModuleProps } from "../../core/types";
 export const InvestmentHealth = memo(function InvestmentHealth({ engine, data }: ModuleProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const version = getRoutingVersion(pathname);
 
   const allocationForChart = useMemo(
     () => data.investmentAllocations.map((r) => ({ fundId: r.fundId, percentage: r.allocationPct })),
@@ -34,7 +37,7 @@ export const InvestmentHealth = memo(function InvestmentHealth({ engine, data }:
         </p>
         <button
           type="button"
-          onClick={() => navigate("/enrollment/investments")}
+          onClick={() => navigate(withVersion(version, "/enrollment/investments"))}
           className="text-[10px] font-semibold px-2.5 py-1 rounded-full border-none cursor-pointer"
           style={{
             background: "rgb(var(--enroll-brand-rgb) / 0.06)",

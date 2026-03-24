@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { ProfileCard } from "./ProfileCard";
-import type { Document } from "../../data/mockProfile";
+import type { Document } from "@/data/mockProfile";
 
 const PAGE_SIZE = 5;
 

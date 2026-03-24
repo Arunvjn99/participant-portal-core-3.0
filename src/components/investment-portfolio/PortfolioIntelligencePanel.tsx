@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { PortfolioData, Plan } from "../../types/investmentPortfolio";
-import { getPerformanceIntelligence } from "../../services/investmentPortfolioAiService";
+import type { PortfolioData, Plan } from "@/types/investmentPortfolio";
+import { getPerformanceIntelligence } from "@/services/investmentPortfolioAiService";
 import { Sparkles, TrendingUp, Shield, Lightbulb } from "lucide-react";
 import { DashboardCard } from "../dashboard/DashboardCard";
 import { StatusBadge } from "../dashboard/shared/StatusBadge";

@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import type { PlanDetails, Balances } from "../../data/enrollmentSummary";
+import { useNavigate, useLocation } from "react-router-dom";
+import { getRoutingVersion, withVersion } from "@/core/version";
+import type { PlanDetails, Balances } from "@/data/enrollmentSummary";
 
 interface PlanOverviewCardProps {
   plan: PlanDetails;
@@ -33,6 +34,8 @@ export const PlanOverviewCard = ({
   isWithdrawalRestricted,
 }: PlanOverviewCardProps) => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const version = getRoutingVersion(pathname);
   const [tooltip, setTooltip] = useState<{ index: number; x: number; y: number } | null>(null);
   const maxBalance = Math.max(...BALANCE_CHART_POINTS, plan.totalBalance);
 
@@ -154,7 +157,7 @@ export const PlanOverviewCard = ({
           <button
             type="button"
             className="text-sm font-medium text-[var(--color-primary)] hover:underline"
-            onClick={() => navigate("/transactions/rollover/start")}
+            onClick={() => navigate(withVersion(version, "/transactions/rollover"))}
           >
             Start Rollover
           </button>
@@ -172,7 +175,7 @@ export const PlanOverviewCard = ({
           <button
             type="button"
             className="text-sm font-medium text-[var(--color-primary)] hover:underline"
-            onClick={() => navigate("/transactions/rollover/start")}
+            onClick={() => navigate(withVersion(version, "/transactions/rollover"))}
           >
             Start Rollover
           </button>
@@ -191,7 +194,7 @@ export const PlanOverviewCard = ({
             type="button"
             className="text-sm font-medium text-[var(--color-primary)] hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isWithdrawalRestricted}
-            onClick={() => navigate("/transactions/withdrawal/start")}
+            onClick={() => navigate(withVersion(version, "/transactions/withdraw"))}
           >
             Request Withdrawal
           </button>

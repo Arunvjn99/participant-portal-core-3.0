@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { DashboardLayout } from "../../../layouts/DashboardLayout";
+import { DashboardLayout } from "@/layouts/DashboardLayout";
 import { DashboardHeader } from "../DashboardHeader";
-import type { EnrollmentSummary } from "../../../data/enrollmentSummary";
+import type { EnrollmentSummary } from "@/data/enrollmentSummary";
 import { useDashboardEngine } from "./useDashboardEngine";
-import { useAISettings } from "../../../context/AISettingsContext";
+import { useAISettings } from "@/context/AISettingsContext";
 import { DashboardRegistry } from "./DashboardRegistry";
 import { DashboardSlot } from "./DashboardSlot";
 import type { DashboardModuleEntry, ModuleProps } from "./types";

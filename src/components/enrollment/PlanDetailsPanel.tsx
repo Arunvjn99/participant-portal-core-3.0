@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Check, X, Lock, User, Briefcase, Calendar, MapPin, PiggyBank, Clock } from "lucide-react";
-import type { PlanOption } from "../../types/enrollment";
+import type { PlanOption } from "@/types/enrollment";
 
 export interface PlanDetailsUserSnapshot {
   age: number;

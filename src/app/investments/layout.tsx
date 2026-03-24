@@ -2,14 +2,15 @@ import { type ReactNode, useState, useCallback, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { DashboardLayout } from "../../layouts/DashboardLayout";
-import { DashboardHeader } from "../../components/dashboard/DashboardHeader";
-import { EnrollmentStepper } from "../../components/enrollment/EnrollmentStepper";
-import { InvestmentProfileWizard } from "../../components/enrollment/InvestmentProfileWizard";
-import { AllocationSummary } from "../../components/investments/AllocationSummary";
-import { InvestmentsFooter } from "../../components/investments/InvestmentsFooter";
-import { InvestmentWizardProvider } from "../../context/InvestmentWizardContext";
-import { useEnrollmentOptional } from "../../enrollment/context/EnrollmentContext";
+import { DashboardLayout } from "@/layouts/DashboardLayout";
+import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { EnrollmentStepper } from "@/components/enrollment/EnrollmentStepper";
+import { InvestmentProfileWizard } from "@/components/enrollment/InvestmentProfileWizard";
+import { AllocationSummary } from "@/components/investments/AllocationSummary";
+import { InvestmentsFooter } from "@/components/investments/InvestmentsFooter";
+import { InvestmentWizardProvider } from "@/context/InvestmentWizardContext";
+import { useEnrollmentOptional } from "@/enrollment/context/EnrollmentContext";
+import { stripRoutingVersionPrefix } from "@/core/version";
 
 interface InvestmentsLayoutProps {
   children: ReactNode;
@@ -18,7 +19,10 @@ interface InvestmentsLayoutProps {
 export default function InvestmentsLayout({ children }: InvestmentsLayoutProps) {
   const { t } = useTranslation();
   const { pathname } = useLocation();
-  const isEnrollmentFlow = pathname === "/enrollment/investments" || pathname.startsWith("/enrollment/investments/");
+  const pathSansVersion = stripRoutingVersionPrefix(pathname);
+  const isStandalonePortfolio = pathSansVersion === "/investments";
+  const isEnrollmentFlow =
+    pathSansVersion === "/enrollment/investments" || pathSansVersion.startsWith("/enrollment/investments/");
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const enrollment = useEnrollmentOptional();
   const openWizard = useCallback(() => setIsWizardOpen(true), []);
@@ -41,6 +45,10 @@ export default function InvestmentsLayout({ children }: InvestmentsLayoutProps) 
     setIsWizardOpen(false);
     if (typeof sessionStorage !== "undefined") sessionStorage.setItem(WIZARD_SESSION_KEY, "1");
   }, []);
+
+  if (isStandalonePortfolio) {
+    return <>{children}</>;
+  }
 
   const content = (
     <div style={{ background: "var(--enroll-bg)" }} className="w-full min-h-screen pb-12">

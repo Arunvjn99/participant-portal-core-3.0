@@ -1,5 +1,6 @@
-import { useNavigate } from "react-router-dom";
-import type { SmartNudge } from "../../data/postEnrollmentDashboard";
+import { useNavigate, useLocation } from "react-router-dom";
+import { getRoutingVersion, withVersionIfEnrollment } from "@/core/version";
+import type { SmartNudge } from "@/data/postEnrollmentDashboard";
 
 interface SmartNudgeCardProps {
   nudge: SmartNudge;
@@ -27,6 +28,8 @@ const NudgeIcon = ({ title }: { title: string }) => {
  */
 export const SmartNudgeCard = ({ nudge }: SmartNudgeCardProps) => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const version = getRoutingVersion(pathname);
 
   return (
     <article className="ped-nudge">
@@ -39,7 +42,7 @@ export const SmartNudgeCard = ({ nudge }: SmartNudgeCardProps) => {
         <button
           type="button"
           className="ped-nudge__cta"
-          onClick={() => navigate(nudge.actionRoute)}
+          onClick={() => navigate(withVersionIfEnrollment(version, nudge.actionRoute))}
         >
           {nudge.actionLabel}
         </button>

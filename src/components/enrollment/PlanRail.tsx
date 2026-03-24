@@ -2,7 +2,7 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Lock, CheckCircle2, Info, Shield, FileText } from "lucide-react";
 import Button from "../ui/Button";
-import type { PlanOption } from "../../types/enrollment";
+import type { PlanOption } from "@/types/enrollment";
 
 /** Plan-specific prompt for Core AI (lightweight). */
 export function getPlanAskAiPrompt(planTitle: string): string {

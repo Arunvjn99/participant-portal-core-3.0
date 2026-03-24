@@ -1,6 +1,6 @@
 import type { Advisor, LearningResource } from "./types";
-import { thumbnails as learningThumbnails } from "../../assets/learning";
-import { advisorAvatars } from "../../assets/avatars";
+import { thumbnails as learningThumbnails } from "@/assets/learning";
+import { advisorAvatars } from "@/assets/avatars";
 
 export const ADVISORS: Advisor[] = [
   {

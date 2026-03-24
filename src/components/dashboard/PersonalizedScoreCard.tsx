@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import Button from "../ui/Button";
-import { PadlockIcon } from "../../assets/dashboard/icons";
-import { useReducedMotion } from "../../hooks/useReducedMotion";
-import { useCanHover } from "../../hooks/useCanHover";
+import { PadlockIcon } from "@/assets/dashboard/icons";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useCanHover } from "@/hooks/useCanHover";
 
 /**
  * Goal Simulator / Personalized Score card. Matches Figma 472-2685.

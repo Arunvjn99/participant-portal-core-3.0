@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import { TransactionsToV1Redirect } from "./TransactionsToV1Redirect";
 import { Login } from "../pages/auth/Login";
 import { VerifyCode } from "../pages/auth/VerifyCode";
 import { ForgotPassword } from "../pages/auth/ForgotPassword";
@@ -7,13 +8,13 @@ import { HelpCenter } from "@/pages/auth/HelpCenter";
 import { Dashboard } from "../pages/dashboard/Dashboard";
 import { ChoosePlan } from "../pages/enrollment/ChoosePlan";
 import { Contribution } from "../pages/enrollment/Contribution";
-import { TransactionsPage } from "../pages/transactions/TransactionsPage";
-import { TransactionAnalysis } from "../pages/transactions/TransactionAnalysis";
-import { TransactionApplicationRouter } from "../pages/transactions/applications/TransactionApplicationRouter";
 import { EnrollmentLayout } from "../layouts/EnrollmentLayout";
 import InvestmentsLayout from "../app/investments/layout";
 import InvestmentsPage from "../app/investments/page";
+import { EnrollmentV1Layout } from "@/modules/enrollment/v1/layout/EnrollmentLayout";
+import { V1_WIZARD_SEGMENTS } from "@/modules/enrollment/v1/flow/v1WizardPaths";
 
+/** Mirror `src/app/router.tsx` wizard paths when using AppRoutes (main app uses RouterProvider + router). */
 export const AppRoutes = () => {
   return (
     <Routes>
@@ -23,6 +24,13 @@ export const AppRoutes = () => {
       <Route path="/reset" element={<ResetPassword />} />
       <Route path="/help" element={<HelpCenter />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      {V1_WIZARD_SEGMENTS.map((slug) => (
+        <Route
+          key={slug}
+          path={`/v1/enrollment/${slug}`}
+          element={<EnrollmentV1Layout />}
+        />
+      ))}
       <Route
         path="/enrollment"
         element={<EnrollmentLayout />}
@@ -30,12 +38,7 @@ export const AppRoutes = () => {
         <Route path="choose-plan" element={<ChoosePlan />} />
         <Route path="contribution" element={<Contribution />} />
       </Route>
-      <Route path="/transactions" element={<TransactionsPage />} />
-      {/* Generic route handler for all transaction application flows - must come before /transactions/:transactionId */}
-      <Route path="/transactions/:transactionType/start" element={<TransactionApplicationRouter />} />
-      <Route path="/transactions/:transactionType/:transactionId" element={<TransactionApplicationRouter />} />
-      {/* View transaction details - must come after transaction type routes to avoid conflicts */}
-      <Route path="/transactions/:transactionId" element={<TransactionAnalysis />} />
+      <Route path="/transactions/*" element={<TransactionsToV1Redirect />} />
       {/* Investments route */}
       <Route
         path="/investments"

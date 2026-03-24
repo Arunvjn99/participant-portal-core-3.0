@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { motion } from "framer-motion";
 import { useReducedMotion } from "framer-motion";
-import type { LoanDocumentMeta } from "../../types/loan";
+import type { LoanDocumentMeta } from "@/types/loan";
 
 interface DocumentUploadCardProps {
   documentType: string;

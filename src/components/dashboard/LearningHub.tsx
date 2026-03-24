@@ -1,6 +1,6 @@
 import { useState } from "react";
-import type { LearningResource } from "../../data/enrollmentSummary";
-import { SHARED_LEARNING_RESOURCES } from "../../assets/learning";
+import type { LearningResource } from "@/data/enrollmentSummary";
+import { SHARED_LEARNING_RESOURCES } from "@/assets/learning";
 
 const DEFAULT_ITEMS: LearningResource[] = SHARED_LEARNING_RESOURCES.map((r) => ({
   id: r.id,

@@ -1,10 +1,10 @@
 import { memo, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { transactionStore } from "../../../data/transactionStore";
-import { SectionHeader } from "../../../components/dashboard/shared/SectionHeader";
+import { transactionStore } from "@/data/transactionStore";
+import { SectionHeader } from "@/components/dashboard/shared/SectionHeader";
 import { TransactionCard } from "./TransactionCard";
-import type { Transaction } from "../../../types/transactions";
+import type { Transaction } from "@/types/transactions";
 import type { ActivityItem } from "../types";
 
 type GroupKey = "thisWeek" | "thisMonth" | "earlier";

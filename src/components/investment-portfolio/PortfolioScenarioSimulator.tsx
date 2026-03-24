@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import type { ChartDataPoint } from "../../types/investmentPortfolio";
+import type { ChartDataPoint } from "@/types/investmentPortfolio";
 import {
   LineChart,
   Line,

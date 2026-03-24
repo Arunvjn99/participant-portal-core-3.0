@@ -1,18 +1,10 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { timeoutFetch } from "./network/timeoutFetch";
 
 // These variables must be set in Netlify Environment Settings for production,
 // or in a local .env file for development (prefixed with VITE_).
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(
-    "Missing Supabase environment variables (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY). " +
-      "For local development add them to .env. " +
-      "For production add them in Netlify → Site settings → Environment variables.",
-  );
-}
 
 const PLACEHOLDER_PATTERNS = [
   "your-project",
@@ -22,23 +14,38 @@ const PLACEHOLDER_PATTERNS = [
   "PASTE_REAL_ANON_KEY_HERE",
 ];
 
-if (
-  PLACEHOLDER_PATTERNS.some(
-    (p) => supabaseUrl.includes(p) || supabaseAnonKey.includes(p),
-  )
-) {
-  throw new Error(
-    "Supabase environment variables contain placeholder values. " +
-      "Replace VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your .env with real credentials " +
-      "from your Supabase project dashboard (Settings → API).",
-  );
+function hasPlaceholder(url: string, key: string): boolean {
+  return PLACEHOLDER_PATTERNS.some((p) => url.includes(p) || key.includes(p));
 }
 
-const SUPABASE_FETCH_TIMEOUT_MS = 10_000;
+let client: SupabaseClient | null = null;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  global: {
-    fetch: (url: RequestInfo | string, options?: RequestInit) =>
-      timeoutFetch(url, options ?? {}, SUPABASE_FETCH_TIMEOUT_MS),
-  },
-});
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.warn(
+    "[Supabase] Not configured: missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY. " +
+      "The app runs in demo mode without backend auth. See README.md for setup.",
+  );
+} else if (hasPlaceholder(supabaseUrl, supabaseAnonKey)) {
+  console.warn(
+    "[Supabase] Not configured: environment variables look like placeholders. " +
+      "Replace them with real values from your Supabase project (Settings → API).",
+  );
+} else {
+  const SUPABASE_FETCH_TIMEOUT_MS = 10_000;
+  client = createClient(supabaseUrl, supabaseAnonKey, {
+    global: {
+      fetch: (url: RequestInfo | string, options?: RequestInit) =>
+        timeoutFetch(url, options ?? {}, SUPABASE_FETCH_TIMEOUT_MS),
+    },
+  });
+}
+
+/** `null` when env vars are missing or placeholder — app stays runnable (demo / offline UI). */
+export const supabase: SupabaseClient | null = client;
+
+export function isSupabaseConfigured(): boolean {
+  return supabase !== null;
+}
+
+/** Error message thrown by auth when Supabase is not available. */
+export const SUPABASE_NOT_CONFIGURED_MESSAGE = "Supabase not configured";

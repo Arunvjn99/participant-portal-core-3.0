@@ -1,5 +1,6 @@
-import { useNavigate } from "react-router-dom";
-import type { InvestmentAllocation } from "../../data/enrollmentSummary";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import { getRoutingVersion, withVersion } from "@/core/version";
+import type { InvestmentAllocation } from "@/data/enrollmentSummary";
 
 interface PortfolioTableProps {
   rows: InvestmentAllocation[];
@@ -17,15 +18,20 @@ const formatPct = (n: number) => `${n > 0 ? "+" : ""}${n.toFixed(1)}%`;
  */
 export const PortfolioTable = ({ rows, employerMatchLabel = "100% up to 6% Match" }: PortfolioTableProps) => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const version = getRoutingVersion(pathname);
 
   return (
     <div className="ped-portfolio w-full min-w-0 rounded-2xl elevation-1 bg-[var(--surface-1)] p-4 sm:p-5 lg:p-6">
       {/* Header — stacks on mobile */}
       <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <h2 className="m-0 text-lg font-semibold text-[var(--color-text)]">Your Portfolio</h2>
-        <a href="/enrollment/plans" className="self-start text-sm font-medium text-[var(--color-primary)] hover:underline sm:self-center">
+        <Link
+          to={withVersion(version, "/enrollment/plans")}
+          className="self-start text-sm font-medium text-[var(--color-primary)] hover:underline sm:self-center"
+        >
           Compare All Plans →
-        </a>
+        </Link>
       </div>
       <div className="mb-2 text-sm font-semibold text-[var(--color-text)]">{employerMatchLabel}</div>
       <p className="mb-4 text-xs leading-relaxed text-[var(--color-textSecondary)] sm:text-sm">
@@ -118,14 +124,14 @@ export const PortfolioTable = ({ rows, employerMatchLabel = "100% up to 6% Match
         <button
           type="button"
           className="w-full rounded-md border border-[var(--color-border)] px-4 py-2.5 text-sm font-medium text-[var(--color-text)] transition-colors hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] sm:w-auto"
-          onClick={() => navigate("/enrollment/investments")}
+          onClick={() => navigate(withVersion(version, "/enrollment/investments"))}
         >
           Rebalance Portfolio
         </button>
         <button
           type="button"
           className="w-full rounded-md border-none bg-primary px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-hover sm:w-auto"
-          onClick={() => navigate("/enrollment/investments")}
+          onClick={() => navigate(withVersion(version, "/enrollment/investments"))}
         >
           Manage Investments
         </button>

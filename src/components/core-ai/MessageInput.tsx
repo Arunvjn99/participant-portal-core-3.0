@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -24,6 +24,8 @@ export interface MessageInputProps {
   isProcessing: boolean;
   onMicClick: () => void;
   disabled?: boolean;
+  /** Increment to move focus into the text field (e.g. hero search → empty open). */
+  composerFocusSignal?: number;
 }
 
 export function MessageInput({
@@ -32,10 +34,17 @@ export function MessageInput({
   isProcessing,
   onMicClick,
   disabled,
+  composerFocusSignal = 0,
 }: MessageInputProps) {
   const { t } = useTranslation();
   const [value, setValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!composerFocusSignal) return;
+    const id = requestAnimationFrame(() => inputRef.current?.focus());
+    return () => cancelAnimationFrame(id);
+  }, [composerFocusSignal]);
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {

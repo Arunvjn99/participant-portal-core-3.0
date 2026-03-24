@@ -1,17 +1,18 @@
 import { useState, useCallback, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import * as Dialog from "@radix-ui/react-dialog";
-import { useEnrollment } from "../../enrollment/context/EnrollmentContext";
-import { loadEnrollmentDraft, saveEnrollmentDraft } from "../../enrollment/enrollmentDraftStore";
+import { useEnrollment } from "@/enrollment/context/EnrollmentContext";
+import { loadEnrollmentDraft, saveEnrollmentDraft } from "@/enrollment/enrollmentDraftStore";
 import type {
   InvestmentProfile,
   RiskTolerance,
   InvestmentHorizon,
   InvestmentPreference,
-} from "../../enrollment/types/investmentProfile";
-import { DEFAULT_INVESTMENT_PROFILE } from "../../enrollment/types/investmentProfile";
+} from "@/enrollment/types/investmentProfile";
+import { DEFAULT_INVESTMENT_PROFILE } from "@/enrollment/types/investmentProfile";
+import { getRoutingVersion, withVersion } from "@/core/version";
 
 /* ═══════════════════════════════════════════════════════
    STEP DATA (i18n keys)
@@ -71,6 +72,8 @@ export const InvestmentProfileWizard = ({
 }: InvestmentProfileWizardProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const version = getRoutingVersion(pathname);
   const { setInvestmentProfile, setInvestmentProfileCompleted } = useEnrollment();
   const [step, setStep] = useState(1);
   const [profile, setProfile] = useState<Partial<InvestmentProfile>>({});
@@ -127,9 +130,9 @@ export const InvestmentProfileWizard = ({
         });
       }
       onComplete();
-      navigate("/enrollment/investments");
+      navigate(withVersion(version, "/enrollment/investments"));
     }
-  }, [step, canProceed, profile, setInvestmentProfile, setInvestmentProfileCompleted, onComplete, navigate]);
+  }, [step, canProceed, profile, setInvestmentProfile, setInvestmentProfileCompleted, onComplete, navigate, version]);
 
   const handleClose = useCallback(() => {
     if (!initialProfile) {
@@ -145,8 +148,8 @@ export const InvestmentProfileWizard = ({
       }
     }
     onClose();
-    navigate("/enrollment/investments");
-  }, [initialProfile, setInvestmentProfile, setInvestmentProfileCompleted, onClose, navigate]);
+    navigate(withVersion(version, "/enrollment/investments"));
+  }, [initialProfile, setInvestmentProfile, setInvestmentProfileCompleted, onClose, navigate, version]);
 
   /* ── Feedback message for current selection ── */
   const feedbackMessageKey = (() => {

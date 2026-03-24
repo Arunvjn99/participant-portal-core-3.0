@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Input } from "../../ui/Input";
-import { InsightCard } from "../../ui/InsightCard";
-import { getAgeInsight } from "../../../utils/enrollmentInsights";
+import { Input } from "@/components/ui/Input";
+import { InsightCard } from "@/components/ui/InsightCard";
+import { getAgeInsight } from "@/utils/enrollmentInsights";
 
 interface AgeStepProps {
   age?: number;

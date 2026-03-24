@@ -2,9 +2,9 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import * as Dialog from "@radix-ui/react-dialog";
 import { AddInvestmentModal } from "./AddInvestmentModal";
-import { useInvestment } from "../../context/InvestmentContext";
-import { getFundById } from "../../data/mockFunds";
-import { getSourceTotal, isSourceValid } from "../../utils/investmentAllocationHelpers";
+import { useInvestment } from "@/context/InvestmentContext";
+import { getFundById } from "@/data/mockFunds";
+import { getSourceTotal, isSourceValid } from "@/utils/investmentAllocationHelpers";
 
 export type SourceKey = "preTax" | "roth" | "afterTax";
 

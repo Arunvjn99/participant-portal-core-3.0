@@ -1,5 +1,5 @@
 import { DashboardCard } from "../dashboard/DashboardCard";
-import type { ContributionAssumptions } from "../../enrollment/logic/types";
+import type { ContributionAssumptions } from "@/enrollment/logic/types";
 
 interface AssumptionsPanelProps {
   assumptions: ContributionAssumptions;

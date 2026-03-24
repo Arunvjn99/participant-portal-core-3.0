@@ -4,8 +4,8 @@ import Button from "../ui/Button";
 import { FundAllocationRow } from "./FundAllocationRow";
 import { ModerateInvestorChip } from "./ModerateInvestorChip";
 import { AfterTaxAccordion } from "./AfterTaxAccordion";
-import { useInvestment } from "../../context/InvestmentContext";
-import { getFundById } from "../../data/mockFunds";
+import { useInvestment } from "@/context/InvestmentContext";
+import { getFundById } from "@/data/mockFunds";
 
 /**
  * PlanDefaultBuilder - Displays recommended portfolio with optional edit toggle

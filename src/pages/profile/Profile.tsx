@@ -1,15 +1,16 @@
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { DashboardLayout } from "../../layouts/DashboardLayout";
-import { DashboardHeader } from "../../components/dashboard/DashboardHeader";
-import { DashboardCard } from "../../components/dashboard/DashboardCard";
-import { MOCK_PROFILE, type ProfileData } from "../../data/mockProfile";
-import { ProfileHeaderCard } from "../../components/profile/ProfileHeaderCard";
-import { ContactInformationCard } from "../../components/profile/ContactInformationCard";
-import { EmploymentClassificationCard } from "../../components/profile/EmploymentClassificationCard";
-import { BeneficiariesCard } from "../../components/profile/BeneficiariesCard";
-import { DocumentsTableCard } from "../../components/profile/DocumentsTableCard";
-import { NotificationsCard } from "../../components/profile/NotificationsCard";
+import { DashboardLayout } from "@/layouts/DashboardLayout";
+import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { DashboardCard } from "@/components/dashboard/DashboardCard";
+import { MOCK_PROFILE, type ProfileData } from "@/data/mockProfile";
+import { ProfileHeaderCard } from "@/components/profile/ProfileHeaderCard";
+import { ContactInformationCard } from "@/components/profile/ContactInformationCard";
+import { EmploymentClassificationCard } from "@/components/profile/EmploymentClassificationCard";
+import { BeneficiariesCard } from "@/components/profile/BeneficiariesCard";
+import { DocumentsTableCard } from "@/components/profile/DocumentsTableCard";
+import { NotificationsCard } from "@/components/profile/NotificationsCard";
+import { AiPersonalizationCard } from "@/components/profile/AiPersonalizationCard";
 
 type ProfileSectionId =
   | "profile-header"
@@ -17,7 +18,8 @@ type ProfileSectionId =
   | "employment-classification"
   | "beneficiaries"
   | "documents"
-  | "notifications";
+  | "notifications"
+  | "ai-personalization";
 
 const PROFILE_SECTIONS: { id: ProfileSectionId; labelKey: string }[] = [
   { id: "profile-header", labelKey: "profile.personalDetails" },
@@ -26,6 +28,7 @@ const PROFILE_SECTIONS: { id: ProfileSectionId; labelKey: string }[] = [
   { id: "beneficiaries", labelKey: "profile.beneficiaries" },
   { id: "documents", labelKey: "profile.documentsConsents" },
   { id: "notifications", labelKey: "profile.notificationsPreferences" },
+  { id: "ai-personalization", labelKey: "aiSystem.profileSectionTitle" },
 ];
 
 /**
@@ -105,6 +108,9 @@ export const Profile = () => {
               />
               <DocumentsTableCard data={profileData.documents} />
               <NotificationsCard />
+              <div id="ai-personalization">
+                <AiPersonalizationCard />
+              </div>
             </div>
           </div>
         </div>

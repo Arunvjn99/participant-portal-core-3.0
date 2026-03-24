@@ -1,0 +1,28 @@
+{
+  "dashboard": {
+    "greetingFallbackName": "allí",
+    "learningFeaturedTag": "Aprendizaje destacado",
+    "learningReadTime": "{{time}} min de lectura",
+    "learningTitleBefore": "¿Cuánto es",
+    "learningTitleHighlight": "suficiente?",
+    "learningDescription": "Encontrar la tasa de aportación adecuada para tus objetivos.",
+    "learningCtaPrimary": "Empezar a aprender",
+    "learningCtaSave": "Guardar para después",
+    "learningCtaSaved": "Guardado para después",
+    "learningStatLabel": "Crecimiento",
+    "learningStatValue": "+12%",
+    "assistanceSectionHeading": "¿Necesitas ayuda?",
+    "assistanceHumanTitle": "Habla con un especialista en jubilación",
+    "assistanceHumanDescription": "Programa una conversación individual para revisar tu plan y recibir orientación personalizada.",
+    "assistanceHumanCta": "Programar llamada",
+    "assistanceAdvisorRowDescription": "Programa una conversación individual para revisar tu plan",
+    "assistanceAdvisorScheduleNow": "Programar ahora",
+    "assistanceAiTitle": "Pregunta a Core AI",
+    "assistanceAiDescription": "Respuestas al instante e información personalizada sobre tu jubilación en cualquier momento.",
+    "assistanceAiBeta": "Beta",
+    "assistanceAiInputLabel": "Mensaje para Core AI",
+    "assistanceAiInputPlaceholder": "Pregunta lo que quieras sobre tu plan…",
+    "assistanceAiSubmit": "Preguntar",
+    "heroLearnMoreCta": "Conocer el plan"
+  }
+}

@@ -1,8 +1,8 @@
 import { useMemo } from "react";
-import type { LoanFlowData, LoanPlanConfig, LoanUserContext, LoanPurposeReason, PayrollFrequency } from "../../../types/loan";
-import { calculateLoan } from "../../../utils/loanCalculator";
+import type { LoanFlowData, LoanPlanConfig, LoanUserContext, LoanPurposeReason, PayrollFrequency } from "@/types/loan";
+import { calculateLoan } from "@/utils/loanCalculator";
 import { LoanStepLayout, LoanSummaryCard, LoanAmountSlider } from "../index";
-import { DEFAULT_LOAN_PLAN_CONFIG } from "../../../config/loanPlanConfig";
+import { DEFAULT_LOAN_PLAN_CONFIG } from "@/config/loanPlanConfig";
 
 interface LoanBasicsStepProps {
   data: LoanFlowData;

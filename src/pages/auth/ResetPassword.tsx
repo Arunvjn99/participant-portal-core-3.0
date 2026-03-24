@@ -6,9 +6,9 @@ import {
   AuthFormShell,
   AuthPasswordInput,
   AuthButton,
-} from "../../components/auth";
-import { Logo } from "../../components/brand/Logo";
-import { PasswordStrength } from "../../components/ui/PasswordStrength";
+} from "@/components/auth";
+import { Logo } from "@/components/brand/Logo";
+import { PasswordStrength } from "@/components/ui/PasswordStrength";
 
 export const ResetPassword = () => {
   const { t } = useTranslation();

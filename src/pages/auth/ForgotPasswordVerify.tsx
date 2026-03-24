@@ -6,8 +6,8 @@ import {
   AuthFormShell,
   AuthOTPInput,
   AuthButton,
-} from "../../components/auth";
-import { Logo } from "../../components/brand/Logo";
+} from "@/components/auth";
+import { Logo } from "@/components/brand/Logo";
 
 export const ForgotPasswordVerify = () => {
   const { t } = useTranslation();

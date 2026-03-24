@@ -1,6 +1,6 @@
 import * as React from "react";
 import { PlanCard, type PlanCardVariant } from "./PlanCard";
-import type { PlanOption } from "../../types/enrollment";
+import type { PlanOption } from "@/types/enrollment";
 
 export interface PlanSelectionLayoutProps {
   plans: PlanOption[];

@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
-import { validateThemeJSON } from "../../../theme/utils";
-import type { ThemeColors } from "../../../theme/utils";
+import { validateThemeJSON } from "@/theme/utils";
+import type { ThemeColors } from "@/theme/utils";
 import type { ThemeColorsForEditor } from "./types";
 import { Collapsible } from "./Collapsible";
 

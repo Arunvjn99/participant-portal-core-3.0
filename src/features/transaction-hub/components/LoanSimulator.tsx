@@ -18,6 +18,7 @@ import {
 } from "../utils/calculations";
 import { useAnimatedNumber } from "../hooks/useAnimatedNumber";
 import { useLocaleFormat } from "../hooks/useLocaleFormat";
+import { AiCoreBridgeButton } from "@/components/ai/AiCoreBridgeButton";
 import type { HubFinancialData } from "../data/mockHubData";
 
 interface LoanSimulatorProps {
@@ -176,6 +177,15 @@ export function LoanSimulator({ data }: LoanSimulatorProps) {
               </option>
             ))}
           </select>
+        </div>
+
+        <div className="ai-insight mt-2 rounded-xl border border-[var(--ai-border)] p-4">
+          <p className="ai-insight__label">{t("aiSystem.aiInsight")}</p>
+          <p className="ai-insight__body mt-1 text-[var(--color-text)]">{t("aiSystem.loanSimAiBody")}</p>
+          <AiCoreBridgeButton
+            className="mt-2"
+            prompt={`I'm using the loan simulator with amount ${fmt.currency(amount)}, term ${termYears} years, purpose ${purpose}. Help me interpret opportunity cost and retirement delay.`}
+          />
         </div>
       </div>
 

@@ -1,18 +1,21 @@
 import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   AuthLayout,
   AuthFormShell,
   AuthOTPInput,
   AuthButton,
-} from "../../components/auth";
-import { Logo } from "../../components/brand/Logo";
-import { useOtp } from "../../context/OtpContext";
+} from "@/components/auth";
+import { Logo } from "@/components/brand/Logo";
+import { useOtp } from "@/context/OtpContext";
+import { DEFAULT_VERSION, withVersion } from "@/core/version";
 
 export const VerifyCode = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { version: versionParam } = useParams<{ version: string }>();
+  const version = versionParam ?? DEFAULT_VERSION;
   const [searchParams] = useSearchParams();
   const { setOtpVerified } = useOtp();
 
@@ -24,17 +27,17 @@ export const VerifyCode = () => {
       setShowSuccessModal(true);
     } else {
       setOtpVerified(true);
-      navigate("/dashboard", { replace: true });
+      navigate(withVersion(version, "/dashboard"), { replace: true });
     }
   };
 
   const handleSuccessClose = () => {
     setShowSuccessModal(false);
-    navigate("/", { replace: true });
+    navigate(withVersion(version, "/login"), { replace: true });
   };
 
   const handleBackToSignIn = () => {
-    navigate("/");
+    navigate(withVersion(version, "/login"));
   };
 
   const headerSlot = <Logo className="h-10 w-auto" />;

@@ -1,73 +1,56 @@
-# React + TypeScript + Vite
+# Participant portal
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + TypeScript + Vite app for retirement / enrollment flows with optional Supabase auth and data.
 
-Currently, two official plugins are available:
+## Setup
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. **Install dependencies**
 
-## React Compiler
+   ```bash
+   npm install
+   ```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+2. **Environment (optional for local UI)**
 
-## Expanding the ESLint configuration
+   Copy or create a `.env` file in the project root (Vite reads `VITE_*` variables from `.env`, `.env.local`, etc.).
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+3. **Run the dev server**
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+   ```bash
+   npm run dev
+   ```
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+4. **Production build**
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+   ```bash
+   npm run build
+   ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Environment variables
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Variable | Required for real auth / API | Description |
+|----------|------------------------------|-------------|
+| `VITE_SUPABASE_URL` | Yes | Supabase project URL (Settings → API → Project URL). |
+| `VITE_SUPABASE_ANON_KEY` | Yes | Supabase anonymous (public) key. |
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+If either value is missing or still looks like a placeholder, the app logs a console warning and exports a `null` Supabase client. The shell and most screens still load so you can use **Explore Demo** and static UI paths.
+
+Do not commit real secrets; use `.env.local` (gitignored in typical setups) or your host’s env UI (e.g. Netlify).
+
+## Demo mode (no backend)
+
+When Supabase is not configured:
+
+- The app **does not crash** on startup.
+- **Login** shows: *Running in demo mode (no backend)* and disables email/password sign-in until env is set.
+- **Signup** shows the same idea and disables submit.
+- **Auth context** skips session subscription; `signIn` / `signUp` throw `Supabase not configured` if called from code paths that bypass the UI guards.
+- Data services that need Supabase return empty or safe fallbacks where implemented (see `src/lib/supabase.ts` and callers).
+
+Configure both `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` with real project values to enable full auth and database features.
+
+---
+
+## Vite template notes
+
+This project started from the Vite React + TS template. For ESLint expansion and React Compiler notes, see the [Vite React guide](https://vite.dev/guide/) and [React Compiler docs](https://react.dev/learn/react-compiler/installation).

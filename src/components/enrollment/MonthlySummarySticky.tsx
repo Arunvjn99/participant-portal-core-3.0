@@ -1,5 +1,5 @@
 import { DashboardCard } from "../dashboard/DashboardCard";
-import type { MonthlyContribution } from "../../enrollment/logic/types";
+import type { MonthlyContribution } from "@/enrollment/logic/types";
 
 interface MonthlySummaryStickyProps {
   monthlyContribution: MonthlyContribution;

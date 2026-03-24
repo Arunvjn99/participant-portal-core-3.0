@@ -1,9 +1,10 @@
 import { memo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { getRoutingVersion, withVersion } from "@/core/version";
 import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "framer-motion";
-import { SectionHeader } from "../../../components/dashboard/shared/SectionHeader";
-import { StatusBadge } from "../../../components/dashboard/shared/StatusBadge";
+import { SectionHeader } from "@/components/dashboard/shared/SectionHeader";
+import { StatusBadge } from "@/components/dashboard/shared/StatusBadge";
 import type { ActionTileConfig } from "../types";
 const formatCurrency = (n: number) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
@@ -14,7 +15,7 @@ const TILE_CONFIGS: { type: ActionTileConfig["type"]; titleKey: string; subtextK
     titleKey: "transactions.takeLoan",
     subtextKey: "transactions.borrowFrom401k",
     statusBadgeKey: "transactions.eligible",
-    route: "/transactions/loan/start",
+    route: "/transactions/loan/eligibility",
     icon: (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -38,7 +39,7 @@ const TILE_CONFIGS: { type: ActionTileConfig["type"]; titleKey: string; subtextK
     titleKey: "transactions.reallocate",
     subtextKey: "transactions.transferFunds",
     statusBadgeKey: "transactions.smart",
-    route: "/transactions/transfer/start",
+    route: "/transactions/transfer",
     icon: (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
@@ -49,7 +50,7 @@ const TILE_CONFIGS: { type: ActionTileConfig["type"]; titleKey: string; subtextK
     type: "rollover",
     titleKey: "transactions.startRollover",
     subtextKey: "transactions.consolidateAccounts",
-    route: "/transactions/rollover/start",
+    route: "/transactions/rollover",
     icon: (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -61,6 +62,8 @@ const TILE_CONFIGS: { type: ActionTileConfig["type"]; titleKey: string; subtextK
 export const ActionHub = memo(function ActionHub() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const version = getRoutingVersion(pathname);
   const reduced = !!useReducedMotion();
 
   return (
@@ -71,7 +74,7 @@ export const ActionHub = memo(function ActionHub() {
           <motion.button
             key={tile.type}
             type="button"
-            onClick={() => navigate(tile.route)}
+            onClick={() => navigate(withVersion(version, tile.route))}
             initial={reduced ? false : { opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.25, delay: i * 0.05, ease: "easeOut" }}

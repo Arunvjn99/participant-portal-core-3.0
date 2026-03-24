@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useReducedMotion } from "framer-motion";
-import type { AmortizationRow } from "../../utils/loanCalculator";
+import type { AmortizationRow } from "@/utils/loanCalculator";
 
 interface AmortizationTableProps {
   rows: AmortizationRow[];

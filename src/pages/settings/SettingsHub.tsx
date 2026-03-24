@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { DashboardLayout } from "../../layouts/DashboardLayout";
-import { DashboardHeader } from "../../components/dashboard/DashboardHeader";
-import { DashboardCard } from "../../components/dashboard/DashboardCard";
-import { useTheme } from "../../context/ThemeContext";
-import { useAISettings } from "../../context/AISettingsContext";
-import { SUPPORTED_LANGS, normalizeLanguage } from "../../constants/locales";
-import { Switch } from "../../components/ui/Switch";
+import { DashboardLayout } from "@/layouts/DashboardLayout";
+import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { DashboardCard } from "@/components/dashboard/DashboardCard";
+import { useTheme } from "@/context/ThemeContext";
+import { useAISettings } from "@/context/AISettingsContext";
+import { SUPPORTED_LANGS, normalizeLanguage } from "@/constants/locales";
+import { Switch } from "@/components/ui/Switch";
 
 export type SettingsSection =
   | "appearance"

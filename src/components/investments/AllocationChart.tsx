@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import type { Allocation } from "../../types/investment";
-import { getFundById } from "../../data/mockFunds";
+import type { Allocation } from "@/types/investment";
+import { getFundById } from "@/data/mockFunds";
 
 interface AllocationChartProps {
   allocations: Allocation[];

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { DashboardCard } from "../dashboard/DashboardCard";
 import { FundAllocationRow } from "./FundAllocationRow";
-import { useInvestment } from "../../context/InvestmentContext";
-import { getFundById } from "../../data/mockFunds";
+import { useInvestment } from "@/context/InvestmentContext";
+import { getFundById } from "@/data/mockFunds";
 
 interface AfterTaxAccordionProps {
   /** When true, render without card wrapper (for embedding in PlanDefaultBuilder) */

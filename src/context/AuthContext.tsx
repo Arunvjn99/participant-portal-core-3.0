@@ -6,7 +6,7 @@ import {
   type ReactNode,
 } from "react";
 import type { User, Session, AuthError } from "@supabase/supabase-js";
-import { supabase } from "../lib/supabase";
+import { supabase, SUPABASE_NOT_CONFIGURED_MESSAGE } from "../lib/supabase";
 
 interface AuthContextValue {
   user: User | null;
@@ -54,6 +54,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let cancelled = false;
 
+    if (!supabase) {
+      setSession(null);
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+
     const initSession = async () => {
       if (import.meta.env.DEV) console.log("[auth-diag] getSession: requesting…");
       const { data, error } = await supabase.auth.getSession();
@@ -88,6 +95,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signIn = async (email: string, password: string): Promise<void> => {
+    if (!supabase) {
+      throw new Error(SUPABASE_NOT_CONFIGURED_MESSAGE);
+    }
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     throwIfError(error);
   };
@@ -97,6 +107,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     password: string,
     metadata?: Record<string, string>,
   ): Promise<{ session: Session | null; user: User | null }> => {
+    if (!supabase) {
+      throw new Error(SUPABASE_NOT_CONFIGURED_MESSAGE);
+    }
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -111,6 +124,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOut = async (): Promise<void> => {
+    if (!supabase) {
+      return;
+    }
     const { error } = await supabase.auth.signOut();
     throwIfError(error);
   };

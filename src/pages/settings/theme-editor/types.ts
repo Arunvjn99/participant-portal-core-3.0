@@ -1,4 +1,4 @@
-import type { ThemeColors } from "../../../theme/utils";
+import type { ThemeColors } from "@/theme/utils";
 
 /** Light-only editor: colors without logo (logo managed elsewhere). */
 export type ThemeColorsForEditor = Omit<ThemeColors, "logo">;

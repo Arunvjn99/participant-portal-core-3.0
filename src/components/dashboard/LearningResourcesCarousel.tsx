@@ -2,8 +2,8 @@ import { useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { motion } from "framer-motion";
 import { CARD_WIDTH, CARD_GAP } from "./LearningResourceCard";
-import { useReducedMotion } from "../../hooks/useReducedMotion";
-import { useCanHover } from "../../hooks/useCanHover";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useCanHover } from "@/hooks/useCanHover";
 
 /** Scroll distance = one card width + gap */
 const SCROLL_STEP = CARD_WIDTH + CARD_GAP;

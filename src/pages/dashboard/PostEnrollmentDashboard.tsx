@@ -1,12 +1,13 @@
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import { DashboardLayout } from "../../layouts/DashboardLayout";
-import { DashboardHeader } from "../../components/dashboard/DashboardHeader";
-import { useUser } from "../../context/UserContext";
-import { MOCK_ENROLLMENT_SUMMARY } from "../../data/enrollmentSummary";
-import { RecentTransactionsCard } from "../../components/dashboard/RecentTransactionsCard";
-import { GoalSimulatorCard } from "../../components/dashboard/GoalSimulatorCard";
-import { ProgressBar } from "../../components/dashboard/shared/ProgressBar";
+import { useNavigate, useLocation } from "react-router-dom";
+import { DashboardLayout } from "@/layouts/DashboardLayout";
+import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { useUser } from "@/context/UserContext";
+import { MOCK_ENROLLMENT_SUMMARY } from "@/data/enrollmentSummary";
+import { RecentTransactionsCard } from "@/components/dashboard/RecentTransactionsCard";
+import { GoalSimulatorCard } from "@/components/dashboard/GoalSimulatorCard";
+import { ProgressBar } from "@/components/dashboard/shared/ProgressBar";
+import { getRoutingVersion, withVersion, withVersionIfEnrollment } from "@/core/version";
 
 /**
  * Post-Enrollment Dashboard — Figma Participants Portal Playground (node 1188-3129).
@@ -17,6 +18,8 @@ import { ProgressBar } from "../../components/dashboard/shared/ProgressBar";
 export const PostEnrollmentDashboard = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const version = getRoutingVersion(pathname);
   const { profile } = useUser();
   const data = MOCK_ENROLLMENT_SUMMARY;
   const plan = data.planDetails;
@@ -108,7 +111,7 @@ export const PostEnrollmentDashboard = () => {
           <button
             type="button"
             className="post-enrollment-dashboard__hero-cta"
-            onClick={() => navigate(topBanner.actionRoute)}
+            onClick={() => navigate(withVersionIfEnrollment(version, topBanner.actionRoute))}
           >
             {t("dashboard.postEnrollment.optimizeStrategy")}
           </button>
@@ -152,21 +155,21 @@ export const PostEnrollmentDashboard = () => {
           <button
             type="button"
             className="post-enrollment-dashboard__quick-action-btn"
-            onClick={() => navigate("/enrollment/contribution")}
+            onClick={() => navigate(withVersion(version, "/enrollment/contribution"))}
           >
             {t("dashboard.postEnrollment.increaseContribution")}
           </button>
           <button
             type="button"
             className="post-enrollment-dashboard__quick-action-btn"
-            onClick={() => navigate("/transactions/rebalance/start")}
+            onClick={() => navigate(withVersion(version, "/transactions/rebalance"))}
           >
             {t("dashboard.postEnrollment.rebalancePortfolio")}
           </button>
           <button
             type="button"
             className="post-enrollment-dashboard__quick-action-btn"
-            onClick={() => navigate("/transactions/loan/start")}
+            onClick={() => navigate(withVersion(version, "/transactions/loan/eligibility"))}
           >
             {t("dashboard.postEnrollment.startLoan")}
           </button>

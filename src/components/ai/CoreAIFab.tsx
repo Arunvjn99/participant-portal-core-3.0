@@ -1,8 +1,10 @@
 import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bot } from "lucide-react";
 import { useCoreAIModal } from "@/context/CoreAIModalContext";
 import { useResolvedUIAsset } from "@/hooks/useResolvedUIAsset";
+import { FLOATING_SEARCH_BOTTOM_OFFSET_REM, shouldShowFloatingSearch } from "@/lib/floatingSearchVisibility";
 
 /**
  * CoreAIFab — Single floating "Ask Core AI" pill button.
@@ -13,14 +15,27 @@ import { useResolvedUIAsset } from "@/hooks/useResolvedUIAsset";
  */
 export const CoreAIFab = () => {
   const { t } = useTranslation();
+  const { pathname } = useLocation();
   const { isOpen, open } = useCoreAIModal();
   const aiAssistantUrl = useResolvedUIAsset("aiAssistant");
+  const liftForSearchBar = shouldShowFloatingSearch(pathname);
 
   return (
     <AnimatePresence>
       {!isOpen && (
         <motion.div
-          className="core-ai-fab fixed bottom-6 left-1/2 z-[9999] -translate-x-1/2"
+          className={`core-ai-fab fixed left-1/2 z-[9999] -translate-x-1/2 ${
+            liftForSearchBar
+              ? ""
+              : "bottom-6"
+          }`}
+          style={
+            liftForSearchBar
+              ? {
+                  bottom: `calc(${FLOATING_SEARCH_BOTTOM_OFFSET_REM}rem + env(safe-area-inset-bottom, 0px))`,
+                }
+              : undefined
+          }
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 16, transition: { duration: 0.15 } }}
@@ -36,7 +51,7 @@ export const CoreAIFab = () => {
           <button
             type="button"
             onClick={open}
-            className="core-ai-fab-btn elevation-3 relative flex items-center gap-2.5 rounded-full px-5 py-3 text-white transition-all duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+            className="ai-assistant core-ai-fab-btn elevation-3 relative flex items-center gap-2.5 rounded-full px-5 py-3 text-white transition-all duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             aria-label={t("coreAi.fabAria")}
           >
             {aiAssistantUrl.trim() ? (

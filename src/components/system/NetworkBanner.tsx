@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from "react";
-import { useNetwork } from "../../lib/network/networkContext";
+import { useNetwork } from "@/lib/network/networkContext";
 
 const OFFLINE_MESSAGE =
   "You appear to be offline. Please check your connection.";

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { useReducedMotion } from "../../hooks/useReducedMotion";
-import { useCanHover } from "../../hooks/useCanHover";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useCanHover } from "@/hooks/useCanHover";
 
 /**
  * Learning resource card matching Figma 185-1167: aspect-video thumbnail, pill badge, title, source.

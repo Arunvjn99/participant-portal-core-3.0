@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Check, CheckCircle2, Info } from "lucide-react";
-import type { PlanOption } from "../../types/enrollment";
+import type { PlanOption } from "@/types/enrollment";
 
 export type PlanCardVariant = "single" | "multi";
 

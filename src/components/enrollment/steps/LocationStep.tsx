@@ -1,5 +1,5 @@
-import { Dropdown, type DropdownOption } from "../../ui/Dropdown";
-import { InsightCard } from "../../ui/InsightCard";
+import { Dropdown, type DropdownOption } from "@/components/ui/Dropdown";
+import { InsightCard } from "@/components/ui/InsightCard";
 
 interface LocationStepProps {
   location?: string;

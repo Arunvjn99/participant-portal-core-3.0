@@ -1,8 +1,8 @@
 import { memo, useMemo } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { Card, CardContent } from "../../../components/ui/card";
-import { SectionHeader } from "../../../components/dashboard/shared/SectionHeader";
-import { transactionStore } from "../../../data/transactionStore";
+import { Card, CardContent } from "@/components/ui/card";
+import { SectionHeader } from "@/components/dashboard/shared/SectionHeader";
+import { transactionStore } from "@/data/transactionStore";
 import { useTransactionSummary } from "../hooks/useTransactionSummary";
 
 const formatCurrency = (n: number) =>

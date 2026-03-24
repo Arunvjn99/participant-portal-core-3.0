@@ -6,6 +6,7 @@ import { SplashScreen } from "../components/SplashScreen";
 import { useAISettings } from "../context/AISettingsContext";
 import { CoreAIModalProvider } from "../context/CoreAIModalContext";
 import { GlobalSearchHost } from "@/components/search/GlobalSearchHost";
+import { FloatingSearchBar } from "@/components/search/FloatingSearchBar";
 
 const HIDE_CORE_AI_PATHS = [
   "/",
@@ -38,6 +39,7 @@ export const RootLayout = () => {
         <Outlet />
       </RouteErrorBoundary>
       <GlobalSearchHost />
+      <FloatingSearchBar />
       {showCoreAI && <CoreAIFab />}
       <DemoSwitcher />
     </CoreAIModalProvider>

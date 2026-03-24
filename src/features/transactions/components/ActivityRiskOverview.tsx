@@ -1,8 +1,8 @@
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "framer-motion";
-import { Card, CardContent } from "../../../components/ui/card";
-import { ProgressBar } from "../../../components/dashboard/shared/ProgressBar";
+import { Card, CardContent } from "@/components/ui/card";
+import { ProgressBar } from "@/components/dashboard/shared/ProgressBar";
 import { Clock, CheckCircle2, AlertCircle, ShieldCheck, TrendingUp } from "lucide-react";
 
 /**

@@ -1,9 +1,10 @@
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { getRoutingVersion, withVersion } from "@/core/version";
 import { motion } from "framer-motion";
-import { CARD_STYLE, fmtCurrency } from "../../core/types";
-import type { ModuleProps } from "../../core/types";
+import { CARD_STYLE, fmtCurrency } from "@/components/dashboard/core/types";
+import type { ModuleProps } from "@/components/dashboard/core/types";
 
 const TX_ICON: Record<string, string> = {
   contribution: "💰",
@@ -25,6 +26,8 @@ export const ActivityFeed = memo(function ActivityFeed({ data }: ModuleProps) {
     return dt.toLocaleDateString(localeForDate(i18n.language), { month: "short", day: "numeric" });
   };
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const version = getRoutingVersion(pathname);
   const transactions = data.transactions.slice(0, 5);
 
   if (transactions.length === 0) return null;
@@ -40,7 +43,7 @@ export const ActivityFeed = memo(function ActivityFeed({ data }: ModuleProps) {
         </p>
         <button
           type="button"
-          onClick={() => navigate("/transactions")}
+          onClick={() => navigate(withVersion(version, "/transactions"))}
           className="text-[10px] font-semibold border-none bg-transparent cursor-pointer p-0"
           style={{ color: "var(--enroll-brand)" }}
         >

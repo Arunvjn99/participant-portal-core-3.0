@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react";
 import { motion, AnimatePresence } from "framer-motion";
-import type { PlanDisplayConfig } from "../../pages/enrollment/planDisplayConfig";
+import type { PlanDisplayConfig } from "@/pages/enrollment/planDisplayConfig";
 
 interface ChoosePlanRightPanelProps {
   activePlan: PlanDisplayConfig | null;

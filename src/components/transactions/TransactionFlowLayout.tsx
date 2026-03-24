@@ -1,63 +1,45 @@
 import type { ReactNode } from "react";
-import { useTranslation } from "react-i18next";
+import { TransactionHeader } from "./TransactionHeader";
+import { TransactionStepper } from "./TransactionStepper";
 
-interface TransactionFlowLayoutProps {
-  title: string;
-  subtitle?: string;
-  backLabel?: string;
-  onBack?: () => void;
+export type TransactionFlowLayoutProps = {
+  flowTitle: string;
+  stepLabels: readonly string[];
+  currentStep: number;
+  onExit: () => void;
+  brandIcon: ReactNode;
+  exitAriaLabel?: string;
   children: ReactNode;
-}
+};
 
 /**
- * Transaction flow page layout — mirrors EnrollmentPageContent.
- * Uses enrollment design tokens only.
+ * Shared shell for every transaction sub-flow — matches Figma dump structure (header + stepper + main).
  */
 export function TransactionFlowLayout({
-  title,
-  subtitle,
-  backLabel,
-  onBack,
+  flowTitle,
+  stepLabels,
+  currentStep,
+  onExit,
+  brandIcon,
+  exitAriaLabel,
   children,
 }: TransactionFlowLayoutProps) {
-  const { t } = useTranslation();
-  const defaultBackLabel = `← ${t("transactions.backToTransactions")}`;
-
   return (
-    <div
-      className="w-full pb-28"
-      style={{ background: "var(--enroll-bg)" }}
-    >
-      <div className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-10">
-        <header className="mb-8">
-          {onBack && (
-            <button
-              type="button"
-              onClick={onBack}
-              className="mb-4 text-[0.9375em] font-medium cursor-pointer border-none bg-transparent transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 rounded-[var(--radius-sm)]"
-              style={{ color: "var(--enroll-brand)" }}
-              aria-label={t("transactions.backToTransactions")}
-            >
-              {backLabel ?? defaultBackLabel}
-            </button>
-          )}
-          <h1
-            className="text-[28px] md:text-[32px] font-bold leading-tight"
-            style={{ color: "var(--enroll-text-primary)" }}
-          >
-            {title}
-          </h1>
-          {subtitle && (
-            <p
-              className="mt-1.5 text-base"
-              style={{ color: "var(--enroll-text-secondary)" }}
-            >
-              {subtitle}
-            </p>
-          )}
-        </header>
-        {children}
+    <div className="fig-tx-shell tx-flow-root">
+      <TransactionHeader
+        flowTitle={flowTitle}
+        currentStep={currentStep}
+        totalSteps={stepLabels.length}
+        onExit={onExit}
+        brandIcon={brandIcon}
+        exitAriaLabel={exitAriaLabel}
+      />
+      <div className="fig-tx-shell__progress-band tx-flow-stepper-band">
+        <div className="fig-tx-shell__progress-inner tx-flow-stepper-inner">
+          <TransactionStepper stepLabels={stepLabels} currentStep={currentStep} />
+        </div>
       </div>
+      <main className="tx-flow-main">{children}</main>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useReducedMotion } from "framer-motion";
-import type { PaymentSetupData } from "../../types/loan";
+import type { PaymentSetupData } from "@/types/loan";
 
 interface BankDetailsFormProps {
   value: PaymentSetupData | null;

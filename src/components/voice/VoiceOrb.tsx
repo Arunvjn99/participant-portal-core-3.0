@@ -1,4 +1,4 @@
-import { UIState, AgentState } from "../../types/voice";
+import { UIState, AgentState } from "@/types/voice";
 
 interface VoiceOrbProps {
   uiState: UIState;

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { PortfolioData, ChartDataPoint } from "../../types/investmentPortfolio";
+import type { PortfolioData, ChartDataPoint } from "@/types/investmentPortfolio";
 import { ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { AnimatedNumber } from "../dashboard/shared/AnimatedNumber";
 import { StatusBadge } from "../dashboard/shared/StatusBadge";

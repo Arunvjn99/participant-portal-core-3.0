@@ -4,7 +4,7 @@
  */
 
 import type { ReactNode } from "react";
-import type { Transaction, TransactionType } from "../../types/transactions";
+import type { Transaction, TransactionType } from "@/types/transactions";
 
 export type TransactionLifecycleStatus =
   | "pending"
@@ -57,6 +57,8 @@ export interface ActivityInsight {
   impactType?: InsightImpactType;
   value?: string;
   priority?: boolean;
+  /** Prefilled Core AI prompt for “Ask Core AI about this”. */
+  coreAiPrompt?: string;
 }
 
 export interface ActionTileConfig {

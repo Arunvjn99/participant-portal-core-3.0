@@ -8,21 +8,15 @@ import { MessageList } from "./MessageList";
 import { MessageInput } from "./MessageInput";
 import { useSpeechRecognition } from "./useSpeechRecognition";
 import { useTextToSpeech } from "./useTextToSpeech";
-import { routeMessage, type ActiveFlowState } from "./flows/flowRouter";
-import { useAuth } from "../../context/AuthContext";
-import { sendCoreAIMessage } from "../../services/coreAiService";
+import { getRoutingVersion, withVersionIfEnrollment } from "@/core/version";
+import { buildActionHandlers } from "@/core/search/actionHandlers";
+import { handleLocalAI } from "@/core/ai/handleLocalAI";
+import { formatStructuredUserLine, type CoreAIStructuredPayload } from "@/core/ai/interactive/types";
+import { CORE_AI_LOAN_APPLY_ROUTE } from "@/core/ai/types";
+import type { LocalFlowState } from "@/core/ai/types";
+import { useLoanStore } from "@/stores/loanStore";
+import { CoreAiBrandMark } from "@/components/core-ai/CoreAiBrandMark";
 import type { ChatMessage } from "./MessageBubble";
-
-/* ── Enrollment context (safe import — not all pages have it) ── */
-const useEnrollmentSafe = () => {
-  try {
-    const { useEnrollment } = require("../../enrollment/context/EnrollmentContext");
-    return useEnrollment();
-  } catch (err) {
-    if (import.meta.env.DEV) console.error("[CoreAssistantModal] useEnrollment safe import failed:", err);
-    return null;
-  }
-};
 
 /* ── Props ── */
 export interface CoreAssistantModalProps {
@@ -32,6 +26,11 @@ export interface CoreAssistantModalProps {
   initialPrompt?: string | null;
   /** Called after the initial prompt has been submitted so the parent can clear it. */
   onInitialPromptSent?: () => void;
+  /** Increment to focus the composer (hero search → open empty). */
+  composerFocusSignal?: number;
+  /** When modal is already open, send this message immediately (e.g. second hero search submit). */
+  externalSend?: { id: number; text: string } | null;
+  onExternalSendConsumed?: () => void;
 }
 
 /* ── Helpers ── */
@@ -58,19 +57,25 @@ function getWelcomeMessage(t: (key: string) => string): ChatMessage {
 }
 
 /* ── Component ── */
-export function CoreAssistantModal({ isOpen, onClose, initialPrompt, onInitialPromptSent }: CoreAssistantModalProps) {
+export function CoreAssistantModal({
+  isOpen,
+  onClose,
+  initialPrompt,
+  onInitialPromptSent,
+  composerFocusSignal = 0,
+  externalSend = null,
+  onExternalSendConsumed,
+}: CoreAssistantModalProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { session } = useAuth();
-  const enrollment = useEnrollmentSafe();
-
   /* ── State ── */
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const flowStateRef = useRef<ActiveFlowState | null>(null);
+  const flowStateRef = useRef<LocalFlowState | null>(null);
   const prevOpenRef = useRef(false);
   const initialPromptSentRef = useRef(false);
+  const lastExternalSendIdRef = useRef<number | null>(null);
 
   /* ── Core message handler (defined early so speech hook can reference it) ── */
   const handleSendRef = useRef<(text: string) => void>(() => {});
@@ -84,16 +89,6 @@ export function CoreAssistantModal({ isOpen, onClose, initialPrompt, onInitialPr
     },
   });
 
-  /* ── User context for general AI fallback ── */
-  const userContext = {
-    isEnrolled: enrollment?.state?.selectedPlan != null,
-    isInEnrollmentFlow: location.pathname.startsWith("/enrollment"),
-    isPostEnrollment: location.pathname.startsWith("/dashboard/post-enrollment"),
-    currentRoute: location.pathname,
-    selectedPlan: enrollment?.state?.selectedPlan || null,
-    contributionAmount: enrollment?.state?.contributionAmount || 0,
-  };
-
   /* ── Reset when modal opens (detect false→true transition) ── */
   useEffect(() => {
     const wasOpen = prevOpenRef.current;
@@ -102,6 +97,7 @@ export function CoreAssistantModal({ isOpen, onClose, initialPrompt, onInitialPr
     if (isOpen && !wasOpen) {
       /* Fresh open — reset everything */
       initialPromptSentRef.current = false;
+      lastExternalSendIdRef.current = null;
       setMessages([getWelcomeMessage(t)]);
       setIsLoading(false);
       isLoadingRef.current = false;
@@ -115,14 +111,34 @@ export function CoreAssistantModal({ isOpen, onClose, initialPrompt, onInitialPr
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
-  /* ── Send initial prompt when opened with one (e.g. "Ask AI about this plan") ── */
+  /* ── Send initial prompt when opened with one (e.g. hero search → Core AI) ── */
   useEffect(() => {
     if (!isOpen || !initialPrompt?.trim() || initialPromptSentRef.current) return;
     const prompt = initialPrompt.trim();
     initialPromptSentRef.current = true;
     onInitialPromptSent?.();
-    handleSendRef.current(prompt);
+    let cancelled = false;
+    const id = window.setTimeout(() => {
+      if (!cancelled) handleSendRef.current(prompt);
+    }, 10);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(id);
+    };
   }, [isOpen, initialPrompt, onInitialPromptSent]);
+
+  /* ── External send while modal already open (e.g. hero search with text) ── */
+  useEffect(() => {
+    if (!isOpen || !externalSend?.text.trim()) return;
+    if (lastExternalSendIdRef.current === externalSend.id) return;
+    lastExternalSendIdRef.current = externalSend.id;
+    onExternalSendConsumed?.();
+    const text = externalSend.text.trim();
+    const id = window.setTimeout(() => {
+      handleSendRef.current(text);
+    }, 10);
+    return () => window.clearTimeout(id);
+  }, [isOpen, externalSend, onExternalSendConsumed]);
 
   /* ── Escape to close ── */
   useEffect(() => {
@@ -144,94 +160,76 @@ export function CoreAssistantModal({ isOpen, onClose, initialPrompt, onInitialPr
     return () => { document.body.style.overflow = ""; };
   }, [isOpen]);
 
-  /* ── Core message handler ── */
-  const handleSend = useCallback(
-    async (text: string) => {
+  /* ── Core message handler (text + structured card actions) ── */
+  const runTurn = useCallback(
+    (text: string, structured: CoreAIStructuredPayload | null) => {
       const trimmed = text.trim();
-      if (!trimmed || isLoadingRef.current) return;
+      if (isLoadingRef.current) return;
+      if (!structured && !trimmed) return;
 
-      /* 1. Add user message */
+      const userContent = structured ? formatStructuredUserLine(structured) : trimmed;
+
       const userMsg: ChatMessage = {
         id: nextId(),
         role: "user",
-        content: trimmed,
+        content: userContent,
         timestamp: new Date(),
       };
 
-      /* Clear suggestions from the last assistant message (they've been acted on) */
       setMessages((prev) => {
-        const updated = prev.map((m) =>
-          m.suggestions ? { ...m, suggestions: undefined } : m
-        );
+        const updated = prev.map((m) => (m.suggestions ? { ...m, suggestions: undefined } : m));
         return [...updated, userMsg];
       });
 
       setIsLoading(true);
       isLoadingRef.current = true;
 
-      /* Brief delay for "thinking" UX */
-      await new Promise((r) => setTimeout(r, 400));
+      const routeVersion = getRoutingVersion(location.pathname);
+      const local = handleLocalAI(structured ? "" : trimmed, flowStateRef.current, structured);
+      flowStateRef.current = local.nextState;
 
-      /* 2. Try scripted flow router first */
-      const flowResult = routeMessage(trimmed, flowStateRef.current, (interactiveText: string) => {
-        /* Callback for interactive components — feeds selection back into handleSend */
-        handleSendRef.current(interactiveText);
-      });
-
-      if (flowResult) {
-        /* Scripted flow handled it */
-        flowStateRef.current = flowResult.flowState;
-        setMessages((prev) => [...prev, ...flowResult.messages]);
-        setIsLoading(false);
-        isLoadingRef.current = false;
-        return;
+      if (local.loanApplyPayload) {
+        const p = local.loanApplyPayload;
+        useLoanStore.getState().initializeLoan({
+          amount: p.amount,
+          purpose: p.purpose,
+          loanType: p.loanType,
+        });
+        useLoanStore.getState().setStep(3);
       }
 
-      /* 3. No scripted flow matched → call Core AI backend (Gemini) */
-      try {
-        const aiResponse = await sendCoreAIMessage(
-          trimmed,
-          {
-            isEnrolled: userContext.isEnrolled,
-            isInEnrollmentFlow: userContext.isInEnrollmentFlow,
-            isPostEnrollment: userContext.isPostEnrollment,
-            currentRoute: userContext.currentRoute,
-            selectedPlan: userContext.selectedPlan,
-            contributionAmount: userContext.contributionAmount,
-          },
-          session?.access_token ?? undefined
-        );
+      setMessages((prev) => [...prev, ...local.messages]);
 
-        const assistantMsg: ChatMessage = {
-          id: nextId(),
-          role: "assistant",
-          content: aiResponse.reply,
-          timestamp: new Date(),
-          disclaimer: aiResponse.isFallback
-            ? undefined
-            : "Powered by Core AI. Verify with your plan administrator.",
-        };
-
-        setMessages((prev) => [...prev, assistantMsg]);
-      } catch (err) {
-        if (import.meta.env.DEV) console.error("[CoreAssistantModal] send message failed:", err);
-        const errorMsg: ChatMessage = {
-          id: nextId(),
-          role: "assistant",
-          content: "I'm having trouble right now. Please try again in a moment.",
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, errorMsg]);
-      } finally {
-        setIsLoading(false);
-        isLoadingRef.current = false;
+      const handlers = buildActionHandlers(navigate, routeVersion);
+      if (local.navigate) {
+        navigate(withVersionIfEnrollment(routeVersion, local.navigate));
+        onClose();
+      } else if (local.action && handlers[local.action]) {
+        handlers[local.action]();
+        onClose();
       }
+
+      setIsLoading(false);
+      isLoadingRef.current = false;
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [userContext]
+    [navigate, onClose, location.pathname],
   );
 
-  /* Keep ref in sync so the speech hook always calls the latest handleSend */
+  const handleSend = useCallback(
+    (text: string) => {
+      runTurn(text, null);
+    },
+    [runTurn],
+  );
+
+  const handleInteractiveAction = useCallback(
+    (structured: CoreAIStructuredPayload) => {
+      runTurn("", structured);
+    },
+    [runTurn],
+  );
+
+  /* Keep refs in sync so the speech hook always calls the latest handlers */
   useEffect(() => {
     handleSendRef.current = handleSend;
   }, [handleSend]);
@@ -239,10 +237,16 @@ export function CoreAssistantModal({ isOpen, onClose, initialPrompt, onInitialPr
   /* ── Handle action button navigation ── */
   const handleAction = useCallback(
     (route: string) => {
+      if (route === CORE_AI_LOAN_APPLY_ROUTE) {
+        const v = getRoutingVersion(location.pathname);
+        navigate(withVersionIfEnrollment(v, "/transactions/loan/configuration"));
+        onClose();
+        return;
+      }
       navigate(route);
       onClose();
     },
-    [navigate, onClose]
+    [navigate, onClose, location.pathname]
   );
 
   /* ── Mic click (toggle) ── */
@@ -304,16 +308,10 @@ export function CoreAssistantModal({ isOpen, onClose, initialPrompt, onInitialPr
           >
             {/* ── Header ── */}
             <div className="shrink-0 flex items-center justify-between gap-3 border-b border-[var(--color-border)] px-5 py-3">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-active)] shadow-lg shadow-[var(--brand-primary)]/20">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                    <path d="M2 17l10 5 10-5" />
-                    <path d="M2 12l10 5 10-5" />
-                  </svg>
-                </div>
+              <div className="flex min-w-0 items-center gap-3">
+                <CoreAiBrandMark />
                 <div className="min-w-0">
-                  <h2 className="text-sm font-semibold text-[var(--color-text)] truncate">{t("coreAi.headerTitle")}</h2>
+                  <h2 className="truncate text-sm font-semibold text-[var(--color-text)]">{t("coreAi.headerTitle")}</h2>
                   <div className="flex items-center gap-1.5">
                     <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-success)]" aria-hidden />
                     <span className="text-[11px] text-[var(--color-textSecondary)]">
@@ -347,6 +345,7 @@ export function CoreAssistantModal({ isOpen, onClose, initialPrompt, onInitialPr
               onPlay={handlePlay}
               onAction={handleAction}
               onSuggestion={handleSuggestion}
+              onInteractiveAction={handleInteractiveAction}
             />
 
             {/* ── Input (mic inside input — voice is a feature, not a mode) ── */}
@@ -356,6 +355,7 @@ export function CoreAssistantModal({ isOpen, onClose, initialPrompt, onInitialPr
               isProcessing={speech.isProcessing}
               onMicClick={handleMicClick}
               disabled={isLoading}
+              composerFocusSignal={composerFocusSignal}
             />
 
             {/* ── Footer ── */}

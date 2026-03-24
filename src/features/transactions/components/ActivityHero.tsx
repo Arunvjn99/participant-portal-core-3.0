@@ -12,7 +12,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { TrendingUp, Target, Wallet } from "lucide-react";
-import { AnimatedNumber } from "../../../components/dashboard/shared/AnimatedNumber";
+import { AnimatedNumber } from "@/components/dashboard/shared/AnimatedNumber";
 
 interface MomentumChartPoint {
   month: string;

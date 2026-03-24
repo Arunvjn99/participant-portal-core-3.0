@@ -1,5 +1,6 @@
 import { memo } from "react";
 import { motion } from "framer-motion";
+import { AiCoreBridgeButton } from "@/components/ai/AiCoreBridgeButton";
 
 interface InsightCardProps {
   icon?: React.ReactNode;
@@ -11,6 +12,8 @@ interface InsightCardProps {
   index?: number;
   /** When true, used inside another card — no border, no entrance animation */
   embedded?: boolean;
+  /** Opens Core AI with this context after the primary CTA. */
+  coreAiPrompt?: string;
 }
 
 /**
@@ -25,6 +28,7 @@ export const InsightCard = memo(function InsightCard({
   onAction,
   index = 0,
   embedded = false,
+  coreAiPrompt,
 }: InsightCardProps) {
   const content = (
     <>
@@ -41,10 +45,7 @@ export const InsightCard = memo(function InsightCard({
           </div>
         )}
         <div className="flex-1 min-w-0">
-          <p
-            className="text-xs font-bold"
-            style={{ color: "var(--enroll-text-primary)" }}
-          >
+          <p className="text-xs font-bold" style={{ color: "var(--enroll-text-primary)" }}>
             {title}
           </p>
           <p
@@ -70,15 +71,20 @@ export const InsightCard = memo(function InsightCard({
         <button
           type="button"
           onClick={onAction}
-          className="mt-3 w-full text-[11px] font-semibold py-1.5 rounded-lg border-none cursor-pointer transition-colors"
+          className="ai-recommendation mt-3 w-full cursor-pointer rounded-lg border border-[var(--ai-border)] py-1.5 text-[11px] font-semibold transition-transform duration-200 hover:scale-[1.01] active:scale-[0.99]"
           style={{
-            background: "rgb(var(--enroll-brand-rgb) / 0.06)",
-            color: "var(--enroll-brand)",
+            background: "var(--ai-bg-soft)",
+            color: "var(--ai-primary)",
           }}
         >
           {actionLabel}
         </button>
       )}
+      {coreAiPrompt ? (
+        <div className="mt-2">
+          <AiCoreBridgeButton prompt={coreAiPrompt} />
+        </div>
+      ) : null}
     </>
   );
 
@@ -91,11 +97,11 @@ export const InsightCard = memo(function InsightCard({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: 0.08 * index, ease: [0.4, 0, 0.2, 1] }}
-      whileHover={{ boxShadow: "0 0 20px rgb(var(--enroll-brand-rgb) / 0.08)" }}
-      className="p-4 rounded-xl transition-all"
+      whileHover={{ boxShadow: "0 0 22px color-mix(in srgb, var(--ai-primary) 12%, transparent)" }}
+      className="ai-insight rounded-xl p-4 transition-all"
       style={{
         background: "var(--color-bg-surface, var(--enroll-card-bg))",
-        border: "1px solid var(--enroll-card-border)",
+        border: "1px solid var(--ai-border)",
       }}
     >
       {content}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { DashboardCard } from "../dashboard/DashboardCard";
 import { Input } from "../ui/Input";
-import type { ContributionSource } from "../../enrollment/logic/types";
+import type { ContributionSource } from "@/enrollment/logic/types";
 
 interface SplitSourceAllocatorProps {
   allocations: Record<ContributionSource, number>;

@@ -1,7 +1,9 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { getRoutingVersion, withVersion } from "@/core/version";
 import { Modal } from "../ui/Modal";
 import Button from "../ui/Button";
-import type { TransactionType } from "../../types/transactions";
+import type { TransactionType } from "@/types/transactions";
+import { TRANSACTION_FLOW_ENTRY } from "@/core/transactionFlowRoutes";
 
 interface TransactionOption {
   type: TransactionType;
@@ -59,6 +61,8 @@ interface NewRequestModalProps {
 
 export const NewRequestModal = ({ isOpen, onClose, onSelect }: NewRequestModalProps) => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const version = getRoutingVersion(pathname);
 
   const handleSelect = async (type: TransactionType) => {
     // Perform eligibility check
@@ -70,8 +74,7 @@ export const NewRequestModal = ({ isOpen, onClose, onSelect }: NewRequestModalPr
       return;
     }
 
-    // Navigate to transaction start flow
-    navigate(`/transactions/${type}/start`);
+    navigate(withVersion(version, TRANSACTION_FLOW_ENTRY[type]));
     onClose();
     
     // Call onSelect for backward compatibility if provided

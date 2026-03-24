@@ -3,6 +3,8 @@
  * Used by EnrollmentLayout (stepper), EnrollmentFooter (Next/Back), and guards.
  */
 
+import { stripRoutingVersionPrefix } from "@/core/version";
+
 export const ENROLLMENT_STEP_PATHS = [
   "/enrollment/choose-plan",
   "/enrollment/contribution",
@@ -22,11 +24,15 @@ export const ENROLLMENT_STEP_LABEL_KEYS: Record<string, string> = {
   "/enrollment/review": "enrollment.stepperReview",
 };
 
+function normalizeStepPathname(pathname: string): string {
+  return stripRoutingVersionPrefix(pathname).replace(/\/$/, "") || "/";
+}
+
 /**
  * 0-based step index from pathname. Uses fixed ENROLLMENT_STEP_PATHS.
  */
 export function getStepIndex(pathname: string): number {
-  const normalized = pathname.replace(/\/$/, "") || "/";
+  const normalized = normalizeStepPathname(pathname);
   const i = ENROLLMENT_STEP_PATHS.findIndex(
     (path) => normalized === path || normalized.startsWith(path + "/")
   );
@@ -34,7 +40,7 @@ export function getStepIndex(pathname: string): number {
 }
 
 export function isEnrollmentStepPath(pathname: string): boolean {
-  const normalized = pathname.replace(/\/$/, "") || "/";
+  const normalized = normalizeStepPathname(pathname);
   return ENROLLMENT_STEP_PATHS.some(
     (p) => normalized === p || normalized.startsWith(p + "/")
   );

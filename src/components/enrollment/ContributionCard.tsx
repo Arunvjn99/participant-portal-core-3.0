@@ -1,7 +1,7 @@
 import { DashboardCard } from "../dashboard/DashboardCard";
 import { Input } from "../ui/Input";
 import { ContributionTypeToggle } from "./ContributionTypeToggle";
-import type { ContributionType } from "../../enrollment/logic/types";
+import type { ContributionType } from "@/enrollment/logic/types";
 
 interface ContributionCardProps {
   contributionType: ContributionType;

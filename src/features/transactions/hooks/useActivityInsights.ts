@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import type { TFunction } from "i18next";
-import { transactionStore } from "../../../data/transactionStore";
-import { ACCOUNT_OVERVIEW } from "../../../data/accountOverview";
+import { transactionStore } from "@/data/transactionStore";
+import { ACCOUNT_OVERVIEW } from "@/data/accountOverview";
 import type { ActivityInsight } from "../types";
 
 /**
@@ -22,29 +22,35 @@ export function useActivityInsights(planId: string | null, t: TFunction): Activi
     const yearAmountFormatted = yearAmount.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 });
     const thisMonthFormatted = thisMonthContrib.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
+    const matchTitle = t("transactions.insights.matchOpportunityTitle");
+    const matchDesc = t("transactions.insights.matchOpportunityDesc", { amount: yearAmountFormatted });
     insights.push({
       id: "contrib",
-      title: t("transactions.insights.matchOpportunityTitle"),
-      description: t("transactions.insights.matchOpportunityDesc", { amount: yearAmountFormatted }),
+      title: matchTitle,
+      description: matchDesc,
       impact: t("transactions.insights.matchOpportunityValue", { amount: thisMonthFormatted }),
       value: t("transactions.insights.matchOpportunityProjected", { amount: "$18,400" }),
       actionLabel: t("transactions.insights.adjustRate"),
       type: "contribution",
       impactType: "Growth",
       priority: true,
+      coreAiPrompt: `Help me understand this insight: ${matchTitle}. ${matchDesc}`,
     });
 
     const pendingRollover = all.find((tx) => tx.type === "rollover" && (tx.status === "draft" || tx.status === "active"));
     if (pendingRollover) {
+      const rollTitle = t("transactions.insights.rolloverProcessingTitle");
+      const rollDesc = t("transactions.insights.rolloverProcessingDesc");
       insights.push({
         id: "rollover",
-        title: t("transactions.insights.rolloverProcessingTitle"),
-        description: t("transactions.insights.rolloverProcessingDesc"),
+        title: rollTitle,
+        description: rollDesc,
         impact: t("transactions.riskOverview.etaDays", { days: 3 }),
         value: t("transactions.riskOverview.etaDays", { days: 3 }),
         actionLabel: t("transactions.insights.trackStatus"),
         type: "rollover",
         impactType: "Pending",
+        coreAiPrompt: `Help me understand this insight: ${rollTitle}. ${rollDesc}`,
       });
     }
 
@@ -52,26 +58,32 @@ export function useActivityInsights(planId: string | null, t: TFunction): Activi
       (tx) => (tx.type === "withdrawal" || tx.type === "distribution") && (tx.status === "active" || tx.status === "completed")
     );
     if (recentWithdrawal) {
+      const wTitle = t("transactions.insights.taxEventWarningTitle");
+      const wDesc = t("transactions.insights.taxEventWarningDesc");
       insights.push({
         id: "withdrawal",
-        title: t("transactions.insights.taxEventWarningTitle"),
-        description: t("transactions.insights.taxEventWarningDesc"),
+        title: wTitle,
+        description: wDesc,
         impact: t("transactions.insights.actionRequired"),
         value: t("transactions.insights.actionRequired"),
         type: "withdrawal",
         impactType: "Risk",
+        coreAiPrompt: `Help me understand this insight: ${wTitle}. ${wDesc}`,
       });
     }
 
     if (insights.length < 3 && !recentWithdrawal) {
+      const onTitle = t("transactions.insights.onTrackTitle");
+      const onDesc = t("transactions.insights.onTrackDesc");
       insights.push({
         id: "on-track",
-        title: t("transactions.insights.onTrackTitle"),
-        description: t("transactions.insights.onTrackDesc"),
+        title: onTitle,
+        description: onDesc,
         impact: t("transactions.insights.vsLastYear"),
         value: t("transactions.insights.vsLastYear"),
         type: "general",
         impactType: "Info",
+        coreAiPrompt: `Help me understand this insight: ${onTitle}. ${onDesc}`,
       });
     }
 

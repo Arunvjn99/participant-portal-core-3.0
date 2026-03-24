@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { MOCK_FUNDS } from "../../data/mockFunds";
-import type { Fund } from "../../types/investment";
+import { MOCK_FUNDS } from "@/data/mockFunds";
+import type { Fund } from "@/types/investment";
 
 const DEBOUNCE_MS = 300;
 

@@ -1,4 +1,4 @@
-import type { PlanRecommendation } from "../../types/enrollment";
+import type { PlanRecommendation } from "@/types/enrollment";
 
 export interface PlanRecommendationInput {
   currentAge: number;

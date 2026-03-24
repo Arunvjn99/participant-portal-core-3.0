@@ -1,12 +1,13 @@
 import { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "framer-motion";
 import { ChevronRight, Info } from "lucide-react";
-import { DashboardLayout } from "../../layouts/DashboardLayout";
-import { DashboardHeader } from "../../components/dashboard/DashboardHeader";
-import Button from "../../components/ui/Button";
-import { MOCK_ENROLLED_PLANS, type EnrolledPlan, type PlanStatus } from "../../data/mockEnrolledPlans";
+import { DashboardLayout } from "@/layouts/DashboardLayout";
+import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import Button from "@/components/ui/Button";
+import { MOCK_ENROLLED_PLANS, type EnrolledPlan, type PlanStatus } from "@/data/mockEnrolledPlans";
+import { getRoutingVersion, withVersion } from "@/core/version";
 
 const getCurrencyLocale = (lng: string) => (lng && lng !== "en" ? lng : "en-US");
 
@@ -52,6 +53,8 @@ function getFilterCount(value: PlanStatus | "all"): number {
 export const EnrollmentManagement = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const version = getRoutingVersion(pathname);
   const [filter, setFilter] = useState<PlanStatus | "all">("all");
   const reducedMotion = useReducedMotion();
   const formatCurrency = (n: number) =>
@@ -69,9 +72,9 @@ export const EnrollmentManagement = () => {
 
   const handlePlanAction = (plan: EnrolledPlan) => {
     if (plan.status === "enrolled") {
-      navigate(`/enrollment/manage/${plan.id}`);
+      navigate(withVersion(version, `/enrollment/manage/${plan.id}`));
     } else if (plan.status === "eligible") {
-      navigate("/enrollment/choose-plan");
+      navigate(withVersion(version, "/enrollment/choose-plan"));
     }
   };
 

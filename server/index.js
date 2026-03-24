@@ -17,6 +17,7 @@ import { generateCoreReply } from "./coreAiController.js";
 import { verifyCoreAIAuth, insertAILog } from "./supabaseAdmin.js";
 import { resolveIntent } from "./intentResolver.js";
 import { getDataForIntent } from "./services/retirementService.js";
+import { generateImageHandler } from "./generate-image.ts";
 
 dotenv.config();
 
@@ -29,6 +30,12 @@ app.use(cors({
   credentials: true,
 }));
 app.use(express.json());
+
+/**
+ * POST /api/generate-image
+ * OpenAI Images (gpt-image-1) — key from OPENAI_API_KEY only (server-side).
+ */
+app.post("/api/generate-image", generateImageHandler);
 
 // Configure multer for audio file uploads
 const upload = multer({
@@ -293,6 +300,7 @@ app.get("/api/health", (req, res) => {
       stt: !!speechClient,
       tts: !!ttsClient,
       coreAi: !!process.env.GEMINI_API_KEY,
+      openaiImages: !!process.env.OPENAI_API_KEY,
     },
   });
 });
@@ -302,4 +310,5 @@ app.listen(port, () => {
   console.log(`Core AI (Gemini): ${!!process.env.GEMINI_API_KEY ? "enabled" : "disabled (set GEMINI_API_KEY)"}`);
   console.log(`STT available: ${!!speechClient}`);
   console.log(`TTS available: ${!!ttsClient}`);
+  console.log(`OpenAI images: ${!!process.env.OPENAI_API_KEY ? "enabled (POST /api/generate-image)" : "disabled (set OPENAI_API_KEY)"}`);
 });

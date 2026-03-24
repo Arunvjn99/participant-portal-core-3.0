@@ -11,6 +11,7 @@ import { Signup } from "../pages/auth/Signup";
 import { Dashboard } from "../pages/dashboard/Dashboard";
 import { VersionedDashboard } from "../pages/dashboard/VersionedDashboard";
 import { PostEnrollmentDashboard } from "../pages/dashboard/PostEnrollmentDashboard";
+import { ParticipantsOverviewDashboard } from "../pages/dashboard/ParticipantsOverviewDashboard";
 import { DemoDashboard } from "../pages/dashboard/DemoDashboard";
 import { InvestmentPortfolioPage } from "../pages/dashboard/InvestmentPortfolioPage";
 import { Profile } from "../pages/profile/Profile";
@@ -27,7 +28,38 @@ import { VersionedEnrollment } from "../pages/enrollment/VersionedEnrollment";
 import { FutureContributions } from "../pages/enrollment/FutureContributions";
 import { TransactionsPage } from "../pages/transactions/TransactionsPage";
 import { TransactionAnalysis } from "../pages/transactions/TransactionAnalysis";
-import { TransactionApplicationRouter } from "../pages/transactions/applications/TransactionApplicationRouter";
+import { LoanTransactionLayout } from "../pages/transactions/layouts/LoanTransactionLayout";
+import { WithdrawTransactionLayout } from "../pages/transactions/layouts/WithdrawTransactionLayout";
+import { TransferTransactionLayout } from "../pages/transactions/layouts/TransferTransactionLayout";
+import { RebalanceTransactionLayout } from "../pages/transactions/layouts/RebalanceTransactionLayout";
+import { RolloverTransactionLayout } from "../pages/transactions/layouts/RolloverTransactionLayout";
+import LoanEligibilityPage from "../pages/transactions/loan/eligibility";
+import LoanSimulatorPage from "../pages/transactions/loan/simulator";
+import LoanConfigurationPage from "../pages/transactions/loan/configuration";
+import LoanFeesPage from "../pages/transactions/loan/fees";
+import LoanDocumentsPage from "../pages/transactions/loan/documents";
+import LoanReviewPage from "../pages/transactions/loan/review";
+import WithdrawEligibilityPage from "../pages/transactions/withdraw/WithdrawEligibility";
+import WithdrawTypePage from "../pages/transactions/withdraw/WithdrawType";
+import WithdrawSourcePage from "../pages/transactions/withdraw/WithdrawSource";
+import WithdrawFeesPage from "../pages/transactions/withdraw/WithdrawFees";
+import WithdrawPaymentPage from "../pages/transactions/withdraw/WithdrawPayment";
+import WithdrawReviewPage from "../pages/transactions/withdraw/WithdrawReview";
+import TransferTypePage from "../pages/transactions/transfer/TransferType";
+import TransferSourceFundsPage from "../pages/transactions/transfer/TransferSourceFunds";
+import TransferDestinationPage from "../pages/transactions/transfer/TransferDestination";
+import TransferAmountPage from "../pages/transactions/transfer/TransferAmount";
+import TransferImpactPage from "../pages/transactions/transfer/TransferImpact";
+import TransferReviewPage from "../pages/transactions/transfer/TransferReview";
+import RebalanceCurrentAllocationPage from "../pages/transactions/rebalance/RebalanceCurrentAllocation";
+import RebalanceAdjustAllocationPage from "../pages/transactions/rebalance/RebalanceAdjustAllocation";
+import RebalanceTradePreviewPage from "../pages/transactions/rebalance/RebalanceTradePreview";
+import RebalanceReviewPage from "../pages/transactions/rebalance/RebalanceReview";
+import RolloverPlanDetailsPage from "../pages/transactions/rollover/RolloverPlanDetails";
+import RolloverValidationPage from "../pages/transactions/rollover/RolloverValidation";
+import RolloverAllocationPage from "../pages/transactions/rollover/RolloverAllocation";
+import RolloverDocumentsPage from "../pages/transactions/rollover/RolloverDocuments";
+import RolloverReviewPage from "../pages/transactions/rollover/RolloverReview";
 import { InvestmentProvider } from "../context/InvestmentContext";
 import InvestmentsLayout from "../app/investments/layout";
 import InvestmentsPage from "../app/investments/page";
@@ -37,6 +69,8 @@ import { ThemeSettings } from "../pages/settings/ThemeSettings";
 import { SettingsHub } from "../pages/settings/SettingsHub";
 import { PreEnrollmentDashboardTest } from "../pages/PreEnrollmentDashboardTest";
 import { AIAssetsPage } from "../pages/ai-assets";
+import { EnrollmentV1Layout } from "@/modules/enrollment/v1/layout/EnrollmentLayout";
+import { V1_WIZARD_SEGMENTS } from "@/modules/enrollment/v1/flow/v1WizardPaths";
 
 /** Redirects `/enrollment` and `/enrollment/*` to `/v1/enrollment` equivalents (preserves subpath + query). */
 function LegacyEnrollmentRedirect() {
@@ -164,6 +198,14 @@ export const router = createBrowserRouter([
         element: <ProtectedRoute><PostEnrollmentDashboard /></ProtectedRoute>,
       },
       {
+        path: "/dashboard/overview",
+        element: (
+          <ProtectedRoute>
+            <ParticipantsOverviewDashboard />
+          </ProtectedRoute>
+        ),
+      },
+      {
         path: "/dashboard/investment-portfolio",
         element: <ProtectedRoute><InvestmentPortfolioPage /></ProtectedRoute>,
       },
@@ -179,6 +221,14 @@ export const router = createBrowserRouter([
         path: "/enrollment/*",
         element: <LegacyEnrollmentRedirect />,
       },
+      ...V1_WIZARD_SEGMENTS.map((slug) => ({
+        path: `/v1/enrollment/${slug}`,
+        element: (
+          <ProtectedRoute>
+            <EnrollmentV1Layout />
+          </ProtectedRoute>
+        ),
+      })),
       {
         path: "/:version/enrollment",
         element: (
@@ -248,16 +298,71 @@ export const router = createBrowserRouter([
             element: <TransactionsPage />,
           },
           {
-            path: "loan/new",
-            element: <Navigate to="loan/start" replace />,
+            path: "loan",
+            element: <LoanTransactionLayout />,
+            children: [
+              { index: true, element: <Navigate to="eligibility" replace /> },
+              { path: "new", element: <Navigate to="eligibility" replace /> },
+              { path: "eligibility", element: <LoanEligibilityPage /> },
+              { path: "simulator", element: <LoanSimulatorPage /> },
+              { path: "configuration", element: <LoanConfigurationPage /> },
+              { path: "fees", element: <LoanFeesPage /> },
+              { path: "documents", element: <LoanDocumentsPage /> },
+              { path: "review", element: <LoanReviewPage /> },
+            ],
           },
           {
-            path: ":transactionType/start",
-            element: <TransactionApplicationRouter />,
+            path: "withdrawal",
+            element: <Navigate to="withdraw" replace />,
           },
           {
-            path: ":transactionType/:transactionId",
-            element: <TransactionApplicationRouter />,
+            path: "withdraw",
+            element: <WithdrawTransactionLayout />,
+            children: [
+              { index: true, element: <WithdrawEligibilityPage /> },
+              { path: "type", element: <WithdrawTypePage /> },
+              { path: "source", element: <WithdrawSourcePage /> },
+              { path: "fees", element: <WithdrawFeesPage /> },
+              { path: "payment", element: <WithdrawPaymentPage /> },
+              { path: "review", element: <WithdrawReviewPage /> },
+            ],
+          },
+          {
+            path: "transfer",
+            element: <TransferTransactionLayout />,
+            children: [
+              { index: true, element: <TransferTypePage /> },
+              { path: "source", element: <TransferSourceFundsPage /> },
+              { path: "destination", element: <TransferDestinationPage /> },
+              { path: "amount", element: <TransferAmountPage /> },
+              { path: "impact", element: <TransferImpactPage /> },
+              { path: "review", element: <TransferReviewPage /> },
+            ],
+          },
+          {
+            path: "rebalance",
+            element: <RebalanceTransactionLayout />,
+            children: [
+              { index: true, element: <RebalanceCurrentAllocationPage /> },
+              { path: "adjust", element: <RebalanceAdjustAllocationPage /> },
+              { path: "trades", element: <RebalanceTradePreviewPage /> },
+              { path: "review", element: <RebalanceReviewPage /> },
+            ],
+          },
+          {
+            path: "rollover",
+            element: <RolloverTransactionLayout />,
+            children: [
+              { index: true, element: <RolloverPlanDetailsPage /> },
+              { path: "validation", element: <RolloverValidationPage /> },
+              { path: "allocation", element: <RolloverAllocationPage /> },
+              { path: "documents", element: <RolloverDocumentsPage /> },
+              { path: "review", element: <RolloverReviewPage /> },
+            ],
+          },
+          {
+            path: "distribution",
+            element: <Navigate to="withdraw" replace />,
           },
           {
             path: ":transactionId",

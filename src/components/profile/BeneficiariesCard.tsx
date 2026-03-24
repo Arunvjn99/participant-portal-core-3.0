@@ -4,7 +4,7 @@ import { Input } from "../ui/Input";
 import Button from "../ui/Button";
 import { Modal } from "../ui/Modal";
 import { ProfileCard } from "./ProfileCard";
-import type { Beneficiary } from "../../data/mockProfile";
+import type { Beneficiary } from "@/data/mockProfile";
 
 interface BeneficiariesCardProps {
   data: { primary: Beneficiary[]; contingent: Beneficiary[]; lastUpdated?: string };

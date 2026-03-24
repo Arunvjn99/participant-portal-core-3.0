@@ -1,10 +1,11 @@
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { AnimatedNumber } from "../../shared/AnimatedNumber";
-import { CARD_STYLE, fmtCurrency } from "../../core/types";
-import type { ModuleProps } from "../../core/types";
+import { AnimatedNumber } from "@/components/dashboard/shared/AnimatedNumber";
+import { CARD_STYLE, fmtCurrency } from "@/components/dashboard/core/types";
+import type { ModuleProps } from "@/components/dashboard/core/types";
+import { getRoutingVersion, withVersion } from "@/core/version";
 
 /**
  * ContributionOptimizer — Free Money Alert, match visualization,
@@ -15,6 +16,8 @@ export const ContributionOptimizer = memo(function ContributionOptimizer({
 }: ModuleProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const version = getRoutingVersion(pathname);
   const hasMissedMatch = engine.matchGap > 0;
 
   const currentAnnual = (engine.contributionRate / 100) * engine.salary;
@@ -184,7 +187,7 @@ export const ContributionOptimizer = memo(function ContributionOptimizer({
       {hasMissedMatch && (
         <button
           type="button"
-          onClick={() => navigate("/enrollment/contribution")}
+          onClick={() => navigate(withVersion(version, "/enrollment/contribution"))}
           className="mt-4 w-full text-xs font-semibold py-2 rounded-xl border-none cursor-pointer transition-all"
           style={{
             background: "var(--enroll-brand)",

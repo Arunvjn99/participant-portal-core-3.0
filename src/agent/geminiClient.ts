@@ -5,6 +5,6 @@
 
 export async function generateMessage(intent: string): Promise<string> {
   throw new Error(
-    "Frontend Gemini is disabled. All AI must go through /api/core-ai. Use sendCoreAIMessage with a valid session token instead."
+    "Frontend Gemini is disabled. Use the local scripted assistant (handleLocalAI / getLocalAssistantReply) instead."
   );
 }

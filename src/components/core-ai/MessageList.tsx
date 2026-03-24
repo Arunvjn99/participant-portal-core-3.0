@@ -1,4 +1,5 @@
 import { useRef, useEffect } from "react";
+import type { CoreAIStructuredPayload } from "@/core/ai/interactive/types";
 import { MessageBubble, type ChatMessage } from "./MessageBubble";
 
 /**
@@ -17,9 +18,18 @@ export interface MessageListProps {
   onPlay: (messageId: string) => void;
   onAction: (route: string) => void;
   onSuggestion: (text: string) => void;
+  onInteractiveAction?: (payload: CoreAIStructuredPayload) => void;
 }
 
-export function MessageList({ messages, speakingId, isLoading, onPlay, onAction, onSuggestion }: MessageListProps) {
+export function MessageList({
+  messages,
+  speakingId,
+  isLoading,
+  onPlay,
+  onAction,
+  onSuggestion,
+  onInteractiveAction,
+}: MessageListProps) {
   const endRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -44,6 +54,7 @@ export function MessageList({ messages, speakingId, isLoading, onPlay, onAction,
           onPlay={onPlay}
           onAction={onAction}
           onSuggestion={onSuggestion}
+          onInteractiveAction={onInteractiveAction}
         />
       ))}
 

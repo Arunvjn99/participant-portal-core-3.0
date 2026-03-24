@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import type { CoreAIInteractiveMessageType, CoreAIStructuredPayload } from "@/core/ai/interactive/types";
+import { CoreAiInteractiveHost } from "./interactive/CoreAiInteractiveHost";
 import { MessageActions } from "./MessageActions";
 
 /**
@@ -21,7 +23,7 @@ export interface ChatAction {
 export interface ChatMessage {
   id: string;
   role: "user" | "assistant";
-  /** Message display type: "text" for standard bubbles, "component" for interactive blocks */
+  /** Message display type: "text" for standard bubbles, "component" for embedded React */
   type?: "text" | "component";
   content: string;
   timestamp: Date;
@@ -33,6 +35,9 @@ export interface ChatMessage {
   suggestions?: string[];
   /** React component rendered instead of text when type === "component" */
   component?: ReactNode;
+  /** Inline interactive loan / workflow cards (chat + form hybrid). */
+  interactiveType?: CoreAIInteractiveMessageType;
+  interactivePayload?: unknown;
 }
 
 export interface MessageBubbleProps {
@@ -42,11 +47,21 @@ export interface MessageBubbleProps {
   onAction: (route: string) => void;
   /** When a suggestion chip is clicked, inject that text as a user message */
   onSuggestion?: (text: string) => void;
+  /** Card buttons / CTAs — structured payload to local AI (no HTTP). */
+  onInteractiveAction?: (payload: CoreAIStructuredPayload) => void;
 }
 
-export function MessageBubble({ message, speakingId, onPlay, onAction, onSuggestion }: MessageBubbleProps) {
+export function MessageBubble({
+  message,
+  speakingId,
+  onPlay,
+  onAction,
+  onSuggestion,
+  onInteractiveAction,
+}: MessageBubbleProps) {
   const isUser = message.role === "user";
   const isComponent = message.type === "component";
+  const isInteractive = Boolean(message.interactiveType && message.interactivePayload != null && onInteractiveAction);
   const isSpeaking = speakingId === message.id;
   const reduced = useReducedMotion();
 
@@ -92,8 +107,89 @@ export function MessageBubble({ message, speakingId, onPlay, onAction, onSuggest
           </>
         )}
 
+        {/* ── Assistant: Interactive card (intro text + inline UI) ── */}
+        {!isUser && !isComponent && isInteractive && message.interactiveType && (
+          <>
+            <div className="flex items-center gap-2 mb-1">
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full" style={{ background: "var(--banner-gradient)" }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                  <path d="M2 17l10 5 10-5" />
+                  <path d="M2 12l10 5 10-5" />
+                </svg>
+              </div>
+              <span className="text-[11px] font-medium text-[var(--color-textSecondary)]">Core AI</span>
+            </div>
+
+            {message.content.trim().length > 0 && (
+              <div className="rounded-2xl rounded-tl-md bg-[var(--color-background)] border border-[var(--color-border)] px-4 py-3 mb-2">
+                {message.dataSnippet && (
+                  <p className="text-sm font-semibold text-[var(--color-success)] mb-1">{message.dataSnippet}</p>
+                )}
+                <p className="text-sm leading-relaxed text-[var(--color-text)] whitespace-pre-wrap">{message.content}</p>
+                {message.disclaimer && (
+                  <p className="mt-2 text-[11px] italic text-[var(--color-textSecondary)]">{message.disclaimer}</p>
+                )}
+                {(message.primaryAction || message.secondaryAction) && (
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {message.primaryAction && (
+                      <button
+                        type="button"
+                        onClick={() => onAction(message.primaryAction!.route)}
+                        className="px-3 py-1.5 rounded-lg bg-primary text-white text-xs font-medium hover:bg-primary-hover transition-colors"
+                      >
+                        {message.primaryAction.label}
+                      </button>
+                    )}
+                    {message.secondaryAction && (
+                      <button
+                        type="button"
+                        onClick={() => onAction(message.secondaryAction!.route)}
+                        className="px-3 py-1.5 rounded-lg border border-[var(--color-border)] text-[var(--color-textSecondary)] text-xs font-medium hover:bg-[var(--color-background)] transition-colors"
+                      >
+                        {message.secondaryAction.label}
+                      </button>
+                    )}
+                  </div>
+                )}
+                {message.suggestions && message.suggestions.length > 0 && onSuggestion && (
+                  <div className="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-[var(--color-border)]">
+                    {message.suggestions.map((s) => (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => onSuggestion(s)}
+                        className="rounded-lg bg-[var(--color-background)] border border-[var(--color-border)] px-2.5 py-1.5 text-[11px] text-[var(--color-text)] hover:bg-[var(--color-surface)] transition-colors"
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            <motion.div
+              initial={reduced ? false : { opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }}
+              className="w-full"
+            >
+              <CoreAiInteractiveHost
+                type={message.interactiveType}
+                payload={message.interactivePayload}
+                onStructuredAction={onInteractiveAction}
+              />
+            </motion.div>
+
+            {message.content.trim().length > 0 && (
+              <MessageActions messageId={message.id} text={message.content} isSpeaking={isSpeaking} onPlay={onPlay} />
+            )}
+          </>
+        )}
+
         {/* ── Assistant: Text bubble ── */}
-        {!isUser && !isComponent && (
+        {!isUser && !isComponent && !isInteractive && (
           <>
             {/* Avatar + name */}
             <div className="flex items-center gap-2 mb-1">

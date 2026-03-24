@@ -1,4 +1,4 @@
-import type { ContributionType } from "../../enrollment/logic/types";
+import type { ContributionType } from "@/enrollment/logic/types";
 
 interface ContributionTypeRowProps {
   contributionType: ContributionType;

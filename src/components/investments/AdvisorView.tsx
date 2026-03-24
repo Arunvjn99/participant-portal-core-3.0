@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { DashboardCard } from "../dashboard/DashboardCard";
 import Button from "../ui/Button";
-import { useInvestment } from "../../context/InvestmentContext";
-import { getFundById } from "../../data/mockFunds";
+import { useInvestment } from "@/context/InvestmentContext";
+import { getFundById } from "@/data/mockFunds";
 
 /**
  * AdvisorView - Read-only investment view with advisor explanation

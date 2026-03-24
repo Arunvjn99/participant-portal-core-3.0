@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { DashboardLayout } from "../../../layouts/DashboardLayout";
-import { DashboardHeader } from "../../../components/dashboard/DashboardHeader";
+import { DashboardLayout } from "@/layouts/DashboardLayout";
+import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { MOCK_HUB_DATA } from "../data/mockHubData";
 import { FinancialSnapshotStrip } from "./FinancialSnapshotStrip";
 import { ActionCommandGrid, type ActionType } from "./ActionCommandGrid";

@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Printer } from "lucide-react";
-import { DashboardLayout } from "../../layouts/DashboardLayout";
-import { DashboardHeader } from "../../components/dashboard/DashboardHeader";
-import { DashboardCard } from "../../components/dashboard/DashboardCard";
-import Button from "../../components/ui/Button";
-import { MOCK_ENROLLED_PLANS, type EnrolledPlan } from "../../data/mockEnrolledPlans";
-import { OptOutModal } from "../../components/enrollment/OptOutModal";
+import { DashboardLayout } from "@/layouts/DashboardLayout";
+import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { DashboardCard } from "@/components/dashboard/DashboardCard";
+import Button from "@/components/ui/Button";
+import { MOCK_ENROLLED_PLANS, type EnrolledPlan } from "@/data/mockEnrolledPlans";
+import { OptOutModal } from "@/components/enrollment/OptOutModal";
+import { getRoutingVersion, withVersion } from "@/core/version";
 
 /**
  * PlanDetailManagement - Detailed management view for a single enrolled plan
@@ -19,6 +20,8 @@ const formatCurrency = (n: number) =>
 export const PlanDetailManagement = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const version = getRoutingVersion(pathname);
   const { planId } = useParams<{ planId: string }>();
   const [showOptOutModal, setShowOptOutModal] = useState(false);
 
@@ -31,7 +34,7 @@ export const PlanDetailManagement = () => {
           <div className="plan-detail-management__error">
             <h1>Plan Not Found</h1>
             <p>The requested plan could not be found or is not enrolled.</p>
-            <Button onClick={() => navigate("/enrollment")}>Back to Enrollment</Button>
+            <Button onClick={() => navigate(withVersion(version, "/enrollment"))}>Back to Enrollment</Button>
           </div>
         </div>
       </DashboardLayout>
@@ -39,11 +42,11 @@ export const PlanDetailManagement = () => {
   }
 
   const handleEditContribution = () => {
-    navigate("/enrollment/contribution");
+    navigate(withVersion(version, "/enrollment/contribution"));
   };
 
   const handleChangeInvestments = () => {
-    navigate("/enrollment/investments");
+    navigate(withVersion(version, "/enrollment/investments"));
   };
 
   const handleEditAutoFeatures = () => {
@@ -68,7 +71,7 @@ export const PlanDetailManagement = () => {
     // TODO: Implement opt-out logic
     console.log("Opting out of plan:", plan.id);
     setShowOptOutModal(false);
-    navigate("/enrollment");
+    navigate(withVersion(version, "/enrollment"));
   };
 
   const totalBalance = plan.balance ?? 0;
@@ -82,7 +85,7 @@ export const PlanDetailManagement = () => {
         <div className="plan-detail-management__header">
           <button
             type="button"
-            onClick={() => navigate("/enrollment")}
+            onClick={() => navigate(withVersion(version, "/enrollment"))}
             className="plan-detail-management__back-button"
             aria-label={t("enrollment.backToEnrollment")}
           >

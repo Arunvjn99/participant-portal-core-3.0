@@ -368,13 +368,13 @@ button {
   }
 }
 
-/* Core AI FAB — uses brand primary via CSS variable */
+/* Core AI FAB — violet AI system (see global.css --ai-*) */
 .core-ai-fab-btn {
-  background: var(--banner-gradient, linear-gradient(135deg, #2dd4bf 0%, #14b8a6 40%, #0d9488 100%));
+  background: linear-gradient(135deg, var(--ai-primary, #7c3aed) 0%, #6d28d9 45%, #5b21b6 100%);
 }
 .core-ai-fab-btn:hover {
   transform: scale(1.06);
-  box-shadow: 0 6px 24px rgb(var(--color-primary-rgb, 20 184 166) / 0.35), 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 26px var(--ai-glow, rgba(124, 58, 237, 0.45)), 0 2px 8px rgba(0, 0, 0, 0.12);
 }
 .core-ai-fab-btn:active {
   transform: scale(0.96);
@@ -383,11 +383,11 @@ button {
 @keyframes core-ai-glow {
   0%, 100% {
     opacity: 0;
-    box-shadow: 0 0 0 0 rgb(var(--color-primary-rgb, 20 184 166) / 0);
+    box-shadow: 0 0 0 0 transparent;
   }
   50% {
     opacity: 1;
-    box-shadow: 0 0 0 8px rgb(var(--color-primary-rgb, 20 184 166) / 0.18);
+    box-shadow: 0 0 0 10px color-mix(in srgb, var(--ai-primary, #7c3aed) 22%, transparent);
   }
 }
 
@@ -5483,15 +5483,16 @@ button {
 
 /* Transaction Flow Footer — mirrors enrollment-footer, tokens only */
 .transaction-flow-footer {
-  position: fixed;
+  position: sticky;
   left: 0;
   right: 0;
   bottom: 0;
+  margin-top: var(--spacing-8);
   padding: var(--spacing-4) var(--spacing-6);
   padding-bottom: max(var(--spacing-4), env(safe-area-inset-bottom));
-  border-top: 1px solid var(--color-border);
-  background-color: var(--color-background);
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
+  border-top: 1px solid var(--ds-border);
+  background-color: var(--ds-bg);
+  box-shadow: 0 -2px 8px color-mix(in srgb, var(--ds-text-primary) 6%, transparent);
   z-index: 50;
 }
 
@@ -5610,7 +5611,7 @@ button {
 
 @media (max-width: 640px) {
   .transaction-flow-footer {
-    position: static;
+    position: sticky;
     margin-top: var(--spacing-6);
   }
 
@@ -8803,10 +8804,14 @@ button {
 }
 
 .investment-portfolio-ai-panel {
-  background: var(--banner-gradient);
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--ai-primary, #7c3aed) 14%, var(--card)) 0%,
+    var(--card) 55%
+  );
   border-radius: var(--radius-2xl);
   padding: var(--spacing-6);
-  color: var(--color-text-inverse);
+  color: var(--foreground);
   box-shadow: var(--shadow-sm);
   margin-bottom: var(--spacing-8);
   overflow: hidden;
@@ -8814,7 +8819,11 @@ button {
 }
 
 .dark .investment-portfolio-ai-panel {
-  background: var(--banner-gradient-dark);
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--ai-primary, #7c3aed) 22%, var(--card)) 0%,
+    var(--card) 55%
+  );
 }
 
 /* Investments Layout (enrollment / strategy builder) */

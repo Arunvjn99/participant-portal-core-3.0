@@ -1,4 +1,5 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { getRoutingVersion, withVersionIfEnrollment } from "@/core/version";
 
 interface PostEnrollmentTopBannerProps {
   percentOnTrack: number;
@@ -15,6 +16,8 @@ export const PostEnrollmentTopBanner = ({
   actionRoute,
 }: PostEnrollmentTopBannerProps) => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const version = getRoutingVersion(pathname);
 
   return (
     <div className="ped-banner rounded-xl w-full min-w-0 overflow-hidden">
@@ -34,7 +37,7 @@ export const PostEnrollmentTopBanner = ({
         <button
           type="button"
           className="ped-banner__cta ped-banner__cta--pill"
-          onClick={() => navigate(actionRoute)}
+          onClick={() => navigate(withVersionIfEnrollment(version, actionRoute))}
         >
           Take Action →
         </button>

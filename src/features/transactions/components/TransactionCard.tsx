@@ -1,9 +1,11 @@
 import { memo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { getRoutingVersion, withVersion } from "@/core/version";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { StatusBadge } from "../../../components/dashboard/shared/StatusBadge";
-import type { Transaction, TransactionType } from "../../../types/transactions";
+import { StatusBadge } from "@/components/dashboard/shared/StatusBadge";
+import type { Transaction, TransactionType } from "@/types/transactions";
+import { TRANSACTION_FLOW_ENTRY } from "@/core/transactionFlowRoutes";
 import type { TransactionLifecycleStatus } from "../types";
 
 const TYPE_KEYS: Record<TransactionType, string> = {
@@ -44,6 +46,8 @@ export const TransactionCard = memo(function TransactionCard({
 }: TransactionCardProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const version = getRoutingVersion(pathname);
   const reduced = !!useReducedMotion();
   const [expanded, setExpanded] = useState(false);
   const status = lifecycleStatus ?? mapStatus(transaction.status);
@@ -53,9 +57,9 @@ export const TransactionCard = memo(function TransactionCard({
 
   const handleRowClick = () => {
     if (transaction.status === "draft" || transaction.status === "active") {
-      navigate(`/transactions/${transaction.type}/${transaction.id}`);
+      navigate(withVersion(version, TRANSACTION_FLOW_ENTRY[transaction.type]));
     } else {
-      navigate(`/transactions/${transaction.id}`);
+      navigate(withVersion(version, `/transactions/${transaction.id}`));
     }
   };
 

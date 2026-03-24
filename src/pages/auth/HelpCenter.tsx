@@ -3,8 +3,8 @@ import { useTranslation } from "react-i18next";
 import {
   AuthLayout,
   AuthFormShell,
-} from "../../components/auth";
-import { Logo } from "../../components/brand/Logo";
+} from "@/components/auth";
+import { Logo } from "@/components/brand/Logo";
 
 export const HelpCenter = () => {
   const { t } = useTranslation();

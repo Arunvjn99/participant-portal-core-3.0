@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
-import { useReducedMotion } from "../../hooks/useReducedMotion";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 interface SuccessEnrollmentModalProps {
   open: boolean;

@@ -1,12 +1,13 @@
 import { useNavigate, useLocation } from "react-router-dom";
+import { getRoutingVersion, stripRoutingVersionPrefix, withVersion } from "@/core/version";
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button";
 import {
   loadEnrollmentDraft,
   saveEnrollmentDraft,
   ENROLLMENT_SAVED_TOAST_KEY,
-} from "../../enrollment/enrollmentDraftStore";
-import { getStepIndex, isEnrollmentStepPath, ENROLLMENT_STEP_PATHS } from "../../enrollment/enrollmentStepPaths";
+} from "@/enrollment/enrollmentDraftStore";
+import { getStepIndex, isEnrollmentStepPath, ENROLLMENT_STEP_PATHS } from "@/enrollment/enrollmentStepPaths";
 
 interface EnrollmentFooterProps {
   primaryLabel: string;
@@ -37,9 +38,10 @@ export const EnrollmentFooter = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const version = getRoutingVersion(pathname);
   const currentStepIndex = getStepIndex(pathname);
   const onStepPath = isEnrollmentStepPath(pathname);
-  const normalizedPath = pathname.replace(/\/$/, "") || "/";
+  const normalizedPath = stripRoutingVersionPrefix(pathname).replace(/\/$/, "") || "/";
 
   const nextPath = onStepPath ? ENROLLMENT_STEP_PATHS[currentStepIndex + 1] : undefined;
   let prevPath = currentStepIndex > 0 ? ENROLLMENT_STEP_PATHS[currentStepIndex - 1] : undefined;
@@ -49,14 +51,14 @@ export const EnrollmentFooter = ({
   }
 
   const handleBack = () => {
-    if (prevPath) navigate(prevPath);
+    if (prevPath) navigate(withVersion(version, prevPath));
   };
 
   const handlePrimary = () => {
     onPrimary?.();
     if (nextPath) {
       // Full page navigation so the next step always loads (avoids client router not updating the view)
-      window.location.href = nextPath;
+      window.location.href = withVersion(version, nextPath);
     }
   };
 
@@ -67,7 +69,7 @@ export const EnrollmentFooter = ({
       saveEnrollmentDraft(snapshot ? { ...draft, ...snapshot } : draft);
       sessionStorage.setItem(ENROLLMENT_SAVED_TOAST_KEY, "1");
     }
-    navigate("/dashboard");
+    navigate(withVersion(version, "/dashboard"));
   };
 
   const isFirstStep = currentStepIndex === 0 && prevPath === undefined;
@@ -107,7 +109,7 @@ export const EnrollmentFooter = ({
           </Button>
           {nextPath ? (
             <a
-              href={nextPath}
+              href={withVersion(version, nextPath)}
               onClick={(e) => {
                 e.preventDefault();
                 if (primaryDisabled) return;

@@ -7,9 +7,11 @@ import type { TransactionType } from "../types/transactions";
 export const TRANSACTION_STEPS: Record<TransactionType, string[]> = {
   loan: [
     "transactions.loanFlow.eligibility",
+    "transactions.loanFlow.simulator",
     "transactions.loanFlow.configuration",
+    "transactions.loanFlow.fees",
+    "transactions.loanFlow.documents",
     "transactions.loanFlow.review",
-    "transactions.loanFlow.confirmation",
   ],
   withdrawal: [
     "transactions.stepsWithdrawal0",

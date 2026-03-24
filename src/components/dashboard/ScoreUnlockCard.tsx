@@ -1,6 +1,6 @@
 import { DashboardCard } from "./DashboardCard";
 import Button from "../ui/Button";
-import { PadlockIcon } from "../../assets/dashboard/icons";
+import { PadlockIcon } from "@/assets/dashboard/icons";
 
 export const ScoreUnlockCard = () => {
   return (

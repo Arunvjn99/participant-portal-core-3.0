@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useReducedMotion } from "framer-motion";
-import type { LoanFundAllocation } from "../../types/loan";
+import type { LoanFundAllocation } from "@/types/loan";
 
 interface InvestmentBreakdownTableProps {
   allocations: LoanFundAllocation[];

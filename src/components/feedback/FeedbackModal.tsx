@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { supabase } from "../../lib/supabase";
-import { useAuth } from "../../context/AuthContext";
-import { useUser } from "../../context/UserContext";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/context/AuthContext";
+import { useUser } from "@/context/UserContext";
 
 /* ═══════════════════════════════════════════════════════
    TYPES
@@ -275,6 +275,12 @@ export function FeedbackModal({ isOpen, onClose, workflowType }: FeedbackModalPr
     } else {
       metadata.primary_feature_used = primaryFeature || undefined;
       metadata.nps_score = npsScore;
+    }
+
+    if (!supabase) {
+      setStatus("error");
+      setErrorMsg("Feedback is unavailable (backend not configured).");
+      return;
     }
 
     const { error } = await supabase.from("feedback").insert({

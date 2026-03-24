@@ -1,18 +1,18 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
-import { DashboardLayout } from "../../layouts/DashboardLayout";
-import { DashboardHeader } from "../../components/dashboard/DashboardHeader";
-import { useTheme } from "../../context/ThemeContext";
-import { useUser } from "../../context/UserContext";
+import { DashboardLayout } from "@/layouts/DashboardLayout";
+import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { useTheme } from "@/context/ThemeContext";
+import { useUser } from "@/context/UserContext";
 import {
   defaultBrandingFromColors,
   type BrandingState,
   type FontFamilyOption,
   type ThemeColorsForEditor,
 } from "./theme-editor/types";
-import type { ThemeColors } from "../../theme/utils";
-import { generateDarkTheme } from "../../theme/utils";
+import type { ThemeColors } from "@/theme/utils";
+import { generateDarkTheme } from "@/theme/utils";
 import { serializeBranding } from "./theme-editor/serialization";
-import { updateCompanyBranding } from "../../services/companyBrandingService";
+import { updateCompanyBranding } from "@/services/companyBrandingService";
 import { BrandColorsSection } from "./theme-editor/BrandColorsSection";
 import { ExperienceControlsSection } from "./theme-editor/ExperienceControlsSection";
 import { TypographySection } from "./theme-editor/TypographySection";

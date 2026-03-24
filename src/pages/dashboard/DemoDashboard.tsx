@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { DashboardLayout } from "../../layouts/DashboardLayout";
-import { DashboardHeader } from "../../components/dashboard/DashboardHeader";
+import { DashboardLayout } from "@/layouts/DashboardLayout";
+import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { useDemoUser } from "@/hooks/useDemoUser";
 import {
   PreEnrollmentScenario,

@@ -1,5 +1,5 @@
 import { DashboardCard } from "../dashboard/DashboardCard";
-import type { ContributionSource } from "../../enrollment/logic/types";
+import type { ContributionSource } from "@/enrollment/logic/types";
 
 interface SingleSourceSelectorProps {
   selectedSource: ContributionSource;

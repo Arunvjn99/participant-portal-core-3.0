@@ -2,6 +2,7 @@ import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "framer-motion";
 import { Sparkles, ArrowRight, AlertTriangle, TrendingUp, Clock, Info } from "lucide-react";
+import { AiCoreBridgeButton } from "@/components/ai/AiCoreBridgeButton";
 import type { ActivityInsight, InsightImpactType } from "../types";
 
 const IMPACT_KEYS: Record<string, string> = {
@@ -89,7 +90,7 @@ export const ActivityInsights = memo(function ActivityInsights({ insights }: Act
               initial={reduced ? false : { opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.25, delay: i * 0.06, ease: "easeOut" }}
-              className="activity-insight-card group flex cursor-pointer flex-col justify-between rounded-[var(--enroll-card-radius)] border p-5 transition-all duration-300 hover:-translate-y-1"
+              className="activity-insight-card ai-insight group flex flex-col justify-between rounded-[var(--enroll-card-radius)] border p-5 transition-all duration-300 hover:-translate-y-0.5"
               style={{
                 background: "var(--enroll-card-bg)",
                 borderColor: styles.border,
@@ -121,28 +122,33 @@ export const ActivityInsights = memo(function ActivityInsights({ insights }: Act
               </div>
 
               <div
-                className="mt-auto flex items-center justify-between border-t pt-4"
+                className="mt-auto flex flex-col gap-2 border-t pt-4"
                 style={{ borderColor: "var(--color-background-secondary)" }}
               >
-                {insight.value && (
-                  <span
-                    className="text-xs font-bold"
-                    style={{ color: impactType === "Growth" ? "var(--color-success)" : "var(--color-text-secondary)" }}
-                  >
-                    {insight.value}
-                  </span>
-                )}
-                {insight.actionLabel && (
-                  <button
-                    type="button"
-                    onClick={insight.onAction}
-                    className="flex items-center gap-1 text-xs font-semibold hover:underline"
-                    style={{ color: "var(--enroll-brand)" }}
-                  >
-                    {insight.actionLabel}
-                    <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
-                  </button>
-                )}
+                <div className="flex items-center justify-between gap-2">
+                  {insight.value && (
+                    <span
+                      className="text-xs font-bold"
+                      style={{ color: impactType === "Growth" ? "var(--color-success)" : "var(--color-text-secondary)" }}
+                    >
+                      {insight.value}
+                    </span>
+                  )}
+                  {insight.actionLabel && (
+                    <button
+                      type="button"
+                      onClick={insight.onAction}
+                      className="flex items-center gap-1 text-xs font-semibold hover:underline"
+                      style={{ color: "var(--enroll-brand)" }}
+                    >
+                      {insight.actionLabel}
+                      <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
+                    </button>
+                  )}
+                </div>
+                {insight.coreAiPrompt ? (
+                  <AiCoreBridgeButton prompt={insight.coreAiPrompt} className="self-start" />
+                ) : null}
               </div>
             </motion.div>
           );

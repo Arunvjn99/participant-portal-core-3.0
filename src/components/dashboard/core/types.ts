@@ -1,4 +1,4 @@
-import type { EnrollmentSummary } from "../../../data/enrollmentSummary";
+import type { EnrollmentSummary } from "@/data/enrollmentSummary";
 
 /* ═══════════════════════════════════════════════════════
    Dashboard Engine Types — Single Source of Truth

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import type { Fund, Allocation } from "../../types/investment";
+import type { Fund, Allocation } from "@/types/investment";
 
 interface FundAllocationRowProps {
   fund: Fund;

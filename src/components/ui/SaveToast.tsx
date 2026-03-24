@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ENROLLMENT_SAVED_TOAST_KEY } from "../../enrollment/enrollmentDraftStore";
+import { ENROLLMENT_SAVED_TOAST_KEY } from "@/enrollment/enrollmentDraftStore";
 
 /**
  * SaveToast - Shows "Your progress has been saved" when user returns from Save & Exit.

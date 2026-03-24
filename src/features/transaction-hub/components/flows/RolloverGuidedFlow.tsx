@@ -1,8 +1,8 @@
 import { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { GuidedFlowDrawer } from "../GuidedFlowDrawer";
-import { useLocaleFormat } from "../../hooks/useLocaleFormat";
-import type { HubFinancialData } from "../../data/mockHubData";
+import { useLocaleFormat } from "@/features/transaction-hub/hooks/useLocaleFormat";
+import type { HubFinancialData } from "@/features/transaction-hub/data/mockHubData";
 
 interface RolloverGuidedFlowProps {
   open: boolean;

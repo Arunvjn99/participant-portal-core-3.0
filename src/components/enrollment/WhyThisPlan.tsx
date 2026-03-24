@@ -1,5 +1,5 @@
 import { DashboardCard } from "../dashboard/DashboardCard";
-import type { PlanRecommendation } from "../../types/enrollment";
+import type { PlanRecommendation } from "@/types/enrollment";
 
 interface WhyThisPlanProps {
   recommendation: PlanRecommendation;

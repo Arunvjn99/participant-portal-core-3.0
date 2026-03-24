@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { ADVISORS } from "./constants";
 import { AdvisorBookingFlow } from "./AdvisorBookingFlow";
 import { AdvisorOptionCard } from "./AdvisorOptionCard";
-import { useCoreAIModalOptional } from "../../context/CoreAIModalContext";
+import { useCoreAIModalOptional } from "@/context/CoreAIModalContext";
 import type { Advisor } from "./types";
 
 export const AdvisorSection = () => {

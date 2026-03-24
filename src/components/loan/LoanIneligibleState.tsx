@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useReducedMotion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { getRoutingVersion, withVersion } from "@/core/version";
 
 interface LoanIneligibleStateProps {
   reasons: string[];
@@ -12,11 +13,13 @@ interface LoanIneligibleStateProps {
  */
 export function LoanIneligibleState({ reasons, onBack }: LoanIneligibleStateProps) {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const version = getRoutingVersion(pathname);
   const reduced = useReducedMotion();
 
   const handleBack = () => {
     if (onBack) onBack();
-    else navigate("/transactions");
+    else navigate(withVersion(version, "/transactions"));
   };
 
   return (

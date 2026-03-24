@@ -1,0 +1,28 @@
+{
+  "dashboard": {
+    "greetingFallbackName": "there",
+    "learningFeaturedTag": "Featured learning",
+    "learningReadTime": "{{time}} min read",
+    "learningTitleBefore": "How much is",
+    "learningTitleHighlight": "enough?",
+    "learningDescription": "Finding the right contribution rate for your goals.",
+    "learningCtaPrimary": "Start learning",
+    "learningCtaSave": "Save for later",
+    "learningCtaSaved": "Saved for later",
+    "learningStatLabel": "Growth",
+    "learningStatValue": "+12%",
+    "assistanceSectionHeading": "Need Assistance?",
+    "assistanceHumanTitle": "Speak with a retirement specialist",
+    "assistanceHumanDescription": "Schedule a one-on-one conversation to review your plan and receive personalized guidance.",
+    "assistanceHumanCta": "Schedule call",
+    "assistanceAdvisorRowDescription": "Schedule a one-on-one conversation to review your plan",
+    "assistanceAdvisorScheduleNow": "Schedule now",
+    "assistanceAiTitle": "Ask Core AI",
+    "assistanceAiDescription": "Get instant answers and personalized retirement insights anytime.",
+    "assistanceAiBeta": "Beta",
+    "assistanceAiInputLabel": "Message for Core AI",
+    "assistanceAiInputPlaceholder": "Ask anything about your plan…",
+    "assistanceAiSubmit": "Ask",
+    "heroLearnMoreCta": "Learn about the plan"
+  }
+}

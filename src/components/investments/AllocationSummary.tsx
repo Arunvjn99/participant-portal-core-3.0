@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Button from "../ui/Button";
 import { AllocationChart } from "./AllocationChart";
-import { useInvestment } from "../../context/InvestmentContext";
+import { useInvestment } from "@/context/InvestmentContext";
 import { AdvisorHelpWizard } from "./AdvisorHelpWizard";
-import { useUser } from "../../context/UserContext";
-import { useEnrollmentOptional } from "../../enrollment/context/EnrollmentContext";
-import { useInvestmentWizardOpen } from "../../context/InvestmentWizardContext";
+import { useUser } from "@/context/UserContext";
+import { useEnrollmentOptional } from "@/enrollment/context/EnrollmentContext";
+import { useInvestmentWizardOpen } from "@/context/InvestmentWizardContext";
+import { getRoutingVersion, withVersion } from "@/core/version";
 
 type AllocationSummaryVariant = "enrollment" | "dashboard";
 
@@ -25,6 +26,8 @@ const cardStyle: React.CSSProperties = {
 
 export const AllocationSummary = ({ variant = "dashboard" }: AllocationSummaryProps) => {
   const { t } = useTranslation();
+  const { pathname } = useLocation();
+  const version = getRoutingVersion(pathname);
   const { weightedSummary, chartAllocations, isCustomAllocationEnabled } = useInvestment();
   const { profile } = useUser();
   const enrollment = useEnrollmentOptional();
@@ -68,7 +71,7 @@ export const AllocationSummary = ({ variant = "dashboard" }: AllocationSummaryPr
                 </button>
               ) : (
                 <Link
-                  to="/enrollment/contribution"
+                  to={withVersion(version, "/enrollment/contribution")}
                   className="text-[11px] font-semibold"
                   style={{ color: "var(--enroll-brand)" }}
                 >

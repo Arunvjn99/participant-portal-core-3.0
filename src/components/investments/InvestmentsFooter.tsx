@@ -1,8 +1,9 @@
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useInvestment } from "../../context/InvestmentContext";
-import { loadEnrollmentDraft, saveEnrollmentDraft } from "../../enrollment/enrollmentDraftStore";
+import { useInvestment } from "@/context/InvestmentContext";
+import { loadEnrollmentDraft, saveEnrollmentDraft } from "@/enrollment/enrollmentDraftStore";
 import { EnrollmentFooter } from "../enrollment/EnrollmentFooter";
+import { stripRoutingVersionPrefix } from "@/core/version";
 
 /**
  * InvestmentsFooter - Renders EnrollmentFooter for enrollment flow.
@@ -13,7 +14,8 @@ export const InvestmentsFooter = () => {
   const location = useLocation();
   const { canConfirmAllocation, confirmAllocation, getInvestmentSnapshot } = useInvestment();
 
-  const isEnrollmentFlow = location.pathname === "/enrollment/investments";
+  const pathSansVersion = stripRoutingVersionPrefix(location.pathname);
+  const isEnrollmentFlow = pathSansVersion === "/enrollment/investments";
 
   const handleContinue = () => {
     if (!canConfirmAllocation) return;

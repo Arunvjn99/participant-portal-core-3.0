@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { Modal } from "../ui/Modal";
@@ -8,8 +8,9 @@ import {
   loadEnrollmentDraft,
   saveEnrollmentDraft,
   type EnrollmentDraft,
-} from "../../enrollment/enrollmentDraftStore";
+} from "@/enrollment/enrollmentDraftStore";
 import { US_STATES } from "@/constants/usStates";
+import { getRoutingVersion, withVersion } from "@/core/version";
 
 const TOTAL_STEPS = 3;
 const DEFAULT_DOB = "1994-04-16";
@@ -284,6 +285,8 @@ function Step3Savings({ value, onChange }: { value: number; onChange: (v: number
 
 export const PersonalizePlanModal = ({ isOpen, onClose, userName = "there" }: PersonalizePlanModalProps) => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const version = getRoutingVersion(pathname);
   const [step, setStep] = useState(1);
   const [state, setState] = useState<WizardFormState>(DEFAULT_STATE);
   const [editingAge, setEditingAge] = useState(false);
@@ -355,7 +358,7 @@ export const PersonalizePlanModal = ({ isOpen, onClose, userName = "there" }: Pe
     else {
       persistDraft();
       onClose();
-      navigate("/enrollment/choose-plan");
+      navigate(withVersion(version, "/enrollment/choose-plan"));
     }
   };
   const handlePrevious = () => setStep(Math.max(1, step - 1));

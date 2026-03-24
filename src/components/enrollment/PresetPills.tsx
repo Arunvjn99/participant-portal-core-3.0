@@ -1,4 +1,4 @@
-import type { ContributionPreset } from "../../enrollment/logic/types";
+import type { ContributionPreset } from "@/enrollment/logic/types";
 
 interface PresetPillsProps {
   presets: ContributionPreset[];

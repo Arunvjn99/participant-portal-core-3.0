@@ -29,8 +29,8 @@ export function DemoSwitcher() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  /* Hide on login route */
-  if (location.pathname === "/") return null;
+  /* Hide on login routes */
+  if (location.pathname === "/" || /^\/v\d+\/login$/.test(location.pathname)) return null;
   if (!currentUser) return null;
 
   const handleSelect = (persona: PersonaProfile) => {

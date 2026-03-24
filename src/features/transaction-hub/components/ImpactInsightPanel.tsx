@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocaleFormat } from "../hooks/useLocaleFormat";
+import { AiCoreBridgeButton } from "@/components/ai/AiCoreBridgeButton";
 import type { HubFinancialData } from "../data/mockHubData";
 
 interface ImpactInsightPanelProps {
@@ -102,18 +103,20 @@ export function ImpactInsightPanel({ data }: ImpactInsightPanelProps) {
 
   return (
     <section
-      className="rounded-xl border border-[var(--color-border)]"
+      className="ai-insight rounded-xl border border-[var(--ai-border)]"
       style={{ backgroundColor: "var(--color-surface)" }}
     >
       <div className="border-b border-[var(--color-border)] px-5 py-4">
-        <h3 className="text-base font-semibold text-[var(--color-text)]">{t("transactionHub.insights.title")}</h3>
+        <h3 className="text-base font-semibold text-[var(--ai-primary)]">{t("transactionHub.insights.title")}</h3>
+        <p className="mt-1 text-xs text-[var(--color-text-secondary)]">{t("aiSystem.sampleInsightDisclaimer")}</p>
       </div>
       <div className="flex flex-col gap-3 p-5">
         {RISK_ORDER.map((risk) => {
           const items = grouped[risk];
           if (!items.length) return null;
-          return items.map((insight, idx) => {
+            return items.map((insight, idx) => {
             const style = RISK_STYLE[insight.risk];
+            const body = t(insight.key, insight.params);
             return (
               <div
                 key={`${risk}-${idx}`}
@@ -129,7 +132,7 @@ export function ImpactInsightPanel({ data }: ImpactInsightPanelProps) {
                 </span>
                 <div className="flex flex-1 flex-col gap-2">
                   <p className="text-sm leading-relaxed" style={{ color: style.text }}>
-                    {t(insight.key, insight.params)}
+                    {body}
                   </p>
                   {insight.actionLabel && (
                     <button
@@ -140,6 +143,10 @@ export function ImpactInsightPanel({ data }: ImpactInsightPanelProps) {
                       {insight.actionLabel} →
                     </button>
                   )}
+                  <AiCoreBridgeButton
+                    prompt={`Help me understand this AI Insight from my transaction hub: ${body}`}
+                    className="self-start"
+                  />
                 </div>
               </div>
             );

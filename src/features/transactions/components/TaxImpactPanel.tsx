@@ -1,6 +1,6 @@
 import { memo, useMemo } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { transactionStore } from "../../../data/transactionStore";
+import { transactionStore } from "@/data/transactionStore";
 
 const formatCurrency = (n: number) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);

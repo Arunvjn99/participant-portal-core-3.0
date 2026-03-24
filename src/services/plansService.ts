@@ -35,6 +35,10 @@ export async function fetchPlansByCompanyId(companyId: string | null): Promise<P
     if (import.meta.env.DEV) console.log("[plansService] fetchPlansByCompanyId: no companyId, returning []");
     return [];
   }
+  if (!supabase) {
+    if (import.meta.env.DEV) console.warn("[plansService] Supabase not configured, returning []");
+    return [];
+  }
   try {
     const { data, error } = await supabase
       .from("plans")

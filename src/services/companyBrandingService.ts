@@ -13,6 +13,7 @@ export async function updateCompanyBranding(
   brandingPayload: SerializedBranding,
 ): Promise<SerializedBranding | null> {
   if (!companyId?.trim()) return null;
+  if (!supabase) return null;
   try {
     const light = brandingPayload?.light && typeof brandingPayload.light === "object" ? brandingPayload.light as Record<string, unknown> : {};
     const updates: {

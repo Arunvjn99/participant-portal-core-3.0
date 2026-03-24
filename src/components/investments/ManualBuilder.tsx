@@ -2,11 +2,11 @@ import { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { FundAllocationSection } from "./FundAllocationSection";
-import { useInvestment } from "../../context/InvestmentContext";
-import { useEnrollmentOptional } from "../../enrollment/context/EnrollmentContext";
-import { useInvestmentWizardOpen } from "../../context/InvestmentWizardContext";
-import { deriveStyleFromRiskScore } from "../../utils/investmentAllocationHelpers";
-import type { InvestmentStyleKey } from "../../utils/investmentAllocationHelpers";
+import { useInvestment } from "@/context/InvestmentContext";
+import { useEnrollmentOptional } from "@/enrollment/context/EnrollmentContext";
+import { useInvestmentWizardOpen } from "@/context/InvestmentWizardContext";
+import { deriveStyleFromRiskScore } from "@/utils/investmentAllocationHelpers";
+import type { InvestmentStyleKey } from "@/utils/investmentAllocationHelpers";
 import { Shield, Scale, TrendingUp, Zap } from "lucide-react";
 
 const STYLE_LABEL_KEYS: Record<InvestmentStyleKey, string> = {

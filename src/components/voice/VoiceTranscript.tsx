@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { UIState, type VoiceMessage } from "../../types/voice";
+import { UIState, type VoiceMessage } from "@/types/voice";
 
 interface VoiceTranscriptProps {
   messages: VoiceMessage[];

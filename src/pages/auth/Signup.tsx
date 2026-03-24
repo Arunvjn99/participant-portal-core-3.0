@@ -9,12 +9,12 @@ import {
   AuthInput,
   AuthPasswordInput,
   AuthButton,
-} from "../../components/auth";
-import { Logo } from "../../components/brand/Logo";
-import { useAuth } from "../../context/AuthContext";
-import { useOtp } from "../../context/OtpContext";
-import { supabase } from "../../lib/supabase";
-import { US_STATES } from "../../constants/usStates";
+} from "@/components/auth";
+import { Logo } from "@/components/brand/Logo";
+import { useAuth } from "@/context/AuthContext";
+import { useOtp } from "@/context/OtpContext";
+import { isSupabaseConfigured, supabase } from "@/lib/supabase";
+import { US_STATES } from "@/constants/usStates";
 
 /** Normalized state option for combobox; supports string[] or { code?, name?, label?, state_name? }[] from source. */
 interface StateOption {
@@ -117,6 +117,7 @@ export const Signup = () => {
   const [serverError, setServerError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const supabaseReady = isSupabaseConfigured();
 
   const stateOptions = useMemo(() => normalizeStateOptions(US_STATES), []);
 
@@ -136,6 +137,13 @@ export const Signup = () => {
     let cancelled = false;
 
     const fetchCompanies = async () => {
+      if (!supabase) {
+        if (!cancelled) {
+          setCompanies([]);
+          setCompaniesLoading(false);
+        }
+        return;
+      }
       try {
         const { data, error } = await supabase
           .from("companies")
@@ -217,6 +225,10 @@ export const Signup = () => {
 
     setLoading(true);
     try {
+      if (!supabase) {
+        setServerError("Supabase not configured");
+        return;
+      }
       const { user: newUser } = await signUp(email, password, {
         name: name.trim(),
         company_id: companyId,
@@ -283,6 +295,17 @@ export const Signup = () => {
 
   const bodySlot = (
     <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 overflow-visible md:grid-cols-2 md:gap-6" noValidate>
+      {!supabaseReady && (
+        <div
+          role="status"
+          className="md:col-span-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-background-secondary)] px-4 py-3 text-sm text-[var(--color-text)]"
+        >
+          Running in demo mode (no backend). Sign up is disabled until you configure{" "}
+          <code className="rounded bg-[var(--color-surface)] px-1 text-xs">VITE_SUPABASE_URL</code> and{" "}
+          <code className="rounded bg-[var(--color-surface)] px-1 text-xs">VITE_SUPABASE_ANON_KEY</code> in{" "}
+          <code className="rounded bg-[var(--color-surface)] px-1 text-xs">.env</code> — see README. Use Explore Demo on the login page to try the app.
+        </div>
+      )}
       {serverError && (
         <div
           role="alert"
@@ -573,7 +596,7 @@ export const Signup = () => {
       <div className="md:col-span-2">
         <AuthButton
           type="submit"
-          disabled={loading || companiesLoading || selectedState === null}
+          disabled={loading || companiesLoading || selectedState === null || !supabaseReady}
           aria-busy={loading}
           className="w-full"
         >

@@ -5,6 +5,9 @@ import { supabase } from "../lib/supabase";
  * Uses upsert on user_id (one row per user). Does not modify routing or contribution flow.
  */
 export async function saveEnrollmentPlanId(planId: string | null): Promise<{ ok: boolean; error?: string }> {
+  if (!supabase) {
+    return { ok: false, error: "Supabase not configured" };
+  }
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user?.id) {

@@ -6,8 +6,8 @@ import {
   AuthFormShell,
   AuthInput,
   AuthButton,
-} from "../../components/auth";
-import { Logo } from "../../components/brand/Logo";
+} from "@/components/auth";
+import { Logo } from "@/components/brand/Logo";
 
 export const ForgotPassword = () => {
   const { t } = useTranslation();

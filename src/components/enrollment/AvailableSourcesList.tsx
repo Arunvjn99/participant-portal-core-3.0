@@ -1,6 +1,6 @@
 import { DashboardCard } from "../dashboard/DashboardCard";
 import Button from "../ui/Button";
-import type { ContributionSource } from "../../enrollment/logic/types";
+import type { ContributionSource } from "@/enrollment/logic/types";
 
 interface AvailableSourcesListProps {
   availableSources: ContributionSource[];

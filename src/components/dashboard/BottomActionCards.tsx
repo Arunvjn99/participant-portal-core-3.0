@@ -1,4 +1,5 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { getRoutingVersion, withVersion } from "@/core/version";
 
 interface BottomActionCardsProps {
   contributionPct: number;
@@ -9,6 +10,8 @@ interface BottomActionCardsProps {
  */
 export const BottomActionCards = ({ contributionPct }: BottomActionCardsProps) => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const version = getRoutingVersion(pathname);
 
   return (
     <div className="ped-bottom-cards w-full min-w-0">
@@ -23,7 +26,7 @@ export const BottomActionCards = ({ contributionPct }: BottomActionCardsProps) =
         <button
           type="button"
           className="ped-bottom-cards__btn ped-bottom-cards__btn--primary"
-          onClick={() => navigate("/enrollment/contribution")}
+          onClick={() => navigate(withVersion(version, "/enrollment/contribution"))}
         >
           Change Rate
         </button>
@@ -42,7 +45,7 @@ export const BottomActionCards = ({ contributionPct }: BottomActionCardsProps) =
         <button
           type="button"
           className="ped-bottom-cards__link"
-          onClick={() => navigate("/transactions")}
+          onClick={() => navigate(withVersion(version, "/transactions"))}
         >
           View Documents →
         </button>
@@ -59,7 +62,7 @@ export const BottomActionCards = ({ contributionPct }: BottomActionCardsProps) =
         <button
           type="button"
           className="ped-bottom-cards__link"
-          onClick={() => navigate("/enrollment/investments")}
+          onClick={() => navigate(withVersion(version, "/enrollment/investments"))}
         >
           Manage Portfolio →
         </button>

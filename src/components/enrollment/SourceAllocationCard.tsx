@@ -2,7 +2,7 @@ import { DashboardCard } from "../dashboard/DashboardCard";
 import { Input } from "../ui/Input";
 import { ContributionTypeToggle } from "./ContributionTypeToggle";
 import Button from "../ui/Button";
-import type { ContributionSource, ContributionType } from "../../enrollment/logic/types";
+import type { ContributionSource, ContributionType } from "@/enrollment/logic/types";
 
 interface SourceAllocationCardProps {
   source: ContributionSource;

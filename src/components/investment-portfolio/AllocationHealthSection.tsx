@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import type { AllocationItem } from "../../types/investmentPortfolio";
+import type { AllocationItem } from "@/types/investmentPortfolio";
 import { DashboardCard } from "../dashboard/DashboardCard";
 import { StatusBadge } from "../dashboard/shared/StatusBadge";
 import { ProgressBar } from "../dashboard/shared/ProgressBar";

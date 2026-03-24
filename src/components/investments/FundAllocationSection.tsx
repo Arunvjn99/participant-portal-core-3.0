@@ -1,9 +1,9 @@
 import { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { useInvestment } from "../../context/InvestmentContext";
-import { useEnrollmentOptional } from "../../enrollment/context/EnrollmentContext";
-import { getSourceTotal, deriveStyleFromRiskScore } from "../../utils/investmentAllocationHelpers";
+import { useInvestment } from "@/context/InvestmentContext";
+import { useEnrollmentOptional } from "@/enrollment/context/EnrollmentContext";
+import { getSourceTotal, deriveStyleFromRiskScore } from "@/utils/investmentAllocationHelpers";
 import { FundAllocationModal, type SourceKey } from "./FundAllocationModal";
 
 const SOURCE_LABEL_KEYS: Record<SourceKey, string> = {

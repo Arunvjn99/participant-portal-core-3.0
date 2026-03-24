@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { GoalProgress } from "../../data/enrollmentSummary";
+import type { GoalProgress } from "@/data/enrollmentSummary";
 
 interface GoalSimulatorCardProps {
   data: GoalProgress;

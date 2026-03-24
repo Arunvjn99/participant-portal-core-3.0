@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { transactionStore } from "../../../data/transactionStore";
-import { ACCOUNT_OVERVIEW } from "../../../data/accountOverview";
+import { transactionStore } from "@/data/transactionStore";
+import { ACCOUNT_OVERVIEW } from "@/data/accountOverview";
 import type { MonthlySummaryRow } from "../types";
 
 export interface ChartDataPoint {

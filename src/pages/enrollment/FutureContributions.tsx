@@ -1,23 +1,23 @@
 import { useMemo, useState, useCallback, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEnrollment } from "../../enrollment/context/EnrollmentContext";
-import { EnrollmentPageContent } from "../../components/enrollment/EnrollmentPageContent";
-import { EnrollmentFooter } from "../../components/enrollment/EnrollmentFooter";
-import Button from "../../components/ui/Button";
-import { Modal } from "../../components/ui/Modal";
-import { loadEnrollmentDraft, saveEnrollmentDraft } from "../../enrollment/enrollmentDraftStore";
+import { useEnrollment } from "@/enrollment/context/EnrollmentContext";
+import { EnrollmentPageContent } from "@/components/enrollment/EnrollmentPageContent";
+import { EnrollmentFooter } from "@/components/enrollment/EnrollmentFooter";
+import Button from "@/components/ui/Button";
+import { Modal } from "@/components/ui/Modal";
+import { loadEnrollmentDraft, saveEnrollmentDraft } from "@/enrollment/enrollmentDraftStore";
 import {
   PAYCHECKS_PER_YEAR,
   percentageToAnnualAmount,
   annualAmountToPercentage,
   deriveContribution,
-} from "../../enrollment/logic/contributionCalculator";
-import { calculateProjection } from "../../enrollment/logic/projectionCalculator";
-import type { ProjectionDataPoint } from "../../enrollment/logic/types";
-import { formatYAxisLabel, getYAxisTicks } from "../../utils/projectionChartAxis";
-import type { IncrementCycle } from "../../enrollment/logic/types";
-import { FinancialSlider } from "../../components/FinancialSlider";
+} from "@/enrollment/logic/contributionCalculator";
+import { calculateProjection } from "@/enrollment/logic/projectionCalculator";
+import type { ProjectionDataPoint } from "@/enrollment/logic/types";
+import { formatYAxisLabel, getYAxisTicks } from "@/utils/projectionChartAxis";
+import type { IncrementCycle } from "@/enrollment/logic/types";
+import { FinancialSlider } from "@/components/FinancialSlider";
 
 /* ── Shared card style ── */
 const cardStyle: React.CSSProperties = {

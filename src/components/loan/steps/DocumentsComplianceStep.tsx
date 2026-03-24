@@ -1,7 +1,7 @@
 import { useCallback } from "react";
-import type { LoanFlowData, LoanPlanConfig, LoanDocumentMeta } from "../../../types/loan";
+import type { LoanFlowData, LoanPlanConfig, LoanDocumentMeta } from "@/types/loan";
 import { LoanStepLayout, LoanSummaryCard, DocumentUploadCard, DisclosureAccordion } from "../index";
-import { DEFAULT_LOAN_PLAN_CONFIG } from "../../../config/loanPlanConfig";
+import { DEFAULT_LOAN_PLAN_CONFIG } from "@/config/loanPlanConfig";
 
 interface DocumentsComplianceStepProps {
   data: LoanFlowData;

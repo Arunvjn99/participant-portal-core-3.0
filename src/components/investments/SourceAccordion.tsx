@@ -2,9 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { DashboardCard } from "../dashboard/DashboardCard";
 import { FundAllocationRow } from "./FundAllocationRow";
 import { AddInvestmentModal } from "./AddInvestmentModal";
-import { useInvestment } from "../../context/InvestmentContext";
-import { getFundById } from "../../data/mockFunds";
-import { getSourceTotal, isSourceValid } from "../../utils/investmentAllocationHelpers";
+import { useInvestment } from "@/context/InvestmentContext";
+import { getFundById } from "@/data/mockFunds";
+import { getSourceTotal, isSourceValid } from "@/utils/investmentAllocationHelpers";
 type SourceKey = "preTax" | "roth" | "afterTax";
 
 const SOURCE_LABELS: Record<SourceKey, string> = {

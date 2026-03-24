@@ -1,4 +1,4 @@
-import type { ContributionSource } from "../../enrollment/logic/types";
+import type { ContributionSource } from "@/enrollment/logic/types";
 
 interface ContributionSourceGroupProps {
   sources: ContributionSource[];

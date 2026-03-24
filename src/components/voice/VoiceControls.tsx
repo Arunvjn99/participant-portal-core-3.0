@@ -1,4 +1,4 @@
-import { UIState } from "../../types/voice";
+import { UIState } from "@/types/voice";
 
 interface VoiceControlsProps {
   uiState: UIState;

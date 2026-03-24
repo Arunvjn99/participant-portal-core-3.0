@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { getRoutingVersion, withVersionIfEnrollment } from "@/core/version";
 
 interface QuickAction {
   id: string;
@@ -26,7 +27,7 @@ const ACTIONS: QuickAction[] = [
   {
     id: "transfer",
     label: "Transfer Funds",
-    route: "/transactions/transfer/start",
+    route: "/transactions/transfer",
     iconColor: "var(--brand-primary)",
     iconBg: "rgb(var(--color-primary-rgb) / 0.12)",
     icon: (
@@ -39,7 +40,7 @@ const ACTIONS: QuickAction[] = [
   {
     id: "rebalance",
     label: "Rebalance",
-    route: "/transactions/rebalance/start",
+    route: "/transactions/rebalance",
     iconColor: "var(--success)",
     iconBg: "rgb(var(--color-success-rgb) / 0.12)",
     icon: (
@@ -52,7 +53,7 @@ const ACTIONS: QuickAction[] = [
   {
     id: "rollover",
     label: "Start Rollover",
-    route: "/transactions/rollover/start",
+    route: "/transactions/rollover",
     iconColor: "var(--color-warning)",
     iconBg: "rgb(var(--color-warning-rgb) / 0.12)",
     icon: (
@@ -110,6 +111,8 @@ const itemVariants = {
  */
 export const QuickActionsCard = () => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const version = getRoutingVersion(pathname);
 
   return (
     <section className="min-w-0 rounded-2xl elevation-1 bg-[var(--surface-1)] p-5 xl:p-6 lg:col-start-1">
@@ -125,7 +128,7 @@ export const QuickActionsCard = () => {
             key={action.id}
             type="button"
             variants={itemVariants}
-            onClick={() => navigate(action.route)}
+            onClick={() => navigate(withVersionIfEnrollment(version, action.route))}
             className="flex flex-col items-center gap-3 rounded-2xl elevation-1 bg-[var(--surface-1)] px-4 py-5 transition-shadow hover:shadow-[0px_4px_12px_rgba(16,24,40,0.08)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-2"
             whileHover={{
               scale: 1.03,
