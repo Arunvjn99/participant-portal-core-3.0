@@ -33,7 +33,7 @@ export function QuickActionsAdvanced({ items, className }: QuickActionsAdvancedP
   return (
     <div
       className={cn(
-        "grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4",
+        "@container min-w-0 grid grid-cols-1 gap-3 @[28rem]:grid-cols-2 @[56rem]:grid-cols-4",
         className,
       )}
       role="list"
@@ -49,7 +49,7 @@ export function QuickActionsAdvanced({ items, className }: QuickActionsAdvancedP
           }}
           whileTap={{ scale: 0.992 }}
           transition={{ type: "spring", stiffness: 420, damping: 28 }}
-          className="quick-actions-advanced__card group relative flex cursor-pointer items-start gap-3 rounded-2xl border border-[var(--border-subtle)] bg-[var(--color-background)] p-4 text-left outline-none transition-[border-color] duration-200 hover:border-[color-mix(in_srgb,var(--color-primary)_35%,var(--border-subtle))] focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-background)]"
+          className="quick-actions-advanced__card group relative flex min-w-0 cursor-pointer items-start gap-3 rounded-2xl border border-[var(--border-subtle)] bg-[var(--color-background)] p-4 text-left outline-none transition-[border-color] duration-200 hover:border-[color-mix(in_srgb,var(--color-primary)_35%,var(--border-subtle))] focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-background)]"
           tabIndex={0}
           onClick={item.onClick}
           onKeyDown={(e) => {
