@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { safeT } from "@/lib/safeT";
 
 const LEARNING_IMAGE =
-  "https://pmmvggrzowobvbebjzdo.supabase.co/storage/v1/object/public/company-logos/learning.webp";
+  "https://pmmvggrzowobvbebjzdo.supabase.co/storage/v1/object/public/company-logos/Learningbanner.png";
 
 export function FeaturedLearningSurface({ className }: { className?: string }) {
   const { t } = useTranslation();

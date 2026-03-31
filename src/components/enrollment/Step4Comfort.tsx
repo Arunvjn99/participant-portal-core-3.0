@@ -107,7 +107,7 @@ export function Step4Comfort({ value, onChange }: Step4ComfortProps) {
                 )}
               >
                 {level.mostCommon ? (
-                  <span className="absolute -top-2 right-3 rounded-full bg-amber-500 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+                  <span className="absolute -top-2 right-3 rounded-full bg-amber-500 px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
                     {t(`${pw}comfortMostCommonBadge`)}
                   </span>
                 ) : null}
@@ -117,9 +117,9 @@ export function Step4Comfort({ value, onChange }: Step4ComfortProps) {
                     strokeWidth={2}
                     aria-hidden
                   />
-                  <span className="text-sm font-semibold text-[var(--color-text)]">{t(`${pw}${level.labelKey}`)}</span>
+                  <span className="text-base font-semibold text-gray-900 dark:text-gray-50">{t(`${pw}${level.labelKey}`)}</span>
                 </div>
-                <p className="mt-1.5 text-xs text-[var(--color-text-secondary)] leading-relaxed">{t(`${pw}${level.descKey}`)}</p>
+                <p className="mt-1 text-sm leading-snug text-gray-600 dark:text-gray-400">{t(`${pw}${level.descKey}`)}</p>
               </motion.button>
             );
           })}

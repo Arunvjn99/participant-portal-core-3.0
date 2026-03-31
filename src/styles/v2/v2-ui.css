@@ -2011,17 +2011,19 @@
 }
 
 .v2-comfort-card--compact {
-  padding: var(--v2-space-3);
+  padding: var(--v2-space-4);
 }
 
 .v2-comfort-card--compact .v2-comfort-card__desc {
   margin-top: 4px;
-  font-size: 10px;
-  line-height: 1.35;
+  font-size: var(--v2-text-sm);
+  line-height: 1.4;
+  font-weight: var(--v2-font-normal);
 }
 
 .v2-comfort-card--compact .v2-comfort-card__label {
-  font-size: var(--v2-text-xs);
+  font-size: var(--v2-text-base);
+  font-weight: var(--v2-font-semibold);
 }
 
 .v2-comfort-card--selected {
@@ -2036,12 +2038,13 @@
   right: var(--v2-space-3);
   border-radius: var(--v2-radius-full);
   background: var(--v2-gradient-ai-icon);
-  padding: 2px var(--v2-space-2);
-  font-size: 10px;
+  padding: 3px var(--v2-space-2);
+  font-size: var(--v2-text-xs);
   font-weight: var(--v2-font-bold);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--v2-white);
+  line-height: 1.2;
 }
 
 .v2-comfort-card__row {
@@ -2061,15 +2064,16 @@
 }
 
 .v2-comfort-card__label {
-  font-size: var(--v2-text-sm);
+  font-size: var(--v2-text-base);
   font-weight: var(--v2-font-semibold);
   color: var(--v2-gray-900);
 }
 
 .v2-comfort-card__desc {
   margin-top: 6px;
-  font-size: var(--v2-text-xs);
-  line-height: var(--v2-leading-relaxed);
+  font-size: var(--v2-text-sm);
+  line-height: 1.4;
+  font-weight: var(--v2-font-normal);
   color: var(--v2-gray-600);
 }
 

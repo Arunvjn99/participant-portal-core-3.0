@@ -1,7 +1,9 @@
-import { BookOpen } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { pePanel } from "./dashboardSurfaces";
+
+const LEARNING_BANNER_SRC =
+  "https://pmmvggrzowobvbebjzdo.supabase.co/storage/v1/object/public/company-logos/Learningbanner.png";
 
 type Props = {
   title: string;
@@ -16,15 +18,14 @@ export function LearningHub({ title, description, href, className }: Props) {
   return (
     <section className={cn(pePanel, "overflow-hidden", className)}>
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-6">
-        <div
-          className="flex h-24 w-full shrink-0 items-center justify-center rounded-lg sm:h-28 lg:w-36"
-          style={{
-            background:
-              "linear-gradient(145deg, color-mix(in srgb, var(--color-primary) 14%, var(--color-background-secondary)), var(--color-background-secondary))",
-          }}
-          aria-hidden
-        >
-          <BookOpen className="h-14 w-14 text-[var(--color-primary)] opacity-90" strokeWidth={1.15} />
+        <div className="relative h-28 w-full shrink-0 overflow-hidden rounded-lg border border-gray-200 bg-gray-100 sm:h-32 lg:h-32 lg:w-48 lg:shrink-0">
+          <img
+            src={LEARNING_BANNER_SRC}
+            alt=""
+            className="h-full w-full object-cover object-center"
+            loading="lazy"
+            decoding="async"
+          />
         </div>
         <div className="min-w-0 flex-1 space-y-2">
           <h2 className="font-dashboard-heading text-base font-semibold text-gray-900">{title}</h2>

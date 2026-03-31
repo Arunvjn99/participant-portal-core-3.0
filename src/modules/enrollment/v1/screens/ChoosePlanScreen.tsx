@@ -212,8 +212,8 @@ function ChoosePlanScreen() {
             className={cn(
               "flex h-9 items-center gap-2 rounded-lg border px-4 text-sm font-medium transition-colors",
               showAI
-                ? "border-violet-300/90 bg-violet-50 text-violet-800 dark:border-violet-700 dark:bg-violet-950/50 dark:text-violet-200"
-                : "border-gray-200 bg-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800",
+                ? "border-violet-400/90 bg-violet-100/90 text-violet-900 shadow-sm dark:border-violet-600 dark:bg-violet-950/60 dark:text-violet-100"
+                : "border-violet-200/80 bg-violet-50/50 text-violet-800 hover:border-violet-300 hover:bg-violet-50 dark:border-violet-800/50 dark:bg-violet-950/30 dark:text-violet-200 dark:hover:border-violet-700 dark:hover:bg-violet-950/45",
             )}
           >
             <Sparkles className="h-3.5 w-3.5 shrink-0" aria-hidden /> {t(`${P}askAi`)}
