@@ -208,3 +208,24 @@ export function deriveContribution(input: ContributionDerivationInput): Contribu
       : 0,
   };
 }
+
+/**
+ * Employer match on the pre-tax portion of deferrals only (same cap rule as {@link deriveContribution},
+ * applied to pre-tax dollars).
+ */
+export function monthlyEmployerMatchForPreTaxShare(
+  monthlyEmployeeContribution: number,
+  preTaxPercent: number,
+  annualSalary: number,
+  employerMatchEnabled: boolean,
+  employerMatchCapPercent: number,
+  employerMatchPercentage: number,
+): number {
+  if (!employerMatchEnabled || annualSalary <= 0 || monthlyEmployeeContribution <= 0) return 0;
+  const pct = Math.min(100, Math.max(0, preTaxPercent));
+  const preTaxMonthly = (monthlyEmployeeContribution * pct) / 100;
+  const maxMatchedMonthly = (annualSalary * employerMatchCapPercent) / 100 / 12;
+  const matchedMonthly = Math.min(preTaxMonthly, maxMatchedMonthly);
+  const raw = matchedMonthly * (employerMatchPercentage / 100);
+  return Number.isFinite(raw) ? raw : 0;
+}

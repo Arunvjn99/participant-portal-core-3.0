@@ -62,10 +62,13 @@ export function ContributionSource() {
   const [customizeEditorOpen, setCustomizeEditorOpen] = useState(false);
 
   const { monthlyPreTax, monthlyRoth, monthlyAfterTax } = computeSourceSplitMonthly(monthlyTotal, sources);
-  const totalMonthlyInvestment = monthlyTotal + monthlyMatch;
+  /** Match applies to pre-tax deferrals only (see employer match callout copy). */
+  const effectiveEmployerMatch = Math.round((monthlyMatch * sources.preTax) / 100);
+  const totalMonthlyInvestment = monthlyTotal + effectiveEmployerMatch;
 
   const planDefaultSplit = computeSourceSplitMonthly(monthlyTotal, PLAN_DEFAULT);
-  const planDefaultTotalMonthly = monthlyTotal + monthlyMatch;
+  const planDefaultEmployerMatch = Math.round((monthlyMatch * PLAN_DEFAULT.preTax) / 100);
+  const planDefaultTotalMonthly = monthlyTotal + planDefaultEmployerMatch;
 
   const setSources = (next: ContributionSources) => {
     updateField("contributionSources", next);
@@ -169,9 +172,8 @@ export function ContributionSource() {
           <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-[26px] md:leading-tight">
             {t(`${A}title`)}
           </h1>
-          <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">{t(`${A}subtitle`)}</p>
         </div>
-        <div className="inline-flex min-w-0 max-w-full shrink-0 items-center gap-2 rounded-xl border border-border bg-muted/40 px-4 py-2.5">
+        <div className="inline-flex min-w-0 max-w-full shrink-0 items-center gap-2 rounded-xl border border-border bg-background px-4 py-2.5">
           <Wallet className="h-5 w-5 shrink-0 text-primary" aria-hidden />
           <p className="text-sm font-semibold text-foreground">
             {t(`${A}contributingSummary`, {
@@ -185,16 +187,15 @@ export function ContributionSource() {
       {/* Two-column cards */}
       <div className="grid min-w-0 gap-6 lg:grid-cols-2 lg:items-stretch">
         {/* Plan Default */}
-        <div className="flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[#2563eb]/35 bg-card shadow-[0_0_0_1px_rgba(37,99,235,0.12)]">
-          <div className="bg-[#2563eb] px-5 py-3 text-center text-sm font-semibold text-white">
-            {t(`${A}planDefaultHeader`)}
-          </div>
+        <div className="flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[#2563eb]/35 bg-background shadow-[0_0_0_1px_rgba(37,99,235,0.12)]">
           <div className="flex flex-1 flex-col gap-4 p-5 sm:p-6">
             <div>
-              <h2 className="text-lg font-bold text-foreground">
-                {t(`${A}planDefaultMixTitle`, { preTax: PLAN_DEFAULT.preTax, roth: PLAN_DEFAULT.roth })}
+              <h2 className="m-0 text-base font-semibold leading-none">
+                <span className="inline-flex items-center rounded-full bg-[#2563eb] px-4 py-2 text-sm font-semibold text-white shadow-sm">
+                  {t(`${A}planDefaultHeader`)}
+                </span>
               </h2>
-              <p className="mt-1 text-sm text-muted-foreground">{t(`${A}planDefaultSubtitle`)}</p>
+              <p className="mt-3 text-sm text-muted-foreground">{t(`${A}planDefaultSubtitle`)}</p>
             </div>
 
             <div className="alloc-bar-plain">
@@ -223,13 +224,13 @@ export function ContributionSource() {
               <div className="rounded-xl border border-emerald-200/80 bg-emerald-50/90 p-4 dark:border-emerald-900/50 dark:bg-emerald-950/30">
                 <p className="text-xs font-semibold text-emerald-800 dark:text-emerald-200">{t(`${A}employerMatch`)}</p>
                 <p className="mt-1 text-xl font-bold tabular-nums text-emerald-900 dark:text-emerald-100">
-                  +${monthlyMatch.toLocaleString()}
+                  +${planDefaultEmployerMatch.toLocaleString()}
                 </p>
                 <p className="mt-0.5 text-xs font-medium text-emerald-800/90 dark:text-emerald-300/90">
                   {t(`${A}employerMatchOnPreTax`)}
                 </p>
               </div>
-              <div className="rounded-xl border border-border bg-muted/50 p-4">
+              <div className="rounded-xl border border-border bg-background p-4">
                 <p className="text-xs font-semibold text-muted-foreground">{t(`${A}totalMonthlyLabel`)}</p>
                 <p className="mt-1 text-xl font-bold tabular-nums text-foreground">
                   ${planDefaultTotalMonthly.toLocaleString()}
@@ -261,19 +262,21 @@ export function ContributionSource() {
         <div
           id="customize-tax-split"
           className={cn(
-            "flex min-h-0 flex-col overflow-hidden rounded-2xl border bg-card shadow-sm transition-[box-shadow,border-color]",
+            "flex min-h-0 flex-col overflow-hidden rounded-2xl border bg-background shadow-sm transition-[box-shadow,border-color]",
             customizeEditorOpen ? "border-[#2563eb]/50 shadow-md ring-2 ring-[#2563eb]/20" : "border-border",
           )}
         >
-          <div className="flex items-center justify-center gap-2 border-b border-border bg-muted/60 px-5 py-3 text-sm font-semibold text-foreground">
-            <SlidersHorizontal className="h-4 w-4 shrink-0 opacity-80" aria-hidden />
-            {t(`${A}customizeSplitHeader`)}
-          </div>
           <div className="flex flex-1 flex-col gap-4 p-5 sm:p-6">
             {!customizeEditorOpen ? (
               <>
                 <div>
-                  <h2 className="text-lg font-bold text-foreground">{t(`${A}customizeCardTitle`)}</h2>
+                  <h2 className="m-0 text-base font-semibold leading-none">
+                    <span className="inline-flex items-center gap-2 rounded-full border border-[#2563eb]/40 bg-[#2563eb]/[0.08] px-4 py-2 text-sm font-semibold text-[#1d4ed8] dark:border-blue-400/40 dark:bg-blue-500/15 dark:text-blue-200">
+                      <SlidersHorizontal className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
+                      {t(`${A}customizeSplitHeader`)}
+                    </span>
+                  </h2>
+                  <p className="mt-3 text-sm font-semibold text-foreground">{t(`${A}customizeCardTitle`)}</p>
                   <p className="mt-1 text-sm text-muted-foreground">{t(`${A}customizeCardSubtitle`)}</p>
                 </div>
 
@@ -289,14 +292,14 @@ export function ContributionSource() {
                 </div>
 
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  <div className="rounded-xl border border-border bg-muted/50 p-4">
+                  <div className="rounded-xl border border-border bg-background p-4">
                     <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t(`${A}employerMatch`)}</p>
-                    <p className="mt-1 text-xl font-bold tabular-nums text-muted-foreground">—</p>
+                    <p className="mt-1 text-xl font-bold tabular-nums text-foreground">+${planDefaultEmployerMatch.toLocaleString()}</p>
                     <p className="mt-0.5 text-xs text-muted-foreground">{t(`${A}employerMatchBasedOnSplit`)}</p>
                   </div>
-                  <div className="rounded-xl border border-border bg-muted/50 p-4">
+                  <div className="rounded-xl border border-border bg-background p-4">
                     <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t(`${A}totalMonthlyLabel`)}</p>
-                    <p className="mt-1 text-xl font-bold tabular-nums text-muted-foreground">—</p>
+                    <p className="mt-1 text-xl font-bold tabular-nums text-foreground">${planDefaultTotalMonthly.toLocaleString()}</p>
                     <p className="mt-0.5 text-xs text-muted-foreground">{t(`${A}totalMonthlyYouPlusEmployer`)}</p>
                   </div>
                 </div>
@@ -340,7 +343,7 @@ export function ContributionSource() {
                 t={t}
                 A={A}
                 sources={sources}
-                monthlyMatch={monthlyMatch}
+                monthlyMatch={effectiveEmployerMatch}
                 totalMonthlyInvestment={totalMonthlyInvestment}
                 monthlyPreTax={monthlyPreTax}
                 monthlyRoth={monthlyRoth}
@@ -468,17 +471,18 @@ function CustomizeEditorPanel({
     [t, A],
   );
 
-  const mixTitle = hasAfterTaxSlice
-    ? `${Math.round(sources.preTax)}% ${t(`${A}preTaxLabel`)} · ${Math.round(sources.roth)}% ${t(`${A}rothLabel`)} · ${Math.round(sources.afterTax)}% ${t(`${A}afterTaxLabel`)}`
-    : t(`${A}planDefaultMixTitle`, { preTax: Math.round(sources.preTax), roth: Math.round(sources.roth) });
-
   const applyDisabled = applyCustomDisabled || !totalValid;
 
   return (
     <>
       <div>
-        <h2 className="text-lg font-bold text-foreground">{mixTitle}</h2>
-        <p className="mt-1 text-sm text-muted-foreground">{t(`${A}customizeEditorSubtitle`)}</p>
+        <h2 className="m-0 text-base font-semibold leading-none">
+          <span className="inline-flex items-center gap-2 rounded-full border border-[#2563eb]/40 bg-[#2563eb]/[0.08] px-4 py-2 text-sm font-semibold text-[#1d4ed8] dark:border-blue-400/40 dark:bg-blue-500/15 dark:text-blue-200">
+            <SlidersHorizontal className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
+            {t(`${A}customizeSplitHeader`)}
+          </span>
+        </h2>
+        <p className="mt-3 text-sm text-muted-foreground">{t(`${A}customizeEditorSubtitle`)}</p>
       </div>
 
       <div className="space-y-2">
@@ -644,7 +648,7 @@ function CustomizeEditorPanel({
           <p className="mt-1 text-xl font-bold tabular-nums text-emerald-900 dark:text-emerald-100">+${monthlyMatch.toLocaleString()}</p>
           <p className="mt-0.5 text-xs font-medium text-emerald-800/90 dark:text-emerald-300/90">{t(`${A}employerMatchOnPreTax`)}</p>
         </div>
-        <div className="rounded-xl border border-border bg-muted/50 p-4">
+        <div className="rounded-xl border border-border bg-background p-4">
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t(`${A}totalMonthlyLabel`)}</p>
           <p className="mt-1 text-xl font-bold tabular-nums text-foreground">${totalMonthlyInvestment.toLocaleString()}</p>
           <p className="mt-0.5 text-xs text-muted-foreground">{t(`${A}totalMonthlyYouPlusEmployer`)}</p>
@@ -723,7 +727,7 @@ function ExpandDualSlider({
   const displayPct = Math.round(value);
   const rangeMod = color === "blue" ? "source-allocation-range--pretax" : "source-allocation-range--roth";
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 rounded-xl border border-border/80 p-4 [background:color-mix(in_srgb,var(--color-background-secondary)_22%,var(--color-background)_78%)]">
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 flex-wrap items-center gap-2">
           <span
@@ -788,7 +792,7 @@ function SliderRow({
         ? "source-allocation-range--roth"
         : "source-allocation-range--aftertax";
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 rounded-xl border border-border/80 p-4 [background:color-mix(in_srgb,var(--color-background-secondary)_22%,var(--color-background)_78%)]">
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2">
@@ -852,7 +856,7 @@ function ExplainCard({
     <div
       id={id}
       className={cn(
-        "rounded-xl border border-border bg-card p-4 transition-all hover:-translate-y-px hover:shadow-md",
+        "rounded-xl border border-border/80 p-4 transition-all hover:-translate-y-px hover:shadow-md [background:color-mix(in_srgb,var(--color-background-secondary)_22%,var(--color-background)_78%)]",
         className,
       )}
     >

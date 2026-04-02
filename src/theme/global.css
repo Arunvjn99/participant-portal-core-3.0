@@ -1063,7 +1063,7 @@ progress.draft-progress-native::-moz-progress-bar {
 .source-allocation-range::-webkit-slider-runnable-track {
   height: var(--financial-slider-track-height, 8px);
   border-radius: var(--radius-full);
-  background-color: var(--muted);
+  background-color: var(--color-background);
   background-image: linear-gradient(
     to right,
     var(--source-allocation-track-fill) 0%,
@@ -1086,7 +1086,7 @@ progress.draft-progress-native::-moz-progress-bar {
 .source-allocation-range::-moz-range-track {
   height: var(--financial-slider-track-height, 8px);
   border-radius: var(--radius-full);
-  background-color: var(--muted);
+  background-color: var(--color-background);
   background-image: linear-gradient(
     to right,
     var(--source-allocation-track-fill) 0%,

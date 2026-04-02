@@ -4250,7 +4250,7 @@ button {
   width: calc(100% - var(--fs-thumb-size));
   height: 100%;
   border-radius: var(--radius-full);
-  background: var(--enroll-soft-bg);
+  background: var(--enroll-bg);
   pointer-events: none;
 }
 
@@ -5305,7 +5305,6 @@ button {
   padding-left: var(--spacing-4);
   padding-right: var(--spacing-4);
   padding-bottom: max(var(--spacing-4), env(safe-area-inset-bottom));
-  border-top: 1px solid var(--color-border);
   background-color: transparent;
   box-shadow: none;
   z-index: auto;
@@ -5322,7 +5321,6 @@ button {
 .enrollment-footer--in-content {
   margin-top: 48px;
   padding-top: 24px;
-  border-top: 1px solid var(--enroll-card-border, var(--color-border));
   background-color: transparent;
   box-shadow: none;
 }

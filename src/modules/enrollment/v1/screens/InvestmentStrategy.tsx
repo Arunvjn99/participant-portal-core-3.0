@@ -1278,62 +1278,100 @@ export function InvestmentStrategy() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-[#e5d9c8] bg-[#fff9eb] p-6 shadow-sm sm:p-8 dark:border-amber-800/50 dark:bg-gradient-to-br dark:from-amber-950/40 dark:to-[#1c1410] dark:shadow-none">
-          <div className="flex min-w-0 flex-col items-stretch gap-6 lg:flex-row lg:items-center lg:gap-8 xl:gap-10">
-            {/* Column 1: tag above phone; block centers vertically in the lg row */}
+        <div
+          className="rounded-2xl border p-5 shadow-sm sm:p-6 sm:pl-8 sm:pr-8 dark:border-amber-500/35 dark:bg-gradient-to-br dark:from-amber-950/50 dark:to-[#1a1410] dark:shadow-none"
+          style={{
+            backgroundColor: "#FFF9EB",
+            borderColor: "#F9C04D",
+          }}
+        >
+          <div className="flex min-w-0 flex-col gap-6 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
+            {/* Left: EXPERT HELP badge + phone icon block */}
             <div className="flex shrink-0 flex-col items-start gap-3">
               <span
-                className="inline-flex w-fit rounded-full border border-orange-500/55 bg-transparent px-3 py-1 text-orange-800 dark:border-orange-400/60 dark:text-orange-200"
-                style={{ fontSize: "0.625rem", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}
+                className="inline-flex w-fit rounded-md border px-2.5 py-1 dark:border-amber-400/50 dark:bg-amber-950/60 dark:text-amber-200"
+                style={{
+                  fontSize: "0.625rem",
+                  fontWeight: 700,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  backgroundColor: "#FEF3C7",
+                  borderColor: "#F9C04D",
+                  color: "#A65E00",
+                }}
               >
                 {t(`${IV}expertHelp`)}
               </span>
               <div
-                className="flex h-[3.25rem] w-[3.25rem] shrink-0 items-center justify-center rounded-xl bg-orange-500 dark:bg-orange-600"
+                className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl dark:bg-[#F58220]/90"
+                style={{ backgroundColor: "#F58220" }}
                 aria-hidden
               >
-                <Phone className="h-6 w-6 text-white" strokeWidth={1.75} />
+                <Phone className="h-7 w-7 text-white" strokeWidth={2} fill="none" />
               </div>
             </div>
 
-            {/* Column 2: copy — left-aligned stack */}
-            <div className="min-w-0 flex-1 lg:py-0.5">
+            {/* Center: headline, body, bullets side-by-side on sm+ */}
+            <div className="min-w-0 flex-1 lg:max-w-2xl lg:py-0.5">
               <h3
-                className="text-pretty text-slate-900 dark:text-amber-50"
-                style={{ fontSize: "1.125rem", fontWeight: 700, lineHeight: 1.3 }}
+                className="text-pretty font-bold text-black dark:text-amber-50"
+                style={{ fontSize: "1.125rem", lineHeight: 1.35 }}
               >
                 {t(`${IV}advisorTitle`)}
               </h3>
               <p
-                className="mt-2 max-w-2xl text-pretty text-stone-600 dark:text-stone-400"
-                style={{ fontSize: "0.9375rem", lineHeight: 1.55 }}
+                className="mt-2 max-w-2xl text-pretty dark:text-stone-400"
+                style={{ fontSize: "0.9375rem", lineHeight: 1.55, color: "#4D4D4D" }}
               >
                 {t(`${IV}advisorDesc`)}
               </p>
-              <div className="mt-4 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-8 sm:gap-y-1">
+              <div className="mt-4 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-10 sm:gap-y-1">
                 <div className="flex items-center gap-2">
-                  <Check className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" strokeWidth={2.5} aria-hidden />
-                  <span className="text-stone-800 dark:text-stone-200" style={{ fontSize: "0.875rem", fontWeight: 500 }}>
+                  <Check
+                    className="h-4 w-4 shrink-0 dark:text-emerald-400"
+                    strokeWidth={2.75}
+                    aria-hidden
+                    style={{ color: "#28A745" }}
+                  />
+                  <span
+                    className="dark:text-stone-200"
+                    style={{ fontSize: "0.875rem", fontWeight: 500, color: "#4D4D4D" }}
+                  >
                     {t(`${IV}advisorBullet1`)}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Check className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" strokeWidth={2.5} aria-hidden />
-                  <span className="text-stone-800 dark:text-stone-200" style={{ fontSize: "0.875rem", fontWeight: 500 }}>
+                  <Check
+                    className="h-4 w-4 shrink-0 dark:text-emerald-400"
+                    strokeWidth={2.75}
+                    aria-hidden
+                    style={{ color: "#28A745" }}
+                  />
+                  <span
+                    className="dark:text-stone-200"
+                    style={{ fontSize: "0.875rem", fontWeight: 500, color: "#4D4D4D" }}
+                  >
                     {t(`${IV}advisorBullet2`)}
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* Column 3: full-width on small screens; right-aligned + vertically centered on lg */}
-            <div className="flex w-full shrink-0 justify-end lg:w-auto lg:self-center">
+            {/* Right: ghost CTA */}
+            <div className="flex w-full shrink-0 justify-stretch lg:w-auto lg:justify-end lg:self-center">
               <a
                 href={ADVISOR_CONTACT_HREF}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-orange-500 bg-transparent px-6 py-3 !text-orange-700 transition-colors hover:border-orange-600 hover:bg-orange-500/[0.08] hover:!text-orange-800 active:scale-[0.99] visited:!text-orange-700 dark:border-orange-400 dark:!text-orange-200 dark:hover:bg-orange-400/10 dark:hover:!text-orange-100 sm:w-auto lg:min-w-[11rem] [&_svg]:!text-current"
-                style={{ fontSize: "0.9375rem", fontWeight: 600 }}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl border bg-transparent px-6 py-3 transition-colors hover:bg-[#F58220]/[0.08] active:scale-[0.99] sm:w-auto lg:min-w-[11rem] dark:border-amber-400/70 dark:hover:bg-amber-400/10 [&_svg]:shrink-0"
+                style={{
+                  fontSize: "0.9375rem",
+                  fontWeight: 600,
+                  borderColor: "#F58220",
+                  color: "#A65E00",
+                  backgroundColor: "transparent",
+                }}
               >
-                {t(`${IV}connectNow`)} <ArrowRight className="h-4 w-4 shrink-0" aria-hidden />
+                {t(`${IV}connectNow`)}
+                <ArrowRight className="h-4 w-4" style={{ color: "#A65E00" }} aria-hidden />
               </a>
             </div>
           </div>

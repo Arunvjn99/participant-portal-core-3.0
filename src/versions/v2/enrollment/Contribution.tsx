@@ -16,6 +16,7 @@ import {
   percentageToAnnualAmount,
   annualAmountToPercentage,
   deriveContribution,
+  monthlyEmployerMatchForPreTaxShare,
 } from "@/enrollment/logic/contributionCalculator";
 import { calculateProjection } from "@/enrollment/logic/projectionCalculator";
 import {
@@ -49,6 +50,10 @@ const SOURCE_OPTIONS = [
 /** Reuse V1 enrollment strings for the tax-split UI (same copy as `/v1/enrollment/source`). */
 const V1_SA = "enrollment.v1.sourceAllocation.";
 const PLAN_DEFAULT_TAX = { preTax: 60, roth: 40, afterTax: 0 } as const;
+
+/** Light grey for Pre-tax / Roth / After-tax blocks — subtle tint vs full secondary surface. */
+const TAX_SOURCE_PANEL_BG =
+  "color-mix(in srgb, var(--color-background-secondary) 22%, var(--color-background) 78%)";
 
 function asStringArrayTax(v: unknown): string[] {
   return Array.isArray(v) ? v.map(String) : [];
@@ -96,7 +101,7 @@ function V2TaxExplainCard({
         "rounded-xl border p-4 transition-all hover:-translate-y-px hover:shadow-md",
         className,
       )}
-      style={{ borderColor: "var(--enroll-card-border)", background: "var(--enroll-card-bg)" }}
+      style={{ borderColor: "var(--enroll-card-border)", background: TAX_SOURCE_PANEL_BG }}
     >
       <div className="mb-3 flex items-start gap-2.5">
         <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-white", accent.icon)}>
@@ -176,6 +181,27 @@ export const Contribution = () => {
     [contributionPct, salary, state.employerMatchEnabled, state.assumptions.employerMatchCap, state.assumptions.employerMatchPercentage, currentAge, retirementAge]
   );
 
+  /** Match applies to pre-tax deferrals only; updates when user changes Pre-tax / Roth / After-tax. */
+  const employerMatchMonthlyAllocated = useMemo(
+    () =>
+      monthlyEmployerMatchForPreTaxShare(
+        derived.monthlyContribution,
+        state.sourceAllocation.preTax,
+        salary,
+        state.employerMatchEnabled,
+        state.assumptions.employerMatchCap,
+        state.assumptions.employerMatchPercentage,
+      ),
+    [
+      derived.monthlyContribution,
+      state.sourceAllocation.preTax,
+      salary,
+      state.employerMatchEnabled,
+      state.assumptions.employerMatchCap,
+      state.assumptions.employerMatchPercentage,
+    ],
+  );
+
   const projectionBaseline = useMemo(
     () =>
       calculateProjection({
@@ -183,11 +209,20 @@ export const Contribution = () => {
         retirementAge,
         currentBalance: state.currentBalance || 0,
         monthlyContribution: derived.monthlyContribution,
-        employerMatch: state.employerMatchEnabled ? derived.employerMatchMonthly : 0,
+        employerMatch: state.employerMatchEnabled ? employerMatchMonthlyAllocated : 0,
         annualReturnRate: state.assumptions.annualReturnRate,
         inflationRate: state.assumptions.inflationRate,
       }),
-    [currentAge, retirementAge, state.currentBalance, derived.monthlyContribution, derived.employerMatchMonthly, state.employerMatchEnabled, state.assumptions.annualReturnRate, state.assumptions.inflationRate]
+    [
+      currentAge,
+      retirementAge,
+      state.currentBalance,
+      derived.monthlyContribution,
+      employerMatchMonthlyAllocated,
+      state.employerMatchEnabled,
+      state.assumptions.annualReturnRate,
+      state.assumptions.inflationRate,
+    ],
   );
 
   const activePreset = PRESETS.find((p) => p.percentage === contributionPct)?.id ?? null;
@@ -295,11 +330,28 @@ export const Contribution = () => {
   );
 
   const monthlyEmployee = derived.monthlyContribution;
-  const monthlyMatchTotal = derived.employerMatchMonthly;
+  const planDefaultMatchMo = useMemo(
+    () =>
+      monthlyEmployerMatchForPreTaxShare(
+        derived.monthlyContribution,
+        PLAN_DEFAULT_TAX.preTax,
+        salary,
+        state.employerMatchEnabled,
+        state.assumptions.employerMatchCap,
+        state.assumptions.employerMatchPercentage,
+      ),
+    [
+      derived.monthlyContribution,
+      salary,
+      state.employerMatchEnabled,
+      state.assumptions.employerMatchCap,
+      state.assumptions.employerMatchPercentage,
+    ],
+  );
   const planDefaultPreMo = Math.round((monthlyEmployee * PLAN_DEFAULT_TAX.preTax) / 100);
   const planDefaultRothMo = Math.round((monthlyEmployee * PLAN_DEFAULT_TAX.roth) / 100);
-  const planDefaultTotalMo = Math.round(monthlyEmployee + monthlyMatchTotal);
-  const curTotalMo = Math.round(monthlyEmployee + monthlyMatchTotal);
+  const planDefaultTotalMo = Math.round(monthlyEmployee + planDefaultMatchMo);
+  const totalMonthlyInvestmentAllocated = monthlyEmployee + employerMatchMonthlyAllocated;
   const hasAfterTaxSlice = state.sourceAllocation.afterTax > 0;
 
   const applyPlanDefaultTax = () => {
@@ -344,7 +396,7 @@ export const Contribution = () => {
   const sliderPct = ((Math.min(SLIDER_MAX, Math.max(SLIDER_MIN, contributionPct)) - SLIDER_MIN) / (SLIDER_MAX - SLIDER_MIN)) * 100;
   const [focusedInput, setFocusedInput] = useState<"pct" | "dollar" | null>(null);
   const inputsActive = focusedInput !== null;
-  const employerMatchPerPaycheck = derived.employerMatchMonthly / 2;
+  const employerMatchPerPaycheck = employerMatchMonthlyAllocated / 2;
   const totalPerPaycheck = perPaycheck + employerMatchPerPaycheck;
   const projectedTotal = projectionBaseline.dataPoints.length > 0
     ? projectionBaseline.dataPoints[projectionBaseline.dataPoints.length - 1].balance
@@ -511,7 +563,7 @@ export const Contribution = () => {
               </div>
               <div
                 className="inline-flex min-w-0 max-w-full shrink-0 items-center gap-2 rounded-xl border px-4 py-2.5"
-                style={{ borderColor: "var(--enroll-card-border)", background: "var(--enroll-soft-bg)" }}
+                style={{ borderColor: "var(--enroll-card-border)", background: "var(--enroll-card-bg)" }}
               >
                 <Wallet className="h-5 w-5 shrink-0 text-[var(--enroll-brand)]" aria-hidden />
                 <p className="text-sm font-semibold" style={{ color: "var(--enroll-text-primary)" }}>
@@ -527,17 +579,19 @@ export const Contribution = () => {
               {/* Plan Default */}
               <div
                 className="flex min-h-0 flex-col overflow-hidden rounded-2xl border shadow-sm"
-                style={{ borderColor: "var(--enroll-card-border)", background: "var(--enroll-card-bg)" }}
+                style={{ borderColor: "var(--enroll-card-border)", background: "var(--enroll-bg)" }}
               >
-                <div className="bg-[#2563eb] px-5 py-3 text-center text-sm font-semibold text-white">
-                  {t(`${V1_SA}planDefaultHeader`)}
-                </div>
                 <div className="flex flex-1 flex-col gap-4 p-5 sm:p-6">
                   <div>
-                    <h3 className="text-lg font-bold" style={{ color: "var(--enroll-text-primary)" }}>
-                      {t(`${V1_SA}planDefaultMixTitle`, { preTax: PLAN_DEFAULT_TAX.preTax, roth: PLAN_DEFAULT_TAX.roth })}
-                    </h3>
-                    <p className="mt-1 text-sm" style={{ color: "var(--enroll-text-muted)" }}>
+                    <h2 className="m-0 text-base font-semibold leading-none">
+                      <span
+                        className="inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold text-white shadow-sm"
+                        style={{ background: "var(--enroll-brand, #2563eb)" }}
+                      >
+                        {t(`${V1_SA}planDefaultHeader`)}
+                      </span>
+                    </h2>
+                    <p className="mt-3 text-sm" style={{ color: "var(--enroll-text-muted)" }}>
                       {t(`${V1_SA}planDefaultSubtitle`)}
                     </p>
                   </div>
@@ -561,13 +615,13 @@ export const Contribution = () => {
                     <div className="rounded-xl border border-emerald-200/80 bg-emerald-50/90 p-4 dark:border-emerald-900/50 dark:bg-emerald-950/30">
                       <p className="text-xs font-semibold text-emerald-800 dark:text-emerald-200">{t(`${V1_SA}employerMatch`)}</p>
                       <p className="mt-1 text-xl font-bold tabular-nums text-emerald-900 dark:text-emerald-100">
-                        +${Math.round(monthlyMatchTotal).toLocaleString()}
+                        +${Math.round(planDefaultMatchMo).toLocaleString()}
                       </p>
                       <p className="mt-0.5 text-xs font-medium text-emerald-800/90 dark:text-emerald-300/90">
                         {t(`${V1_SA}employerMatchOnPreTax`)}
                       </p>
                     </div>
-                    <div className="rounded-xl border p-4" style={{ borderColor: "var(--enroll-card-border)", background: "var(--enroll-soft-bg)" }}>
+                    <div className="rounded-xl border p-4" style={{ borderColor: "var(--enroll-card-border)", background: "var(--enroll-bg)" }}>
                       <p className="text-xs font-semibold" style={{ color: "var(--enroll-text-muted)" }}>
                         {t(`${V1_SA}totalMonthlyLabel`)}
                       </p>
@@ -601,20 +655,26 @@ export const Contribution = () => {
               <div
                 id="customize-tax-split-v2"
                 className="flex min-h-0 flex-col overflow-hidden rounded-2xl border shadow-sm"
-                style={{ borderColor: "var(--enroll-card-border)", background: "var(--enroll-card-bg)" }}
+                style={{ borderColor: "var(--enroll-card-border)", background: "var(--enroll-bg)" }}
               >
-                <div
-                  className="flex items-center justify-center gap-2 border-b px-5 py-3 text-sm font-semibold"
-                  style={{ borderColor: "var(--enroll-card-border)", background: "var(--enroll-soft-bg)", color: "var(--enroll-text-primary)" }}
-                >
-                  <SlidersHorizontal className="h-4 w-4 shrink-0 opacity-80" aria-hidden />
-                  {t(`${V1_SA}customizeSplitHeader`)}
-                </div>
                 <div className="flex flex-1 flex-col gap-4 p-5 sm:p-6">
                   <div>
-                    <h3 className="text-lg font-bold" style={{ color: "var(--enroll-text-primary)" }}>
+                    <h2 className="m-0 text-base font-semibold leading-none">
+                      <span
+                        className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold"
+                        style={{
+                          borderColor: "rgb(var(--enroll-brand-rgb) / 0.35)",
+                          background: "rgb(var(--enroll-brand-rgb) / 0.1)",
+                          color: "var(--enroll-brand)",
+                        }}
+                      >
+                        <SlidersHorizontal className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
+                        {t(`${V1_SA}customizeSplitHeader`)}
+                      </span>
+                    </h2>
+                    <p className="mt-3 text-sm font-semibold" style={{ color: "var(--enroll-text-primary)" }}>
                       {t(`${V1_SA}customizeCardTitle`)}
-                    </h3>
+                    </p>
                     <p className="mt-1 text-sm" style={{ color: "var(--enroll-text-muted)" }}>
                       {t(`${V1_SA}customizeCardSubtitle`)}
                     </p>
@@ -637,7 +697,11 @@ export const Contribution = () => {
                       {SOURCE_OPTIONS.map((opt) => {
                         const splitPct = state.sourceAllocation[opt.key];
                         return (
-                          <div key={opt.id} className="min-w-0">
+                          <div
+                            key={opt.id}
+                            className="min-w-0 rounded-xl border p-4"
+                            style={{ borderColor: "var(--enroll-card-border)", background: TAX_SOURCE_PANEL_BG }}
+                          >
                             <div className="mb-1 flex justify-between gap-2 text-sm font-semibold" style={{ color: "var(--enroll-text-primary)" }}>
                               <span>{t(opt.mainKey)}</span>
                               <span>{splitPct}%</span>
@@ -660,7 +724,10 @@ export const Contribution = () => {
                     </div>
                   ) : (
                     <>
-                      <div className="space-y-3">
+                      <div
+                        className="space-y-3 rounded-xl border p-4"
+                        style={{ borderColor: "var(--enroll-card-border)", background: TAX_SOURCE_PANEL_BG }}
+                      >
                         <input
                           type="range"
                           min={0}
@@ -681,7 +748,10 @@ export const Contribution = () => {
                           <div className="enroll-advanced-tag">
                             <p className="enroll-advanced-tag__text">{t(`${V1_SA}advancedTag`)}</p>
                           </div>
-                          <div className="min-w-0">
+                          <div
+                            className="min-w-0 rounded-xl border p-4"
+                            style={{ borderColor: "var(--enroll-card-border)", background: TAX_SOURCE_PANEL_BG }}
+                          >
                             <div className="mb-1 flex justify-between gap-2 text-sm font-semibold" style={{ color: "var(--enroll-text-primary)" }}>
                               <span>{t("enrollment.afterTax")}</span>
                               <span>{state.sourceAllocation.afterTax}%</span>
@@ -735,20 +805,24 @@ export const Contribution = () => {
                   ) : null}
 
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                    <div className="rounded-xl border p-4" style={{ borderColor: "var(--enroll-card-border)", background: "var(--enroll-soft-bg)" }}>
+                    <div className="rounded-xl border p-4" style={{ borderColor: "var(--enroll-card-border)", background: "var(--enroll-bg)" }}>
                       <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--enroll-text-muted)" }}>
                         {t(`${V1_SA}employerMatch`)}
                       </p>
-                      <p className="mt-1 text-xl font-bold tabular-nums" style={{ color: "var(--enroll-text-primary)" }}>—</p>
+                      <p className="mt-1 text-xl font-bold tabular-nums" style={{ color: "var(--enroll-text-primary)" }}>
+                        +{formatCurrency(employerMatchMonthlyAllocated)}
+                      </p>
                       <p className="mt-0.5 text-xs" style={{ color: "var(--enroll-text-muted)" }}>
                         {t(`${V1_SA}employerMatchBasedOnSplit`)}
                       </p>
                     </div>
-                    <div className="rounded-xl border p-4" style={{ borderColor: "var(--enroll-card-border)", background: "var(--enroll-soft-bg)" }}>
+                    <div className="rounded-xl border p-4" style={{ borderColor: "var(--enroll-card-border)", background: "var(--enroll-bg)" }}>
                       <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--enroll-text-muted)" }}>
                         {t(`${V1_SA}totalMonthlyLabel`)}
                       </p>
-                      <p className="mt-1 text-xl font-bold tabular-nums" style={{ color: "var(--enroll-text-primary)" }}>—</p>
+                      <p className="mt-1 text-xl font-bold tabular-nums" style={{ color: "var(--enroll-text-primary)" }}>
+                        {formatCurrency(totalMonthlyInvestmentAllocated)}
+                      </p>
                       <p className="mt-0.5 text-xs" style={{ color: "var(--enroll-text-muted)" }}>
                         {t(`${V1_SA}totalMonthlyYouPlusEmployer`)}
                       </p>
@@ -788,7 +862,7 @@ export const Contribution = () => {
                     className="flex h-12 w-full items-center justify-center gap-2 rounded-xl border text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                     style={{
                       borderColor: "var(--enroll-card-border)",
-                      background: "var(--enroll-card-bg)",
+                      background: "var(--enroll-bg)",
                       color: "var(--enroll-text-primary)",
                     }}
                   >
@@ -896,7 +970,7 @@ export const Contribution = () => {
                       {t("enrollment.estimatedMonthlyTotal")}
                     </p>
                     <p className="text-sm font-semibold tabular-nums mt-0.5" style={{ color: "var(--enroll-text-primary)" }}>
-                      {formatCurrency(derived.totalMonthlyInvestment)}
+                      {formatCurrency(totalMonthlyInvestmentAllocated)}
                     </p>
                   </div>
                   <div>
@@ -904,7 +978,7 @@ export const Contribution = () => {
                       {t("enrollment.projectedAnnualTotal")}
                     </p>
                     <p className="text-sm font-semibold tabular-nums mt-0.5" style={{ color: "var(--enroll-text-primary)" }}>
-                      {formatCurrency(derived.totalMonthlyInvestment * 12)}
+                      {formatCurrency(totalMonthlyInvestmentAllocated * 12)}
                     </p>
                   </div>
                 </div>

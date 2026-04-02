@@ -12,7 +12,7 @@ type EnrollmentContainerProps = {
   contentClassName?: string;
   /** Figma wizard footer bar (tint + top border) vs default dashboard border. */
   footerSurface?: "default" | "wizard";
-  /** When false, omit the default footer's top border (e.g. contribution step). */
+  /** When true, show a top border above Back/Next. Default off for a cleaner bar. */
   footerTopBorder?: boolean;
 };
 
@@ -27,7 +27,7 @@ export function EnrollmentContainer({
   className,
   contentClassName,
   footerSurface = "default",
-  footerTopBorder = true,
+  footerTopBorder = false,
 }: EnrollmentContainerProps) {
   return (
     <div
