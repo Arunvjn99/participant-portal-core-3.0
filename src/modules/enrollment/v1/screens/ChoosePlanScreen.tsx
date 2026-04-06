@@ -30,14 +30,13 @@ function asCompareRows(v: unknown): CompareRow[] {
 
 /** Single-plan fallback card. */
 const planCardBase =
-  "flex min-w-0 flex-col gap-4 rounded-2xl border border-gray-200/80 bg-white p-6 text-left " +
-  "shadow-[0_1px_2px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] " +
-  "dark:border-gray-700 dark:bg-gray-900";
+  "flex min-w-0 flex-col gap-4 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 text-left " +
+  "shadow-[0_1px_2px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]";
 
 const ctaSinglePrimary =
   "flex h-11 w-full min-w-0 items-center justify-center gap-2 rounded-xl " +
-  "bg-blue-600 px-4 text-sm font-semibold text-white " +
-  "shadow-sm transition-all duration-200 hover:bg-blue-700 hover:shadow-md active:scale-[0.99]";
+  "bg-[var(--color-primary)] px-4 text-sm font-semibold text-white " +
+  "shadow-sm transition-all duration-200 hover:bg-[var(--color-primary-hover)] hover:shadow-md active:scale-[0.99]";
 
 function ChoosePlanScreen() {
   const { t } = useTranslation();
@@ -74,12 +73,12 @@ function ChoosePlanScreen() {
     return (
       <div className="min-w-0 w-full space-y-4">
         <div className={`${planCardBase} w-full min-w-0`}>
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-950">
-            <Landmark className="h-5 w-5 text-blue-600 dark:text-blue-300" aria-hidden />
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[color-mix(in_srgb,var(--color-primary)_15%,transparent)]">
+            <Landmark className="h-5 w-5 text-[var(--color-primary)]" aria-hidden />
           </div>
           <div className="min-w-0">
-            <h2 className="text-2xl font-semibold leading-tight text-gray-900 dark:text-gray-50">{t(`${P}singlePlanTitle`, { planLabel })}</h2>
-            <p className="mt-1 text-sm leading-snug text-gray-600 dark:text-gray-300">
+            <h2 className="text-2xl font-semibold leading-tight text-[var(--enroll-text-primary)]">{t(`${P}singlePlanTitle`, { planLabel })}</h2>
+            <p className="mt-1 text-sm leading-snug text-[var(--enroll-text-secondary)]">
               {onlyPlan === "traditional" ? t(`${P}singleTraditionalExplainer`) : t(`${P}singleRothExplainer`)}
             </p>
           </div>
@@ -96,8 +95,8 @@ function ChoosePlanScreen() {
     <div className="min-w-0 w-full space-y-5">
       {/* Header */}
       <div className="text-left">
-        <h1 className="text-xl font-semibold leading-tight text-gray-900 dark:text-gray-50">{t(`${P}title`)}</h1>
-        <p className="mt-1.5 text-sm leading-snug text-gray-500 dark:text-gray-400">{t(`${P}subtitle`)}</p>
+        <h1 className="text-xl font-semibold leading-tight text-[var(--enroll-text-primary)]">{t(`${P}title`)}</h1>
+        <p className="mt-1.5 text-sm leading-snug text-[var(--enroll-text-secondary)]">{t(`${P}subtitle`)}</p>
       </div>
 
       {/* Plan selection cards — clicking anywhere selects the plan */}
@@ -111,12 +110,11 @@ function ChoosePlanScreen() {
           aria-label={t(`${P}selectPlanAria`, { plan: t(`${P}traditionalTitle`) })}
           onClick={() => updateField("selectedPlan", "traditional")}
           className={cn(
-            "flex min-w-0 flex-col rounded-2xl border bg-white p-6 text-left",
-            "transition-all duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2",
+            "flex min-w-0 flex-col rounded-2xl border bg-[var(--color-surface)] p-6 text-left",
+            "transition-all duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2",
             selectedPlan === "traditional"
-              ? "border-2 border-blue-500 shadow-[0_4px_20px_rgba(37,99,235,0.15)] ring-4 ring-blue-100/70 dark:border-blue-400 dark:ring-blue-900/50"
-              : "border-gray-200/80 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] hover:border-gray-300 hover:shadow-[0_4px_16px_rgba(0,0,0,0.10)] hover:-translate-y-[1px] dark:border-gray-700 dark:hover:border-gray-600",
-            "dark:bg-gray-900",
+              ? "border-2 border-[var(--color-primary)] shadow-[0_4px_20px_rgb(var(--color-primary-rgb)/0.15)] ring-4 ring-[color-mix(in_srgb,var(--color-primary)_15%,transparent)]"
+              : "border-[var(--color-border)] shadow-[0_1px_2px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] hover:border-[var(--color-border)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.10)] hover:-translate-y-[1px]",
           )}
         >
           {/* Badge row */}
@@ -132,28 +130,28 @@ function ChoosePlanScreen() {
               </span>
               {showTooltip ? (
                 <div
-                  className="absolute left-0 top-full z-10 mt-1 max-w-xs rounded-lg bg-gray-900 px-3 py-2 text-xs leading-snug text-white shadow-lg"
+                  className="absolute left-0 top-full z-10 mt-1 max-w-xs rounded-lg bg-[var(--color-background)] px-3 py-2 text-xs leading-snug text-[var(--color-text)] shadow-lg"
                   role="tooltip"
                 >
                   {t(`${P}badgeTooltip`)}
-                  <div className="absolute left-6 top-0 h-2 w-2 -translate-y-1/2 rotate-45 bg-gray-900" />
+                  <div className="absolute left-6 top-0 h-2 w-2 -translate-y-1/2 rotate-45 bg-[var(--color-background)]" />
                 </div>
               ) : null}
             </div>
             {selectedPlan === "traditional" && (
-              <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700 dark:bg-blue-950/60 dark:text-blue-200">
+              <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-[color-mix(in_srgb,var(--color-primary)_8%,transparent)] px-2.5 py-1 text-xs font-semibold text-[var(--color-primary)]">
                 <CheckCircle2 className="h-3.5 w-3.5" aria-hidden />
                 {t(`${P}selectedLabel`)}
               </span>
             )}
           </div>
 
-          <h3 className="text-base font-semibold text-gray-900 dark:text-gray-50">{t(`${P}traditionalTitle`)}</h3>
-          <p className="mt-2 text-sm leading-relaxed text-gray-500 dark:text-gray-400">{t(`${P}traditionalDesc`)}</p>
+          <h3 className="text-base font-semibold text-[var(--enroll-text-primary)]">{t(`${P}traditionalTitle`)}</h3>
+          <p className="mt-2 text-sm leading-relaxed text-[var(--enroll-text-secondary)]">{t(`${P}traditionalDesc`)}</p>
 
           <ul className="mt-4 flex min-w-0 flex-col gap-2">
             {traditionalBenefits.map((b) => (
-              <li key={b} className="flex min-w-0 items-start gap-2 text-sm leading-snug text-gray-600 dark:text-gray-300">
+              <li key={b} className="flex min-w-0 items-start gap-2 text-sm leading-snug text-[var(--enroll-text-secondary)]">
                 <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-500" aria-hidden />
                 <span className="min-w-0">{b}</span>
               </li>
@@ -169,30 +167,29 @@ function ChoosePlanScreen() {
           aria-label={t(`${P}selectPlanAria`, { plan: t(`${P}rothTitle`) })}
           onClick={() => updateField("selectedPlan", "roth")}
           className={cn(
-            "flex min-w-0 flex-col rounded-2xl border bg-white p-6 text-left",
-            "transition-all duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2",
+            "flex min-w-0 flex-col rounded-2xl border bg-[var(--color-surface)] p-6 text-left",
+            "transition-all duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2",
             selectedPlan === "roth"
-              ? "border-2 border-blue-500 shadow-[0_4px_20px_rgba(37,99,235,0.15)] ring-4 ring-blue-100/70 dark:border-blue-400 dark:ring-blue-900/50"
-              : "border-gray-200/80 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] hover:border-gray-300 hover:shadow-[0_4px_16px_rgba(0,0,0,0.10)] hover:-translate-y-[1px] dark:border-gray-700 dark:hover:border-gray-600",
-            "dark:bg-gray-900",
+              ? "border-2 border-[var(--color-primary)] shadow-[0_4px_20px_rgb(var(--color-primary-rgb)/0.15)] ring-4 ring-[color-mix(in_srgb,var(--color-primary)_15%,transparent)]"
+              : "border-[var(--color-border)] shadow-[0_1px_2px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] hover:border-[var(--color-border)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.10)] hover:-translate-y-[1px]",
           )}
         >
           {/* Selected indicator (right-aligned) */}
           {selectedPlan === "roth" && (
             <div className="mb-4 flex justify-end">
-              <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700 dark:bg-blue-950/60 dark:text-blue-200">
+              <span className="inline-flex items-center gap-1 rounded-full bg-[color-mix(in_srgb,var(--color-primary)_8%,transparent)] px-2.5 py-1 text-xs font-semibold text-[var(--color-primary)]">
                 <CheckCircle2 className="h-3.5 w-3.5" aria-hidden />
                 {t(`${P}selectedLabel`)}
               </span>
             </div>
           )}
 
-          <h3 className="text-base font-semibold text-gray-900 dark:text-gray-50">{t(`${P}rothTitle`)}</h3>
-          <p className="mt-2 text-sm leading-relaxed text-gray-500 dark:text-gray-400">{t(`${P}rothDesc`)}</p>
+          <h3 className="text-base font-semibold text-[var(--enroll-text-primary)]">{t(`${P}rothTitle`)}</h3>
+          <p className="mt-2 text-sm leading-relaxed text-[var(--enroll-text-secondary)]">{t(`${P}rothDesc`)}</p>
 
           <ul className="mt-4 flex min-w-0 flex-col gap-2">
             {rothBenefits.map((b) => (
-              <li key={b} className="flex min-w-0 items-start gap-2 text-sm leading-snug text-gray-600 dark:text-gray-300">
+              <li key={b} className="flex min-w-0 items-start gap-2 text-sm leading-snug text-[var(--enroll-text-secondary)]">
                 <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-500" aria-hidden />
                 <span className="min-w-0">{b}</span>
               </li>
@@ -202,9 +199,9 @@ function ChoosePlanScreen() {
       </div>
 
       {/* "Not sure?" helper — secondary, ghost-style buttons only */}
-      <div className="rounded-xl border border-gray-200/90 bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] dark:border-gray-700 dark:bg-gray-900">
-        <p className="text-sm font-semibold text-gray-900 dark:text-gray-50">{t(`${P}notSureTitle`)}</p>
-        <p className="mt-1 text-sm leading-snug text-gray-500 dark:text-gray-400">{t(`${P}notSureSubtitle`)}</p>
+      <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
+        <p className="text-sm font-semibold text-[var(--enroll-text-primary)]">{t(`${P}notSureTitle`)}</p>
+        <p className="mt-1 text-sm leading-snug text-[var(--enroll-text-secondary)]">{t(`${P}notSureSubtitle`)}</p>
         <div className="mt-3 flex min-w-0 flex-wrap gap-2">
           <button
             type="button"
@@ -224,8 +221,8 @@ function ChoosePlanScreen() {
             className={cn(
               "flex h-9 items-center gap-2 rounded-lg border px-3 text-sm font-medium transition-colors",
               showCompare
-                ? "border-gray-300 bg-gray-100 text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-50"
-                : "border-gray-200 bg-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800",
+                ? "border-[var(--color-border)] bg-[var(--color-background-tertiary)] text-[var(--color-text)]"
+                : "border-[var(--color-border)] bg-transparent text-[var(--color-text-secondary)] hover:bg-[var(--color-background-secondary)] hover:border-[var(--color-border)]",
             )}
           >
             <MessageCircle className="h-3.5 w-3.5" aria-hidden /> {t(`${P}comparePlans`)}
@@ -253,22 +250,22 @@ function ChoosePlanScreen() {
           <div className="mt-3 min-w-0 overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-200 dark:border-gray-600">
-                  <th className="py-2 text-left text-gray-500 dark:text-gray-400" style={{ fontWeight: 500 }}>
+                <tr className="border-b border-[var(--color-border)]">
+                  <th className="py-2 text-left text-[var(--enroll-text-secondary)]" style={{ fontWeight: 500 }}>
                     {t(`${P}compareColFeature`)}
                   </th>
-                  <th className="py-2 text-left text-gray-900 dark:text-gray-50" style={{ fontWeight: 600 }}>
+                  <th className="py-2 text-left text-[var(--enroll-text-primary)]" style={{ fontWeight: 600 }}>
                     {t(`${P}compareColTraditional`)}
                   </th>
-                  <th className="py-2 text-left text-gray-900 dark:text-gray-50" style={{ fontWeight: 600 }}>
+                  <th className="py-2 text-left text-[var(--enroll-text-primary)]" style={{ fontWeight: 600 }}>
                     {t(`${P}compareColRoth`)}
                   </th>
                 </tr>
               </thead>
-              <tbody className="text-gray-700 dark:text-gray-300">
+              <tbody className="text-[var(--enroll-text-secondary)]">
                 {compareRows.map((row) => (
-                  <tr key={row.feature} className="border-b border-gray-100 dark:border-gray-700">
-                    <td className="py-2 text-gray-500 dark:text-gray-400">{row.feature}</td>
+                  <tr key={row.feature} className="border-b border-[var(--color-border)]">
+                    <td className="py-2 text-[var(--enroll-text-secondary)]">{row.feature}</td>
                     <td className="py-2">{row.traditional}</td>
                     <td className="py-2">{row.roth}</td>
                   </tr>

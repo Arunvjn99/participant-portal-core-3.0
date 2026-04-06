@@ -113,38 +113,38 @@ export function Review() {
         <p className="mt-1 text-sm leading-snug text-muted-foreground">{t(`${R}pageSubtitle`)}</p>
       </div>
 
-      <div className="rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 p-5 text-white shadow-md">
-        <p className="text-[0.7rem] font-medium uppercase tracking-wider text-blue-200">
+      <div className="rounded-xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-hover)] p-5 text-white shadow-md">
+        <p className="text-[0.7rem] font-medium uppercase tracking-wider text-white/70">
           {t(`${R}heroProjectedLabel`)}
         </p>
         <p className="mt-0.5 text-3xl font-bold tabular-nums leading-tight tracking-tight sm:text-[2rem]">
           {formatCurrency(projectedBalance)}
         </p>
-        <p className="mt-1 text-xs leading-snug text-blue-200">
+        <p className="mt-1 text-xs leading-snug text-white/70">
           {t(`${R}heroDisclaimer`, { years: yearsToRetirement })}
         </p>
 
         <div className="mt-4 grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3">
           <ReviewHeroMetric
-            icon={<DollarSign className="h-3 w-3 text-blue-200" aria-hidden />}
+            icon={<DollarSign className="h-3 w-3 text-white/70" aria-hidden />}
             label={t(`${R}metricYourContribution`)}
             value={`$${annualContribution.toLocaleString()}`}
             sub={t(`${R}perYear`)}
           />
           <ReviewHeroMetric
-            icon={<Briefcase className="h-3 w-3 text-blue-200" aria-hidden />}
+            icon={<Briefcase className="h-3 w-3 text-white/70" aria-hidden />}
             label={t(`${R}metricEmployerMatch`)}
             value={`$${employerContribution.toLocaleString()}`}
             sub={t(`${R}perYear`)}
           />
           <ReviewHeroMetric
-            icon={<TrendingUp className="h-3 w-3 text-blue-200" aria-hidden />}
+            icon={<TrendingUp className="h-3 w-3 text-white/70" aria-hidden />}
             label={t(`${R}metricExpectedGrowth`)}
             value={`~${(growthRate * 100).toFixed(1)}%`}
             sub={t(`${R}annualGrowthSub`, { risk: t(riskLabelKey(rl)).toLowerCase() })}
           />
           <ReviewHeroMetric
-            icon={<Clock className="h-3 w-3 text-blue-200" aria-hidden />}
+            icon={<Clock className="h-3 w-3 text-white/70" aria-hidden />}
             label={t(`${R}metricTimeHorizon`)}
             value={t(`${R}yearsCount`, { count: yearsToRetirement })}
             sub={t(`${R}retireAtAge`, { age: data.retirementAge })}
@@ -216,10 +216,10 @@ function ReviewHeroMetric({
     <div className="rounded-xl bg-white/10 px-3.5 py-3 backdrop-blur-sm">
       <div className="mb-1 flex items-center gap-1.5">
         {icon}
-        <span className="text-[0.62rem] font-medium text-blue-200">{label}</span>
+        <span className="text-[0.62rem] font-medium text-white/70">{label}</span>
       </div>
       <p className="text-[1.05rem] font-bold tabular-nums">{value}</p>
-      <p className="text-[0.6rem] text-blue-200">{sub}</p>
+      <p className="text-[0.6rem] text-white/70">{sub}</p>
     </div>
   );
 }

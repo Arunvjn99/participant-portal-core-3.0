@@ -13,6 +13,7 @@ import "./theme/light.css";
 import "./theme/dark.css";
 import "./theme/enrollment-dark.css";
 import "./index.css";
+import "./features/enrollment/enrollment.css";
 import { loadUXtweak } from "./utils/uxtweakLoader";
 import { loadUXsniff } from "./utils/uxsniffLoader";
 import { loadClarity } from "./lib/analytics/clarity";

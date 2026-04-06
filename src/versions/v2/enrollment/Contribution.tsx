@@ -74,7 +74,7 @@ const CONTRIBUTION_ASK_AI_PROMPT =
   "Explain how retirement contributions work and how this affects my future savings.";
 
 const V2_EXPLAIN_ACCENT: Record<"pretax" | "roth" | "aftertax", { icon: string; check: string }> = {
-  pretax: { icon: "bg-blue-600", check: "text-blue-600" },
+  pretax: { icon: "bg-[var(--color-primary)]", check: "text-[var(--color-primary)]" },
   roth: { icon: "bg-purple-600", check: "text-purple-600" },
   aftertax: { icon: "bg-orange-500", check: "text-orange-500" },
 };
@@ -636,7 +636,7 @@ export const Contribution = () => {
                   <ul className="flex-1 space-y-2.5">
                     {planDefaultFeatures.map((line) => (
                       <li key={line} className="flex items-start gap-2.5 text-sm leading-snug" style={{ color: "var(--enroll-text-primary)" }}>
-                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#2563eb]" aria-hidden />
+                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--enroll-brand)]" aria-hidden />
                         <span>{line}</span>
                       </li>
                     ))}
@@ -644,7 +644,7 @@ export const Contribution = () => {
                   <button
                     type="button"
                     onClick={applyPlanDefaultTax}
-                    className="flex h-12 w-full items-center justify-center rounded-xl bg-[#2563eb] text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#1d4ed8] active:scale-[0.99]"
+                    className="flex h-12 w-full items-center justify-center rounded-xl bg-[var(--enroll-brand)] text-sm font-semibold text-[var(--color-text-on-primary)] shadow-sm transition-colors hover:opacity-90 active:scale-[0.99]"
                   >
                     {t(`${V1_SA}continuePlanDefaultCta`)}
                   </button>
@@ -832,7 +832,7 @@ export const Contribution = () => {
                   <ul className="space-y-2.5">
                     {customizeFeatures.map((line) => (
                       <li key={line} className="flex items-start gap-2.5 text-sm leading-snug" style={{ color: "var(--enroll-text-primary)" }}>
-                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#2563eb]" aria-hidden />
+                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--enroll-brand)]" aria-hidden />
                         <span>{line}</span>
                       </li>
                     ))}
@@ -842,8 +842,8 @@ export const Contribution = () => {
                     <span className="font-medium" style={{ color: "var(--enroll-text-primary)" }}>
                       {t(`${V1_SA}learnPrefix`)}
                     </span>
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-2.5 py-0.5 font-medium text-blue-700 dark:border-blue-800 dark:bg-blue-950/50 dark:text-blue-300">
-                      <span className="h-1.5 w-1.5 rounded-full bg-blue-600" aria-hidden />
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-[color-mix(in_srgb,var(--color-primary)_25%,transparent)] bg-[color-mix(in_srgb,var(--color-primary)_8%,transparent)] px-2.5 py-0.5 font-medium text-[var(--color-primary)]">
+                      <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-primary)]" aria-hidden />
                       {t(`${V1_SA}preTaxLabel`)}
                     </span>
                     <span className="inline-flex items-center gap-1.5 rounded-full border border-purple-200 bg-purple-50 px-2.5 py-0.5 font-medium text-purple-700 dark:border-purple-800 dark:bg-purple-950/50 dark:text-purple-300">

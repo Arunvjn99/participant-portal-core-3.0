@@ -22,7 +22,7 @@ interface ThemeContextValue {
   setMode: (m: Mode) => void;
   companyTheme: CompanyTheme;
   currentColors: ThemeColors;
-  setCompanyBranding: (companyName: string, dbJson?: unknown, logoUrl?: string | null) => void;
+  setCompanyBranding: (companyName: string, dbJson?: unknown, logoUrl?: string | null, primaryColor?: string, secondaryColor?: string) => void;
   theme: EffectiveMode;
   isBrandingLoading: boolean;
   setBrandingLoading: (loading: boolean) => void;
@@ -108,8 +108,19 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const setCompanyBranding = useCallback(
-    (companyName: string, dbJson?: unknown, logoUrl?: string | null) => {
+    (companyName: string, dbJson?: unknown, logoUrl?: string | null, primaryColor?: string, secondaryColor?: string) => {
       const resolved = themeManager.getTheme(companyName, dbJson);
+
+      // Column-level primary_color / secondary_color override branding_json values
+      if (primaryColor) {
+        resolved.light = { ...resolved.light, primary: primaryColor };
+        resolved.dark = { ...resolved.dark, primary: primaryColor };
+      }
+      if (secondaryColor) {
+        resolved.light = { ...resolved.light, secondary: secondaryColor };
+        resolved.dark = { ...resolved.dark, secondary: secondaryColor };
+      }
+
       const dbLogo = logoUrl?.trim() || "";
       const jsonLogo = resolved.light.logo?.trim() || "";
       const effectiveLogo =

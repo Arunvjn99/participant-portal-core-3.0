@@ -1,6 +1,8 @@
 export { PostEnrollmentDashboardHeader } from "./DashboardHeader";
 export { TotalBalanceCard } from "./TotalBalanceCard";
 export { PerformanceChart } from "./PerformanceChart";
+export { PortfolioSummaryCard } from "./PortfolioSummaryCard";
+export { AlertBanner } from "./AlertBanner";
 export { QuickActions } from "./QuickActions";
 export type { QuickActionItem } from "./QuickActions";
 export { MonthlyContribution } from "./MonthlyContribution";

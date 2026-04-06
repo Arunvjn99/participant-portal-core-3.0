@@ -3,9 +3,11 @@ import { DashboardLayout } from "@/layouts/DashboardLayout";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { HeroSkeleton } from "@/components/pre-enrollment";
 import { useUser } from "@/context/UserContext";
-import { HeroSection } from "./HeroSection";
-import FeaturedLearningSection from "@/components/pre-enrollment/FeaturedLearningSection";
-import { AssistanceSection } from "@/components/pre-enrollment/dashboard-premium";
+import {
+  CrpPreEnrollmentAssistance,
+  CrpPreEnrollmentEducationCard,
+  CrpPreEnrollmentHero,
+} from "@/features/crp-pre-enrollment";
 
 function MainContentSkeleton() {
   return (
@@ -35,20 +37,11 @@ export const PreEnrollment = () => {
             <MainContentSkeleton />
           </>
         ) : (
-          <div
-            key={i18n.language}
-            className="relative"
-            style={{
-              backgroundImage: `
-                linear-gradient(180deg, rgb(var(--color-primary-rgb) / 0.06) 0%, transparent 30%),
-                linear-gradient(120deg, rgb(var(--color-primary-rgb) / 0.04) 0%, transparent 50%)
-              `,
-            }}
-          >
-            <HeroSection />
-            <div className="mx-auto max-w-7xl space-y-10 px-4 pb-10 pt-8 sm:space-y-12 sm:px-6 sm:pt-10 md:space-y-12 lg:px-8">
-              <FeaturedLearningSection />
-              <AssistanceSection />
+          <div key={i18n.language} className="relative bg-background text-foreground">
+            <CrpPreEnrollmentHero />
+            <div className="mx-auto max-w-7xl space-y-10 bg-background px-4 pb-10 pt-8 sm:space-y-12 sm:px-6 sm:pt-10 md:space-y-12 lg:px-8">
+              <CrpPreEnrollmentEducationCard />
+              <CrpPreEnrollmentAssistance />
             </div>
           </div>
         )}

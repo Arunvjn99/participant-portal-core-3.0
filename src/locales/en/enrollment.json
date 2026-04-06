@@ -718,6 +718,12 @@
       "applyRec": "Apply Recommendation",
       "continueCustomAllocation": "Continue with Custom Allocation",
       "fallbackRec": "Walk through contributions and investment strategy with your goals in mind before you enroll.",
+      "atAge": "At age {{age}}",
+      "boostScore": "Boost your score to {{score}}",
+      "boostDesc": "Applying the recommended changes below can increase your readiness score by {{points}} points and significantly improve your projected balance.",
+      "recHeading": "Recommendations",
+      "recSubheading": "Select an option to see how it impacts your retirement.",
+      "applySelected": "Apply Selected",
       "confirmApply": "Apply this recommendation to your enrollment selections?",
       "rec": {
         "increaseContributionTitle": "Increase your contribution rate",

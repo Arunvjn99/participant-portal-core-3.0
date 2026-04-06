@@ -132,4 +132,78 @@
   --v2-slider-track-h: 8px;
   --v2-slider-thumb-size: 28px;
   --v2-slider-thumb-border: 2px solid var(--v2-blue-600);
+
+  /* Surfaces that were hardcoded white — theme in .dark below */
+  --v2-surface-card: var(--v2-white);
+}
+
+/**
+ * Dark mode: wizard portal mounts on `document.body`; `html.dark` is set by ThemeProvider.
+ * Remap grays for readable text on dark panels; keep --v2-white for text on colored buttons.
+ */
+.dark .v2-ui {
+  --v2-color-bg: var(--card-bg);
+  --v2-color-text: var(--color-text);
+  --v2-color-text-muted: var(--color-text-secondary);
+  --v2-color-text-soft: var(--color-text-tertiary);
+
+  --v2-surface-card: var(--card-bg);
+
+  /* Readable gray ramp on dark surfaces (was Tailwind light grays) */
+  --v2-gray-50: #0f172a;
+  --v2-gray-100: #1e293b;
+  --v2-gray-200: #334155;
+  --v2-gray-300: #475569;
+  --v2-gray-400: #94a3b8;
+  --v2-gray-500: #94a3b8;
+  --v2-gray-600: #cbd5e1;
+  --v2-gray-700: #e2e8f0;
+  --v2-gray-800: #f1f5f9;
+  --v2-gray-900: #f8fafc;
+
+  /* Primary tints for selections / chips (replace pastel blues) */
+  --v2-blue-50: rgb(var(--color-primary-rgb) / 0.14);
+  --v2-blue-100: rgb(var(--color-primary-rgb) / 0.2);
+  --v2-blue-200: rgb(var(--color-primary-rgb) / 0.28);
+  --v2-blue-500: var(--color-primary);
+  --v2-blue-600: var(--color-primary);
+  --v2-blue-700: var(--color-primary-hover);
+  --v2-blue-800: var(--color-primary-active);
+
+  --v2-purple-50: rgb(139 92 246 / 0.12);
+  --v2-purple-100: rgb(139 92 246 / 0.16);
+  --v2-purple-200: rgb(167 139 250 / 0.35);
+
+  --v2-green-100: rgb(34 197 94 / 0.14);
+  --v2-yellow-100: rgb(234 179 8 / 0.14);
+  --v2-red-100: rgb(248 113 113 / 0.14);
+
+  --v2-gradient-age-card: linear-gradient(
+    to bottom right,
+    rgb(var(--color-primary-rgb) / 0.16) 0%,
+    rgb(139 92 246 / 0.12) 100%
+  );
+  --v2-gradient-slider-range: linear-gradient(to right, var(--color-primary) 0%, rgb(99 102 241) 100%);
+  --v2-gradient-ai-panel: linear-gradient(
+    to bottom right,
+    rgb(139 92 246 / 0.14) 0%,
+    rgb(var(--color-primary-rgb) / 0.12) 100%
+  );
+  --v2-insight-card-surface: rgb(139 92 246 / 0.12);
+  --v2-insight-card-border: rgb(167 139 250 / 0.32);
+
+  --v2-color-select-border: var(--color-primary);
+  --v2-color-select-bg: rgb(var(--color-primary-rgb) / 0.16);
+
+  --v2-color-primary: var(--color-primary);
+  --v2-color-primary-hover: var(--color-primary-hover);
+  --v2-color-primary-active: var(--color-primary-active);
+
+  --v2-slider-thumb-border: 2px solid var(--color-primary);
+
+  --v2-shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.55);
+  --v2-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.35), 0 4px 6px -4px rgb(0 0 0 / 0.28);
+  --v2-shadow-primary: 0 10px 22px -4px rgb(var(--color-primary-rgb) / 0.4), 0 4px 10px -4px rgb(var(--color-primary-rgb) / 0.25);
+
+  --v2-overlay-scrim: rgb(0 0 0 / 0.72);
 }

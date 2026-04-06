@@ -1,7 +1,8 @@
-/** Shared post-enrollment dashboard surfaces — structured, enterprise-grade (Figma-matched). */
+/** Shared post-enrollment dashboard surfaces — Tailwind semantic tokens. */
 export const pePanel =
-  "rounded-xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6";
+  "rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6";
 
-export const pePanelTight = "rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:p-5";
+export const pePanelTight =
+  "rounded-2xl border border-border bg-card p-4 shadow-sm sm:p-5";
 
-export const pePageBg = "bg-[#F5F7FA]";
+export const pePageBg = "bg-background";

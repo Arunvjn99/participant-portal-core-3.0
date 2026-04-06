@@ -1,6 +1,6 @@
 import { useCallback, useSyncExternalStore } from "react";
-import type { PersonaProfile } from "@/mock/personas";
-import { DEMO_USER_KEY } from "@/mock/personas";
+import type { PersonaProfile } from "@/types/participantPersona";
+import { DEMO_USER_KEY } from "@/data/demoScenarios";
 
 /* ─────────────────────────────────────────────────────────────────────────
    useDemoUser — reactive hook for the demo persona stored in localStorage.
@@ -64,7 +64,7 @@ export function setDemoUser(user: PersonaProfile | null) {
   emitChange();
 }
 
-/** Clear the demo persona. */
+/** Clear the demo persona (localStorage only — prefer {@link useDemoStore}.clearScenario for full reset). */
 export function clearDemoUser() {
   setDemoUser(null);
 }

@@ -29,41 +29,21 @@ import { FutureContributions } from "../pages/enrollment/FutureContributions";
 import { AutoIncreaseSkipConfirm } from "../pages/enrollment/AutoIncreaseSkipConfirm";
 import { TransactionsPage } from "../pages/transactions/TransactionsPage";
 import { TransactionAnalysis } from "../pages/transactions/TransactionAnalysis";
-import { LoanTransactionLayout } from "../pages/transactions/layouts/LoanTransactionLayout";
-import { WithdrawTransactionLayout } from "../pages/transactions/layouts/WithdrawTransactionLayout";
-import { TransferTransactionLayout } from "../pages/transactions/layouts/TransferTransactionLayout";
 import { RebalanceTransactionLayout } from "../pages/transactions/layouts/RebalanceTransactionLayout";
-import { RolloverTransactionLayout } from "../pages/transactions/layouts/RolloverTransactionLayout";
-import LoanEligibilityPage from "../pages/transactions/loan/eligibility";
-import LoanSimulatorPage from "../pages/transactions/loan/simulator";
-import LoanConfigurationPage from "../pages/transactions/loan/configuration";
-import LoanFeesPage from "../pages/transactions/loan/fees";
-import LoanDocumentsPage from "../pages/transactions/loan/documents";
-import LoanReviewPage from "../pages/transactions/loan/review";
-import WithdrawEligibilityPage from "../pages/transactions/withdraw/WithdrawEligibility";
-import WithdrawTypePage from "../pages/transactions/withdraw/WithdrawType";
-import WithdrawSourcePage from "../pages/transactions/withdraw/WithdrawSource";
-import WithdrawFeesPage from "../pages/transactions/withdraw/WithdrawFees";
-import WithdrawPaymentPage from "../pages/transactions/withdraw/WithdrawPayment";
-import WithdrawReviewPage from "../pages/transactions/withdraw/WithdrawReview";
-import TransferTypePage from "../pages/transactions/transfer/TransferType";
-import TransferSourceFundsPage from "../pages/transactions/transfer/TransferSourceFunds";
-import TransferDestinationPage from "../pages/transactions/transfer/TransferDestination";
-import TransferAmountPage from "../pages/transactions/transfer/TransferAmount";
-import TransferImpactPage from "../pages/transactions/transfer/TransferImpact";
-import TransferReviewPage from "../pages/transactions/transfer/TransferReview";
 import RebalanceCurrentAllocationPage from "../pages/transactions/rebalance/RebalanceCurrentAllocation";
 import RebalanceAdjustAllocationPage from "../pages/transactions/rebalance/RebalanceAdjustAllocation";
 import RebalanceTradePreviewPage from "../pages/transactions/rebalance/RebalanceTradePreview";
 import RebalanceReviewPage from "../pages/transactions/rebalance/RebalanceReview";
-import RolloverPlanDetailsPage from "../pages/transactions/rollover/RolloverPlanDetails";
-import RolloverValidationPage from "../pages/transactions/rollover/RolloverValidation";
-import RolloverAllocationPage from "../pages/transactions/rollover/RolloverAllocation";
-import RolloverDocumentsPage from "../pages/transactions/rollover/RolloverDocuments";
-import RolloverReviewPage from "../pages/transactions/rollover/RolloverReview";
+import {
+  CrpTransactionFlowPageLayout,
+  LoanFlowClient,
+  WithdrawFlowClient,
+  TransferFlowClient,
+  RolloverFlowClient,
+} from "@/features/crp-transactions";
 import { InvestmentProvider } from "../context/InvestmentContext";
 import InvestmentsLayout from "../app/investments/layout";
-import InvestmentsPage from "../app/investments/page";
+import { StandaloneInvestmentPortfolioPage } from "../pages/investments";
 import { RootLayout } from "../layouts/RootLayout";
 import { ProtectedRoute } from "../components/auth/ProtectedRoute";
 import { ThemeSettings } from "../pages/settings/ThemeSettings";
@@ -72,6 +52,7 @@ import { PreEnrollmentDashboardTest } from "../pages/PreEnrollmentDashboardTest"
 import { AIAssetsPage } from "../pages/ai-assets";
 import { EnrollmentV1Layout } from "@/modules/enrollment/v1/layout/EnrollmentLayout";
 import { V1_WIZARD_SEGMENTS } from "@/modules/enrollment/v1/flow/v1WizardPaths";
+import { EnrollmentWizard } from "@/features/enrollment";
 
 /** Redirects `/enrollment` and `/enrollment/*` to `/v1/enrollment` equivalents (preserves subpath + query). */
 function LegacyEnrollmentRedirect() {
@@ -347,18 +328,12 @@ export const router = createBrowserRouter([
             element: <TransactionsPage />,
           },
           {
-            path: "loan",
-            element: <LoanTransactionLayout />,
-            children: [
-              { index: true, element: <Navigate to="eligibility" replace /> },
-              { path: "new", element: <Navigate to="eligibility" replace /> },
-              { path: "eligibility", element: <LoanEligibilityPage /> },
-              { path: "simulator", element: <LoanSimulatorPage /> },
-              { path: "configuration", element: <LoanConfigurationPage /> },
-              { path: "fees", element: <LoanFeesPage /> },
-              { path: "documents", element: <LoanDocumentsPage /> },
-              { path: "review", element: <LoanReviewPage /> },
-            ],
+            path: "loan/*",
+            element: (
+              <CrpTransactionFlowPageLayout>
+                <LoanFlowClient />
+              </CrpTransactionFlowPageLayout>
+            ),
           },
           {
             path: "withdrawal",
@@ -369,29 +344,20 @@ export const router = createBrowserRouter([
             element: <Navigate to="../withdraw" replace />,
           },
           {
-            path: "withdraw",
-            element: <WithdrawTransactionLayout />,
-            children: [
-              { index: true, element: <WithdrawEligibilityPage /> },
-              { path: "eligibility", element: <WithdrawEligibilityPage /> },
-              { path: "type", element: <WithdrawTypePage /> },
-              { path: "source", element: <WithdrawSourcePage /> },
-              { path: "fees", element: <WithdrawFeesPage /> },
-              { path: "payment", element: <WithdrawPaymentPage /> },
-              { path: "review", element: <WithdrawReviewPage /> },
-            ],
+            path: "withdraw/*",
+            element: (
+              <CrpTransactionFlowPageLayout>
+                <WithdrawFlowClient />
+              </CrpTransactionFlowPageLayout>
+            ),
           },
           {
-            path: "transfer",
-            element: <TransferTransactionLayout />,
-            children: [
-              { index: true, element: <TransferTypePage /> },
-              { path: "source", element: <TransferSourceFundsPage /> },
-              { path: "destination", element: <TransferDestinationPage /> },
-              { path: "amount", element: <TransferAmountPage /> },
-              { path: "impact", element: <TransferImpactPage /> },
-              { path: "review", element: <TransferReviewPage /> },
-            ],
+            path: "transfer/*",
+            element: (
+              <CrpTransactionFlowPageLayout>
+                <TransferFlowClient />
+              </CrpTransactionFlowPageLayout>
+            ),
           },
           {
             path: "rebalance",
@@ -404,15 +370,12 @@ export const router = createBrowserRouter([
             ],
           },
           {
-            path: "rollover",
-            element: <RolloverTransactionLayout />,
-            children: [
-              { index: true, element: <RolloverPlanDetailsPage /> },
-              { path: "validation", element: <RolloverValidationPage /> },
-              { path: "allocation", element: <RolloverAllocationPage /> },
-              { path: "documents", element: <RolloverDocumentsPage /> },
-              { path: "review", element: <RolloverReviewPage /> },
-            ],
+            path: "rollover/*",
+            element: (
+              <CrpTransactionFlowPageLayout>
+                <RolloverFlowClient />
+              </CrpTransactionFlowPageLayout>
+            ),
           },
           {
             path: "distribution",
@@ -423,6 +386,14 @@ export const router = createBrowserRouter([
             element: <TransactionAnalysis />,
           },
         ],
+      },
+      {
+        path: "/enrollment/:step",
+        element: (
+          <ProtectedRoute>
+            <EnrollmentWizard />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/settings",
@@ -444,11 +415,9 @@ export const router = createBrowserRouter([
         path: "/investments",
         element: (
           <ProtectedRoute>
-            <InvestmentProvider>
-              <InvestmentsLayout>
-                <InvestmentsPage />
-              </InvestmentsLayout>
-            </InvestmentProvider>
+            <InvestmentsLayout>
+              <StandaloneInvestmentPortfolioPage />
+            </InvestmentsLayout>
           </ProtectedRoute>
         ),
       },

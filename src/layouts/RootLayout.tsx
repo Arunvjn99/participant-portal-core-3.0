@@ -7,6 +7,9 @@ import { useAISettings } from "../context/AISettingsContext";
 import { CoreAIModalProvider } from "../context/CoreAIModalContext";
 import { GlobalSearchHost } from "@/components/search/GlobalSearchHost";
 import { FloatingSearchBar } from "@/components/search/FloatingSearchBar";
+import { FeedbackButton } from "@/components/feedback/FeedbackButton";
+import { FeedbackModal } from "@/components/feedback/FeedbackModal";
+import { FeedbackSuccessToast } from "@/components/feedback/FeedbackSuccessToast";
 
 const HIDE_CORE_AI_PATHS = [
   "/",
@@ -38,6 +41,9 @@ export const RootLayout = () => {
       <FloatingSearchBar />
       {showCoreAI && <CoreAIFab />}
       <DemoSwitcher />
+      <FeedbackButton />
+      <FeedbackModal />
+      <FeedbackSuccessToast />
     </CoreAIModalProvider>
   );
 };

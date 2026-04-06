@@ -1,19 +1,26 @@
+import { motion } from "framer-motion";
+import { Landmark, Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { LoanSlice } from "@/stores/postEnrollmentDashboardStore";
 import { cn } from "@/lib/utils";
-import { pePanelTight } from "./dashboardSurfaces";
 
 type Props = {
   loan: LoanSlice;
-  onManage: () => void;
+  onRequestNew: () => void;
+  requestNewDisabled?: boolean;
   className?: string;
 };
 
-function money(n: number) {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(n);
-}
+const ease = [0.25, 0.1, 0.25, 1] as const;
 
-function formatDate(iso: string) {
+const fmt = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+});
+
+function formatDateShort(iso: string) {
   try {
     return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(
       new Date(iso),
@@ -23,74 +30,97 @@ function formatDate(iso: string) {
   }
 }
 
-export function ActiveLoanCard({ loan, onManage, className }: Props) {
+export function ActiveLoanCard({ loan, onRequestNew, requestNewDisabled = false, className }: Props) {
   const { t } = useTranslation();
-  const paidRatio = loan.originalPrincipal > 0 ? loan.paidPrincipal / loan.originalPrincipal : 0;
+  const paidPercent =
+    loan.originalPrincipal > 0 ? Math.round((loan.paidPrincipal / loan.originalPrincipal) * 100) : 0;
+  const remainingPayments =
+    loan.nextPaymentAmount > 0 ? Math.max(1, Math.ceil(loan.remainingPrincipal / loan.nextPaymentAmount)) : 0;
+
+  const paidOff = loan.remainingPrincipal <= 0;
 
   return (
-    <section className={cn(pePanelTight, className)}>
-      <div className="flex flex-wrap items-start justify-between gap-2">
-        <h2 className="font-dashboard-heading text-base font-semibold text-gray-900">
-          {t("dashboard.postEnrollment.peActiveLoanTitle")}
-        </h2>
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease, delay: 0.06 }}
+      className={cn("rounded-2xl border border-border bg-card p-5 shadow-sm", className)}
+    >
+      <div className="mb-4 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <Landmark className="h-4 w-4 text-muted-foreground" aria-hidden />
+          <h3 className="text-sm font-semibold text-foreground">{t("dashboard.postEnrollment.peActiveLoanTitle")}</h3>
+        </div>
+        <button
+          type="button"
+          onClick={requestNewDisabled ? undefined : onRequestNew}
+          disabled={requestNewDisabled}
+          aria-disabled={requestNewDisabled}
+          className={cn(
+            "flex items-center gap-1 text-xs font-medium text-primary transition-opacity hover:opacity-80",
+            requestNewDisabled && "cursor-not-allowed opacity-50",
+          )}
+        >
+          <Plus className="h-3.5 w-3.5" aria-hidden />
+          {t("dashboard.postEnrollment.activeLoanRequestNew")}
+        </button>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2">
+        <p className="text-sm font-medium text-foreground">
+          {loan.productName} #{loan.id.replace(/\D/g, "").slice(-4) || loan.id.slice(-4)}
+        </p>
         <span
-          className="rounded-full px-2.5 py-0.5 text-xs font-semibold"
-          style={{
-            background: "color-mix(in srgb, var(--color-success) 14%, var(--color-background))",
-            color: "var(--color-success)",
-          }}
+          className={cn(
+            "rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider",
+            paidOff
+              ? "bg-blue-500/15 text-blue-600 dark:text-blue-400"
+              : "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400",
+          )}
         >
           {t(loan.statusLabel)}
         </span>
       </div>
-      <p className="font-dashboard-body mt-2 text-sm text-[var(--color-text-secondary)]">{loan.productName}</p>
+      {loan.originDate ? (
+        <p className="mt-0.5 text-xs text-muted-foreground">
+          {t("dashboard.postEnrollment.peLoanOriginated")} {formatDateShort(loan.originDate)}
+        </p>
+      ) : null}
 
-      <dl className="mt-4 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
+      <div className="mt-4 grid grid-cols-2 gap-4">
         <div>
-          <dt className="font-dashboard-body text-[var(--color-text-secondary)]">
-            {t("dashboard.postEnrollment.peLoanRemaining")}
-          </dt>
-          <dd className="font-dashboard-heading mt-1 font-semibold tabular-nums text-[var(--color-text)]">
-            {money(loan.remainingPrincipal)}
-          </dd>
+          <p className="text-xs text-muted-foreground">{t("dashboard.postEnrollment.peLoanRemaining")}</p>
+          <p className="mt-0.5 text-lg font-semibold text-foreground">{fmt.format(loan.remainingPrincipal)}</p>
         </div>
         <div>
-          <dt className="font-dashboard-body text-[var(--color-text-secondary)]">
-            {t("dashboard.postEnrollment.peLoanNextPayment")}
-          </dt>
-          <dd className="font-dashboard-heading mt-1 font-semibold text-[var(--color-text)]">
-            {money(loan.nextPaymentAmount)} · {formatDate(loan.nextPaymentDate)}
-          </dd>
-        </div>
-      </dl>
-
-      <div className="mt-4">
-        <div className="mb-1.5 flex justify-between text-xs text-[var(--color-text-secondary)]">
-          <span>{t("dashboard.postEnrollment.peLoanPaid")}</span>
-          <span className="tabular-nums">{Math.round(paidRatio * 100)}%</span>
-        </div>
-        <div
-          className="h-1.5 w-full overflow-hidden rounded-full"
-          style={{ background: "var(--ds-readiness-track)" }}
-          role="progressbar"
-          aria-valuenow={Math.round(paidRatio * 100)}
-          aria-valuemin={0}
-          aria-valuemax={100}
-        >
-          <div
-            className="h-full rounded-full bg-[var(--color-primary)] transition-all"
-            style={{ width: `${paidRatio * 100}%` }}
-          />
+          <p className="text-xs text-muted-foreground">{t("dashboard.postEnrollment.peLoanNextPayment")}</p>
+          <p className="mt-0.5 text-lg font-semibold text-foreground">
+            {fmt.format(loan.nextPaymentAmount)}{" "}
+            <span className="text-xs font-normal text-muted-foreground">
+              · {formatDateShort(loan.nextPaymentDate)}
+            </span>
+          </p>
         </div>
       </div>
 
-      <button
-        type="button"
-        onClick={onManage}
-        className="font-dashboard-body mt-4 w-full rounded-lg bg-[var(--color-primary)] py-2.5 text-sm font-semibold text-[var(--color-text-on-primary)] shadow-sm transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
-      >
-        {t("dashboard.postEnrollment.peLoanManage")}
-      </button>
-    </section>
+      <div className="mt-5">
+        <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+          <motion.div
+            className="h-full rounded-full bg-primary"
+            initial={{ width: 0 }}
+            animate={{ width: `${paidPercent}%` }}
+            transition={{ duration: 0.6, ease, delay: 0.15 }}
+          />
+        </div>
+        <div className="mt-2 flex items-center justify-between text-xs">
+          <span className="font-medium text-foreground">
+            {t("dashboard.postEnrollment.peLoanPaidPercent", { percent: paidPercent })}
+          </span>
+          <span className="text-muted-foreground">
+            {t("dashboard.postEnrollment.activeLoanPaymentsLeft", { count: remainingPayments })}
+          </span>
+        </div>
+      </div>
+    </motion.div>
   );
 }

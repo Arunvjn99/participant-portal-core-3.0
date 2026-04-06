@@ -1,14 +1,18 @@
-import { useState, useRef, useEffect, useCallback, type KeyboardEvent } from "react";
+import { useState, useRef, useEffect, useCallback, type KeyboardEvent, type MouseEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "@/components/common/LanguageSwitcher";
 import ThemeToggle from "@/components/ui/ThemeToggle";
-import { useDemoUser, clearDemoUser } from "@/hooks/useDemoUser";
+import { useDemoUser } from "@/hooks/useDemoUser";
+import { useDemoStore } from "@/store/demoStore";
+import { useScenarioStore } from "@/store/scenarioStore";
+import { blockDemoNavIfNotAllowed } from "@/lib/demoNav";
+import { useFeedbackStore } from "@/store/feedbackStore";
 import { useAuth } from "@/context/AuthContext";
 import { useOtp } from "@/context/OtpContext";
 import { useUser } from "@/context/UserContext";
 import { useTheme } from "@/context/ThemeContext";
-import { FeedbackModal } from "@/components/feedback/FeedbackModal";
+import { LogoutConfirmModal } from "@/components/dashboard/LogoutConfirmModal";
 import { NotificationPanel } from "@/components/dashboard/NotificationPanel";
 import { branding } from "@/config/branding";
 import { getRoutingVersion, stripRoutingVersionPrefix, withVersion } from "@/core/version";
@@ -80,16 +84,21 @@ function NavUnderlineLink({
   label,
   active,
   onNavigate,
+  onClick,
 }: {
   to: string;
   label: string;
   active: boolean;
   onNavigate?: () => void;
+  onClick?: (e: MouseEvent<HTMLAnchorElement>) => void;
 }) {
   return (
     <Link
       to={to}
-      onClick={onNavigate}
+      onClick={(e) => {
+        onClick?.(e);
+        if (!e.defaultPrevented) onNavigate?.();
+      }}
       className={`relative whitespace-nowrap rounded-md px-2.5 py-2 text-sm font-medium transition-colors sm:px-3 ${
         active
           ? "text-[var(--color-primary)]"
@@ -113,12 +122,14 @@ function MoreNavDropdown({
   items,
   isActive,
   onNavigate,
+  onLinkClick,
 }: {
   id: string;
   label: string;
   items: readonly NavEntry[];
   isActive: (to: string) => boolean;
   onNavigate?: () => void;
+  onLinkClick?: (e: MouseEvent<HTMLAnchorElement>, to: string) => void;
 }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -180,7 +191,9 @@ function MoreNavDropdown({
                     ? "bg-[var(--color-background-secondary)] font-medium text-[var(--color-primary)]"
                     : "text-[var(--color-text-primary)] hover:bg-[var(--color-background-secondary)]"
                 }`}
-                onClick={() => {
+                onClick={(e) => {
+                  onLinkClick?.(e, to);
+                  if (e.defaultPrevented) return;
                   setOpen(false);
                   onNavigate?.();
                 }}
@@ -198,19 +211,39 @@ function MoreNavDropdown({
 function UserMenuSections({
   onNavigate,
   onLogout,
+  onBeforeLinkNav,
+  onShareFeedback,
 }: {
   onNavigate: () => void;
   onLogout: () => void;
+  onBeforeLinkNav?: (e: MouseEvent<HTMLAnchorElement>, href: string) => void;
+  onShareFeedback?: () => void;
 }) {
   const { t } = useTranslation();
 
   return (
     <>
+      {onShareFeedback ? (
+        <button
+          type="button"
+          className="block w-full px-4 py-2.5 text-left text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-background-secondary)]"
+          role="menuitem"
+          onClick={() => {
+            onShareFeedback();
+            onNavigate();
+          }}
+        >
+          {t("nav.shareFeedback")}
+        </button>
+      ) : null}
       <Link
         to="/profile"
         className="block px-4 py-2.5 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-background-secondary)]"
         role="menuitem"
-        onClick={onNavigate}
+        onClick={(e) => {
+          onBeforeLinkNav?.(e, "/profile");
+          if (!e.defaultPrevented) onNavigate();
+        }}
       >
         {t("nav.account")}
       </Link>
@@ -218,7 +251,10 @@ function UserMenuSections({
         to="/settings"
         className="block px-4 py-2.5 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-background-secondary)]"
         role="menuitem"
-        onClick={onNavigate}
+        onClick={(e) => {
+          onBeforeLinkNav?.(e, "/settings");
+          if (!e.defaultPrevented) onNavigate();
+        }}
       >
         {t("nav.settings")}
       </Link>
@@ -258,6 +294,8 @@ export const DashboardHeader = () => {
   const userMenuDesktopRef = useRef<HTMLDivElement>(null);
   const userMenuMobileRef = useRef<HTMLDivElement>(null);
   const demoUser = useDemoUser();
+  const isDemoMode = useScenarioStore((s) => s.isDemoMode);
+  const scenarioData = useScenarioStore((s) => s.scenarioData);
   const { signOut } = useAuth();
   const { resetOtp } = useOtp();
   const { user, profile, enrollmentStatus } = useUser();
@@ -278,27 +316,27 @@ export const DashboardHeader = () => {
     setUserMenu(null);
   }, [location.pathname]);
 
-  const [showLogoutFeedback, setShowLogoutFeedback] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+  const routeVersion = getRoutingVersion(location.pathname);
 
   const performLogout = useCallback(async () => {
-    clearDemoUser();
+    useDemoStore.getState().clearScenario();
     resetOtp();
-    await signOut();
-    navigate("/");
-  }, [resetOtp, signOut, navigate]);
+    try {
+      await signOut();
+    } catch (e) {
+      console.error("[DashboardHeader] signOut failed:", e);
+    }
+    navigate(withVersion(routeVersion, "/login"), { replace: true });
+  }, [resetOtp, signOut, navigate, routeVersion]);
 
   const handleLogoutClick = () => {
     setUserMenu(null);
     setMobileMenuOpen(false);
-    setShowLogoutFeedback(true);
+    setShowLogoutConfirm(true);
   };
 
-  const handleFeedbackClose = useCallback(() => {
-    setShowLogoutFeedback(false);
-    performLogout();
-  }, [performLogout]);
-
-  const routeVersion = getRoutingVersion(location.pathname);
   const dashboardHome =
     enrollmentStatus === "completed" ? "/dashboard/post-enrollment" : "/dashboard/pre-enrollment";
   const NAV_LINKS = getNavLinks(!!demoUser, routeVersion, dashboardHome);
@@ -343,6 +381,17 @@ export const DashboardHeader = () => {
     requestOpenGlobalSearch();
   };
 
+  const openFeedback = useFeedbackStore((s) => s.openFeedback);
+
+  const demoBlockNav = useCallback(
+    (e: MouseEvent<HTMLAnchorElement>, targetPath: string) => {
+      if (blockDemoNavIfNotAllowed(scenarioData, isDemoMode, targetPath, t("demo.scenarioNavBlocked"))) {
+        e.preventDefault();
+      }
+    },
+    [isDemoMode, scenarioData, t],
+  );
+
   const avatarButtonClass =
     "flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold text-white shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-background)]";
 
@@ -356,6 +405,9 @@ export const DashboardHeader = () => {
               to={isAuthenticated ? dashboardHome : "/"}
               className="flex min-w-0 items-center rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
               aria-label={branding.authAppName}
+              onClick={(e) => {
+                if (isAuthenticated) demoBlockNav(e, dashboardHome);
+              }}
             >
               <img
                 src={tenantLogo || branding.logo.src}
@@ -374,8 +426,19 @@ export const DashboardHeader = () => {
           {/* Tablet: Dashboard + More */}
           <div className="hidden min-w-0 flex-1 justify-center md:flex lg:hidden">
             <nav className="flex max-w-full items-center gap-0.5 overflow-x-auto" aria-label={t("nav.mainNav")}>
-              <NavUnderlineLink to={dash.to} label={t(dash.labelKey)} active={isActive(dash.to)} />
-              <MoreNavDropdown id="nav-more-md" label={t("nav.more")} items={moreMd} isActive={isActive} />
+              <NavUnderlineLink
+                to={dash.to}
+                label={t(dash.labelKey)}
+                active={isActive(dash.to)}
+                onClick={(e) => demoBlockNav(e, dash.to)}
+              />
+              <MoreNavDropdown
+                id="nav-more-md"
+                label={t("nav.more")}
+                items={moreMd}
+                isActive={isActive}
+                onLinkClick={demoBlockNav}
+              />
             </nav>
           </div>
 
@@ -388,9 +451,16 @@ export const DashboardHeader = () => {
                   to={to}
                   label={labelKey === "nav.investmentPortfolio" ? t("nav.investments") : t(labelKey)}
                   active={isActive(to)}
+                  onClick={(e) => demoBlockNav(e, to)}
                 />
               ))}
-              <MoreNavDropdown id="nav-more-lg" label={t("nav.more")} items={moreLg} isActive={isActive} />
+              <MoreNavDropdown
+                id="nav-more-lg"
+                label={t("nav.more")}
+                items={moreLg}
+                isActive={isActive}
+                onLinkClick={demoBlockNav}
+              />
             </nav>
           </div>
 
@@ -438,7 +508,12 @@ export const DashboardHeader = () => {
                   className="absolute right-0 top-full z-50 mt-2 min-w-[220px] rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] py-1 shadow-[var(--shadow-lg)]"
                   role="menu"
                 >
-                  <UserMenuSections onNavigate={closeUserMenu} onLogout={handleLogoutClick} />
+                  <UserMenuSections
+                    onNavigate={closeUserMenu}
+                    onLogout={handleLogoutClick}
+                    onBeforeLinkNav={demoBlockNav}
+                    onShareFeedback={openFeedback}
+                  />
                 </div>
               )}
             </div>
@@ -470,7 +545,12 @@ export const DashboardHeader = () => {
                   className="absolute right-0 top-full z-50 mt-2 min-w-[220px] rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] py-1 shadow-[var(--shadow-lg)]"
                   role="menu"
                 >
-                  <UserMenuSections onNavigate={closeUserMenu} onLogout={handleLogoutClick} />
+                  <UserMenuSections
+                    onNavigate={closeUserMenu}
+                    onLogout={handleLogoutClick}
+                    onBeforeLinkNav={demoBlockNav}
+                    onShareFeedback={openFeedback}
+                  />
                 </div>
               )}
             </div>
@@ -496,7 +576,10 @@ export const DashboardHeader = () => {
                             ? "bg-[var(--color-background-secondary)] text-[var(--color-primary)]"
                             : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)]"
                         }`}
-                        onClick={() => setMobileMenuOpen(false)}
+                        onClick={(e) => {
+                          demoBlockNav(e, to);
+                          if (!e.defaultPrevented) setMobileMenuOpen(false);
+                        }}
                       >
                         {labelKey === "nav.investmentPortfolio" ? t("nav.investments") : t(labelKey)}
                       </Link>
@@ -504,6 +587,18 @@ export const DashboardHeader = () => {
                   );
                 })}
                 <li className="mt-1 border-t border-[var(--color-border)] pt-1">
+                  <button
+                    type="button"
+                    className="flex w-full items-center rounded-lg px-3 py-2.5 text-left text-sm font-medium text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)]"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      openFeedback();
+                    }}
+                  >
+                    {t("nav.shareFeedback")}
+                  </button>
+                </li>
+                <li>
                   <button
                     type="button"
                     className="flex w-full items-center rounded-lg px-3 py-2.5 text-left text-sm font-medium text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)]"
@@ -544,10 +639,10 @@ export const DashboardHeader = () => {
 
       <NotificationPanel open={notificationPanelOpen} onClose={() => setNotificationPanelOpen(false)} />
 
-      <FeedbackModal
-        isOpen={showLogoutFeedback}
-        onClose={handleFeedbackClose}
-        workflowType="overall_experience"
+      <LogoutConfirmModal
+        open={showLogoutConfirm}
+        onOpenChange={setShowLogoutConfirm}
+        onConfirm={() => void performLogout()}
       />
     </>
   );

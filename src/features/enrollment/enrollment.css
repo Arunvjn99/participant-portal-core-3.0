@@ -1,0 +1,1424 @@
+/* ═══════════════════════════════════════════════════════════════
+   Enrollment Wizard V2 — Theme-Token-Only Stylesheet
+   All colors use CSS custom properties from the global theme system.
+   Supports: light, dark, and white-label tenant overrides.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Shell ── */
+.ew-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100dvh - 3.5rem);
+  background: var(--enroll-bg);
+  color: var(--enroll-text-primary);
+}
+
+.ew-header {
+  flex-shrink: 0;
+  padding: var(--spacing-4) var(--spacing-6);
+  border-bottom: 1px solid var(--enroll-card-border);
+  background: var(--enroll-card-bg);
+}
+
+.ew-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-6) var(--spacing-4);
+  max-width: 64rem;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ── Step transition animation ── */
+@keyframes ew-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.ew-step {
+  animation: ew-fade-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ── Stepper ── */
+.ew-stepper__list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ew-stepper__item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  position: relative;
+}
+
+.ew-stepper__connector {
+  width: 2rem;
+  height: 2px;
+  background: var(--enroll-card-border);
+  transition: background 0.3s ease;
+}
+
+.ew-stepper__connector--done {
+  background: var(--color-primary);
+}
+
+.ew-stepper__dot {
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--enroll-card-border);
+  background: var(--enroll-card-bg);
+  color: var(--enroll-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: default;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.ew-stepper__dot--active {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.ew-stepper__dot--done {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  cursor: pointer;
+}
+
+.ew-stepper__dot--done:hover {
+  opacity: 0.85;
+}
+
+.ew-stepper__label {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--enroll-text-muted);
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: var(--spacing-1);
+  white-space: nowrap;
+}
+
+.ew-stepper__label--active {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.ew-stepper__label--done {
+  color: var(--enroll-text-secondary);
+}
+
+/* ── Footer ── */
+.ew-footer {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-4) var(--spacing-6);
+  border-top: 1px solid var(--enroll-card-border);
+  background: var(--enroll-card-bg);
+}
+
+.ew-footer__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--spacing-6);
+  border-radius: var(--radius-lg);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.ew-footer__btn--back {
+  background: transparent;
+  color: var(--enroll-text-secondary);
+  border: 1px solid var(--enroll-card-border);
+}
+
+.ew-footer__btn--back:hover:not(:disabled) {
+  background: var(--enroll-soft-bg);
+}
+
+.ew-footer__btn--back:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ew-footer__btn--next {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.ew-footer__btn--next:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+
+.ew-footer__btn--next:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Step Common ── */
+.ew-step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.ew-step__header {
+  text-align: center;
+  max-width: 36rem;
+  margin: 0 auto;
+}
+
+.ew-step__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--enroll-text-primary);
+  margin: 0 0 var(--spacing-2);
+}
+
+.ew-step__subtitle {
+  font-size: 0.9375rem;
+  color: var(--enroll-text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ── Shared UI ── */
+.ew-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--enroll-text-primary);
+}
+
+.ew-range {
+  width: 100%;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.ew-range-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--enroll-text-muted);
+}
+
+.ew-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--spacing-5);
+  border-radius: var(--radius-lg);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.ew-btn--primary {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.ew-btn--primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.ew-btn--ghost {
+  background: transparent;
+  color: var(--enroll-text-secondary);
+  border: 1px solid var(--enroll-card-border);
+}
+
+.ew-btn--ghost:hover {
+  background: var(--enroll-soft-bg);
+}
+
+.ew-chip {
+  padding: var(--spacing-2) var(--spacing-4);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--enroll-card-border);
+  background: var(--enroll-card-bg);
+  color: var(--enroll-text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ew-chip--active {
+  border-color: var(--color-primary);
+  background: rgb(var(--color-primary-rgb) / 0.1);
+  color: var(--color-primary);
+}
+
+.ew-chip-row {
+  display: flex;
+  gap: var(--spacing-2);
+  flex-wrap: wrap;
+}
+
+.ew-insight-strip {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: var(--radius-lg);
+  background: var(--enroll-soft-bg);
+  font-size: 0.8125rem;
+  color: var(--enroll-text-secondary);
+}
+
+.ew-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  margin-right: var(--spacing-1);
+}
+
+.ew-dot--contrib { background: var(--color-primary); }
+.ew-dot--growth { background: var(--color-success); }
+
+/* ── Plan Step ── */
+.ew-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-4);
+}
+
+.ew-plan-card {
+  text-align: left;
+  padding: var(--spacing-5);
+  border-radius: var(--enroll-card-radius);
+  border: 2px solid var(--enroll-card-border);
+  background: var(--enroll-card-bg);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: var(--enroll-elevation-1);
+}
+
+.ew-plan-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--enroll-elevation-2);
+  transform: translateY(-2px);
+}
+
+.ew-plan-card:active {
+  transform: translateY(0) scale(0.995);
+}
+
+.ew-plan-card--selected {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgb(var(--color-primary-rgb) / 0.15);
+}
+
+.ew-plan-card__header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-4);
+}
+
+.ew-plan-card__icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-xl);
+  background: rgb(var(--color-primary-rgb) / 0.1);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ew-plan-card__title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--enroll-text-primary);
+  margin: 0;
+}
+
+.ew-plan-card__subtitle {
+  font-size: 0.8125rem;
+  color: var(--enroll-text-secondary);
+  margin: var(--spacing-1) 0 0;
+}
+
+.ew-plan-card__check {
+  margin-left: auto;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ew-plan-card__benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.ew-plan-card__benefits li {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-size: 0.8125rem;
+  color: var(--enroll-text-secondary);
+}
+
+.ew-plan-card__benefit-icon {
+  color: var(--color-success);
+  flex-shrink: 0;
+}
+
+.ew-plan-card__tax-note {
+  margin-top: var(--spacing-4);
+  padding: var(--spacing-3);
+  border-radius: var(--radius-md);
+  background: var(--enroll-soft-bg);
+  font-size: 0.75rem;
+  color: var(--enroll-text-muted);
+}
+
+.ew-plan-card__tax-note p { margin: 0; }
+
+/* ── Contribution Step ── */
+.ew-contrib-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-6);
+}
+
+@media (min-width: 768px) {
+  .ew-contrib-layout {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.ew-contrib-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+}
+
+.ew-contrib-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.ew-contrib-input-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-4);
+}
+
+.ew-contrib-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--enroll-card-border);
+  background: var(--enroll-card-bg);
+  color: var(--enroll-text-primary);
+  font-size: 1.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.ew-contrib-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.ew-contrib-display {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.ew-contrib-display__value {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.ew-contrib-display__unit {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--enroll-text-muted);
+}
+
+.ew-contrib-projections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+}
+
+.ew-metric-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-3);
+}
+
+.ew-metric-card {
+  padding: var(--spacing-4);
+  border-radius: var(--radius-xl);
+  background: var(--enroll-card-bg);
+  border: 1px solid var(--enroll-card-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.ew-metric-card--highlight {
+  grid-column: 1 / -1;
+  background: rgb(var(--color-primary-rgb) / 0.05);
+  border-color: rgb(var(--color-primary-rgb) / 0.2);
+}
+
+.ew-metric-card__icon {
+  color: var(--color-primary);
+}
+
+.ew-metric-card__label {
+  font-size: 0.75rem;
+  color: var(--enroll-text-muted);
+  font-weight: 500;
+}
+
+.ew-metric-card__value {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--enroll-text-primary);
+}
+
+.ew-metric-card__value--lg {
+  font-size: 1.5rem;
+}
+
+.ew-metric-card__sub {
+  font-size: 0.75rem;
+  color: var(--enroll-text-secondary);
+}
+
+/* ── Projection Chart ── */
+.ew-projection-chart {
+  padding: var(--spacing-4);
+  border-radius: var(--radius-xl);
+  background: var(--enroll-card-bg);
+  border: 1px solid var(--enroll-card-border);
+}
+
+.ew-projection-chart__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--spacing-4);
+}
+
+.ew-projection-chart__title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--enroll-text-primary);
+}
+
+.ew-projection-chart__total {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.ew-projection-chart__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-2);
+  height: 8rem;
+}
+
+.ew-projection-chart__bar-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.ew-projection-chart__bar {
+  width: 100%;
+  max-width: 2rem;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  background: var(--color-success);
+  position: relative;
+  overflow: hidden;
+  transition: height 0.3s ease;
+}
+
+.ew-projection-chart__bar-contrib {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--color-primary);
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+}
+
+.ew-projection-chart__bar-label {
+  font-size: 0.625rem;
+  color: var(--enroll-text-muted);
+  margin-top: var(--spacing-1);
+}
+
+.ew-projection-chart__legend {
+  display: flex;
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-3);
+  font-size: 0.75rem;
+  color: var(--enroll-text-secondary);
+}
+
+/* ── Source Step ── */
+.ew-source-default {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+  max-width: 32rem;
+  margin: 0 auto;
+}
+
+.ew-source-default__card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-4);
+  padding: var(--spacing-5);
+  border-radius: var(--enroll-card-radius);
+  background: var(--enroll-card-bg);
+  border: 1px solid var(--enroll-card-border);
+}
+
+.ew-source-default__icon {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.ew-source-default__title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--enroll-text-primary);
+  margin: 0 0 var(--spacing-1);
+}
+
+.ew-source-default__desc {
+  font-size: 0.8125rem;
+  color: var(--enroll-text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.ew-source-default__actions {
+  display: flex;
+  gap: var(--spacing-3);
+  justify-content: center;
+}
+
+.ew-source-custom {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+  max-width: 36rem;
+  margin: 0 auto;
+}
+
+.ew-source-presets {
+  display: flex;
+  gap: var(--spacing-2);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.ew-source-sliders {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+}
+
+.ew-source-slider__header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-2);
+}
+
+.ew-source-slider__value {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-left: auto;
+}
+
+.ew-source-slider__amount {
+  font-size: 0.75rem;
+  color: var(--enroll-text-muted);
+}
+
+.ew-source-total {
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-success);
+  padding: var(--spacing-3);
+  border-radius: var(--radius-lg);
+  background: var(--enroll-soft-bg);
+}
+
+.ew-source-total--error {
+  color: var(--color-danger);
+  background: rgb(var(--color-danger-rgb) / 0.08);
+}
+
+.ew-source-total__msg {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 400;
+  margin-top: var(--spacing-1);
+}
+
+.ew-source-custom__actions {
+  display: flex;
+  justify-content: center;
+}
+
+/* ── Auto-Increase Step ── */
+.ew-ai-decision {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--spacing-4);
+}
+
+.ew-ai-card {
+  text-align: left;
+  padding: var(--spacing-5);
+  border-radius: var(--enroll-card-radius);
+  border: 2px solid var(--enroll-card-border);
+  background: var(--enroll-card-bg);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.ew-ai-card:hover {
+  border-color: var(--color-primary);
+}
+
+.ew-ai-card--selected {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgb(var(--color-primary-rgb) / 0.15);
+}
+
+.ew-ai-card__icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-xl);
+  background: var(--enroll-soft-bg);
+  color: var(--enroll-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ew-ai-card__icon--accent {
+  background: rgb(var(--color-primary-rgb) / 0.1);
+  color: var(--color-primary);
+}
+
+.ew-ai-card__title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--enroll-text-primary);
+  margin: 0;
+}
+
+.ew-ai-card__desc {
+  font-size: 0.8125rem;
+  color: var(--enroll-text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.ew-ai-card__badge {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: var(--radius-full);
+  background: rgb(var(--color-success-rgb) / 0.1);
+  color: var(--color-success);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.ew-ai-config {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+  max-width: 36rem;
+  margin: 0 auto;
+}
+
+.ew-ai-config__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.ew-ai-cycle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--spacing-3);
+}
+
+.ew-ai-cycle-card {
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--enroll-card-border);
+  background: var(--enroll-card-bg);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ew-ai-cycle-card--active {
+  border-color: var(--color-primary);
+  background: rgb(var(--color-primary-rgb) / 0.05);
+}
+
+.ew-ai-cycle-card__label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--enroll-text-primary);
+}
+
+.ew-ai-cycle-card__desc {
+  display: block;
+  font-size: 0.6875rem;
+  color: var(--enroll-text-muted);
+  margin-top: 2px;
+}
+
+.ew-ai-slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.ew-ai-slider-value {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.ew-ai-config__insight {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: var(--radius-lg);
+  background: rgb(var(--color-primary-rgb) / 0.05);
+  color: var(--color-primary);
+  font-size: 0.8125rem;
+}
+
+/* ── Investment Step ── */
+.ew-invest-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--spacing-4);
+}
+
+.ew-invest-card {
+  text-align: left;
+  padding: var(--spacing-5);
+  border-radius: var(--enroll-card-radius);
+  border: 2px solid var(--enroll-card-border);
+  background: var(--enroll-card-bg);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.ew-invest-card:hover {
+  border-color: var(--color-primary);
+}
+
+.ew-invest-card--selected {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgb(var(--color-primary-rgb) / 0.15);
+}
+
+.ew-invest-card__icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-xl);
+  background: var(--enroll-soft-bg);
+  color: var(--enroll-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ew-invest-card--selected .ew-invest-card__icon {
+  background: rgb(var(--color-primary-rgb) / 0.1);
+  color: var(--color-primary);
+}
+
+.ew-invest-card__title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--enroll-text-primary);
+  margin: 0;
+}
+
+.ew-invest-card__desc {
+  font-size: 0.8125rem;
+  color: var(--enroll-text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.ew-invest-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.75rem;
+  color: var(--enroll-text-muted);
+  margin-top: auto;
+  padding-top: var(--spacing-2);
+  border-top: 1px solid var(--enroll-card-border);
+}
+
+.ew-invest-card__return { font-weight: 600; }
+
+.ew-invest-recommendation {
+  text-align: center;
+  padding: var(--spacing-4);
+  border-radius: var(--radius-lg);
+  background: var(--enroll-soft-bg);
+  font-size: 0.8125rem;
+  color: var(--enroll-text-secondary);
+}
+
+.ew-invest-recommendation p { margin: 0; }
+
+/* ── Readiness Step ── */
+.ew-readiness-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-6);
+  align-items: start;
+}
+
+@media (min-width: 768px) {
+  .ew-readiness-layout {
+    grid-template-columns: auto 1fr;
+  }
+}
+
+.ew-readiness-score {
+  display: flex;
+  justify-content: center;
+}
+
+.ew-readiness-ring {
+  position: relative;
+  width: 10rem;
+  height: 10rem;
+}
+
+.ew-readiness-ring__svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.ew-readiness-ring__track {
+  fill: none;
+  stroke: var(--enroll-card-border);
+  stroke-width: 8;
+}
+
+.ew-readiness-ring__fill {
+  fill: none;
+  stroke: var(--score-color);
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.6s ease;
+}
+
+.ew-readiness-ring__center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ew-readiness-ring__value {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--enroll-text-primary);
+  line-height: 1;
+}
+
+.ew-readiness-ring__label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--enroll-text-secondary);
+  margin-top: var(--spacing-1);
+}
+
+.ew-readiness-summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.ew-readiness-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+  border-radius: var(--radius-xl);
+  background: var(--enroll-card-bg);
+  border: 1px solid var(--enroll-card-border);
+}
+
+.ew-readiness-item__icon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-lg);
+  background: rgb(var(--color-primary-rgb) / 0.1);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ew-readiness-item__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.ew-readiness-item__label {
+  font-size: 0.75rem;
+  color: var(--enroll-text-muted);
+  font-weight: 500;
+}
+
+.ew-readiness-item__value {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--enroll-text-primary);
+}
+
+.ew-readiness-item__sub {
+  font-size: 0.6875rem;
+  color: var(--enroll-text-secondary);
+}
+
+/* ── Review Step ── */
+.ew-review-hero {
+  display: flex;
+  gap: var(--spacing-6);
+  justify-content: center;
+  padding: var(--spacing-6);
+  border-radius: var(--enroll-card-radius);
+  background: var(--enroll-plan-overview-bg);
+}
+
+.ew-review-hero__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-1);
+}
+
+.ew-review-hero__label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--enroll-text-secondary);
+}
+
+.ew-review-hero__value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--enroll-text-primary);
+}
+
+.ew-review-table {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--enroll-card-radius);
+  border: 1px solid var(--enroll-card-border);
+  overflow: hidden;
+}
+
+.ew-review-row {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-4) var(--spacing-5);
+  border-bottom: 1px solid var(--enroll-card-border);
+  background: var(--enroll-card-bg);
+}
+
+.ew-review-row:last-child {
+  border-bottom: none;
+}
+
+.ew-review-row__label {
+  flex: 1;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--enroll-text-secondary);
+}
+
+.ew-review-row__value {
+  flex: 1;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--enroll-text-primary);
+  text-align: right;
+}
+
+.ew-review-row__edit {
+  margin-left: var(--spacing-3);
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--enroll-card-border);
+  background: transparent;
+  color: var(--enroll-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.ew-review-row__edit:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.ew-review-terms {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4) var(--spacing-5);
+  border-radius: var(--radius-xl);
+  background: var(--enroll-card-bg);
+  border: 1px solid var(--enroll-card-border);
+  cursor: pointer;
+}
+
+.ew-review-terms__checkbox {
+  accent-color: var(--color-primary);
+  width: 1.125rem;
+  height: 1.125rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.ew-review-terms__text {
+  font-size: 0.8125rem;
+  color: var(--enroll-text-secondary);
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Animations & Interactions
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Card hover lift ── */
+@keyframes ew-card-enter {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.ew-plan-card,
+.ew-ai-card,
+.ew-invest-card,
+.ew-readiness-item,
+.ew-review-row,
+.ew-source-default__card {
+  animation: ew-card-enter 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.ew-plan-card:nth-child(2),
+.ew-ai-card:nth-child(2),
+.ew-invest-card:nth-child(2) {
+  animation-delay: 0.06s;
+}
+
+.ew-invest-card:nth-child(3) {
+  animation-delay: 0.12s;
+}
+
+.ew-invest-card:nth-child(4) {
+  animation-delay: 0.18s;
+}
+
+/* ── Button press ── */
+.ew-btn:active,
+.ew-footer__btn:active:not(:disabled),
+.ew-chip:active,
+.ew-contrib-btn:active {
+  transform: scale(0.96);
+  transition-duration: 0.08s;
+}
+
+/* ── Score ring pulse ── */
+@keyframes ew-ring-pulse {
+  0%, 100% { filter: drop-shadow(0 0 0 transparent); }
+  50%      { filter: drop-shadow(0 0 8px rgb(var(--color-primary-rgb) / 0.25)); }
+}
+
+.ew-readiness-ring__svg {
+  animation: ew-ring-pulse 3s ease-in-out infinite;
+}
+
+/* ── Slider track glow on interaction ── */
+.ew-range:focus-visible {
+  outline: none;
+  filter: drop-shadow(0 0 4px rgb(var(--color-primary-rgb) / 0.4));
+}
+
+/* ── Chip hover ── */
+.ew-chip:hover:not(.ew-chip--active) {
+  border-color: var(--enroll-text-muted);
+  background: var(--enroll-soft-bg);
+  transform: translateY(-1px);
+}
+
+/* ── Review row hover ── */
+.ew-review-row:hover {
+  background: var(--enroll-soft-bg);
+}
+
+/* ── Stepper dot scale on active ── */
+.ew-stepper__dot--active {
+  transform: scale(1.15);
+  box-shadow: 0 0 0 4px rgb(var(--color-primary-rgb) / 0.15);
+}
+
+/* ── Insight strip shimmer ── */
+@keyframes ew-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.ew-insight-strip {
+  background-image: linear-gradient(
+    90deg,
+    var(--enroll-soft-bg) 0%,
+    color-mix(in srgb, var(--enroll-soft-bg), var(--color-primary) 6%) 50%,
+    var(--enroll-soft-bg) 100%
+  );
+  background-size: 200% 100%;
+  animation: ew-shimmer 6s ease-in-out infinite;
+}
+
+/* ── Modal overlay ── */
+@keyframes ew-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes ew-modal-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.ew-modal-overlay {
+  animation: ew-overlay-in 0.2s ease both;
+}
+
+.ew-modal-content {
+  animation: ew-modal-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 0.05s;
+}
+
+/* ── Progress bar fill ── */
+@keyframes ew-progress-fill {
+  from { width: 0; }
+}
+
+.ew-progress-bar__fill {
+  animation: ew-progress-fill 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 0.3s;
+}
+
+/* ── Hero card gradient shimmer ── */
+@keyframes ew-hero-gradient {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+
+.ew-review-hero {
+  background-size: 200% 200%;
+  animation: ew-hero-gradient 8s ease-in-out infinite;
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .ew-plan-card,
+  .ew-ai-card,
+  .ew-invest-card,
+  .ew-readiness-item,
+  .ew-review-row,
+  .ew-source-default__card,
+  .ew-step,
+  .ew-readiness-ring__svg,
+  .ew-insight-strip,
+  .ew-review-hero,
+  .ew-modal-overlay,
+  .ew-modal-content,
+  .ew-progress-bar__fill {
+    animation: none !important;
+  }
+
+  .ew-plan-card,
+  .ew-ai-card,
+  .ew-invest-card,
+  .ew-readiness-item,
+  .ew-review-row,
+  .ew-source-default__card {
+    opacity: 1;
+    transform: none;
+  }
+
+  .ew-plan-card:hover,
+  .ew-ai-card:hover,
+  .ew-invest-card:hover,
+  .ew-chip:hover:not(.ew-chip--active) {
+    transform: none;
+  }
+}
+
+/* ── Mobile responsive overrides ── */
+@media (max-width: 640px) {
+  .ew-content {
+    padding: var(--spacing-4) var(--spacing-3);
+  }
+
+  .ew-step__title {
+    font-size: 1.25rem;
+  }
+
+  .ew-stepper__label {
+    display: none;
+  }
+
+  .ew-stepper__connector {
+    width: 1rem;
+  }
+
+  .ew-review-hero {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-4);
+  }
+
+  .ew-review-row {
+    flex-wrap: wrap;
+    gap: var(--spacing-2);
+  }
+
+  .ew-review-row__value {
+    text-align: left;
+  }
+
+  .ew-footer {
+    padding: var(--spacing-3) var(--spacing-4);
+  }
+
+  .ew-footer__btn {
+    padding: var(--spacing-3) var(--spacing-4);
+    font-size: 0.8125rem;
+  }
+
+  .ew-plan-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ew-ai-decision {
+    grid-template-columns: 1fr;
+  }
+
+  .ew-invest-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ew-ai-cycle-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .ew-invest-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ew-contrib-display__value {
+    font-size: 2rem;
+  }
+
+  .ew-readiness-ring {
+    width: 8rem;
+    height: 8rem;
+  }
+
+  .ew-readiness-ring__value {
+    font-size: 1.75rem;
+  }
+}

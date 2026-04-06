@@ -22,7 +22,7 @@ interface HeroEnrollmentCardProps {
   enrollmentBadge?: string;
   /** Primary CTA button label (e.g. "Start My Enrollment"). */
   primaryCtaLabel?: string;
-  /** Second line inside the primary CTA (e.g. "It only takes 4 minutes"). Hidden if empty. */
+  /** Second line inside the primary CTA (e.g. "It only takes 5 minutes"). Hidden if empty. */
   ctaChip?: string;
   /** Floating insight card: plan name */
   insightPlanName?: string;

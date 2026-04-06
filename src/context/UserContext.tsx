@@ -17,6 +17,7 @@ import {
 import type { User } from "@supabase/supabase-js";
 import { useAuth } from "./AuthContext";
 import { useTheme } from "./ThemeContext";
+import { useDemoUser } from "@/hooks/useDemoUser";
 import { supabase } from "../lib/supabase";
 
 export interface Profile {
@@ -60,6 +61,7 @@ function pickEnrollmentStatus(row: unknown): string | null {
 export function UserProvider({ children }: { children: ReactNode }) {
   const { user: authUser, session, loading: authLoading } = useAuth();
   const { setCompanyBranding, setBrandingLoading } = useTheme();
+  const demoUser = useDemoUser();
 
   const [profile, setProfile] = useState<Profile | null>(null);
   const [company, setCompany] = useState<Company | null>(null);
@@ -85,6 +87,14 @@ export function UserProvider({ children }: { children: ReactNode }) {
     if (authLoading) return;
 
     if (!authUser || !session) {
+      if (demoUser) {
+        setProfile(null);
+        setCompany(null);
+        setEnrollmentStatus(null);
+        setBrandingLoading(false);
+        setProfileLoading(false);
+        return;
+      }
       setProfile(null);
       setCompany(null);
       setEnrollmentStatus(null);
@@ -227,21 +237,16 @@ export function UserProvider({ children }: { children: ReactNode }) {
       const company = companyData as Company;
       setCompany(company);
 
-      // Apply primary_color and secondary_color from companies row
-      if (typeof document?.documentElement?.style?.setProperty === "function") {
-        if (company.primary_color?.trim()) {
-          document.documentElement.style.setProperty("--color-primary", company.primary_color.trim());
-          if (company.secondary_color?.trim()) {
-            document.documentElement.style.setProperty("--color-secondary", company.secondary_color.trim());
-          }
-        } else {
-          document.documentElement.style.removeProperty("--color-primary");
-          document.documentElement.style.removeProperty("--color-secondary");
-        }
-      }
-
       // Apply theme from companies.branding_json and companies.logo_url
-      setCompanyBranding(company.name, company.branding_json ?? undefined, company.logo_url ?? null);
+      // Column-level primary_color/secondary_color are passed as overrides
+      // so they're applied in a single pass (no flash from double-write).
+      setCompanyBranding(
+        company.name,
+        company.branding_json ?? undefined,
+        company.logo_url ?? null,
+        company.primary_color?.trim() || undefined,
+        company.secondary_color?.trim() || undefined,
+      );
       setBrandingLoading(false);
       setProfileLoading(false);
       } finally {
@@ -252,21 +257,33 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
     fetchUserData();
     return () => { cancelled = true; };
-  }, [authUser, authLoading, setCompanyBranding, setBrandingLoading]);
+  }, [authUser, authLoading, session, demoUser, setCompanyBranding, setBrandingLoading]);
 
-  const loading = authLoading || profileLoading;
+  const loading = demoUser ? false : authLoading || profileLoading;
 
-  const value = useMemo(
-    () => ({
+  const value = useMemo(() => {
+    let effectiveProfile = profile;
+    let effectiveEnrollment = enrollmentStatus;
+    if (demoUser) {
+      effectiveProfile = {
+        id: demoUser.id,
+        name: demoUser.name,
+        company_id: profile?.company_id ?? null,
+        location: profile?.location ?? "",
+        role: profile?.role ?? "user",
+      };
+      effectiveEnrollment =
+        demoUser.enrollmentStatus === "not_enrolled" ? null : "completed";
+    }
+    return {
       user: authUser,
-      profile,
-      company,
-      enrollmentStatus,
+      profile: effectiveProfile,
+      company: demoUser ? null : company,
+      enrollmentStatus: effectiveEnrollment,
       loading,
       refreshEnrollment,
-    }),
-    [authUser, profile, company, enrollmentStatus, loading, refreshEnrollment]
-  );
+    };
+  }, [authUser, profile, company, enrollmentStatus, loading, refreshEnrollment, demoUser]);
 
   return (
     <UserContext.Provider value={value}>

@@ -16,7 +16,7 @@ export function SearchAITrustStrip() {
           Powered by Core AI
         </span>
       </div>
-      <p className="ml-6 mt-0.5 text-xs text-gray-400 opacity-100 dark:text-gray-500">
+      <p className="ml-6 mt-0.5 text-xs text-[var(--color-text-tertiary)]">
         Personalized for your retirement plan
       </p>
     </div>

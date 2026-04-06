@@ -1,7 +1,7 @@
-import { Calendar, MessageCircle, Star } from "lucide-react";
+import { motion } from "framer-motion";
+import { Briefcase, CalendarCheck, MessageSquare, Star, User, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
-import { pePanelTight } from "./dashboardSurfaces";
 
 type Props = {
   name: string;
@@ -10,11 +10,14 @@ type Props = {
   rating: number;
   experienceYears: number;
   imageSrc: string;
-  nextAvailableLabel: string;
+  clientCount: string;
+  specialization: string;
   onMessage: () => void;
   onSchedule: () => void;
   className?: string;
 };
+
+const ease = [0.25, 0.1, 0.25, 1] as const;
 
 export function AdvisorCard({
   name,
@@ -23,7 +26,8 @@ export function AdvisorCard({
   rating,
   experienceYears,
   imageSrc,
-  nextAvailableLabel,
+  clientCount,
+  specialization,
   onMessage,
   onSchedule,
   className,
@@ -31,73 +35,78 @@ export function AdvisorCard({
   const { t } = useTranslation();
 
   return (
-    <section
-      className={cn(pePanelTight, "overflow-hidden", className)}
-      style={{
-        background: "linear-gradient(135deg, #1e3a5f 0%, #1a4a8a 60%, #1565c0 100%)",
-        color: "#fff",
-      }}
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease, delay: 0.1 }}
+      className={cn(
+        "overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-primary/80 p-5 shadow-sm",
+        className,
+      )}
     >
-      <p className="font-dashboard-body text-[10px] font-semibold uppercase tracking-wider text-blue-200">
+      <p className="text-[10px] font-bold uppercase tracking-widest text-white/60">
         {t("dashboard.postEnrollment.peAdvisorTitle")}
       </p>
-      <div className="mt-3 flex gap-3">
-        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl ring-2 ring-white/30">
+
+      <div className="mt-3 flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <h3 className="text-xl font-bold text-white">{name}</h3>
+          <p className="mt-0.5 text-sm text-white/70">{title}</p>
+          <p className="mt-0.5 text-xs text-white/60">{organization}</p>
+        </div>
+
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/20">
           {imageSrc ? (
-            <img src={imageSrc} alt="" className="h-full w-full object-cover" />
+            <img src={imageSrc} alt="" className="h-12 w-12 rounded-full object-cover" />
           ) : (
-            <div
-              className="flex h-full w-full items-center justify-center text-lg font-bold text-[var(--color-text-on-primary)]"
-              style={{ background: "var(--ds-advisor-gradient)" }}
-              aria-hidden
-            >
-              {name
-                .split(/\s+/)
-                .map((p) => p[0])
-                .join("")
-                .slice(0, 2)}
-            </div>
+            <User className="h-6 w-6 text-white/80" aria-hidden />
           )}
         </div>
-        <div className="min-w-0 flex-1">
-          <p className="font-dashboard-heading text-sm font-bold text-white">
-            {name}
-          </p>
-          {title ? (
-            <p className="font-dashboard-body mt-0.5 text-xs text-blue-200">{title}</p>
-          ) : null}
-          <p className="font-dashboard-body text-xs text-blue-300">{organization}</p>
-          <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-blue-200">
-            <span className="inline-flex items-center gap-1 font-semibold text-white">
-              <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" aria-hidden />
-              {rating.toFixed(1)}
-            </span>
-            <span>{t("dashboard.postEnrollment.peAdvisorExperience", { years: experienceYears })}</span>
-          </div>
-        </div>
       </div>
-      <p className="font-dashboard-body mt-4 flex items-center gap-2 rounded-lg bg-white/10 px-3 py-2 text-xs text-blue-100">
-        <Calendar className="h-3.5 w-3.5 shrink-0 text-blue-200" aria-hidden />
-        {nextAvailableLabel}
-      </p>
-      <div className="mt-3 flex gap-2">
+
+      <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl bg-white/10 px-3 py-2.5 text-xs text-white/90">
+        <span className="flex items-center gap-1">
+          <Star className="h-3 w-3" aria-hidden />
+          {rating.toFixed(1)} {t("dashboard.postEnrollment.peAdvisorRatingLabel")}
+        </span>
+        <span className="text-white/40">|</span>
+        <span className="flex items-center gap-1">
+          <Briefcase className="h-3 w-3" aria-hidden />
+          {t("dashboard.postEnrollment.peAdvisorYearsShort", { years: experienceYears })}
+        </span>
+        <span className="text-white/40">|</span>
+        <span className="flex items-center gap-1">
+          <Users className="h-3 w-3" aria-hidden />
+          {clientCount} {t("dashboard.postEnrollment.peAdvisorClientsLabel")}
+        </span>
+      </div>
+
+      <p className="mt-3 text-xs text-white/70">{specialization}</p>
+
+      <div className="mt-5 flex items-center gap-3">
         <button
           type="button"
           onClick={onMessage}
-          className="font-dashboard-body inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-white/30 bg-white/10 py-2.5 text-xs font-semibold text-white transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+          className={cn(
+            "flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/30 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white/10",
+            "focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
+          )}
         >
-          <MessageCircle className="h-3.5 w-3.5" aria-hidden />
+          <MessageSquare className="h-4 w-4" aria-hidden />
           {t("dashboard.postEnrollment.peAdvisorMessage")}
         </button>
         <button
           type="button"
           onClick={onSchedule}
-          className="font-dashboard-body inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-white py-2.5 text-xs font-semibold text-blue-900 shadow-sm transition hover:bg-blue-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+          className={cn(
+            "flex flex-1 items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-medium text-primary transition-opacity hover:opacity-90",
+            "focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
+          )}
         >
-          <Calendar className="h-3.5 w-3.5" aria-hidden />
-          {t("dashboard.postEnrollment.peAdvisorSchedule")}
+          <CalendarCheck className="h-4 w-4" aria-hidden />
+          {t("dashboard.postEnrollment.peAdvisorScheduleCall")}
         </button>
       </div>
-    </section>
+    </motion.div>
   );
 }

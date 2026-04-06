@@ -14,9 +14,16 @@ import { useAuth } from "@/context/AuthContext";
 import { useOtp } from "@/context/OtpContext";
 import { useNetwork } from "@/lib/network/networkContext";
 import { isSupabaseConfigured, supabase } from "@/lib/supabase";
-import { personas, SCENARIO_LABELS } from "@/mock/personas";
-import { setDemoUser } from "@/hooks/useDemoUser";
-import type { PersonaProfile } from "@/mock/personas";
+import {
+  DEMO_SCENARIO_IDS,
+  demoNavigateTarget,
+  demoScenarios,
+  personaFromScenarioId,
+  SCENARIO_LABELS,
+} from "@/data/demoScenarios";
+import { getScenarioFlowStart } from "@/data/scenarioFlows";
+import type { DemoScenarioId } from "@/data/demoScenarios";
+import { useDemoStore } from "@/store/demoStore";
 import { DEFAULT_VERSION, withVersion } from "@/core/version";
 
 const DOMAIN_LOOKUP_DEBOUNCE_MS = 500;
@@ -130,9 +137,10 @@ export const Login = () => {
   };
 
   /* ── Demo login ── */
-  const handleDemoLogin = (persona: PersonaProfile) => {
-    setDemoUser(persona);
-    navigate("/demo");
+  const handleDemoLogin = (id: DemoScenarioId) => {
+    useDemoStore.getState().setScenario(id);
+    setShowDemoPanel(false);
+    navigate(demoNavigateTarget(version, getScenarioFlowStart(id)));
   };
 
   /* ── CORE product branding (pre-auth only; secondary to title hierarchy) ── */
@@ -312,15 +320,16 @@ export const Login = () => {
             {/* Persona list */}
             <div className="max-h-[60vh] overflow-y-auto p-3">
               <div className="flex flex-col gap-1.5">
-                {personas.map((persona) => {
+                {DEMO_SCENARIO_IDS.map((scenarioId) => {
+                  const persona = personaFromScenarioId(scenarioId);
                   const color = SCENARIO_COLORS[persona.scenario] ?? "#6b7280";
                   const fmt = Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
                   return (
                     <button
-                      key={persona.id}
+                      key={scenarioId}
                       type="button"
-                      onClick={() => handleDemoLogin(persona)}
+                      onClick={() => handleDemoLogin(scenarioId)}
                       className="flex w-full items-center gap-3 rounded-xl border-2 border-transparent p-4 text-left transition-all hover:border-[var(--color-border)] hover:bg-[var(--color-background)]"
                     >
                       {/* Avatar */}

@@ -1,90 +1,82 @@
+import { useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { DashboardLayout } from "@/layouts/DashboardLayout";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { TransactionSuccessPanel } from "@/components/transactions/TransactionSuccessPanel";
-import { TransactionCenterFigmaBody, type RecentListRow } from "@/components/transactions/center";
-import { useVersionedTxNavigate } from "./lib/nav";
-import { MOCK_PLAN_SUMMARY } from "./data/mockTransactionCenter";
-import { listTransactions } from "@/services/transactionService";
+import { TransactionCenterClient } from "@/features/crp-transactions";
 import { getRoutingVersion, withVersion } from "@/core/version";
+import { useDemoUser } from "@/hooks/useDemoUser";
+import { demoTransactionPlanForBalance } from "@/lib/demoTransactionSeed";
+import { recentTransactionsFromScenario } from "@/lib/scenarioTransactionCenter";
+import { listTransactions } from "@/services/transactionService";
+import { useScenarioStore } from "@/store/scenarioStore";
+import type { RecentTransaction as CrpRecent } from "@/features/crp-transactions";
 import type { Transaction } from "@/types/transactions";
 
 function formatMoney(n: number) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(n);
 }
 
-function mapTxToRecentRow(tx: Transaction, translate: (k: string) => string): RecentListRow {
-  const typeMap: Record<Transaction["type"], RecentListRow["type"]> = {
-    loan: "Loan",
-    withdrawal: "Withdrawal",
-    distribution: "Withdrawal",
-    transfer: "Transfer",
-    rebalance: "Rebalance",
-    rollover: "Rollover",
+/** Map API transactions into CRP-style recent rows for optional merge (same shape as MOCK_RECENT). */
+function mapTxToCrpRecent(tx: Transaction): CrpRecent {
+  const typeMap: Record<Transaction["type"], CrpRecent["type"]> = {
+    loan: "loan",
+    withdrawal: "withdraw",
+    distribution: "withdraw",
+    transfer: "transfer",
+    rebalance: "transfer",
+    rollover: "rollover",
   };
-  const status: RecentListRow["status"] =
+  const status: CrpRecent["status"] =
     tx.status === "completed" || tx.status === "funded"
-      ? "Completed"
+      ? "completed"
       : tx.status === "rejected" || tx.status === "cancelled"
-        ? "Cancelled"
-        : "Processing";
+        ? "cancelled"
+        : "processing";
 
   return {
     id: tx.id,
-    type: typeMap[tx.type] ?? "Transfer",
+    type: typeMap[tx.type] ?? "transfer",
+    description: tx.displayName ?? tx.type,
     amount: tx.type === "rebalance" && !tx.amount ? "—" : formatMoney(tx.amount),
     status,
     date: tx.dateInitiated,
-    description: tx.displayName ?? tx.type,
-    transactionId: tx.id,
-    statusDisplay: translate(
-      status === "Completed"
-        ? "transactions.center.statusCompleted"
-        : status === "Cancelled"
-          ? "transactions.center.statusCancelled"
-          : "transactions.center.statusProcessing",
-    ),
-    typeDisplay: translate(
-      {
-        Loan: "transactions.center.typeLoan",
-        Withdrawal: "transactions.center.typeWithdrawal",
-        Transfer: "transactions.center.typeTransfer",
-        Rebalance: "transactions.center.typeRebalance",
-        Rollover: "transactions.center.typeRollover",
-      }[typeMap[tx.type] ?? "Transfer"],
-    ),
   };
 }
 
 /**
- * Transaction center — Figma “Implement Current Design (Copy)” layout + versioned flow routes.
+ * Transaction center — core-retirement-platform `TransactionCenterClient` + versioned routes.
+ * Optional: merge service transactions into recent list when present.
  */
 export function TransactionsPage() {
-  const { t } = useTranslation();
   const location = useLocation();
-  const go = useVersionedTxNavigate();
   const navigate = useNavigate();
   const version = getRoutingVersion(location.pathname);
   const successState = (location.state as { success?: unknown } | null)?.success;
-  const apiRecent = listTransactions().map((tx) => mapTxToRecentRow(tx, t));
+  const apiRecent = listTransactions().map((tx) => mapTxToCrpRecent(tx));
+  const demoUser = useDemoUser();
+  const scenario = useScenarioStore((s) => (s.isDemoMode ? s.scenarioData : null));
+  const scenarioRecent = useMemo(() => recentTransactionsFromScenario(scenario), [scenario]);
+
+  const planSummaryOverride = useMemo(() => {
+    if (scenario?.permissions.canAccessTransactions) {
+      return demoTransactionPlanForBalance(scenario.financial.balance);
+    }
+    if (demoUser?.flags.demoTransactions) {
+      return demoTransactionPlanForBalance(demoUser.balance);
+    }
+    return undefined;
+  }, [scenario, demoUser]);
+
+  const recentOverride =
+    scenarioRecent ?? (apiRecent.length > 0 ? apiRecent : undefined);
 
   return (
     <DashboardLayout header={<DashboardHeader />}>
       {successState ? <TransactionSuccessPanel /> : null}
-      <TransactionCenterFigmaBody
-        planName={MOCK_PLAN_SUMMARY.planName}
-        planBalanceLabel={formatMoney(MOCK_PLAN_SUMMARY.planBalance)}
-        vestedBalanceLabel={formatMoney(MOCK_PLAN_SUMMARY.vestedBalance)}
-        vestedPctLabel={t("transactions.center.vestedPct", { pct: MOCK_PLAN_SUMMARY.vestedPct })}
-        onQuickLoan={() => go("loan/eligibility")}
-        onQuickWithdraw={() => go("withdraw")}
-        onQuickTransfer={() => go("transfer")}
-        onQuickRebalance={() => go("rebalance")}
-        onQuickRollover={() => go("rollover")}
-        onResumeDraft={(relativePath) => go(relativePath)}
-        onResolveAttention={() => go("loan/documents")}
-        recentRows={apiRecent.length > 0 ? apiRecent : undefined}
+      <TransactionCenterClient
+        planSummaryOverride={planSummaryOverride}
+        recentOverride={recentOverride}
         onRecentRowClick={(id) => navigate(withVersion(version, `/transactions/${id}`))}
       />
     </DashboardLayout>

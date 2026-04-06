@@ -1,83 +1,117 @@
+import { motion } from "framer-motion";
+import { CalendarDays } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
-import { pePanel } from "./dashboardSurfaces";
 
 type Props = {
   userMonthly: number;
   employerMonthly: number;
   userPercent: number;
   employerPercent: number;
+  isActive: boolean;
   className?: string;
 };
 
-function money(n: number) {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(n);
-}
+const ease = [0.25, 0.1, 0.25, 1] as const;
 
-export function MonthlyContribution({ userMonthly, employerMonthly, userPercent, employerPercent, className }: Props) {
+const currency = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+});
+
+export function MonthlyContribution({
+  userMonthly,
+  employerMonthly,
+  userPercent,
+  employerPercent,
+  isActive,
+  className,
+}: Props) {
   const { t } = useTranslation();
+  const total = userMonthly + employerMonthly;
+  const now = new Date();
+  const month = new Intl.DateTimeFormat("en-US", { month: "long" }).format(now);
+  const year = now.getFullYear();
 
-  const Row = ({
-    label,
-    amount,
-    pct,
-    barPct,
-    barColor,
-    ariaLabel,
-  }: {
-    label: string;
-    amount: string;
-    pct: string;
-    barPct: number;
-    barColor: string;
-    ariaLabel: string;
-  }) => (
-    <div className="space-y-2">
-      <div className="grid grid-cols-[1fr_auto] items-baseline gap-x-6 gap-y-1">
-        <span className="font-dashboard-body text-sm font-medium text-[var(--color-text)]">{label}</span>
-        <span className="font-dashboard-body text-right text-sm tabular-nums text-[var(--color-text-secondary)]">
-          {amount}{" "}
-          <span className="text-[var(--color-text-tertiary)]">({pct})</span>
-        </span>
-      </div>
-      <div
-        className="h-1 w-full overflow-hidden rounded-full"
-        style={{ background: "color-mix(in srgb, var(--color-text-secondary) 10%, var(--color-background-tertiary))" }}
-        role="progressbar"
-        aria-valuenow={Math.round(barPct)}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-label={ariaLabel}
-      >
-        <div className="h-full rounded-full transition-all" style={{ width: `${barPct}%`, background: barColor }} />
-      </div>
-    </div>
+  const employeeBarWidth = Math.min(
+    (userPercent / (userPercent + employerPercent || 1)) * 100,
+    100,
+  );
+  const employerBarWidth = Math.min(
+    (employerPercent / (userPercent + employerPercent || 1)) * 100,
+    100,
   );
 
   return (
-    <section className={cn(pePanel, className)}>
-      <h2 className="font-dashboard-heading text-base font-semibold text-gray-900">
-        {t("dashboard.postEnrollment.monthlyContribution")}
-      </h2>
-
-      <div className="mt-4 space-y-5">
-        <Row
-          label={t("dashboard.postEnrollment.peContribYou")}
-          amount={money(userMonthly)}
-          pct={`${userPercent.toFixed(1)}%`}
-          barPct={userPercent}
-          barColor="var(--color-primary)"
-          ariaLabel={t("dashboard.postEnrollment.peContribYou")}
-        />
-        <Row
-          label={t("dashboard.postEnrollment.peContribEmployer")}
-          amount={money(employerMonthly)}
-          pct={`${employerPercent.toFixed(1)}%`}
-          barPct={employerPercent}
-          barColor="color-mix(in srgb, var(--color-success) 80%, var(--color-primary) 20%)"
-          ariaLabel={t("dashboard.postEnrollment.peContribEmployer")}
-        />
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease, delay: 0.06 }}
+      className={cn("rounded-2xl border border-border bg-card p-6 shadow-sm", className)}
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <CalendarDays className="h-4 w-4 text-muted-foreground" aria-hidden />
+          <h3 className="text-sm font-semibold text-foreground">
+            {t("dashboard.postEnrollment.monthlyContribution")}
+          </h3>
+        </div>
+        <span className="text-xs text-muted-foreground">
+          {month} {year}
+        </span>
       </div>
-    </section>
+
+      <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div>
+          <p className="text-xs text-muted-foreground">
+            {t("dashboard.postEnrollment.peContribYou")} ({userPercent.toFixed(1)}%)
+          </p>
+          <p className="mt-1 text-lg font-bold text-foreground">{currency.format(userMonthly)}</p>
+          <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+            <div
+              className="h-full rounded-full bg-primary transition-all"
+              style={{ width: `${employeeBarWidth}%` }}
+            />
+          </div>
+        </div>
+
+        <div>
+          <p className="text-xs text-muted-foreground">
+            {t("dashboard.postEnrollment.peContribEmployer")} ({employerPercent.toFixed(1)}%)
+          </p>
+          <p className="mt-1 text-lg font-bold text-emerald-600 dark:text-emerald-400">
+            +{currency.format(employerMonthly)}
+          </p>
+          <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+            <div
+              className="h-full rounded-full bg-emerald-500 transition-all"
+              style={{ width: `${employerBarWidth}%` }}
+            />
+          </div>
+        </div>
+
+        <div>
+          <p className="text-xs text-muted-foreground">{t("dashboard.postEnrollment.contribTotalPerMonth")}</p>
+          <p className="mt-1 text-lg font-bold text-foreground">{currency.format(total)}</p>
+          <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+            <div className="h-full w-full rounded-full bg-primary/60" />
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-4 flex justify-end">
+        {isActive ? (
+          <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+            {t("dashboard.postEnrollment.active")}
+          </span>
+        ) : (
+          <span className="inline-flex items-center rounded-full bg-red-500/10 px-2.5 py-0.5 text-xs font-semibold text-red-600 dark:text-red-400">
+            {t("dashboard.postEnrollment.peContributionsInactive")}
+          </span>
+        )}
+      </div>
+    </motion.div>
   );
 }

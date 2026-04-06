@@ -187,11 +187,11 @@ export function ContributionSource() {
       {/* Two-column cards */}
       <div className="grid min-w-0 gap-6 lg:grid-cols-2 lg:items-stretch">
         {/* Plan Default */}
-        <div className="flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[#2563eb]/35 bg-background shadow-[0_0_0_1px_rgba(37,99,235,0.12)]">
+        <div className="flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[var(--enroll-brand)]/35 bg-background shadow-[0_0_0_1px_rgba(37,99,235,0.12)]">
           <div className="flex flex-1 flex-col gap-4 p-5 sm:p-6">
             <div>
               <h2 className="m-0 text-base font-semibold leading-none">
-                <span className="inline-flex items-center rounded-full bg-[#2563eb] px-4 py-2 text-sm font-semibold text-white shadow-sm">
+                <span className="inline-flex items-center rounded-full bg-[var(--enroll-brand)] px-4 py-2 text-sm font-semibold text-[var(--color-text-on-primary)] shadow-sm">
                   {t(`${A}planDefaultHeader`)}
                 </span>
               </h2>
@@ -242,7 +242,7 @@ export function ContributionSource() {
             <ul className="flex-1 space-y-2.5">
               {planDefaultFeatures.map((line) => (
                 <li key={line} className="flex items-start gap-2.5 text-sm leading-snug text-foreground">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#2563eb]" aria-hidden />
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--enroll-brand)]" aria-hidden />
                   <span>{line}</span>
                 </li>
               ))}
@@ -251,7 +251,7 @@ export function ContributionSource() {
             <button
               type="button"
               onClick={handleContinuePlanDefault}
-              className="flex h-12 w-full items-center justify-center rounded-xl bg-[#2563eb] text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#1d4ed8] active:scale-[0.99]"
+              className="flex h-12 w-full items-center justify-center rounded-xl bg-[var(--enroll-brand)] text-sm font-semibold text-[var(--color-text-on-primary)] shadow-sm transition-colors hover:opacity-90 active:scale-[0.99]"
             >
               {t(`${A}continuePlanDefaultCta`)}
             </button>
@@ -263,7 +263,7 @@ export function ContributionSource() {
           id="customize-tax-split"
           className={cn(
             "flex min-h-0 flex-col overflow-hidden rounded-2xl border bg-background shadow-sm transition-[box-shadow,border-color]",
-            customizeEditorOpen ? "border-[#2563eb]/50 shadow-md ring-2 ring-[#2563eb]/20" : "border-border",
+            customizeEditorOpen ? "border-[var(--enroll-brand)]/50 shadow-md ring-2 ring-[var(--enroll-brand)]/20" : "border-border",
           )}
         >
           <div className="flex flex-1 flex-col gap-4 p-5 sm:p-6">
@@ -271,7 +271,7 @@ export function ContributionSource() {
               <>
                 <div>
                   <h2 className="m-0 text-base font-semibold leading-none">
-                    <span className="inline-flex items-center gap-2 rounded-full border border-[#2563eb]/40 bg-[#2563eb]/[0.08] px-4 py-2 text-sm font-semibold text-[#1d4ed8] dark:border-blue-400/40 dark:bg-blue-500/15 dark:text-blue-200">
+                    <span className="inline-flex items-center gap-2 rounded-full border border-[var(--enroll-brand)]/40 bg-[var(--enroll-brand)]/[0.08] px-4 py-2 text-sm font-semibold text-[var(--enroll-brand)]">
                       <SlidersHorizontal className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
                       {t(`${A}customizeSplitHeader`)}
                     </span>
@@ -315,8 +315,8 @@ export function ContributionSource() {
 
                 <div className="flex flex-wrap items-center gap-2 border-t border-border pt-3 text-xs text-muted-foreground">
                   <span className="font-medium text-foreground">{t(`${A}learnPrefix`)}</span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-2.5 py-0.5 font-medium text-blue-700 dark:border-blue-800 dark:bg-blue-950/50 dark:text-blue-300">
-                    <span className="h-1.5 w-1.5 rounded-full bg-blue-600" aria-hidden />
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[color-mix(in_srgb,var(--color-primary)_25%,transparent)] bg-[color-mix(in_srgb,var(--color-primary)_8%,transparent)] px-2.5 py-0.5 font-medium text-[var(--color-primary)]">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-primary)]" aria-hidden />
                     {t(`${A}preTaxLabel`)}
                   </span>
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-purple-200 bg-purple-50 px-2.5 py-0.5 font-medium text-purple-700 dark:border-purple-800 dark:bg-purple-950/50 dark:text-purple-300">
@@ -477,7 +477,7 @@ function CustomizeEditorPanel({
     <>
       <div>
         <h2 className="m-0 text-base font-semibold leading-none">
-          <span className="inline-flex items-center gap-2 rounded-full border border-[#2563eb]/40 bg-[#2563eb]/[0.08] px-4 py-2 text-sm font-semibold text-[#1d4ed8] dark:border-blue-400/40 dark:bg-blue-500/15 dark:text-blue-200">
+          <span className="inline-flex items-center gap-2 rounded-full border border-[var(--enroll-brand)]/40 bg-[var(--enroll-brand)]/[0.08] px-4 py-2 text-sm font-semibold text-[var(--enroll-brand)]">
             <SlidersHorizontal className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
             {t(`${A}customizeSplitHeader`)}
           </span>
@@ -660,9 +660,9 @@ function CustomizeEditorPanel({
         <button
           type="button"
           onClick={() => onScrollExplain("source-explain-pretax")}
-          className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-2.5 py-0.5 font-medium text-blue-700 dark:border-blue-800 dark:bg-blue-950/50 dark:text-blue-300"
+          className="inline-flex items-center gap-1.5 rounded-full border border-[color-mix(in_srgb,var(--color-primary)_25%,transparent)] bg-[color-mix(in_srgb,var(--color-primary)_8%,transparent)] px-2.5 py-0.5 font-medium text-[var(--color-primary)]"
         >
-          <span className="h-1.5 w-1.5 rounded-full bg-blue-600" aria-hidden />
+          <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-primary)]" aria-hidden />
           {t(`${A}preTaxLabel`)}
         </button>
         <button
@@ -691,7 +691,7 @@ function CustomizeEditorPanel({
           "flex h-12 w-full items-center justify-center rounded-xl text-sm font-semibold transition-colors",
           applyDisabled
             ? "cursor-not-allowed bg-muted text-muted-foreground"
-            : "bg-[#2563eb] text-white shadow-sm hover:bg-[#1d4ed8]",
+            : "bg-[var(--enroll-brand)] text-[var(--color-text-on-primary)] shadow-sm hover:opacity-90",
         )}
       >
         {t(`${A}adjustSlidersToApply`)}
@@ -829,7 +829,7 @@ function SliderRow({
 }
 
 const EXPLAIN_ACCENT: Record<"pretax" | "roth" | "aftertax", { icon: string; check: string }> = {
-  pretax: { icon: "bg-blue-600", check: "text-blue-600" },
+  pretax: { icon: "bg-[var(--color-primary)]", check: "text-[var(--color-primary)]" },
   roth: { icon: "bg-purple-600", check: "text-purple-600" },
   aftertax: { icon: "bg-orange-500", check: "text-orange-500" },
 };

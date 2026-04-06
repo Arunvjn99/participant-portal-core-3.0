@@ -52,17 +52,36 @@ button {
   color: inherit;
 }
 
-/* Pre-enrollment (Future Activation Hub) */
-.glass-card {
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.85);
+/* ── Global animation utilities ── */
+@keyframes g-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes g-slide-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes g-scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
 }
 
-.dark .glass-card {
-  background: rgba(30, 41, 59, 0.75);
-  border-color: rgba(51, 65, 85, 0.8);
+.anim-fade-in   { animation: g-fade-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.anim-slide-up  { animation: g-slide-up 0.35s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.anim-scale-in  { animation: g-scale-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-fade-in,
+  .anim-slide-up,
+  .anim-scale-in { animation: none; }
+}
+
+/* Pre-enrollment (Future Activation Hub) */
+.glass-card {
+  background: color-mix(in srgb, var(--enroll-card-bg) 72%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid color-mix(in srgb, var(--enroll-card-bg) 85%, transparent);
 }
 
 /* ── 3-tier elevation system (dashboard floating elements) ── */
@@ -3512,18 +3531,9 @@ button {
 .plan-selection-card__spotlight-bg {
   background: linear-gradient(
     135deg,
-    rgba(59, 130, 246, 0.06) 0%,
-    rgba(16, 185, 129, 0.08) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
-}
-
-.dark .plan-selection-card__spotlight-bg {
-  background: linear-gradient(
-    135deg,
-    rgba(59, 130, 246, 0.08) 0%,
-    rgba(16, 185, 129, 0.06) 50%,
-    rgba(15, 23, 42, 0) 100%
+    color-mix(in srgb, var(--enroll-brand) 6%, transparent) 0%,
+    color-mix(in srgb, var(--color-success) 8%, transparent) 50%,
+    transparent 100%
   );
 }
 
@@ -4396,7 +4406,7 @@ button {
   height: 10px;
   -webkit-appearance: none;
   appearance: none;
-  background: linear-gradient(to right, #2563eb 0%, #2563eb var(--slider-pct, 0%), #e0e0e0 var(--slider-pct, 0%), #e0e0e0 100%);
+  background: linear-gradient(to right, var(--enroll-brand) 0%, var(--enroll-brand) var(--slider-pct, 0%), var(--enroll-card-border) var(--slider-pct, 0%), var(--enroll-card-border) 100%);
   border-radius: 9999px;
   margin-bottom: 8px;
 }
@@ -4405,17 +4415,17 @@ button {
   -webkit-appearance: none;
   width: 20px;
   height: 20px;
-  background: #2563eb;
+  background: var(--enroll-brand);
   border-radius: 50%;
   cursor: pointer;
-  border: 2px solid white;
+  border: 2px solid var(--enroll-card-bg);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .contrib-slider__input::-moz-range-thumb {
   width: 20px;
   height: 20px;
-  background: #2563eb;
+  background: var(--enroll-brand);
   border-radius: 50%;
   cursor: pointer;
   border: 2px solid white;
@@ -11131,7 +11141,7 @@ button {
 .allocation-summary__risk-track {
   position: relative;
   height: 8px;
-  background: linear-gradient(to right, #22c55e, #eab308, #ef4444);
+  background: linear-gradient(to right, var(--color-success), var(--color-warning), var(--color-error));
   border-radius: 9999px;
   overflow: visible;
 }
@@ -11157,9 +11167,9 @@ button {
 /* Advisor Help Card - separate card per Figma */
 .advisor-help-card {
   padding: var(--spacing-5);
-  background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--ai-primary) 6%, var(--enroll-card-bg)) 0%, color-mix(in srgb, var(--ai-primary) 12%, var(--enroll-card-bg)) 100%);
   border-radius: var(--radius-lg);
-  border: 1px solid #e9e5ff;
+  border: 1px solid color-mix(in srgb, var(--ai-primary) 20%, var(--enroll-card-border));
   display: flex;
   flex-direction: column;
   gap: var(--spacing-3);
@@ -11171,7 +11181,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #7c3aed;
+  color: var(--ai-primary);
 }
 
 .advisor-help-card__title {
@@ -11207,7 +11217,7 @@ button {
 
 .advisor-help-card__btn:hover {
   opacity: 0.95;
-  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.35);
+  box-shadow: 0 4px 12px var(--ai-glow);
 }
 
 /* FundSearchModal */

@@ -34,11 +34,13 @@ export function FeaturedLearningSurface({ className }: { className?: string }) {
         )}
       >
         <div className="w-full shrink-0 sm:w-[40%]">
-          <img
-            src={LEARNING_IMAGE}
-            alt={title}
-            className="h-auto w-full rounded-xl bg-white object-contain p-1"
-          />
+          <div className="rounded-xl bg-white p-2 ring-1 ring-black/[0.06] dark:bg-zinc-100 dark:shadow-[0_2px_10px_rgba(0,0,0,0.3)] dark:ring-white/12">
+            <img
+              src={LEARNING_IMAGE}
+              alt={title}
+              className="h-auto w-full rounded-lg object-contain"
+            />
+          </div>
         </div>
 
         <div className="flex min-w-0 flex-1 flex-col justify-center gap-1.5 sm:w-[60%] sm:gap-2">

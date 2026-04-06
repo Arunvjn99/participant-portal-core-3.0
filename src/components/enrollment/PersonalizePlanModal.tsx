@@ -89,7 +89,7 @@ function V2ExitConfirmation({ onConfirm, onCancel }: { onConfirm: () => void; on
         exit={{ scale: 0.95, opacity: 0 }}
       >
         <div className="v2-flex-center v2-mb-1">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--v2-color-violet-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--v2-purple-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <circle cx="12" cy="12" r="10" />
             <line x1="12" y1="8" x2="12" y2="12" />
             <line x1="12" y1="16" x2="12.01" y2="16" />

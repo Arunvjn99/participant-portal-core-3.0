@@ -61,7 +61,7 @@ export const PlanCard = ({ plan, isSelected, onSelect, variant }: PlanCardProps)
         ${!isEligible ? "cursor-not-allowed opacity-60" : "cursor-pointer"}
         ${isSelected
           ? "border-[var(--enroll-brand)] bg-gradient-to-br from-[var(--enroll-card-bg)] to-[rgb(var(--enroll-brand-rgb)/0.06)] shadow-xl"
-          : "border-slate-200 dark:border-[var(--enroll-card-border)] bg-white dark:bg-[var(--enroll-card-bg)] shadow-md hover:shadow-lg hover:border-slate-300 dark:hover:border-[var(--enroll-card-border)]"}
+          : "border-[var(--color-border)] bg-[var(--color-surface)] shadow-md hover:shadow-lg hover:border-[var(--color-border)]"}
       `}
     >
       {/* Top right: Check circle (selected) or Info (default) — same container size to avoid layout shift */}
@@ -76,7 +76,7 @@ export const PlanCard = ({ plan, isSelected, onSelect, variant }: PlanCardProps)
         {isSelected ? (
           <CheckCircle2 className="h-5 w-5 text-white" strokeWidth={2} aria-hidden />
         ) : (
-          <Info className="h-4 w-4 text-slate-400 dark:text-[var(--enroll-text-muted)]" strokeWidth={2} aria-hidden />
+          <Info className="h-4 w-4 text-[var(--color-text-tertiary)]" strokeWidth={2} aria-hidden />
         )}
       </div>
 

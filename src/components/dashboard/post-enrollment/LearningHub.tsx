@@ -1,45 +1,53 @@
+import { motion } from "framer-motion";
+import { ArrowRight, BookOpen } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
-import { pePanel } from "./dashboardSurfaces";
-
-const LEARNING_BANNER_SRC =
-  "https://pmmvggrzowobvbebjzdo.supabase.co/storage/v1/object/public/company-logos/Learningbanner.png";
 
 type Props = {
+  category: string;
   title: string;
   description: string;
   href: string;
   className?: string;
 };
 
-export function LearningHub({ title, description, href, className }: Props) {
+const ease = [0.25, 0.1, 0.25, 1] as const;
+
+export function LearningHub({ category, title, description, href, className }: Props) {
   const { t } = useTranslation();
 
   return (
-    <section className={cn(pePanel, "overflow-hidden", className)}>
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-6">
-        <div className="relative w-full shrink-0 overflow-hidden rounded-lg border border-gray-200 bg-white lg:w-48 lg:shrink-0">
-          <img
-            src={LEARNING_BANNER_SRC}
-            alt=""
-            className="h-auto w-full object-contain p-1"
-            loading="lazy"
-            decoding="async"
-          />
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease, delay: 0.08 }}
+      className={cn("rounded-2xl border border-border bg-card p-5 shadow-sm", className)}
+    >
+      <div className="flex items-start gap-4">
+        <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+          <BookOpen className="h-8 w-8 text-primary" aria-hidden />
         </div>
-        <div className="min-w-0 flex-1 space-y-2">
-          <h2 className="font-dashboard-heading text-base font-semibold text-gray-900">{title}</h2>
-          <p className="font-dashboard-body text-sm leading-relaxed text-[var(--color-text-secondary)]">{description}</p>
+
+        <div className="min-w-0 flex-1">
+          <span className="inline-block rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
+            {category}
+          </span>
+
+          <h3 className="mt-2 text-sm font-semibold text-foreground">{title}</h3>
+
+          <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">{description}</p>
+
           <a
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-dashboard-body inline-flex text-sm font-semibold text-[var(--color-primary)] underline-offset-4 hover:underline"
+            className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-primary transition-opacity hover:opacity-80"
           >
-            {t("dashboard.learnMore")}
+            {t("dashboard.postEnrollment.peLearningKnowMore")}
+            <ArrowRight className="h-3 w-3" aria-hidden />
           </a>
         </div>
       </div>
-    </section>
+    </motion.div>
   );
 }

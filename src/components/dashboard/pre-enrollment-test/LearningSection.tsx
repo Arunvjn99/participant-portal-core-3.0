@@ -22,7 +22,7 @@ export function LearningSection() {
   return (
     <section className="mb-32">
       <div className="flex items-center justify-between mb-10">
-        <h2 className="text-[32px] font-bold text-slate-800 tracking-tight">
+        <h2 className="text-[32px] font-bold text-[var(--color-text)] tracking-tight">
           Recommended Learning
         </h2>
       </div>
@@ -36,8 +36,8 @@ export function LearningSection() {
         onClick={() => window.open("https://external-provider.com", "_blank")}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-violet-600/5 rounded-[2.5rem] -z-10 group-hover:from-blue-600/10 group-hover:to-violet-600/10 transition-colors" />
-        <div className="bg-white border border-slate-200/60 rounded-[2.5rem] p-10 md:p-12 shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex flex-col md:flex-row items-center gap-10 hover:shadow-lg transition-all">
-          <div className="w-20 h-20 rounded-3xl bg-white shadow-sm flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+        <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[2.5rem] p-10 md:p-12 shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex flex-col md:flex-row items-center gap-10 hover:shadow-lg transition-all">
+          <div className="w-20 h-20 rounded-3xl bg-[var(--color-surface)] shadow-sm flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
             {currentResource.icon}
           </div>
           <div className="flex-1 text-center md:text-left">
@@ -45,15 +45,15 @@ export function LearningSection() {
               <span className="px-3 py-1 bg-blue-50 text-blue-600 text-[10px] font-black uppercase tracking-widest rounded-full">
                 Featured Topic
               </span>
-              <div className="flex items-center gap-1.5 text-slate-400 text-xs font-bold uppercase tracking-widest">
+              <div className="flex items-center gap-1.5 text-[var(--color-text-tertiary)] text-xs font-bold uppercase tracking-widest">
                 <Clock className="w-3.5 h-3.5" />
                 {currentResource.readTime}
               </div>
             </div>
-            <h3 className="text-3xl font-black text-slate-900 mb-3 tracking-tight">
+            <h3 className="text-3xl font-black text-[var(--color-text)] mb-3 tracking-tight">
               {currentResource.title}
             </h3>
-            <p className="text-slate-500 text-xl leading-relaxed max-w-2xl">
+            <p className="text-[var(--color-text-secondary)] text-xl leading-relaxed max-w-2xl">
               {currentResource.subtitle}
             </p>
           </div>
@@ -68,7 +68,7 @@ export function LearningSection() {
             <div
               key={idx}
               className={`h-1 rounded-full transition-all duration-500 ${
-                idx === currentResourceIndex ? "w-8 bg-blue-600" : "w-2 bg-slate-200"
+                idx === currentResourceIndex ? "w-8 bg-blue-600" : "w-2 bg-[var(--color-border)]"
               }`}
             />
           ))}

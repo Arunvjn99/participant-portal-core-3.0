@@ -1,34 +1,35 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useCallback } from "react";
+import { motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowLeftRight, Landmark, Repeat2, Wallet } from "lucide-react";
 import { DashboardLayout } from "@/layouts/DashboardLayout";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { blockDemoNavIfNotAllowed } from "@/lib/demoNav";
 import {
   ActiveLoanCard,
   AdvisorCard,
+  AlertBanner,
   LearningHub,
   MonthlyContribution,
   NextBestActions,
-  PerformanceChart,
   PortfolioAllocation,
-  PostEnrollmentDashboardHeader,
+  PortfolioSummaryCard,
   QuickActions,
   type QuickActionItem,
   ReadinessScore,
   RecentActivity,
 } from "@/components/dashboard/post-enrollment";
+import { useReadinessScore } from "@/components/dashboard/post-enrollment/hooks/useReadinessScore";
 import { PostEnrollmentDashboardSkeleton } from "@/components/dashboard/post-enrollment/PostEnrollmentDashboardSkeleton";
 import { useUser } from "@/context/UserContext";
 import { advisorAvatars } from "@/assets/avatars";
 import { getRoutingVersion, withVersion, withVersionIfEnrollment } from "@/core/version";
 import { usePostEnrollmentDashboardStore } from "@/stores/postEnrollmentDashboardStore";
+import { useScenarioStore } from "@/store/scenarioStore";
 
-/**
- * Post-enrollment home — asymmetric 70/30 layout (Figma hierarchy).
- * Left: hero → quick actions → contributions → learning → portfolio → performance → activity.
- * Right: readiness → loan → next actions → advisor.
- */
+const ease = [0.25, 0.1, 0.25, 1] as const;
+
 export const PostEnrollmentDashboard = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -38,56 +39,91 @@ export const PostEnrollmentDashboard = () => {
   const data = usePostEnrollmentDashboardStore((s) => s.data);
   const displayName = usePostEnrollmentDashboardStore((s) => s.displayName);
   const setUserDisplayName = usePostEnrollmentDashboardStore((s) => s.setUserDisplayName);
+  const isDemoMode = useScenarioStore((s) => s.isDemoMode);
+  const scenario = useScenarioStore((s) => (s.isDemoMode ? s.scenarioData : null));
+
+  const tryNavigate = useCallback(
+    (to: string) => {
+      if (blockDemoNavIfNotAllowed(scenario, isDemoMode, to, t("demo.scenarioNavBlocked"))) return;
+      navigate(to);
+    },
+    [navigate, scenario, isDemoMode, t],
+  );
 
   useEffect(() => {
     const first = profile?.name?.trim()?.split(/\s+/)[0];
     if (first) setUserDisplayName(first);
   }, [profile?.name, setUserDisplayName]);
 
-  const increaseContribution = () => navigate(withVersion(version, "/enrollment/contribution"));
+  const readinessInput = useMemo(
+    () => ({
+      totalBalance: data.balance,
+      employeePercent: data.contributions.userPercent,
+      employerPercent: data.contributions.employerPercent,
+      totalPerMonth: data.contributions.userMonthly + data.contributions.employerMonthly,
+    }),
+    [data.balance, data.contributions],
+  );
 
-  const quickActions: QuickActionItem[] = useMemo(
-    () => [
+  const readiness = useReadinessScore(readinessInput);
+
+  const onTrackVisual = data.readinessLabelKey === "dashboard.postEnrollment.onTrack";
+
+  const quickActions: QuickActionItem[] = useMemo(() => {
+    const perms = scenario?.permissions;
+    const retired = scenario?.stage === "retired";
+    const disLoan = Boolean(perms && (!perms.canTakeLoan || retired));
+    const disWithdraw = Boolean(perms && !perms.canWithdraw);
+    const disXfer = Boolean(perms && (!perms.canAccessTransactions || retired));
+    return [
       {
         id: "loan",
-        title: t("dashboard.postEnrollment.cmdQALoanTitle"),
+        label: t("dashboard.postEnrollment.cmdQALoanTitle"),
         description: t("dashboard.postEnrollment.cmdQALoanDesc"),
+        detail: t("dashboard.postEnrollment.peQALoanDetail"),
         icon: Landmark,
-        onClick: () => navigate(withVersion(version, "/transactions/loan/eligibility")),
+        onClick: () => tryNavigate(withVersion(version, "/transactions/loan/eligibility")),
+        disabled: disLoan,
       },
       {
         id: "withdraw",
-        title: t("dashboard.postEnrollment.cmdQAWithdrawTitle"),
+        label: t("dashboard.postEnrollment.cmdQAWithdrawTitle"),
         description: t("dashboard.postEnrollment.cmdQAWithdrawDesc"),
+        detail: t("dashboard.postEnrollment.peQAWithdrawDetail"),
         icon: Wallet,
-        onClick: () => navigate(withVersion(version, "/transactions/withdraw")),
+        onClick: () => tryNavigate(withVersion(version, "/transactions/withdraw")),
+        disabled: disWithdraw,
       },
       {
         id: "transfer",
-        title: t("dashboard.postEnrollment.peQATransferTitle"),
+        label: t("dashboard.postEnrollment.peQATransferTitle"),
         description: t("dashboard.postEnrollment.peQATransferDesc"),
+        detail: t("dashboard.postEnrollment.peQATransferDetail"),
         icon: ArrowLeftRight,
-        onClick: () => navigate(withVersion(version, "/transactions")),
+        onClick: () => tryNavigate(withVersion(version, "/transactions")),
+        disabled: disXfer,
       },
       {
         id: "rollover",
-        title: t("dashboard.postEnrollment.cmdQARolloverTitle"),
+        label: t("dashboard.postEnrollment.cmdQARolloverTitle"),
         description: t("dashboard.postEnrollment.cmdQARolloverDesc"),
+        detail: t("dashboard.postEnrollment.peQARolloverDetail"),
         icon: Repeat2,
-        onClick: () => navigate(withVersion(version, "/transactions/rollover")),
+        onClick: () => tryNavigate(withVersion(version, "/transactions/rollover")),
+        disabled: disXfer,
       },
-    ],
-    [navigate, t, version],
-  );
+    ];
+  }, [tryNavigate, scenario, t, version]);
 
   const advisor = useMemo(
     () => ({
       ...data.advisor,
       imageSrc: data.advisor.imageSrc || advisorAvatars.maya,
-      nextAvailableLabel: t(data.advisor.nextAvailable),
     }),
-    [data.advisor, t],
+    [data.advisor],
   );
+
+  const showLoanCard = data.loan.remainingPrincipal > 0;
 
   if (loading) {
     return <PostEnrollmentDashboardSkeleton />;
@@ -95,50 +131,88 @@ export const PostEnrollmentDashboard = () => {
 
   return (
     <DashboardLayout header={<DashboardHeader />} fullWidthChildren>
-      <div className="post-enrollment-dashboard min-h-full bg-[#F5F7FA] pb-16 font-dashboard-body text-[var(--color-text)]">
-        <main className="mx-auto max-w-[1280px] space-y-6 px-4 py-6 sm:px-6 lg:px-8">
-          <PostEnrollmentDashboardHeader
-            userName={displayName}
-            balance={data.balance}
-            growthPercent={data.growthPercent}
-            aiRecommendation={t(data.aiRecommendation)}
-            onIncreaseContribution={increaseContribution}
-          />
+      <div className="min-h-full bg-background pb-20 text-foreground">
+        <main className="mx-auto max-w-[1280px] space-y-8 px-4 py-6 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease }}
+          >
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">
+              {t("dashboard.postEnrollment.overviewTitle")}
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {t("dashboard.postEnrollment.overviewSubtitle", { name: displayName })}
+            </p>
+          </motion.div>
 
-          {/* Asymmetric primary / secondary columns (~70% / ~30%) */}
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,3fr)]">
-            <div className="flex min-w-0 flex-col gap-6">
-              <QuickActions actions={quickActions} />
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <div className="space-y-6 lg:col-span-2">
+              <PortfolioSummaryCard
+                balance={data.balance}
+                growthPercent={data.growthPercent}
+                overview={data.overview}
+                performance={data.performance}
+                onTrackVisual={onTrackVisual}
+                readinessLabelKey={data.readinessLabelKey}
+              />
+
+              {(!scenario || scenario.ui.showQuickActions) && <QuickActions actions={quickActions} />}
+
               <MonthlyContribution
                 userMonthly={data.contributions.userMonthly}
                 employerMonthly={data.contributions.employerMonthly}
                 userPercent={data.contributions.userPercent}
                 employerPercent={data.contributions.employerPercent}
+                isActive={data.contributionsActive}
               />
+
               <LearningHub
+                category={t(data.learning.categoryKey)}
                 title={t(data.learning.titleKey)}
                 description={t(data.learning.descriptionKey)}
                 href={data.learning.href}
               />
-              <PortfolioAllocation portfolio={data.portfolio} onViewDetails={() => navigate("/investments")} />
-              <PerformanceChart data={data.performance} />
+
+              <PortfolioAllocation
+                portfolio={data.portfolio}
+                totalBalance={data.balance}
+                onViewDetails={() => tryNavigate("/investments")}
+                viewDetailsDisabled={Boolean(
+                  scenario?.permissions && !scenario.permissions.canAccessInvestments,
+                )}
+              />
+
               <RecentActivity items={data.activities} />
             </div>
 
-            <aside className="flex min-w-0 flex-col gap-6">
+            <aside className="space-y-6">
+              <AlertBanner alerts={data.alerts} />
+
               <ReadinessScore
-                score={data.readinessScore}
-                labelKey={data.readinessLabelKey}
-                onLaunchSimulator={() => navigate("/dashboard/investment-portfolio")}
+                readiness={readiness}
+                onLaunchSimulator={() => tryNavigate("/dashboard/investment-portfolio")}
+                showWarnings={scenario?.ui.showWarnings ?? false}
+                launchDisabled={Boolean(
+                  scenario?.permissions && !scenario.permissions.canAccessInvestments,
+                )}
               />
-              <ActiveLoanCard
-                loan={data.loan}
-                onManage={() => navigate(withVersion(version, "/transactions/loan/eligibility"))}
-              />
+
+              {showLoanCard ? (
+                <ActiveLoanCard
+                  loan={data.loan}
+                  onRequestNew={() => tryNavigate(withVersion(version, "/transactions/loan/eligibility"))}
+                  requestNewDisabled={Boolean(
+                    scenario?.permissions && (!scenario.permissions.canTakeLoan || scenario.stage === "retired"),
+                  )}
+                />
+              ) : null}
+
               <NextBestActions
                 actions={data.nextActions}
-                onAction={(route) => navigate(withVersionIfEnrollment(version, route))}
+                onAction={(route) => tryNavigate(withVersionIfEnrollment(version, route))}
               />
+
               <AdvisorCard
                 name={advisor.name}
                 title={advisor.title}
@@ -146,9 +220,10 @@ export const PostEnrollmentDashboard = () => {
                 rating={advisor.rating}
                 experienceYears={advisor.experienceYears}
                 imageSrc={advisor.imageSrc}
-                nextAvailableLabel={advisor.nextAvailableLabel}
-                onMessage={() => navigate("/profile")}
-                onSchedule={() => navigate("/profile")}
+                clientCount={advisor.clientCount}
+                specialization={t(advisor.specializationKey)}
+                onMessage={() => tryNavigate("/profile")}
+                onSchedule={() => tryNavigate("/profile")}
               />
             </aside>
           </div>

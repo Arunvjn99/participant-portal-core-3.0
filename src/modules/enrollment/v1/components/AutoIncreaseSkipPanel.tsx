@@ -114,7 +114,7 @@ export function AutoIncreaseSkipPanel({ variant, onDismiss }: AutoIncreaseSkipPa
             <button
               type="button"
               onClick={goBackToDecision}
-              className="mb-3 flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              className="mb-3 flex items-center gap-1 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text)]"
             >
               <ArrowLeft className="h-4 w-4" aria-hidden />
               {t(`${S}back`)}
@@ -124,11 +124,11 @@ export function AutoIncreaseSkipPanel({ variant, onDismiss }: AutoIncreaseSkipPa
                 className="mt-0.5 h-6 w-6 shrink-0 text-amber-500 dark:text-amber-400"
                 aria-hidden
               />
-              <TitleTag className="min-w-0 flex-1 text-xl font-semibold leading-snug text-gray-900 dark:text-gray-50 sm:text-2xl">
+              <TitleTag className="min-w-0 flex-1 text-xl font-semibold leading-snug text-[var(--enroll-text-primary)] sm:text-2xl">
                 {t(`${S}title`)}
               </TitleTag>
             </div>
-            <p className="mt-2 text-sm leading-relaxed text-gray-500 dark:text-gray-400">{t(`${S}subtitle`)}</p>
+            <p className="mt-2 text-sm leading-relaxed text-[var(--enroll-text-secondary)]">{t(`${S}subtitle`)}</p>
           </>
         ) : (
           <div className="flex items-start justify-between gap-3">
@@ -140,17 +140,17 @@ export function AutoIncreaseSkipPanel({ variant, onDismiss }: AutoIncreaseSkipPa
                 />
                 <TitleTag
                   id="auto-increase-skip-popup-title"
-                  className="min-w-0 flex-1 text-xl font-semibold leading-snug text-gray-900 dark:text-gray-50 sm:text-2xl"
+                  className="min-w-0 flex-1 text-xl font-semibold leading-snug text-[var(--enroll-text-primary)] sm:text-2xl"
                 >
                   {t(`${S}title`)}
                 </TitleTag>
               </div>
-              <p className="mt-2 text-sm leading-relaxed text-gray-500 dark:text-gray-400">{t(`${S}subtitle`)}</p>
+              <p className="mt-2 text-sm leading-relaxed text-[var(--enroll-text-secondary)]">{t(`${S}subtitle`)}</p>
             </div>
             <button
               type="button"
               onClick={goBackToDecision}
-              className="-mr-1 -mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100 dark:focus-visible:outline-gray-600"
+              className="-mr-1 -mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-background-tertiary)] hover:text-[var(--color-text)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-border)]"
               aria-label={t(`${S}close`)}
             >
               <X className="h-5 w-5" aria-hidden />
@@ -169,10 +169,10 @@ export function AutoIncreaseSkipPanel({ variant, onDismiss }: AutoIncreaseSkipPa
           {t(`${S}recommended`)}
         </span>
         <div className="mt-2">
-          <h3 className="text-base font-semibold text-gray-900 dark:text-gray-50">{t(`${S}cardWithTitle`)}</h3>
-          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{t(`${S}cardWithDesc`)}</p>
+          <h3 className="text-base font-semibold text-[var(--enroll-text-primary)]">{t(`${S}cardWithTitle`)}</h3>
+          <p className="mt-1 text-sm text-[var(--color-text-secondary)]">{t(`${S}cardWithDesc`)}</p>
           <div className="mt-4 border-t border-green-200/80 pt-3 dark:border-green-800/60">
-            <p className="text-[0.7rem] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+            <p className="text-[0.7rem] font-semibold uppercase tracking-wide text-[var(--enroll-text-secondary)]">
               {t(`${AD}projectedRetirement`)}
             </p>
             <p className="mt-1 text-2xl font-bold tabular-nums text-green-700 dark:text-green-400">
@@ -183,13 +183,13 @@ export function AutoIncreaseSkipPanel({ variant, onDismiss }: AutoIncreaseSkipPa
       </button>
 
       {/* Secondary: lighter, informational */}
-      <div className="rounded-xl border border-gray-200/90 bg-gray-50/50 px-4 py-3.5 dark:border-gray-700 dark:bg-gray-900/40">
-        <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">{t(`${S}cardWithoutTitle`)}</h3>
-        <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-500">{t(`${S}cardWithoutDesc`)}</p>
-        <p className="mt-2 text-[0.7rem] font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500">
+      <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-background-secondary)] px-4 py-3.5">
+        <h3 className="text-sm font-medium text-[var(--color-text)]">{t(`${S}cardWithoutTitle`)}</h3>
+        <p className="mt-0.5 text-xs text-[var(--color-text-secondary)]">{t(`${S}cardWithoutDesc`)}</p>
+        <p className="mt-2 text-[0.7rem] font-semibold uppercase tracking-wide text-[var(--color-text-tertiary)]">
           {t(`${AD}projectedRetirement`)}
         </p>
-        <p className="mt-0.5 text-lg font-semibold tabular-nums text-gray-800 dark:text-gray-200">
+        <p className="mt-0.5 text-lg font-semibold tabular-nums text-[var(--color-text)]">
           ${withoutAutoProjection.toLocaleString()}
         </p>
       </div>
@@ -205,7 +205,7 @@ export function AutoIncreaseSkipPanel({ variant, onDismiss }: AutoIncreaseSkipPa
         />
       </p>
 
-      <div className="flex flex-col gap-3 border-t border-gray-100 pt-5 dark:border-gray-800">
+      <div className="flex flex-col gap-3 border-t border-[var(--color-border)] pt-5">
         <button
           type="button"
           onClick={handleEnableAutoIncrease}
@@ -216,7 +216,7 @@ export function AutoIncreaseSkipPanel({ variant, onDismiss }: AutoIncreaseSkipPa
         <button
           type="button"
           onClick={handleSkipConfirmed}
-          className="w-full py-2 text-center text-sm font-medium text-gray-500 underline decoration-gray-300 underline-offset-4 transition-colors hover:text-gray-700 dark:text-gray-400 dark:decoration-gray-600 dark:hover:text-gray-200"
+          className="w-full py-2 text-center text-sm font-medium text-[var(--color-text-secondary)] underline decoration-[var(--color-border)] underline-offset-4 transition-colors hover:text-[var(--color-text)]"
         >
           {t(`${S}continueWithout`)}
         </button>

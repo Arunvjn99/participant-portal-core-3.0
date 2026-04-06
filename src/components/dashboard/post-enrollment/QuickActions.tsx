@@ -1,14 +1,16 @@
+import { motion } from "framer-motion";
 import type { LucideIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
-import { pePanel } from "./dashboardSurfaces";
 
 export type QuickActionItem = {
   id: string;
-  title: string;
+  label: string;
   description: string;
+  detail: string;
   icon: LucideIcon;
   onClick: () => void;
+  disabled?: boolean;
 };
 
 type Props = {
@@ -16,42 +18,46 @@ type Props = {
   className?: string;
 };
 
+const ease = [0.25, 0.1, 0.25, 1] as const;
+
 export function QuickActions({ actions, className }: Props) {
   const { t } = useTranslation();
 
   return (
-    <section className={cn(pePanel, className)}>
-      <h2 className="font-dashboard-heading text-base font-semibold text-gray-900">
-        {t("dashboard.postEnrollment.quickActions")}
-      </h2>
-      <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        {actions.map(({ id, title, description, icon: Icon, onClick }) => (
-          <li key={id}>
-            <button
-              type="button"
-              onClick={onClick}
-              className="group flex w-full flex-col items-start gap-2.5 rounded-lg border border-gray-200 bg-white p-4 text-left transition hover:border-gray-300 hover:shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
-            >
-              <span
-                className="flex h-9 w-9 items-center justify-center rounded-lg"
-                style={{
-                  background: "color-mix(in srgb, var(--color-primary) 10%, #EFF6FF)",
-                  color: "var(--color-primary)",
-                }}
-                aria-hidden
-              >
-                <Icon className="h-4 w-4" />
-              </span>
-              <span className="min-w-0">
-                <span className="font-dashboard-heading block text-sm font-semibold text-gray-900">{title}</span>
-                <span className="font-dashboard-body mt-0.5 block text-xs leading-snug text-gray-500">
-                  {description}
-                </span>
-              </span>
-            </button>
-          </li>
+    <section className={cn(className)}>
+      <h2 className="mb-4 text-base font-semibold text-foreground">{t("dashboard.postEnrollment.quickActions")}</h2>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease }}
+        className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+      >
+        {actions.map(({ id, label, description, detail, icon: Icon, onClick, disabled }, i) => (
+          <motion.button
+            key={id}
+            type="button"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, ease, delay: i * 0.05 }}
+            onClick={disabled ? undefined : onClick}
+            disabled={disabled}
+            aria-disabled={disabled}
+            className={cn(
+              "group flex flex-col items-start gap-3 rounded-2xl border border-border bg-card p-5 text-left shadow-sm transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+              disabled ? "cursor-not-allowed opacity-50" : "hover:shadow-md",
+            )}
+          >
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+              <Icon className="h-5 w-5 text-primary" aria-hidden />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-foreground">{label}</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">{description}</p>
+            </div>
+            <p className="text-xs text-muted-foreground/70">{detail}</p>
+          </motion.button>
         ))}
-      </ul>
+      </motion.div>
     </section>
   );
 }

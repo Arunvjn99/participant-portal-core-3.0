@@ -160,8 +160,8 @@ export const ChoosePlan = () => {
         <div
           className={`rounded-2xl grid grid-cols-1 lg:grid-cols-12 overflow-hidden transition-all duration-200 ${
             isSelected
-              ? "border-2 border-[var(--enroll-brand)] bg-white shadow-xl"
-              : "border border-slate-200 dark:border-[var(--enroll-card-border)] bg-white dark:bg-[var(--enroll-card-bg)] shadow-md"
+              ? "border-2 border-[var(--enroll-brand)] bg-[var(--color-surface)] shadow-xl"
+              : "border border-[var(--color-border)] bg-[var(--color-surface)] shadow-md"
           }`}
         >
           <div className="lg:col-span-8 flex flex-col">
@@ -169,7 +169,7 @@ export const ChoosePlan = () => {
               className={`p-10 flex flex-col transition-all duration-200 ${
                 isSelected
                   ? "bg-[var(--color-primary)] text-white"
-                  : "bg-[var(--enroll-soft-bg)] dark:bg-[var(--enroll-card-bg)] border-b border-slate-200 dark:border-[var(--enroll-card-border)]"
+                  : "bg-[var(--enroll-soft-bg)] border-b border-[var(--color-border)]"
               }`}
             >
               <div className="flex items-start justify-between gap-4">
@@ -198,7 +198,7 @@ export const ChoosePlan = () => {
                   {isSelected ? (
                     <CheckCircle2 className="h-5 w-5 text-white" strokeWidth={2} aria-hidden />
                   ) : (
-                    <Info className="h-5 w-5 text-slate-400 dark:text-[var(--enroll-text-muted)]" strokeWidth={2} aria-hidden />
+                    <Info className="h-5 w-5 text-[var(--color-text-tertiary)]" strokeWidth={2} aria-hidden />
                   )}
                 </span>
               </div>
@@ -209,7 +209,7 @@ export const ChoosePlan = () => {
                     className={
                       isSelected
                         ? "inline-flex items-center rounded-lg bg-white/15 px-3 py-1.5 text-xs font-medium"
-                        : "inline-flex items-center rounded-lg px-3 py-1.5 text-xs font-medium border border-slate-200 dark:border-[var(--enroll-card-border)]"
+                        : "inline-flex items-center rounded-lg px-3 py-1.5 text-xs font-medium border border-[var(--color-border)]"
                     }
                     style={isSelected ? undefined : { color: "var(--enroll-text-secondary)", background: "var(--enroll-card-bg)" }}
                   >
@@ -264,7 +264,7 @@ export const ChoosePlan = () => {
               </div>
             </div>
 
-            <div className="p-10 border-t border-slate-100">
+            <div className="p-10 border-t border-[var(--color-border)]">
               <h3 className="text-lg font-semibold mb-6" style={{ color: "var(--enroll-text-primary)" }}>
                 {t("enrollment.whatThisMeansForYou")}
               </h3>
@@ -300,7 +300,7 @@ export const ChoosePlan = () => {
             </div>
           </div>
 
-          <div className="lg:col-span-4 bg-slate-50/50 dark:bg-slate-900/30 p-10 border-t lg:border-t-0 lg:border-l border-slate-200 flex flex-col gap-6">
+          <div className="lg:col-span-4 bg-[var(--color-background-secondary)] p-10 border-t lg:border-t-0 lg:border-l border-[var(--color-border)] flex flex-col gap-6">
             <section>
               <h4 className="text-[10px] font-bold uppercase tracking-widest mb-3" style={{ color: "var(--enroll-text-muted)" }}>
                 {t("enrollment.planHighlight")}
@@ -329,20 +329,20 @@ export const ChoosePlan = () => {
                 <User size={12} /> {t("enrollment.yourDetails")}
               </h4>
               <div className="grid grid-cols-2 gap-2 text-sm">
-                <div className="p-2 rounded-lg bg-white/80 dark:bg-slate-800/50 border border-slate-100">
+                <div className="p-2 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]">
                   <span className="text-[10px] font-medium" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.age")}</span>
                   <div className="font-medium" style={{ color: "var(--enroll-text-primary)" }}>{userSnapshot.age}</div>
                 </div>
-                <div className="p-2 rounded-lg bg-white/80 dark:bg-slate-800/50 border border-slate-100">
+                <div className="p-2 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]">
                   <span className="text-[10px] font-medium" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.retiringAt")}</span>
                   <div className="font-medium" style={{ color: "var(--enroll-text-primary)" }}>{userSnapshot.retirementAge}</div>
                 </div>
-                <div className="p-2 rounded-lg bg-white/80 dark:bg-slate-800/50 border border-slate-100 col-span-2">
+                <div className="p-2 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] col-span-2">
                   <span className="text-[10px] font-medium" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.salary")}</span>
                   <div className="font-medium" style={{ color: "var(--enroll-text-primary)" }}>{formatCurrency(userSnapshot.salary)}</div>
                 </div>
                 {userSnapshot.yearsToRetire != null && userSnapshot.yearsToRetire >= 0 && (
-                  <div className="p-2 rounded-lg bg-white/80 dark:bg-slate-800/50 border border-slate-100 col-span-2 flex items-center gap-1.5">
+                  <div className="p-2 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] col-span-2 flex items-center gap-1.5">
                     <Clock size={12} style={{ color: "var(--enroll-text-muted)" }} />
                     <span className="text-[10px] font-medium" style={{ color: "var(--enroll-text-muted)" }}>{t("enrollment.yearsToRetire")}</span>
                     <span className="font-medium" style={{ color: "var(--enroll-text-primary)" }}>{userSnapshot.yearsToRetire}</span>

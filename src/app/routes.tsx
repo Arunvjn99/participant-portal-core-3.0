@@ -9,7 +9,7 @@ import { ChoosePlan } from "../pages/enrollment/ChoosePlan";
 import { Contribution } from "../pages/enrollment/Contribution";
 import { EnrollmentLayout } from "../layouts/EnrollmentLayout";
 import InvestmentsLayout from "../app/investments/layout";
-import InvestmentsPage from "../app/investments/page";
+import { StandaloneInvestmentPortfolioPage } from "../pages/investments";
 import { EnrollmentV1Layout } from "@/modules/enrollment/v1/layout/EnrollmentLayout";
 import { V1_WIZARD_SEGMENTS } from "@/modules/enrollment/v1/flow/v1WizardPaths";
 
@@ -46,7 +46,7 @@ export const AppRoutes = () => {
         path="/investments"
         element={
           <InvestmentsLayout>
-            <InvestmentsPage />
+            <StandaloneInvestmentPortfolioPage />
           </InvestmentsLayout>
         }
       />

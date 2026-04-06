@@ -24,7 +24,7 @@
 .v2-ui h4 {
   font-family: var(--v2-font-sans);
   margin: 0;
-  color: var(--v2-gray-900);
+  color: var(--v2-color-text);
 }
 
 .v2-ui p {
@@ -64,6 +64,10 @@
   border-radius: var(--v2-radius-panel);
   background: var(--v2-color-bg);
   box-shadow: var(--v2-shadow-2xl);
+}
+
+.dark .v2-ui .v2-wizard-panel {
+  border: 1px solid var(--color-border);
 }
 
 /* Header — compact vs figma px-4 sm:px-6 pt-4 sm:pt-6 pb-4 sm:pb-5 */
@@ -213,7 +217,7 @@
   flex-shrink: 0;
   margin: 4px 0;
   padding: var(--v2-space-2) var(--v2-space-2);
-  background: var(--v2-white);
+  background: var(--v2-surface-card);
   border-bottom: none;
 }
 
@@ -554,7 +558,7 @@
   justify-content: center;
   overflow: hidden;
   border-radius: var(--v2-radius-full);
-  background: var(--v2-white);
+  background: var(--v2-surface-card);
   box-shadow: var(--v2-shadow-sm);
   font-size: var(--v2-text-xl);
   line-height: 1;
@@ -749,7 +753,7 @@
   margin-top: -10px;
   border: 2px solid var(--v2-blue-600);
   border-radius: var(--v2-radius-full);
-  background: var(--v2-white);
+  background: var(--v2-surface-card);
   box-shadow: var(--v2-shadow-lg);
   cursor: grab;
   transition: transform 0.12s ease;
@@ -780,7 +784,7 @@
   height: 28px;
   border: 2px solid var(--v2-blue-600);
   border-radius: var(--v2-radius-full);
-  background: var(--v2-white);
+  background: var(--v2-surface-card);
   box-shadow: var(--v2-shadow-lg);
   cursor: grab;
 }
@@ -1204,7 +1208,7 @@
   flex: 1 1 0%;
   flex-direction: column;
   overflow: hidden;
-  background: var(--v2-white);
+  background: var(--v2-surface-card);
   padding: var(--v2-space-3) var(--v2-space-3) var(--v2-space-4);
 }
 
@@ -1376,7 +1380,7 @@
   border: 1px solid var(--v2-gray-300);
   padding: 10px var(--v2-space-3);
   font-size: var(--v2-text-sm);
-  background: var(--v2-white);
+  background: var(--v2-surface-card);
   color: var(--v2-gray-900);
 }
 
@@ -1429,7 +1433,7 @@
   border: 2px solid var(--v2-gray-300);
   padding: 14px var(--v2-space-4) 14px var(--v2-space-12);
   font-size: var(--v2-text-sm);
-  background: var(--v2-white);
+  background: var(--v2-surface-card);
   color: var(--v2-gray-900);
 }
 
@@ -1461,7 +1465,7 @@
   border: 2px solid var(--v2-gray-300);
   padding: 14px var(--v2-space-4) 14px var(--v2-space-10);
   font-size: var(--v2-text-base);
-  background: var(--v2-white);
+  background: var(--v2-surface-card);
   color: var(--v2-gray-900);
 }
 
@@ -1508,7 +1512,7 @@
 .v2-savings-quick-btn {
   border-radius: var(--v2-radius-lg);
   border: 1px solid var(--v2-gray-200);
-  background: var(--v2-white);
+  background: var(--v2-surface-card);
   padding: 6px var(--v2-space-3);
   font-size: var(--v2-text-xs);
   font-weight: var(--v2-font-medium);
@@ -1540,7 +1544,7 @@
   cursor: pointer;
   border-radius: var(--v2-radius-xl);
   border: 2px solid var(--v2-gray-200);
-  background: var(--v2-white);
+  background: var(--v2-surface-card);
   padding: var(--v2-space-3);
   text-align: left;
   transition: border-color 0.15s ease, background-color 0.15s ease;
@@ -1705,7 +1709,7 @@
   justify-content: space-between;
   border-radius: var(--v2-radius-lg);
   border: 1px solid var(--v2-gray-200);
-  background: var(--v2-white);
+  background: var(--v2-surface-card);
   padding: 10px var(--v2-space-3);
   font-size: var(--v2-text-sm);
   color: var(--v2-gray-900);
@@ -1759,7 +1763,7 @@
   padding: 0;
   border-radius: var(--v2-radius-xl);
   border: 1px solid var(--v2-gray-200);
-  background: var(--v2-white);
+  background: var(--v2-surface-card);
   box-shadow: var(--v2-shadow-lg);
 }
 
@@ -1770,7 +1774,7 @@
   gap: var(--v2-space-3);
   border: none;
   border-bottom: 1px solid var(--v2-gray-100);
-  background: var(--v2-white);
+  background: var(--v2-surface-card);
   padding: var(--v2-space-3) var(--v2-space-4);
   text-align: left;
   font-size: var(--v2-text-sm);
@@ -2000,7 +2004,7 @@
   cursor: pointer;
   border-radius: var(--v2-radius-xl);
   border: 2px solid var(--v2-gray-200);
-  background: var(--v2-white);
+  background: var(--v2-surface-card);
   padding: var(--v2-space-4);
   text-align: left;
   transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
@@ -2304,14 +2308,18 @@
   justify-content: center;
   padding: var(--v2-space-4);
   border-radius: inherit;
-  background: rgb(17 24 39 / 0.35);
+  background: rgb(17 24 39 / 0.45);
+}
+
+.dark .v2-ui .v2-exit-overlay {
+  background: rgb(0 0 0 / 0.55);
 }
 
 .v2-exit-dialog {
   width: 100%;
   max-width: 360px;
   border-radius: var(--v2-radius-xl);
-  background: var(--v2-white);
+  background: var(--v2-surface-card);
   padding: var(--v2-space-6);
   box-shadow: var(--v2-shadow-2xl);
 }
@@ -2373,7 +2381,46 @@
   clear: both;
 }
 
+/* Wizard shell — dark mode cohesion (portal uses theme tokens; footer was a mismatched gray band) */
+.dark .v2-ui .v2-wizard-body {
+  background-color: var(--v2-color-bg);
+  color: var(--v2-color-text);
+}
+
+.dark .v2-ui .v2-wizard-footer {
+  border-top-color: var(--color-border, var(--v2-gray-200));
+  background-color: var(--v2-color-bg);
+}
+
+.dark .v2-ui .v2-exit-dialog {
+  border: 1px solid var(--color-border, rgb(255 255 255 / 0.12));
+  box-shadow: var(--v2-shadow-2xl);
+}
+
+.dark .v2-ui .v2-age-insight-unified {
+  border-color: var(--color-border, var(--v2-gray-200));
+}
+
 /* Core AI FAB is not in figma-dump; hide while V2 wizard overlay is open */
 html[data-v2-wizard-open="true"] .core-ai-fab {
   display: none !important;
+}
+
+/* Dark: primary CTA shadows follow brand primary (not hardcoded blue-600) */
+.dark .v2-ui .v2-btn--primary.v2-btn--primary-cta-wizard {
+  box-shadow:
+    0 4px 14px rgb(var(--color-primary-rgb) / 0.38),
+    0 2px 4px rgb(0 0 0 / 0.25);
+}
+
+.dark .v2-ui .v2-btn--primary.v2-btn--primary-cta-wizard:hover:not(:disabled) {
+  box-shadow:
+    0 6px 18px rgb(var(--color-primary-rgb) / 0.42),
+    0 2px 6px rgb(0 0 0 / 0.28);
+}
+
+.dark .v2-ui .v2-btn--primary.v2-btn--primary-cta-wizard:active:not(:disabled) {
+  box-shadow:
+    0 2px 8px rgb(var(--color-primary-rgb) / 0.3),
+    0 1px 2px rgb(0 0 0 / 0.22);
 }

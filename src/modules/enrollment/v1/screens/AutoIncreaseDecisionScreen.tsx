@@ -72,35 +72,35 @@ export function AutoIncreaseDecisionScreen() {
   return (
     <div className="min-w-0 w-full space-y-4">
       <div className="text-left">
-        <h1 className="text-2xl font-semibold leading-tight text-gray-900 dark:text-gray-50">{t(`${A}title`)}</h1>
-        <p className="mt-1 text-sm leading-snug text-gray-500 dark:text-gray-400">{t(`${A}subtitle`)}</p>
+        <h1 className="text-2xl font-semibold leading-tight text-[var(--enroll-text-primary)]">{t(`${A}title`)}</h1>
+        <p className="mt-1 text-sm leading-snug text-[var(--enroll-text-secondary)]">{t(`${A}subtitle`)}</p>
       </div>
 
       <div className="grid min-w-0 gap-4 md:grid-cols-2">
-        <div className="flex flex-col rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-600 dark:bg-gray-900">
+        <div className="flex flex-col rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-sm">
           <div className="mb-3 flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-lg leading-none dark:bg-gray-800">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-background-tertiary)] text-lg leading-none">
               <span aria-hidden>➖</span>
             </div>
-            <h3 className="font-semibold text-gray-900 dark:text-gray-50">{t(`${A}cardFixedTitle`)}</h3>
+            <h3 className="font-semibold text-[var(--enroll-text-primary)]">{t(`${A}cardFixedTitle`)}</h3>
           </div>
-          <p className="text-sm text-gray-500 dark:text-gray-400">{t(`${A}cardFixedDesc`, { percent: currentPercent })}</p>
+          <p className="text-sm text-[var(--enroll-text-secondary)]">{t(`${A}cardFixedDesc`, { percent: currentPercent })}</p>
           <div className="mt-4 flex-1">
-            <p className="text-[0.75rem] font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500">
+            <p className="text-[0.75rem] font-semibold uppercase tracking-wide text-[var(--color-text-tertiary)]">
               {t(`${A}projectedRetirement`)}
             </p>
-            <p className="mt-1 text-2xl font-bold text-gray-900 dark:text-gray-50">${fixedProjection.toLocaleString()}</p>
+            <p className="mt-1 text-2xl font-bold text-[var(--enroll-text-primary)]">${fixedProjection.toLocaleString()}</p>
           </div>
           <button
             type="button"
             onClick={handleSkipForNow}
-            className="mt-4 flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-500 dark:bg-gray-950 dark:text-gray-200 dark:hover:bg-gray-800"
+            className="mt-4 flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 text-sm font-medium text-[var(--color-text)] transition-colors hover:bg-[var(--color-background-secondary)]"
           >
             {t(`${A}ctaSkip`)}
           </button>
         </div>
 
-        <div className="relative flex flex-col rounded-xl border-2 border-green-500 bg-white p-5 shadow-sm dark:border-green-600 dark:bg-gray-900">
+        <div className="relative flex flex-col rounded-xl border-2 border-green-500 bg-[var(--color-surface)] p-5 shadow-sm dark:border-green-600">
           <span className="absolute -top-3 left-4 rounded-full bg-green-600 px-3 py-0.5 text-xs font-semibold text-white dark:bg-green-500">
             {t(`${A}recommended`)}
           </span>
@@ -108,11 +108,11 @@ export function AutoIncreaseDecisionScreen() {
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 text-lg leading-none dark:bg-green-950/50">
               <span aria-hidden>📈</span>
             </div>
-            <h3 className="font-semibold text-gray-900 dark:text-gray-50">{t(`${A}cardAutoTitle`)}</h3>
+            <h3 className="font-semibold text-[var(--enroll-text-primary)]">{t(`${A}cardAutoTitle`)}</h3>
           </div>
-          <p className="text-sm text-gray-500 dark:text-gray-400">{t(`${A}cardAutoDesc`)}</p>
+          <p className="text-sm text-[var(--enroll-text-secondary)]">{t(`${A}cardAutoDesc`)}</p>
           <div className="mt-4 flex-1">
-            <p className="text-[0.75rem] font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500">
+            <p className="text-[0.75rem] font-semibold uppercase tracking-wide text-[var(--color-text-tertiary)]">
               {t(`${A}projectedRetirement`)}
             </p>
             <p className="mt-1 text-2xl font-bold text-green-700 dark:text-green-400">${autoProjection.toLocaleString()}</p>
@@ -145,7 +145,7 @@ export function AutoIncreaseDecisionScreen() {
           onClick={() => setSkipPopupOpen(false)}
         >
           <div
-            className="max-h-[min(90vh,900px)] w-full max-w-[520px] overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl dark:bg-gray-900 sm:p-6"
+            className="max-h-[min(90vh,900px)] w-full max-w-[520px] overflow-y-auto rounded-2xl bg-[var(--color-surface)] p-5 shadow-2xl sm:p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <AutoIncreaseSkipPanel variant="modal" onDismiss={() => setSkipPopupOpen(false)} />

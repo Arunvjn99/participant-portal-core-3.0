@@ -52,3 +52,13 @@ export interface AllocationItem {
   color: string;
   drift: number;
 }
+
+export type PerformanceTimeRange = "1M" | "3M" | "YTD" | "1Y" | "5Y";
+
+export const PERFORMANCE_TIME_RANGES: PerformanceTimeRange[] = [
+  "1M",
+  "3M",
+  "YTD",
+  "1Y",
+  "5Y",
+];

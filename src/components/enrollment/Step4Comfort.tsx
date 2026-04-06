@@ -117,9 +117,9 @@ export function Step4Comfort({ value, onChange }: Step4ComfortProps) {
                     strokeWidth={2}
                     aria-hidden
                   />
-                  <span className="text-base font-semibold text-gray-900 dark:text-gray-50">{t(`${pw}${level.labelKey}`)}</span>
+                  <span className="text-base font-semibold text-[var(--color-text)]">{t(`${pw}${level.labelKey}`)}</span>
                 </div>
-                <p className="mt-1 text-sm leading-snug text-gray-600 dark:text-gray-400">{t(`${pw}${level.descKey}`)}</p>
+                <p className="mt-1 text-sm leading-snug text-[var(--color-text-secondary)]">{t(`${pw}${level.descKey}`)}</p>
               </motion.button>
             );
           })}

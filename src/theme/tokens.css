@@ -224,6 +224,9 @@
   --enroll-donut-fill: var(--enroll-brand);
   --enroll-donut-text: var(--enroll-brand);
 
+  /* Readiness score ring — set dynamically via JS, fallback to brand */
+  --score-color: var(--enroll-brand);
+
   /* ── Dashboard Command Center Design System ── */
   --color-bg-primary: var(--enroll-bg);
   --color-bg-surface: var(--enroll-card-bg);

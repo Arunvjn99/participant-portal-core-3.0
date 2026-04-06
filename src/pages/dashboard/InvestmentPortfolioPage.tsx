@@ -1,1 +1,1 @@
-export { InvestmentPortfolioPage } from "../investments";
+export { StandaloneInvestmentPortfolioPage as InvestmentPortfolioPage } from "../investments";

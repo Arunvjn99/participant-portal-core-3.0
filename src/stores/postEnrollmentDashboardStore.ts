@@ -16,6 +16,8 @@ export type LoanSlice = {
   nextPaymentDate: string;
   nextPaymentAmount: number;
   statusLabel: string;
+  /** Shown as “Originated …” on the active-loan card (ISO date). */
+  originDate?: string;
 };
 
 export type ActivityEntry = {
@@ -27,12 +29,30 @@ export type ActivityEntry = {
   amountIsPositive?: boolean;
 };
 
+export type NextBestActionIcon = "Shield" | "Target" | "TrendingUp" | "Users" | "AlertTriangle";
+
 export type NextBestAction = {
   id: string;
   title: string;
   description: string;
-  priority: "required" | "recommended";
+  priority: "required" | "recommended" | "optional";
   route: string;
+  icon?: NextBestActionIcon;
+};
+
+export type PostEnrollmentOverviewMetrics = {
+  vestedBalance: number;
+  vestedPercent: number;
+  retirementYear: number;
+};
+
+export type PostEnrollmentAlert = {
+  id: string;
+  type: "warning" | "info" | "success" | "error";
+  title: string;
+  subtitle: string;
+  status: string;
+  action: string;
 };
 
 export type PerformancePoint = { label: string; value: number };
@@ -42,13 +62,16 @@ export type PostEnrollmentDashboardData = {
   growthPercent: number;
   readinessScore: number;
   readinessLabelKey: string;
+  overview: PostEnrollmentOverviewMetrics;
   contributions: { userMonthly: number; employerMonthly: number; userPercent: number; employerPercent: number };
+  contributionsActive: boolean;
   portfolio: PortfolioAllocationSlice;
   loan: LoanSlice;
   activities: ActivityEntry[];
   aiRecommendation: string;
   performance: PerformancePoint[];
   nextActions: NextBestAction[];
+  alerts: PostEnrollmentAlert[];
   advisor: {
     name: string;
     title: string;
@@ -57,8 +80,11 @@ export type PostEnrollmentDashboardData = {
     experienceYears: number;
     imageSrc: string;
     nextAvailable: string;
+    clientCount: string;
+    specializationKey: string;
   };
   learning: {
+    categoryKey: string;
     titleKey: string;
     descriptionKey: string;
     href: string;
@@ -86,12 +112,18 @@ export const defaultPostEnrollmentDashboardData: PostEnrollmentDashboardData = {
   growthPercent: 2.4,
   readinessScore: 80,
   readinessLabelKey: "dashboard.postEnrollment.onTrack",
+  overview: {
+    vestedBalance: 276_320,
+    vestedPercent: 85,
+    retirementYear: 2042,
+  },
   contributions: {
     userMonthly: 450,
     employerMonthly: 225,
     userPercent: 66.7,
     employerPercent: 33.3,
   },
+  contributionsActive: true,
   portfolio: {
     usStocks: 55,
     intlStocks: 25,
@@ -107,6 +139,7 @@ export const defaultPostEnrollmentDashboardData: PostEnrollmentDashboardData = {
     nextPaymentDate: "2026-04-01",
     nextPaymentAmount: 186.5,
     statusLabel: "dashboard.postEnrollment.active",
+    originDate: "2024-03-12",
   },
   activities: [
     {
@@ -150,6 +183,7 @@ export const defaultPostEnrollmentDashboardData: PostEnrollmentDashboardData = {
       description: "dashboard.postEnrollment.peNextBeneficiaryDesc",
       priority: "required",
       route: "/profile",
+      icon: "AlertTriangle",
     },
     {
       id: "nba2",
@@ -157,8 +191,10 @@ export const defaultPostEnrollmentDashboardData: PostEnrollmentDashboardData = {
       description: "dashboard.postEnrollment.peNextRiskDesc",
       priority: "recommended",
       route: "/enrollment/investments",
+      icon: "Target",
     },
   ],
+  alerts: [],
   advisor: {
     name: "Sarah Jenkins",
     title: "CFP®",
@@ -167,13 +203,60 @@ export const defaultPostEnrollmentDashboardData: PostEnrollmentDashboardData = {
     experienceYears: 14,
     imageSrc: "",
     nextAvailable: "dashboard.postEnrollment.peAdvisorNextAvail",
+    clientCount: "250+",
+    specializationKey: "dashboard.postEnrollment.peAdvisorSpecialization",
   },
   learning: {
+    categoryKey: "dashboard.postEnrollment.peLearningCategory",
     titleKey: "dashboard.postEnrollment.peLearningTitle",
     descriptionKey: "dashboard.postEnrollment.peLearningDesc",
     href: "https://enrich.org/",
   },
 };
+
+/**
+ * Merges partial or legacy dashboard payloads with defaults so new fields (e.g. `overview`)
+ * are never missing at runtime.
+ */
+export function normalizePostEnrollmentDashboardData(
+  raw: Partial<PostEnrollmentDashboardData>,
+): PostEnrollmentDashboardData {
+  const base = defaultPostEnrollmentDashboardData;
+  return {
+    ...base,
+    ...raw,
+    overview: {
+      ...base.overview,
+      ...(raw.overview ?? {}),
+    },
+    contributions: {
+      ...base.contributions,
+      ...(raw.contributions ?? {}),
+    },
+    portfolio: {
+      ...base.portfolio,
+      ...(raw.portfolio ?? {}),
+    },
+    loan: {
+      ...base.loan,
+      ...(raw.loan ?? {}),
+    },
+    advisor: {
+      ...base.advisor,
+      ...(raw.advisor ?? {}),
+    },
+    learning: {
+      ...base.learning,
+      ...(raw.learning ?? {}),
+    },
+    nextActions: raw.nextActions ?? base.nextActions,
+    alerts: raw.alerts ?? base.alerts,
+    performance:
+      raw.performance && raw.performance.length > 0 ? raw.performance : base.performance,
+    activities: raw.activities ?? base.activities,
+    contributionsActive: raw.contributionsActive ?? base.contributionsActive,
+  };
+}
 
 type Store = {
   data: PostEnrollmentDashboardData;
@@ -183,7 +266,7 @@ type Store = {
 };
 
 export const usePostEnrollmentDashboardStore = create<Store>((set) => ({
-  data: defaultPostEnrollmentDashboardData,
+  data: normalizePostEnrollmentDashboardData(defaultPostEnrollmentDashboardData),
   displayName: "Arun",
   setUserDisplayName: (name) => set({ displayName: name }),
 }));

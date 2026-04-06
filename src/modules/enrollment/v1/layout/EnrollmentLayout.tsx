@@ -23,13 +23,13 @@ import {
   V1_ENROLLMENT_AUTO_INCREASE_DECISION_PATH,
   wizardStepIndexFromSegment,
 } from "../flow/v1WizardPaths";
-import AutoIncreaseScreen from "../screens/AutoIncreaseScreen";
-import ChoosePlanScreen from "../screens/ChoosePlanScreen";
-import ContributionScreen from "../screens/ContributionScreen";
+import { PlanStep } from "@/features/enrollment/steps/PlanStep";
+import { ContributionStep } from "@/features/enrollment/steps/ContributionStep";
+import { SourceStep } from "@/features/enrollment/steps/SourceStep";
+import { AutoIncreaseStep } from "@/features/enrollment/steps/AutoIncreaseStep";
 import InvestmentScreen from "../screens/InvestmentScreen";
-import ReadinessScreen from "../screens/ReadinessScreen";
-import ReviewScreen from "../screens/ReviewScreen";
-import SourceScreen from "../screens/SourceScreen";
+import { ReadinessStep } from "@/features/enrollment/steps/ReadinessStep";
+import { ReviewStep } from "@/features/enrollment/steps/ReviewStep";
 import { useEnrollmentStore } from "../store/useEnrollmentStore";
 import { SuccessEnrollmentModal } from "@/components/enrollment/SuccessEnrollmentModal";
 import { useUser } from "@/context/UserContext";
@@ -49,13 +49,13 @@ const V1_STEP_ICONS = [
 ] as const;
 
 const SCREENS = [
-  ChoosePlanScreen,
-  ContributionScreen,
-  SourceScreen,
-  AutoIncreaseScreen,
+  PlanStep,
+  ContributionStep,
+  SourceStep,
+  AutoIncreaseStep,
   InvestmentScreen,
-  ReadinessScreen,
-  ReviewScreen,
+  ReadinessStep,
+  ReviewStep,
 ] as const;
 
 /**
@@ -96,7 +96,7 @@ export function EnrollmentV1Layout() {
     }
   }, [pathname, pathStepIndex, goToStep, navigate]);
 
-  const StepScreen = SCREENS[stepIndex] ?? ChoosePlanScreen;
+  const StepScreen = SCREENS[stepIndex] ?? PlanStep;
 
   const stepValid = isEnrollmentStepValid(stepIndex, state);
   const isFirst = stepIndex <= 0;

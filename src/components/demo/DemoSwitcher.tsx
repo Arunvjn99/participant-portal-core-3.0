@@ -1,8 +1,13 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { personas, SCENARIO_LABELS } from "@/mock/personas";
-import { useDemoUser, setDemoUser } from "@/hooks/useDemoUser";
+import { useDemoUser } from "@/hooks/useDemoUser";
 import type { PersonaProfile } from "@/mock/personas";
+import { SCENARIOS, type ScenarioId } from "@/data/scenarios";
+import { getScenarioFlowStart } from "@/data/scenarioFlows";
+import { demoNavigateTarget } from "@/data/demoScenarios";
+import { DEFAULT_VERSION, getRoutingVersion } from "@/core/version";
+import { useScenarioStore } from "@/store/scenarioStore";
 
 const fmt = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
@@ -34,9 +39,13 @@ export function DemoSwitcher() {
   if (!currentUser) return null;
 
   const handleSelect = (persona: PersonaProfile) => {
-    setDemoUser(persona);
+    const raw = persona.id.replace(/^demo_/, "");
+    if (!(raw in SCENARIOS)) return;
+    const id = raw as ScenarioId;
+    const version = getRoutingVersion(location.pathname) || DEFAULT_VERSION;
+    useScenarioStore.getState().setScenario(id);
     setOpen(false);
-    navigate("/demo");
+    navigate(demoNavigateTarget(version, getScenarioFlowStart(id)));
   };
 
   return (
@@ -62,18 +71,18 @@ export function DemoSwitcher() {
         <div className="fixed inset-0 z-[60] flex items-end justify-start sm:items-center sm:justify-center">
           {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/45 backdrop-blur-sm dark:bg-black/70"
             onClick={() => setOpen(false)}
             aria-hidden
           />
 
-          {/* Panel */}
-          <div className="relative z-10 m-4 w-full max-w-lg rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-2xl">
+          {/* Panel — card-bg reads correctly in dark; surface alone can look flat */}
+          <div className="relative z-10 m-4 w-full max-w-lg rounded-2xl border border-[var(--color-border)] bg-[var(--card-bg)] text-[var(--color-text)] shadow-2xl dark:border-[color-mix(in_srgb,var(--color-border)_85%,transparent)] dark:shadow-[0_24px_48px_-12px_rgba(0,0,0,0.65)]">
             {/* Header */}
             <div className="flex items-center justify-between border-b border-[var(--color-border)] px-5 py-4">
               <div>
                 <h2 className="text-lg font-semibold text-[var(--color-text)]">Switch Demo Persona</h2>
-                <p className="text-sm text-[var(--color-textSecondary)]">Select a scenario to explore</p>
+                <p className="text-sm text-[var(--color-text-secondary)]">Select a scenario to explore</p>
               </div>
               <button
                 type="button"
@@ -103,7 +112,7 @@ export function DemoSwitcher() {
                       className={`flex w-full items-start gap-3 rounded-xl border-2 p-4 text-left transition-all ${
                         isActive
                           ? "border-primary bg-primary/10"
-                          : "border-transparent hover:border-[var(--color-border)] hover:bg-[var(--color-surface)]"
+                          : "border-transparent hover:border-[var(--color-border)] hover:bg-[var(--color-background-secondary)]"
                       }`}
                     >
                       {/* Avatar */}
@@ -128,7 +137,7 @@ export function DemoSwitcher() {
                             <span className="text-xs font-medium text-[var(--color-primary)]">Active</span>
                           )}
                         </div>
-                        <p className="mt-0.5 text-xs text-[var(--color-textSecondary)]">
+                        <p className="mt-0.5 text-xs text-[var(--color-text-secondary)]">
                           {persona.email} · Age {persona.age} · {fmt.format(persona.balance)}
                         </p>
                       </div>
@@ -140,7 +149,7 @@ export function DemoSwitcher() {
 
             {/* Footer hint */}
             <div className="border-t border-[var(--color-border)] px-5 py-3">
-              <p className="text-center text-xs text-[var(--color-textSecondary)]">
+              <p className="text-center text-xs text-[var(--color-text-secondary)]">
                 Selecting a persona reloads the dashboard with that scenario's data.
               </p>
             </div>

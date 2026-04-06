@@ -1,111 +1,108 @@
-import { ArrowLeftRight, Download, Landmark, RefreshCw, Wallet, Zap } from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowLeftRight, Banknote, CheckCircle, Gift, RefreshCw, type LucideIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { ActivityEntry } from "@/stores/postEnrollmentDashboardStore";
 import { cn } from "@/lib/utils";
-import { pePanel } from "./dashboardSurfaces";
 
 type Props = {
   items: ActivityEntry[];
   className?: string;
 };
 
-function iconFor(type: ActivityEntry["type"]) {
-  switch (type) {
-    case "contribution":
-      return Wallet;
-    case "dividend":
-      return Zap;
-    case "loan_payment":
-      return Landmark;
-    case "transfer":
-      return ArrowLeftRight;
-    case "rebalance":
-      return RefreshCw;
-    default:
-      return Wallet;
-  }
-}
+const ease = [0.25, 0.1, 0.25, 1] as const;
 
-function formatDate(iso: string) {
+const iconMap: Record<ActivityEntry["type"], LucideIcon> = {
+  contribution: CheckCircle,
+  dividend: Gift,
+  loan_payment: Banknote,
+  transfer: ArrowLeftRight,
+  rebalance: RefreshCw,
+};
+
+const iconColorMap: Record<ActivityEntry["type"], string> = {
+  contribution: "text-emerald-500 bg-emerald-500/10",
+  dividend: "text-amber-500 bg-amber-500/10",
+  loan_payment: "text-amber-500 bg-amber-500/10",
+  rebalance: "text-primary bg-primary/10",
+  transfer: "text-primary bg-primary/10",
+};
+
+const currency = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 2,
+});
+
+function formatDateShort(iso: string) {
   try {
-    return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(
-      new Date(iso),
-    );
+    return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" }).format(new Date(iso));
   } catch {
     return iso;
   }
 }
 
-function formatMoney(n: number) {
-  const abs = Math.abs(n);
-  const formatted = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(abs);
-  return n < 0 ? `-${formatted}` : `+${formatted}`;
-}
-
 export function RecentActivity({ items, className }: Props) {
   const { t } = useTranslation();
-  const divider = "color-mix(in srgb, var(--color-border) 45%, transparent)";
 
   return (
-    <section className={cn(pePanel, className)}>
-      <div className="flex items-center justify-between gap-2">
-        <h2 className="font-dashboard-heading text-base font-semibold text-gray-900">
-          {t("dashboard.postEnrollment.recentTransactions")}
-        </h2>
-        <button
-          type="button"
-          className="font-dashboard-body text-sm font-semibold text-[var(--color-primary)] hover:underline"
-        >
-          {t("dashboard.postEnrollment.viewAll")}
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease, delay: 0.12 }}
+      className={cn("rounded-2xl border border-border bg-card p-6 shadow-sm", className)}
+    >
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-semibold text-foreground">{t("dashboard.postEnrollment.recentTransactions")}</h3>
+        <button type="button" className="text-xs font-medium text-primary hover:underline">
+          {t("dashboard.postEnrollment.recentActivityViewAll")}
         </button>
       </div>
+
       <ul className="mt-4">
         {items.map((item, i) => {
-          const Icon = iconFor(item.type);
-          const positive = item.amount != null && (item.amountIsPositive ?? item.amount >= 0);
+          const Icon = iconMap[item.type];
+          const isPositive = item.amount !== null && (item.amountIsPositive ?? item.amount >= 0);
+          const isLast = i === items.length - 1;
+
           return (
             <li
               key={item.id}
-              className="flex gap-3 py-3 first:pt-0 last:pb-0"
-              style={{
-                borderTop: i === 0 ? undefined : `1px solid ${divider}`,
-              }}
+              className={cn("flex items-center gap-3 py-3", !isLast && "border-b border-border")}
             >
-              <span
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
-                style={{
-                  background: "color-mix(in srgb, var(--color-primary) 10%, var(--color-background-secondary))",
-                  color: "var(--color-primary)",
-                }}
-                aria-hidden
+              <div
+                className={cn(
+                  "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
+                  iconColorMap[item.type],
+                )}
               >
-                <Icon className="h-4 w-4" />
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="font-dashboard-body text-sm font-medium text-[var(--color-text)]">{item.title}</p>
-                <p className="font-dashboard-body mt-1 text-xs text-[var(--color-text-secondary)]">
-                  {formatDate(item.date)}
-                </p>
+                <Icon className="h-4 w-4" aria-hidden />
               </div>
-              {item.amount != null && (
-                <p
-                  className={cn(
-                    "font-dashboard-heading shrink-0 text-sm font-semibold tabular-nums",
-                    positive ? "text-[var(--color-success)]" : "text-[var(--color-text)]",
-                  )}
-                >
-                  {formatMoney(item.amount)}
-                </p>
-              )}
-              {item.amount == null && (
-                <span className="text-[var(--color-text-tertiary)]" aria-hidden>
-                  <Download className="h-4 w-4" />
-                </span>
-              )}
+
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-medium text-foreground">{item.title}</p>
+                <p className="truncate text-xs text-muted-foreground">{formatDateShort(item.date)}</p>
+              </div>
+
+              <div className="shrink-0 text-right">
+                {item.amount !== null ? (
+                  <p
+                    className={cn(
+                      "text-sm font-semibold",
+                      isPositive ? "text-emerald-600 dark:text-emerald-400" : "text-foreground",
+                    )}
+                  >
+                    {isPositive ? "+" : ""}
+                    {currency.format(item.amount)}
+                  </p>
+                ) : (
+                  <p className="text-xs text-muted-foreground">—</p>
+                )}
+              </div>
             </li>
           );
         })}
       </ul>
-    </section>
+    </motion.div>
   );
 }

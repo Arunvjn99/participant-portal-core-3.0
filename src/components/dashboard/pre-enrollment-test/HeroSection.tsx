@@ -49,7 +49,7 @@ export function HeroSection({ gridContainerClass }: HeroSectionProps) {
     <section className="relative min-h-[90vh] flex items-center overflow-hidden isolate">
       <motion.div
         style={{ y: videoY, scale: videoScale }}
-        className="absolute inset-0 w-full h-full -z-10 bg-slate-100"
+        className="absolute inset-0 w-full h-full -z-10 bg-[var(--color-background-tertiary)]"
       >
         <img
           key={imgSrc}
@@ -92,7 +92,7 @@ export function HeroSection({ gridContainerClass }: HeroSectionProps) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className="text-[60px] font-black tracking-tighter mb-6 text-slate-900 leading-[1.1]"
+                className="text-[60px] font-black tracking-tighter mb-6 text-[var(--color-text)] leading-[1.1]"
               >
                 Let's build your <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
@@ -103,7 +103,7 @@ export function HeroSection({ gridContainerClass }: HeroSectionProps) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="text-slate-600 text-[18px] leading-relaxed mb-10 max-w-2xl font-medium"
+                className="text-[var(--color-text-secondary)] text-[18px] leading-relaxed mb-10 max-w-2xl font-medium"
               >
                 {MOCK_USER.company} offers a premium 401(k) retirement plan designed to help your wealth grow
                 effortlessly through smart, automated investing.
@@ -128,13 +128,13 @@ export function HeroSection({ gridContainerClass }: HeroSectionProps) {
                     Start Enrollment
                     <ArrowRight className="w-7 h-7 group-hover:translate-x-1 transition-transform" />
                   </motion.button>
-                  <p className="text-slate-400 text-sm font-semibold pl-2 tracking-wide">
+                  <p className="text-[var(--color-text-tertiary)] text-sm font-semibold pl-2 tracking-wide">
                     Secure 3-minute setup.
                   </p>
                 </div>
                 <button
                   type="button"
-                  className="text-slate-700 font-bold text-xl hover:text-blue-600 transition-all flex items-center gap-2 group"
+                  className="text-[var(--color-text)] font-bold text-xl hover:text-blue-600 transition-all flex items-center gap-2 group"
                 >
                   Learn about the plan
                   <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />

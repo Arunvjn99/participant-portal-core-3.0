@@ -77,7 +77,7 @@ export default function WithdrawReviewPage() {
             type="checkbox"
             checked={agreed}
             onChange={(e) => setAgreed(e.target.checked)}
-            className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+            className="mt-0.5 h-4 w-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer"
           />
           <span style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)" }}>
             I agree to the withdrawal terms and disclosures

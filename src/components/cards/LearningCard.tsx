@@ -61,12 +61,12 @@ function AbstractVisualDecor({ reduced }: { reduced: boolean }) {
       <motion.div
         initial={false}
         animate={{ scale: 1, opacity: 1 }}
-        className="pointer-events-none absolute size-48 rounded-full border-[0.5px] border-slate-300/50 dark:border-slate-500/30"
+        className="pointer-events-none absolute size-48 rounded-full border-[0.5px] border-[var(--color-border)]"
       />
       <motion.div
         initial={false}
         animate={{ scale: 1.15, opacity: 0.85 }}
-        className="pointer-events-none absolute size-48 rounded-full border-[0.5px] border-slate-300/30 dark:border-slate-500/20"
+        className="pointer-events-none absolute size-48 rounded-full border-[0.5px] border-[var(--color-border)]"
       />
       <motion.div
         initial={false}

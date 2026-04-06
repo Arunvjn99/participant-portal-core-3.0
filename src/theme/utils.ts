@@ -101,15 +101,20 @@ export function generateDarkTheme(light: ThemeColors): ThemeColors {
     Math.min(accentHSL.l + 8, 70),
   );
 
+  // Derive dark neutrals from the light background's hue so the dark theme
+  // feels cohesive with the brand instead of always being slate-blue.
+  const bgHSL = hexToHSL(light.background);
+  const bgHue = bgHSL.s > 5 ? bgHSL.h : hexToHSL(light.primary).h;
+
   return {
     primary: darkPrimary,
     secondary: adjustColor(light.primary, -55, -10),
     accent: darkAccent,
-    background: "#0f172a",
-    surface: "#1e293b",
-    textPrimary: "#f1f5f9",
-    textSecondary: "#94a3b8",
-    border: "#334155",
+    background: hslToHex(bgHue, 20, 9),
+    surface: hslToHex(bgHue, 18, 14),
+    textPrimary: hslToHex(bgHue, 15, 95),
+    textSecondary: hslToHex(bgHue, 12, 64),
+    border: hslToHex(bgHue, 16, 24),
     success: adjustColor(light.success, 8),
     warning: adjustColor(light.warning, 5),
     danger: adjustColor(light.danger, 8),

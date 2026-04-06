@@ -15,8 +15,8 @@
 }
 
 .dark .choose-plan__advisory {
-  background-color: rgba(14, 165, 233, 0.15);
-  border: 1px solid rgba(14, 165, 233, 0.3);
+  background-color: rgb(var(--color-primary-rgb) / 0.12);
+  border: 1px solid rgb(var(--color-primary-rgb) / 0.25);
 }
 
 .dark .choose-plan__footer {
@@ -72,7 +72,7 @@
 }
 
 .dark .enrollment-footer__summary--error {
-  color: #f87171;
+  color: var(--color-danger);
 }
 
 /* Plan selection card - standard benefit chips */
@@ -83,12 +83,12 @@
 
 /* Plan selection card - Best Fit (recommended) benefit chips */
 .dark .plan-selection-card--recommended .plan-selection-card__benefit-chip {
-  background-color: rgba(16, 185, 129, 0.2);
-  color: #34d399;
+  background-color: rgb(var(--color-success-rgb) / 0.2);
+  color: var(--color-success);
 }
 
 .dark .plan-selection-card__badge-hint {
-  color: #34d399;
+  color: var(--color-success);
 }
 
 /* Profile summary & recommendation cards - use DashboardCard which has dark, but ensure nested text */
@@ -139,13 +139,13 @@
 }
 
 .dark .contrib-preset--active.contrib-preset--safe {
-  background: rgba(34, 197, 94, 0.2);
-  color: #34d399;
+  background: rgb(var(--color-success-rgb) / 0.2);
+  color: var(--color-success);
 }
 
 .dark .contrib-preset--active.contrib-preset--aggressive {
-  background: rgba(251, 146, 60, 0.2);
-  color: #fb923c;
+  background: rgb(var(--color-warning-rgb) / 0.2);
+  color: var(--color-warning);
 }
 
 .dark .contrib-auto-increase-inputs {
@@ -165,7 +165,7 @@
 
 .dark .contrib-input:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+  box-shadow: 0 0 0 3px rgb(var(--color-primary-rgb) / 0.25);
 }
 
 .dark .contrib-input--primary,
@@ -176,16 +176,16 @@
 }
 
 .dark .contrib-slider__input {
-  background: linear-gradient(to right, #3b82f6 0%, #3b82f6 var(--slider-pct, 0%), var(--color-border) var(--slider-pct, 0%), var(--color-border) 100%);
+  background: linear-gradient(to right, var(--color-primary) 0%, var(--color-primary) var(--slider-pct, 0%), var(--color-border) var(--slider-pct, 0%), var(--color-border) 100%);
 }
 
 .dark .contrib-slider__input::-webkit-slider-thumb {
-  background: #3b82f6;
+  background: var(--color-primary);
   border-color: var(--color-surface);
 }
 
 .dark .contrib-slider__input::-moz-range-thumb {
-  background: #3b82f6;
+  background: var(--color-primary);
   border-color: var(--color-surface);
 }
 
@@ -195,7 +195,7 @@
 }
 
 .dark .contrib-slider__match {
-  color: #60a5fa;
+  color: var(--color-primary);
 }
 
 .dark .contrib-pill {
@@ -210,9 +210,9 @@
 }
 
 .dark .contrib-pill--active {
-  background: #2563eb;
-  border-color: #2563eb;
-  color: #ffffff;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-text-inverse);
 }
 
 .dark .contrib-toggle__slider {
@@ -277,20 +277,20 @@
 
 /* Paycheck impact panel - adjust for dark */
 .dark .contrib-paycheck-panel {
-  background: rgba(14, 165, 233, 0.15);
-  border: 1px solid rgba(14, 165, 233, 0.3);
+  background: rgb(var(--color-primary-rgb) / 0.12);
+  border: 1px solid rgb(var(--color-primary-rgb) / 0.25);
 }
 
 .dark .contrib-paycheck-panel__label {
-  color: #38bdf8;
+  color: var(--color-primary);
 }
 
 .dark .contrib-paycheck-panel__value {
-  color: #e0f2fe;
+  color: var(--color-text);
 }
 
 .dark .contrib-paycheck-panel__helper {
-  color: #bae6fd;
+  color: var(--color-text-secondary);
   opacity: 0.9;
 }
 
@@ -312,11 +312,11 @@
 }
 
 .dark .contrib-chart-legend__item--baseline::before {
-  background: #60a5fa;
+  background: var(--color-primary);
 }
 
 .dark .contrib-chart-legend__item--auto::before {
-  border-bottom-color: #38bdf8;
+  border-bottom-color: var(--color-primary);
 }
 
 /* Footer */
@@ -335,7 +335,7 @@
 }
 
 .dark .contrib-footer__value--total {
-  color: #60a5fa;
+  color: var(--color-primary);
 }
 
 .dark .contrib-footer__btn--secondary {
@@ -404,11 +404,11 @@
 }
 
 .dark .fund-allocation-row__remove {
-  color: #f87171;
+  color: var(--color-danger);
 }
 
 .dark .fund-allocation-row__remove:hover {
-  background-color: rgba(248, 113, 113, 0.15);
+  background-color: rgb(var(--color-danger-rgb) / 0.15);
 }
 
 .dark .fund-allocation-row .input,
@@ -475,11 +475,11 @@
 }
 
 .dark .source-accordion__success-icon {
-  color: #34d399;
+  color: var(--color-success);
 }
 
 .dark .source-accordion__error {
-  color: #f87171;
+  color: var(--color-danger);
 }
 
 /* Allocation Summary */
@@ -508,15 +508,15 @@
 }
 
 .dark .allocation-summary__total-value--valid {
-  color: #34d399;
+  color: var(--color-success);
 }
 
 .dark .allocation-summary__total-value--invalid {
-  color: #f87171;
+  color: var(--color-danger);
 }
 
 .dark .allocation-summary__error {
-  color: #f87171;
+  color: var(--color-danger);
 }
 
 .dark .allocation-summary__risk-labels {
@@ -534,12 +534,12 @@
 }
 
 .dark .advisor-help-card {
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(139, 92, 246, 0.15) 100%);
-  border-color: rgba(124, 58, 237, 0.3);
+  background: linear-gradient(135deg, rgb(var(--color-primary-rgb) / 0.15) 0%, rgb(var(--color-primary-rgb) / 0.1) 100%);
+  border-color: rgb(var(--color-primary-rgb) / 0.25);
 }
 
 .dark .advisor-help-card__icon {
-  color: #a78bfa;
+  color: var(--color-primary);
 }
 
 .dark .advisor-help-card__title {
@@ -551,8 +551,8 @@
 }
 
 .dark .advisor-help-card__btn {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-active) 100%);
+  color: var(--color-text-inverse);
 }
 
 .dark .advisor-help-card__btn:hover {
@@ -560,11 +560,11 @@
 }
 
 .dark .allocation-chart__center-value {
-  color: #34d399;
+  color: var(--color-success);
 }
 
 .dark .allocation-summary__metric-value--success {
-  color: #34d399;
+  color: var(--color-success);
 }
 
 /* Manual Builder */
