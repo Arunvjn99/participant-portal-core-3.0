@@ -1,696 +1,1180 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useTranslation, Trans } from "react-i18next";
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+} from "framer-motion";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ArrowRight,
+  Award,
+  CheckCircle2,
+  DollarSign,
   Info,
   Percent,
+  RefreshCw,
+  Shield,
   Sparkles,
-  Target,
   TrendingUp,
   type LucideIcon,
 } from "lucide-react";
+import { motionTokens } from "@/features/crp-pre-enrollment/motion";
+import { cn } from "@/lib/utils";
+import type { RiskLevel } from "../types";
 import { useEnrollmentStore } from "../store/useEnrollmentStore";
+import {
+  computeReadinessScore,
+  computeProjectedBalancePure,
+  getGrowthRate,
+  projectBalanceWithAutoIncrease,
+} from "../utils/calculations";
 
-const P = "enrollment.v1.readiness.";
-const READINESS_BENCHMARK = 65;
-const RING_R = 58;
-const RING_C = 2 * Math.PI * RING_R;
+const PW = "enrollment.v1.readinessWizard.";
+const ease = motionTokens.ease;
+const RING_RADIUS = 52;
+const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
+const BENCHMARK_SCORE = 65;
+const EMPLOYER_MATCH_LIMIT = 6;
 
-function AnimatedScoreRing({
-  value,
-  strokeColor,
-  centerColor,
-}: {
-  value: number;
-  strokeColor: string;
-  centerColor: string;
-}) {
-  const { t } = useTranslation();
-  const [displayValue, setDisplayValue] = useState(value);
-  const prev = useRef(value);
+function ringColorForScore(score: number): string {
+  if (score >= 80) return "var(--color-success)";
+  if (score >= 60) return "var(--enroll-brand)";
+  if (score >= 40) return "var(--color-warning)";
+  return "var(--color-error)";
+}
+
+function ringLabelKey(score: number): string {
+  if (score >= 80) return `${PW}ringLabelExcellent`;
+  if (score >= 60) return `${PW}ringLabelOnTrack`;
+  if (score >= 40) return `${PW}ringLabelNeedsAttention`;
+  return `${PW}ringLabelAtRisk`;
+}
+
+function statusMessageKey(score: number): string {
+  if (score >= 80) return `${PW}statusGreatProgress`;
+  if (score >= 70) return `${PW}statusSolidFoundation`;
+  if (score >= 40) return `${PW}statusStarted`;
+  return `${PW}statusEveryStep`;
+}
+
+function AnimatedNumber({ value }: { value: number }) {
+  const motionVal = useMotionValue(0);
+  const spring = useSpring(motionVal, { stiffness: 60, damping: 20 });
+  const rounded = useTransform(spring, Math.round);
 
   useEffect(() => {
-    if (prev.current === value) return;
-    const start = prev.current;
-    const diff = value - start;
-    const duration = 800;
-    const startTime = performance.now();
-    const tick = (now: number) => {
-      const elapsed = Math.min((now - startTime) / duration, 1);
-      const eased = 1 - (1 - elapsed) ** 3;
-      setDisplayValue(Math.round(start + diff * eased));
-      if (elapsed < 1) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-    prev.current = value;
-  }, [value]);
+    motionVal.set(value);
+  }, [value, motionVal]);
 
-  const dashOffset = RING_C - (displayValue / 100) * RING_C;
+  return <motion.span>{rounded}</motion.span>;
+}
+
+function ScoreRing({ score }: { score: number }) {
+  const { t } = useTranslation();
+  const motionScore = useMotionValue(0);
+  const spring = useSpring(motionScore, { stiffness: 60, damping: 20 });
+  const dashOffset = useTransform(spring, [0, 100], [RING_CIRCUMFERENCE, 0]);
+
+  useEffect(() => {
+    motionScore.set(score);
+  }, [score, motionScore]);
+
+  const color = ringColorForScore(score);
 
   return (
-    <div className="relative h-[170px] w-[170px]" style={{ transform: "rotate(-90deg)" }}>
-      <svg viewBox="0 0 160 160" aria-hidden>
-        <circle
-          cx="80"
-          cy="80"
-          r={RING_R}
-          fill="none"
-          stroke="var(--enroll-card-border)"
-          strokeWidth="12"
-        />
-        <circle
-          cx="80"
-          cy="80"
-          r={RING_R}
-          fill="none"
-          stroke={strokeColor}
-          strokeWidth="12"
-          strokeLinecap="round"
-          strokeDasharray={RING_C}
-          strokeDashoffset={dashOffset}
-          style={{ transition: "stroke-dashoffset 0.5s ease-out" }}
-        />
-      </svg>
-      <div
-        className="absolute inset-0 flex flex-col items-center justify-center"
-        style={{ transform: "rotate(90deg)" }}
-      >
-        <span
-          className="text-[40px] font-bold tabular-nums leading-none tracking-[0.33px]"
-          style={{ color: centerColor }}
+    <div className="flex flex-col items-center">
+      <div className="relative" style={{ width: 140, height: 140 }}>
+        <svg
+          width={140}
+          height={140}
+          viewBox="0 0 120 120"
+          className="rotate-[-90deg]"
+          aria-hidden
         >
-          {displayValue}
-        </span>
-        <span
-          className="mt-1 text-[11px] font-normal"
-          style={{ color: "var(--enroll-text-muted)" }}
-        >
-          {t(`${P}outOf100`, "out of 100")}
-        </span>
+          <circle
+            cx={60}
+            cy={60}
+            r={RING_RADIUS}
+            fill="none"
+            stroke="var(--enroll-card-border)"
+            strokeWidth={10}
+          />
+          <motion.circle
+            cx={60}
+            cy={60}
+            r={RING_RADIUS}
+            fill="none"
+            stroke={color}
+            strokeWidth={10}
+            strokeLinecap="round"
+            strokeDasharray={RING_CIRCUMFERENCE}
+            style={{ strokeDashoffset: dashOffset }}
+          />
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <motion.span
+            style={{
+              fontSize: 32,
+              fontWeight: 700,
+              color,
+              lineHeight: 1,
+            }}
+          >
+            <AnimatedNumber value={score} />
+          </motion.span>
+          <span
+            className="mt-0.5 text-xs font-medium"
+            style={{ color: "var(--enroll-text-muted)" }}
+          >
+            {t(`${PW}scoreOutOf100`)}
+          </span>
+        </div>
       </div>
+      <motion.span
+        initial={{ opacity: 0, y: 4 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6 }}
+        className="mt-2 text-sm font-semibold"
+        style={{ color }}
+      >
+        {t(ringLabelKey(score))}
+      </motion.span>
     </div>
   );
 }
 
-function formatCurrency(val: number) {
-  if (val >= 1_000_000) return `$${(val / 1_000_000).toFixed(1)}M`;
-  if (val >= 1_000) return `$${Math.round(val / 1_000).toLocaleString()}K`;
-  return `$${Math.round(val).toLocaleString()}`;
-}
-
-function formatCurrencyDetailed(val: number) {
-  return val.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-}
-
-interface SimpleRecommendation {
+type Recommendation = {
   id: string;
+  icon: LucideIcon;
   title: string;
   description: string;
-  icon: LucideIcon;
+  impact: "High" | "Medium";
+  currentScore: number;
   newScore: number;
-  additionalSavings: number;
-  projectedAfter: number;
+  currentBalance: number;
+  newBalance: number;
+  monthlyImpact: number;
+  additionalAnnualSavings: number;
+  whyBullets: string[];
+  apply: () => void;
+};
+
+function computeBalanceForScenario(
+  salary: number,
+  savings: number,
+  contribPct: number,
+  years: number,
+  riskLevel: RiskLevel | null,
+  autoIncEnabled: boolean,
+  autoIncRate: number,
+  autoIncMax: number,
+): number {
+  const rate = getGrowthRate(riskLevel);
+  if (autoIncEnabled) {
+    return projectBalanceWithAutoIncrease(
+      salary,
+      savings,
+      contribPct,
+      years,
+      rate,
+      autoIncRate,
+      autoIncMax,
+    );
+  }
+  return computeProjectedBalancePure(
+    salary,
+    savings,
+    contribPct,
+    years,
+    rate,
+  );
 }
 
+/**
+ * Readiness step — ported from core-retirement-platform `ReadinessClient`,
+ * using enrollment tokens for light/dark and real salary/savings from the V1 store.
+ */
 export function ReadinessStep() {
-  const { t } = useTranslation();
-  const store = useEnrollmentStore();
+  const { t, i18n } = useTranslation();
+  const data = useEnrollmentStore();
+  const updateField = useEnrollmentStore((s) => s.updateField);
+
   const {
-    readinessScore: score,
-    projectedBalance,
-    contribution,
-    monthlyContribution,
-    employerMatch,
+    contribution: contributionPct,
+    salary,
+    currentSavings: savings,
     retirementAge,
     currentAge,
-    retirementProjection,
-    autoIncrease,
+    autoIncrease: autoIncreaseEnabled,
+    autoIncreaseRate,
+    autoIncreaseMax,
     riskLevel,
-  } = store;
+  } = data;
 
-  const yearsToRetirement = Math.max(0, retirementAge - currentAge);
-  const retirementIncomeGoalAnnual = retirementProjection.monthlyIncome * 12;
-  const currentAnnualContributions = monthlyContribution * 12;
-  const annualSavingsGap = Math.max(
-    0,
-    retirementIncomeGoalAnnual - currentAnnualContributions,
+  const [appliedIds, setAppliedIds] = useState<Set<string>>(() => new Set());
+
+  const years = Math.max(1, retirementAge - currentAge);
+  const growthRate = getGrowthRate(riskLevel);
+
+  const fmtMoney = useCallback(
+    (n: number) =>
+      new Intl.NumberFormat(i18n.language, {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 0,
+      }).format(Math.round(n)),
+    [i18n.language],
   );
 
-  const alertIsCritical = score < 40;
-  const strokeColor = alertIsCritical
-    ? "var(--color-error)"
-    : score < READINESS_BENCHMARK
-      ? "var(--color-warning)"
-      : "var(--color-success)";
-  const centerColor = alertIsCritical
-    ? "var(--color-error)"
-    : score < READINESS_BENCHMARK
-      ? "var(--enroll-text-primary)"
-      : "var(--color-success)";
+  const projectedBalanceRaw = useMemo(
+    () =>
+      computeBalanceForScenario(
+        salary,
+        savings,
+        contributionPct,
+        years,
+        riskLevel,
+        autoIncreaseEnabled,
+        autoIncreaseRate,
+        autoIncreaseMax,
+      ),
+    [
+      salary,
+      savings,
+      contributionPct,
+      years,
+      riskLevel,
+      autoIncreaseEnabled,
+      autoIncreaseRate,
+      autoIncreaseMax,
+    ],
+  );
 
-  const targetBarPct = Math.min(
+  const score = computeReadinessScore(
+    contributionPct,
+    years,
+    projectedBalanceRaw,
+  );
+  const projectedBalanceRounded = Math.round(projectedBalanceRaw);
+
+  const annualEmployee = salary * (contributionPct / 100);
+  const annualMatch =
+    salary * (Math.min(contributionPct, EMPLOYER_MATCH_LIMIT) / 100);
+  const totalAnnualContributions = annualEmployee + annualMatch;
+
+  const targetIncome = salary * 0.8;
+  const annualSavingsGap = Math.max(0, targetIncome - totalAnnualContributions);
+
+  const benchmarkProgress = Math.min(
     100,
-    Math.round((score / READINESS_BENCHMARK) * 100),
+    Math.round((score / BENCHMARK_SCORE) * 100),
   );
 
-  const statusMessage = (s: number) => {
-    if (s >= 80) return t(`${P}statusGreat`, "You're in great shape!");
-    if (s >= 70) return t(`${P}statusSolid`, "Solid foundation");
-    if (s >= 40) return t(`${P}statusStarted`, "Good start");
-    return t(`${P}statusEveryStep`, "Every step counts");
-  };
+  const recommendations = useMemo(() => {
+    const recs: Recommendation[] = [];
 
-  const recommendations = useMemo<SimpleRecommendation[]>(() => {
-    const recs: SimpleRecommendation[] = [];
-    if (contribution < 10) {
+    if (contributionPct < 10) {
+      const newPct = 10;
+      const newBal = computeBalanceForScenario(
+        salary,
+        savings,
+        newPct,
+        years,
+        riskLevel,
+        autoIncreaseEnabled,
+        autoIncreaseRate,
+        autoIncreaseMax,
+      );
+      const extraAnnual = salary * ((newPct - contributionPct) / 100);
+      const extraMatch =
+        salary *
+        (Math.max(
+          0,
+          Math.min(newPct, EMPLOYER_MATCH_LIMIT) -
+            Math.min(contributionPct, EMPLOYER_MATCH_LIMIT),
+        ) /
+          100);
       recs.push({
         id: "increase-contribution",
-        title: t(`${P}recIncreaseTitle`, "Increase your contribution"),
-        description: t(
-          `${P}recIncreaseDesc`,
-          "Boosting your contribution rate is the most impactful change you can make.",
-        ),
         icon: Percent,
-        newScore: Math.min(100, score + 12),
-        additionalSavings: Math.round(
-          (store.salary * 0.02) / 12,
-        ),
-        projectedAfter: Math.round(projectedBalance * 1.15),
+        title: t(`${PW}recIncreaseTitle`, { pct: newPct }),
+        description: t(`${PW}recIncreaseDesc`),
+        impact: "High",
+        currentScore: score,
+        newScore: computeReadinessScore(newPct, years, newBal),
+        currentBalance: projectedBalanceRaw,
+        newBalance: newBal,
+        monthlyImpact: Math.round((extraAnnual + extraMatch) / 12),
+        additionalAnnualSavings: Math.round(extraAnnual + extraMatch),
+        whyBullets: [
+          t(`${PW}recIncreaseWhy1`),
+          t(`${PW}recIncreaseWhy2`),
+          t(`${PW}recIncreaseWhy3`),
+        ],
+        apply: () => updateField("contribution", newPct),
       });
     }
-    if (!autoIncrease) {
+
+    if (!autoIncreaseEnabled) {
+      const cap = Math.min(15, Math.max(10, autoIncreaseMax));
+      const newBal = projectBalanceWithAutoIncrease(
+        salary,
+        savings,
+        contributionPct,
+        years,
+        growthRate,
+        1,
+        cap,
+      );
+      const newSc = computeReadinessScore(contributionPct, years, newBal);
+      const firstYearExtra = Math.round((salary * 1) / 100);
       recs.push({
-        id: "auto-increase",
-        title: t(`${P}recAutoTitle`, "Enable auto-increase"),
-        description: t(
-          `${P}recAutoDesc`,
-          "Automatically grow your savings rate each year for compounding benefits.",
-        ),
-        icon: TrendingUp,
-        newScore: Math.min(100, score + 8),
-        additionalSavings: Math.round(store.salary * 0.01),
-        projectedAfter: Math.round(projectedBalance * 1.2),
+        id: "enable-auto-increase",
+        icon: RefreshCw,
+        title: t(`${PW}recAutoTitle`),
+        description: t(`${PW}recAutoDesc`, { rate: 1, max: cap }),
+        impact: contributionPct < 8 ? "High" : "Medium",
+        currentScore: score,
+        newScore: newSc,
+        currentBalance: projectedBalanceRaw,
+        newBalance: newBal,
+        monthlyImpact: Math.round(firstYearExtra / 12),
+        additionalAnnualSavings: firstYearExtra,
+        whyBullets: [
+          t(`${PW}recAutoWhy1`),
+          t(`${PW}recAutoWhy2`),
+          t(`${PW}recAutoWhy3`),
+        ],
+        apply: () => {
+          updateField("autoIncrease", true);
+          updateField("autoIncreaseRate", 1);
+          updateField("autoIncreaseMax", cap);
+        },
       });
     }
-    if (riskLevel === "conservative") {
+
+    if (riskLevel === "conservative" && currentAge < 50) {
+      const newRisk: RiskLevel = "balanced";
+      const newRate = getGrowthRate(newRisk);
+      const newBal = autoIncreaseEnabled
+        ? projectBalanceWithAutoIncrease(
+            salary,
+            savings,
+            contributionPct,
+            years,
+            newRate,
+            autoIncreaseRate,
+            autoIncreaseMax,
+          )
+        : computeProjectedBalancePure(
+            salary,
+            savings,
+            contributionPct,
+            years,
+            newRate,
+          );
+      const newSc = computeReadinessScore(contributionPct, years, newBal);
       recs.push({
-        id: "strategy-balanced",
-        title: t(`${P}recStrategyTitle`, "Consider a balanced strategy"),
-        description: t(
-          `${P}recStrategyDesc`,
-          "A balanced approach may offer better long-term growth potential.",
-        ),
-        icon: TrendingUp,
-        newScore: Math.min(100, score + 5),
-        additionalSavings: 0,
-        projectedAfter: Math.round(projectedBalance * 1.1),
+        id: "balanced-strategy",
+        icon: Shield,
+        title: t(`${PW}recBalancedTitle`),
+        description: t(`${PW}recBalancedDesc`),
+        impact: "Medium",
+        currentScore: score,
+        newScore: newSc,
+        currentBalance: projectedBalanceRaw,
+        newBalance: newBal,
+        monthlyImpact: 0,
+        additionalAnnualSavings: 0,
+        whyBullets: [
+          t(`${PW}recBalancedWhy1`),
+          t(`${PW}recBalancedWhy2`),
+          t(`${PW}recBalancedWhy3`),
+        ],
+        apply: () => updateField("riskLevel", newRisk),
       });
     }
-    return recs;
+
+    return recs.sort(
+      (a, b) =>
+        b.newScore - b.currentScore - (a.newScore - a.currentScore),
+    );
   }, [
-    contribution,
-    autoIncrease,
+    contributionPct,
+    autoIncreaseEnabled,
+    autoIncreaseRate,
+    autoIncreaseMax,
     riskLevel,
+    currentAge,
+    savings,
+    salary,
+    years,
+    growthRate,
     score,
-    projectedBalance,
-    store.salary,
+    projectedBalanceRaw,
+    updateField,
     t,
   ]);
 
-  const bestNewScore = recommendations.reduce(
-    (m, r) => Math.max(m, r.newScore),
-    score,
-  );
-  const boostPoints = Math.max(0, bestNewScore - score);
-  const showBoost = recommendations.length > 0 && boostPoints > 0;
+  const bestNewScore =
+    recommendations.length > 0
+      ? Math.max(...recommendations.map((r) => r.newScore))
+      : score;
 
-  const [selectedRecId, setSelectedRecId] = useState<string | null>(null);
-  useEffect(() => {
-    if (recommendations.length > 0 && !selectedRecId) {
-      setSelectedRecId(recommendations[0].id);
-    }
-  }, [recommendations, selectedRecId]);
+  const combinedGain = useMemo(() => {
+    if (recommendations.length === 0) return 0;
+    return recommendations.reduce(
+      (sum, r) => sum + (r.newBalance - r.currentBalance),
+      0,
+    );
+  }, [recommendations]);
+
+  const combinedNewScore = useMemo(() => {
+    if (recommendations.length === 0) return score;
+    return Math.min(
+      100,
+      bestNewScore + Math.floor(recommendations.length * 2),
+    );
+  }, [recommendations, bestNewScore, score]);
+
+  function handleApply(rec: Recommendation) {
+    rec.apply();
+    setAppliedIds((prev) => new Set(prev).add(rec.id));
+  }
+
+  function handleApplyAll() {
+    recommendations.forEach((rec) => {
+      if (!appliedIds.has(rec.id)) {
+        rec.apply();
+        setAppliedIds((prev) => new Set(prev).add(rec.id));
+      }
+    });
+  }
+
+  const cardStyle = {
+    background: "var(--enroll-card-bg)",
+    borderColor: "var(--enroll-card-border)",
+  } as const;
+
+  const successTint =
+    "color-mix(in srgb, var(--color-success) 10%, var(--enroll-card-bg))";
+  const successBorder =
+    "color-mix(in srgb, var(--color-success) 40%, var(--enroll-card-border))";
+  const primarySoft =
+    "color-mix(in srgb, var(--enroll-brand) 10%, var(--enroll-card-bg))";
 
   return (
-    <div className="ew-step" style={{ gap: 0 }}>
-      {/* Header */}
-      <header className="mb-7">
-        <h1
-          className="text-[26px] font-bold leading-tight tracking-tight"
-          style={{ color: "var(--enroll-text-primary)" }}
+    <div className="ew-step min-w-0 w-full" style={{ gap: 0 }}>
+      <div className="mx-auto w-full max-w-[1100px] pb-1">
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease }}
+          className="mb-5 shrink-0 text-left"
         >
-          {t(`${P}pageTitle`, "Retirement Readiness")}
-        </h1>
-        <p
-          className="mt-1.5 text-[14px]"
-          style={{ color: "var(--enroll-text-secondary)" }}
-        >
-          {t(
-            `${P}pageSubtitle`,
-            "Here's a snapshot of your retirement outlook based on your current selections.",
-          )}
-        </p>
-      </header>
-
-      {/* Two-column grid */}
-      <div className="grid min-w-0 items-start gap-6 lg:grid-cols-[minmax(0,400px)_minmax(0,1fr)]">
-        {/* ─── LEFT COLUMN ─── */}
-        <div className="flex flex-col gap-5">
-          {/* Score card */}
-          <div
-            className="rounded-2xl border p-6 shadow-sm"
-            style={{
-              borderColor: "var(--enroll-card-border)",
-              background: "var(--enroll-card-bg)",
-            }}
+          <h1
+            className="text-xl font-semibold md:text-2xl"
+            style={{ color: "var(--enroll-text-primary)" }}
           >
-            <div className="flex flex-col items-center">
-              <AnimatedScoreRing
-                value={score}
-                strokeColor={strokeColor}
-                centerColor={centerColor}
-              />
+            {t(`${PW}pageTitle`)}
+          </h1>
+          <p
+            className="mt-1 text-sm"
+            style={{ color: "var(--enroll-text-secondary)" }}
+          >
+            {t(`${PW}pageSubtitle`)}
+          </p>
+        </motion.div>
 
-              <p
-                className="mt-4 text-[18px] font-bold"
-                style={{ color: "var(--enroll-text-primary)" }}
-              >
-                {statusMessage(score)}
-              </p>
-
-              <p
-                className="mt-1 text-center text-[13.5px]"
-                style={{ color: "var(--enroll-text-secondary)" }}
-              >
-                Your readiness score is{" "}
-                <span
-                  className="font-semibold"
-                  style={{ color: "var(--enroll-text-primary)" }}
-                >
-                  {score}
-                </span>
-              </p>
-
-              {/* Progress bar */}
-              <div className="mt-3 flex w-full max-w-[230px] items-center gap-2">
-                <div
-                  className="h-[7px] min-w-0 flex-1 overflow-hidden rounded-full"
-                  style={{ background: "var(--enroll-card-border)" }}
-                >
-                  <div
-                    className="h-full rounded-full transition-[width] duration-500 ease-out"
-                    style={{
-                      width: `${targetBarPct}%`,
-                      background: "var(--color-success)",
-                    }}
-                  />
-                </div>
-                <span
-                  className="shrink-0 text-[12px]"
-                  style={{ color: "var(--enroll-text-muted)" }}
-                >
-                  Target{" "}
-                  <span
-                    className="font-semibold"
-                    style={{ color: "var(--enroll-text-secondary)" }}
-                  >
-                    {READINESS_BENCHMARK}
-                  </span>
-                </span>
-              </div>
-            </div>
-
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease, delay: 0.06 }}
+          className="grid grid-cols-1 gap-5 lg:grid-cols-[340px_1fr]"
+        >
+          {/* LEFT */}
+          <div className="flex flex-col gap-5">
             <div
-              className="my-5 border-t"
-              style={{ borderColor: "var(--enroll-card-border)" }}
-            />
-
-            {/* Projected balance */}
-            <div className="flex flex-col items-center text-center">
-              <div className="flex items-center gap-1.5">
-                <Target
-                  className="h-3.5 w-3.5"
-                  style={{ color: "var(--enroll-text-muted)" }}
-                  aria-hidden
-                />
-                <span
-                  className="text-[10.5px] font-semibold uppercase tracking-widest"
-                  style={{ color: "var(--enroll-text-muted)" }}
-                >
-                  Projected Balance
-                </span>
-              </div>
-              <p
-                className="mt-1 text-[34px] font-bold tabular-nums leading-none"
-                style={{ color: "var(--enroll-text-primary)" }}
-              >
-                {formatCurrency(projectedBalance)}
-              </p>
-              <p
-                className="mt-1.5 text-[12px]"
+              className="rounded-2xl border p-6 shadow-sm"
+              style={{ ...cardStyle, border: "1px solid var(--enroll-card-border)", boxShadow: "var(--enroll-elevation-1)" }}
+            >
+              <div
+                className="mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-wider"
                 style={{ color: "var(--enroll-text-muted)" }}
               >
-                At age {retirementAge}
-              </p>
-            </div>
-          </div>
-
-          {/* Understanding section */}
-          <div>
-            <div className="flex items-center gap-2">
-              <Info
-                className="h-4 w-4 shrink-0"
-                style={{ color: "var(--enroll-brand)" }}
-                aria-hidden
-              />
-              <p
-                className="text-[15px] font-semibold"
+                <Award className="size-3.5" aria-hidden />
+                {t(`${PW}scoreCardEyebrow`)}
+              </div>
+              <ScoreRing score={score} />
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.7 }}
+                className="mt-3 text-center text-sm font-medium"
                 style={{ color: "var(--enroll-text-primary)" }}
               >
-                Understanding Your Score
+                {t(statusMessageKey(score))}
+              </motion.p>
+              <div className="mt-4 space-y-2 text-sm">
+                <div className="flex items-center justify-between">
+                  <span style={{ color: "var(--enroll-text-secondary)" }}>
+                    {t(`${PW}onTrackLabel`)}
+                  </span>
+                  <span
+                    className="font-semibold"
+                    style={{ color: "var(--enroll-text-primary)" }}
+                  >
+                    {score}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span style={{ color: "var(--enroll-text-secondary)" }}>
+                    {t(`${PW}targetBenchmark`, { benchmark: BENCHMARK_SCORE })}
+                  </span>
+                </div>
+                <div
+                  className="relative h-2 overflow-hidden rounded-full"
+                  style={{ background: "var(--enroll-card-border)" }}
+                >
+                  <motion.div
+                    className="absolute inset-y-0 left-0 rounded-full"
+                    style={{ background: "var(--enroll-brand)" }}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${benchmarkProgress}%` }}
+                    transition={{ duration: 0.8, ease }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div
+              className="rounded-2xl border p-5 shadow-sm"
+              style={{ ...cardStyle, border: "1px solid var(--enroll-card-border)", boxShadow: "var(--enroll-elevation-1)" }}
+            >
+              <div className="mb-2 flex items-center gap-2">
+                <div
+                  className="flex h-8 w-8 items-center justify-center rounded-lg"
+                  style={{ background: successTint }}
+                >
+                  <DollarSign
+                    className="size-4"
+                    style={{ color: "var(--color-success)" }}
+                    aria-hidden
+                  />
+                </div>
+                <span
+                  className="text-sm font-medium"
+                  style={{ color: "var(--enroll-text-secondary)" }}
+                >
+                  {t(`${PW}projectedBalanceTitle`)}
+                </span>
+              </div>
+              <p
+                className="text-3xl font-bold"
+                style={{ color: "var(--enroll-text-primary)" }}
+              >
+                {fmtMoney(projectedBalanceRounded)}
+              </p>
+              <p
+                className="mt-1 text-xs"
+                style={{ color: "var(--enroll-text-secondary)" }}
+              >
+                {t(`${PW}basedOnYears`, { years })}
               </p>
             </div>
-            <p
-              className="mt-1.5 text-[13px] leading-[1.6]"
-              style={{ color: "var(--enroll-text-secondary)" }}
-            >
-              Your score of {score} reflects your contribution rate, investment
-              strategy, and time to retirement. Higher contributions and
-              longer timelines improve your outlook.
-            </p>
-          </div>
 
-          {/* Annual Funding Summary */}
-          <div
-            className="rounded-xl border px-5 py-4"
-            style={{
-              borderColor:
-                "color-mix(in srgb, var(--enroll-brand) 30%, var(--enroll-card-border))",
-              background:
-                "color-mix(in srgb, var(--enroll-brand) 6%, var(--enroll-card-bg))",
-            }}
-          >
-            <p
-              className="text-[15px] font-bold"
-              style={{ color: "var(--enroll-text-primary)" }}
-            >
-              Annual Funding Summary
-            </p>
-
-            <div className="mt-3.5 space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span
-                    className="h-2.5 w-2.5 shrink-0 rounded-full"
-                    style={{ background: "var(--enroll-text-muted)" }}
-                    aria-hidden
-                  />
-                  <span
-                    className="text-[13.5px]"
-                    style={{ color: "var(--enroll-text-secondary)" }}
-                  >
-                    Retirement Income Goal
-                  </span>
-                </div>
-                <span
-                  className="text-[14px] font-semibold tabular-nums"
-                  style={{ color: "var(--enroll-text-primary)" }}
-                >
-                  ${formatCurrencyDetailed(retirementIncomeGoalAnnual)}
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span
-                    className="h-2.5 w-2.5 shrink-0 rounded-full"
-                    style={{ background: "var(--enroll-brand)" }}
-                    aria-hidden
-                  />
-                  <span
-                    className="text-[13.5px]"
-                    style={{ color: "var(--enroll-text-secondary)" }}
-                  >
-                    Current Annual Contributions
-                  </span>
-                </div>
-                <span
-                  className="text-[14px] font-semibold tabular-nums"
-                  style={{ color: "var(--enroll-brand)" }}
-                >
-                  ${Math.round(currentAnnualContributions).toLocaleString()}
-                </span>
-              </div>
-
-              <div
-                className="h-px"
-                style={{
-                  background:
-                    "color-mix(in srgb, var(--enroll-brand) 30%, var(--enroll-card-border))",
-                }}
-              />
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span
-                    className="h-2.5 w-2.5 shrink-0 rounded-full"
-                    style={{ background: "var(--color-error)" }}
-                    aria-hidden
-                  />
-                  <span
-                    className="text-[13.5px]"
-                    style={{ color: "var(--enroll-text-secondary)" }}
-                  >
-                    Annual Savings Gap
-                  </span>
-                </div>
-                <span
-                  className="text-[14px] font-semibold tabular-nums"
-                  style={{ color: "var(--color-error)" }}
-                >
-                  ${formatCurrencyDetailed(annualSavingsGap)}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ─── RIGHT COLUMN ─── */}
-        <div className="flex flex-col gap-5">
-          {/* Boost banner */}
-          {showBoost && (
             <div
-              className="rounded-xl border px-5 py-4"
-              style={{
-                borderColor:
-                  "color-mix(in srgb, var(--enroll-brand) 25%, var(--enroll-card-border))",
-                background:
-                  "color-mix(in srgb, var(--enroll-brand) 6%, var(--enroll-card-bg))",
-              }}
+              className="rounded-2xl border p-5 shadow-sm"
+              style={{ ...cardStyle, border: "1px solid var(--enroll-card-border)", boxShadow: "var(--enroll-elevation-1)" }}
             >
-              <div className="flex items-center gap-2">
-                <Sparkles
-                  className="h-4 w-4 shrink-0"
+              <div className="mb-2 flex items-center gap-2">
+                <Info
+                  className="size-4"
                   style={{ color: "var(--enroll-brand)" }}
                   aria-hidden
                 />
                 <span
-                  className="text-[14px] font-semibold"
-                  style={{ color: "var(--enroll-brand)" }}
+                  className="text-sm font-semibold"
+                  style={{ color: "var(--enroll-text-primary)" }}
                 >
-                  Boost your score to {bestNewScore}
+                  {t(`${PW}understandingTitle`)}
                 </span>
               </div>
               <p
-                className="mt-2 text-[13.5px] leading-[1.6]"
+                className="text-xs leading-relaxed"
                 style={{ color: "var(--enroll-text-secondary)" }}
               >
-                Apply one or more recommendations below to improve your
-                readiness by up to {boostPoints} points.
+                {t(`${PW}understandingBody`, { benchmark: BENCHMARK_SCORE })}
               </p>
             </div>
-          )}
 
-          {/* Recommendations heading */}
-          <div>
-            <p
-              className="text-[17px] font-bold"
-              style={{ color: "var(--enroll-text-primary)" }}
+            <div
+              className="overflow-hidden rounded-2xl p-5 shadow-sm"
+              style={{
+                background: "var(--enroll-brand)",
+                color: "var(--color-text-on-primary)",
+                boxShadow: "var(--enroll-elevation-1)",
+              }}
             >
-              Recommended Actions
-            </p>
-            <p
-              className="mt-0.5 text-[13px]"
-              style={{ color: "var(--enroll-text-secondary)" }}
-            >
-              Personalized suggestions to improve your retirement outlook.
-            </p>
+              <h3 className="mb-4 text-sm font-semibold tracking-wide">
+                {t(`${PW}fundingTitle`)}
+              </h3>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="inline-block h-2.5 w-2.5 rounded-full opacity-40"
+                      style={{ background: "currentColor" }}
+                    />
+                    <span className="text-sm opacity-80">
+                      {t(`${PW}fundingGoal`)}
+                    </span>
+                  </div>
+                  <span className="text-sm font-semibold">
+                    {fmtMoney(targetIncome)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="inline-block h-2.5 w-2.5 rounded-full opacity-70"
+                      style={{ background: "currentColor" }}
+                    />
+                    <span className="text-sm opacity-80">
+                      {t(`${PW}fundingCurrent`)}
+                    </span>
+                  </div>
+                  <span className="text-sm font-semibold">
+                    {fmtMoney(totalAnnualContributions)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="inline-block h-2.5 w-2.5 rounded-full"
+                      style={{
+                        background: "color-mix(in srgb, var(--color-error) 70%, transparent)",
+                      }}
+                    />
+                    <span className="text-sm opacity-80">
+                      {t(`${PW}fundingGap`)}
+                    </span>
+                  </div>
+                  <span className="text-sm font-semibold">
+                    {fmtMoney(annualSavingsGap)}
+                  </span>
+                </div>
+              </div>
+              <p className="mt-4 text-[11px] leading-relaxed opacity-70">
+                {t(`${PW}fundingFooter`)}
+              </p>
+            </div>
           </div>
 
-          {/* Recommendation cards */}
-          <div className="flex flex-col gap-3">
-            {recommendations.map((rec, index) => {
-              const isFeatured = index === 0;
-              const isSelected = rec.id === selectedRecId;
-              const Icon = rec.icon;
-
-              return (
-                <div
-                  key={rec.id}
-                  className={`relative cursor-pointer rounded-xl border px-5 py-5 transition-all ${isFeatured ? "mt-3" : ""}`}
-                  style={{
-                    borderColor: isSelected
-                      ? "var(--enroll-brand)"
-                      : "var(--enroll-card-border)",
-                    background: "var(--enroll-card-bg)",
-                    boxShadow: isSelected
-                      ? "0 0 0 1.5px var(--enroll-brand)"
-                      : "none",
-                  }}
-                  role="button"
-                  tabIndex={0}
-                  aria-pressed={isSelected}
-                  onClick={() => setSelectedRecId(rec.id)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      setSelectedRecId(rec.id);
-                    }
-                  }}
-                >
-                  {isFeatured && (
-                    <div
-                      className="absolute -top-3 left-4 inline-flex items-center gap-1.5 rounded-full px-3 py-1 shadow-sm"
-                      style={{
-                        background: "var(--enroll-brand)",
-                        color: "var(--color-text-on-primary)",
-                      }}
+          {/* RIGHT */}
+          <div className="flex flex-col gap-5">
+            {recommendations.length > 0 ? (
+              <>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Sparkles
+                      className="size-5"
+                      style={{ color: "var(--enroll-brand)" }}
+                      aria-hidden
+                    />
+                    <h2
+                      className="text-lg font-semibold"
+                      style={{ color: "var(--enroll-text-primary)" }}
                     >
-                      <Sparkles className="h-2.5 w-2.5" aria-hidden />
-                      <span className="text-[10px] font-bold uppercase tracking-[0.6px]">
-                        Recommended
-                      </span>
-                    </div>
-                  )}
-
-                  <div className="flex items-start gap-3">
-                    <div
-                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
-                      style={{
-                        background:
-                          "color-mix(in srgb, var(--enroll-brand) 10%, var(--enroll-card-bg))",
-                      }}
-                    >
-                      <Icon
-                        className="h-[18px] w-[18px]"
-                        style={{ color: "var(--enroll-brand)" }}
-                        aria-hidden
-                        strokeWidth={2}
-                      />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p
-                        className="text-[15px] font-semibold leading-snug"
-                        style={{ color: "var(--enroll-text-primary)" }}
-                      >
-                        {rec.title}
-                      </p>
-                      <p
-                        className="mt-0.5 text-[13px] leading-[1.5]"
-                        style={{ color: "var(--enroll-text-secondary)" }}
-                      >
-                        {rec.description}
-                      </p>
-                    </div>
+                      {t(`${PW}improveTitle`)}
+                    </h2>
                   </div>
-
-                  {/* Metrics row */}
-                  <div
-                    className="mt-4 grid grid-cols-3 border-t pt-3"
-                    style={{ borderColor: "var(--enroll-card-border)" }}
+                  <p
+                    className="mt-1 text-sm"
+                    style={{ color: "var(--enroll-text-secondary)" }}
                   >
-                    <div>
-                      <p
-                        className="text-[10px] font-semibold uppercase tracking-[0.06em]"
-                        style={{ color: "var(--enroll-text-muted)" }}
-                      >
-                        Score
-                      </p>
-                      <div className="mt-1 flex items-center gap-1">
-                        <span
-                          className="text-[13px] font-medium tabular-nums"
-                          style={{ color: "var(--enroll-text-muted)" }}
-                        >
-                          {score}
-                        </span>
-                        <ArrowRight
-                          className="h-3 w-3 shrink-0"
-                          style={{ color: "var(--enroll-text-muted)" }}
-                          aria-hidden
+                    {t(`${PW}improveSubtitle`)}
+                  </p>
+                </div>
+
+                {recommendations.map((rec, i) => {
+                  const Icon = rec.icon;
+                  const isApplied = appliedIds.has(rec.id);
+                  const isPrimary = i === 0;
+                  const gain = rec.newBalance - rec.currentBalance;
+                  const scoreDelta = rec.newScore - rec.currentScore;
+                  const scoreProgress = Math.round(
+                    (scoreDelta / Math.max(1, 100 - rec.currentScore)) * 100,
+                  );
+
+                  return (
+                    <motion.div
+                      key={rec.id}
+                      initial={{ opacity: 0, y: 14 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.35,
+                        ease,
+                        delay: 0.1 + i * 0.08,
+                      }}
+                      whileHover={{ y: -2, transition: { duration: 0.15 } }}
+                      className="group relative overflow-hidden rounded-2xl border shadow-sm transition-shadow hover:shadow-lg"
+                      style={{
+                        ...cardStyle,
+                        border: isApplied
+                          ? `1px solid ${successBorder}`
+                          : "1px solid var(--enroll-card-border)",
+                        background: isApplied ? successTint : "var(--enroll-card-bg)",
+                        boxShadow: "var(--enroll-elevation-1)",
+                      }}
+                    >
+                      {isPrimary && !isApplied && (
+                        <div
+                          className="absolute inset-x-0 top-0 h-1"
+                          style={{ background: "var(--enroll-brand)" }}
                         />
-                        <span
-                          className="text-[13px] font-bold tabular-nums"
-                          style={{ color: "var(--color-success)" }}
+                      )}
+
+                      <div className={cn("p-5", isPrimary && !isApplied && "pt-6")}>
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex min-w-0 items-start gap-3">
+                            <div
+                              className="flex size-10 shrink-0 items-center justify-center rounded-xl"
+                              style={{
+                                background: isApplied
+                                  ? successTint
+                                  : isPrimary
+                                    ? primarySoft
+                                    : "color-mix(in srgb, var(--enroll-text-secondary) 12%, var(--enroll-card-bg))",
+                              }}
+                            >
+                              {isApplied ? (
+                                <CheckCircle2
+                                  className="size-5"
+                                  style={{ color: "var(--color-success)" }}
+                                  aria-hidden
+                                />
+                              ) : (
+                                <Icon
+                                  className="size-5"
+                                  style={{
+                                    color: isPrimary
+                                      ? "var(--enroll-brand)"
+                                      : "var(--enroll-text-secondary)",
+                                  }}
+                                  aria-hidden
+                                />
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <h4
+                                className="text-[0.95rem] font-semibold"
+                                style={{ color: "var(--enroll-text-primary)" }}
+                              >
+                                {rec.title}
+                              </h4>
+                              <p
+                                className="mt-0.5 text-xs"
+                                style={{ color: "var(--enroll-text-secondary)" }}
+                              >
+                                {rec.description}
+                              </p>
+                            </div>
+                          </div>
+                          <span
+                            className="shrink-0 rounded-full px-2.5 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider"
+                            style={
+                              rec.impact === "High"
+                                ? {
+                                    background: successTint,
+                                    color: "var(--color-success)",
+                                  }
+                                : {
+                                    background: primarySoft,
+                                    color: "var(--enroll-brand)",
+                                  }
+                            }
+                          >
+                            {rec.impact === "High"
+                              ? t(`${PW}impactHigh`)
+                              : t(`${PW}impactMedium`)}{" "}
+                            {t(`${PW}impactSuffix`)}
+                          </span>
+                        </div>
+
+                        <div
+                          className="mt-4 rounded-xl p-4"
+                          style={{
+                            background: isApplied
+                              ? successTint
+                              : "color-mix(in srgb, var(--enroll-text-secondary) 6%, var(--enroll-card-bg))",
+                          }}
                         >
-                          {rec.newScore}
-                        </span>
+                          <div className="flex items-end justify-center gap-3">
+                            <div className="text-center">
+                              <p
+                                className="text-[0.65rem] font-medium uppercase tracking-wider"
+                                style={{ color: "var(--enroll-text-muted)" }}
+                              >
+                                {t(`${PW}compareCurrent`)}
+                              </p>
+                              <p
+                                className="mt-0.5 text-xl font-bold tabular-nums"
+                                style={{ color: "var(--enroll-text-primary)" }}
+                              >
+                                {fmtMoney(Math.round(rec.currentBalance))}
+                              </p>
+                            </div>
+                            <div className="mb-1 flex items-center gap-1">
+                              <ArrowRight
+                                className="size-5"
+                                style={{ color: "var(--color-success)" }}
+                                aria-hidden
+                              />
+                            </div>
+                            <div className="text-center">
+                              <p
+                                className="text-[0.65rem] font-medium uppercase tracking-wider"
+                                style={{ color: "var(--color-success)" }}
+                              >
+                                {t(`${PW}compareImproved`)}
+                              </p>
+                              <p
+                                className="mt-0.5 text-xl font-bold tabular-nums"
+                                style={{ color: "var(--color-success)" }}
+                              >
+                                {fmtMoney(Math.round(rec.newBalance))}
+                              </p>
+                            </div>
+                          </div>
+                          {gain > 0 && (
+                            <motion.div
+                              initial={{ opacity: 0, scale: 0.9 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ delay: 0.3 + i * 0.1 }}
+                              className="mt-2 flex justify-center"
+                            >
+                              <span
+                                className="inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-bold"
+                                style={{
+                                  background: successTint,
+                                  color: "var(--color-success)",
+                                }}
+                              >
+                                <TrendingUp className="size-3.5" aria-hidden />
+                                {t(`${PW}gainBadge`, {
+                                  amount: fmtMoney(Math.round(gain)),
+                                })}
+                              </span>
+                            </motion.div>
+                          )}
+                        </div>
+
+                        <div className="mt-3 grid grid-cols-3 gap-3">
+                          {rec.monthlyImpact > 0 && (
+                            <div
+                              className="rounded-lg border p-2.5 text-center"
+                              style={{
+                                borderColor: "var(--enroll-card-border)",
+                                background: "var(--enroll-card-bg)",
+                              }}
+                            >
+                              <p
+                                className="text-[0.6rem] font-medium uppercase tracking-wider"
+                                style={{ color: "var(--enroll-text-muted)" }}
+                              >
+                                {t(`${PW}metricMonthly`)}
+                              </p>
+                              <p
+                                className="mt-0.5 text-sm font-bold tabular-nums"
+                                style={{ color: "var(--enroll-text-primary)" }}
+                              >
+                                +{fmtMoney(rec.monthlyImpact)}
+                              </p>
+                            </div>
+                          )}
+                          {rec.additionalAnnualSavings > 0 && (
+                            <div
+                              className="rounded-lg border p-2.5 text-center"
+                              style={{
+                                borderColor: "var(--enroll-card-border)",
+                                background: "var(--enroll-card-bg)",
+                              }}
+                            >
+                              <p
+                                className="text-[0.6rem] font-medium uppercase tracking-wider"
+                                style={{ color: "var(--enroll-text-muted)" }}
+                              >
+                                {t(`${PW}metricPerYear`)}
+                              </p>
+                              <p
+                                className="mt-0.5 text-sm font-bold tabular-nums"
+                                style={{ color: "var(--enroll-text-primary)" }}
+                              >
+                                +{fmtMoney(rec.additionalAnnualSavings)}
+                              </p>
+                            </div>
+                          )}
+                          <div
+                            className="rounded-lg border p-2.5 text-center"
+                            style={{
+                              borderColor: "var(--enroll-card-border)",
+                              background: "var(--enroll-card-bg)",
+                            }}
+                          >
+                            <p
+                              className="text-[0.6rem] font-medium uppercase tracking-wider"
+                              style={{ color: "var(--enroll-text-muted)" }}
+                            >
+                              {t(`${PW}metricScore`)}
+                            </p>
+                            <div className="mt-0.5 flex items-center justify-center gap-1">
+                              <span
+                                className="text-sm font-bold tabular-nums"
+                                style={{ color: "var(--enroll-text-primary)" }}
+                              >
+                                {rec.currentScore}
+                              </span>
+                              <ArrowRight
+                                className="size-3"
+                                style={{ color: "var(--color-success)" }}
+                              />
+                              <span
+                                className="text-sm font-bold tabular-nums"
+                                style={{ color: "var(--color-success)" }}
+                              >
+                                {rec.newScore}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {scoreDelta > 0 && (
+                          <div className="mt-3">
+                            <div className="flex items-center justify-between text-[0.68rem]">
+                              <span style={{ color: "var(--enroll-text-secondary)" }}>
+                                {t(`${PW}scoreImprovement`)}
+                              </span>
+                              <span
+                                className="font-semibold"
+                                style={{ color: "var(--color-success)" }}
+                              >
+                                {t(`${PW}scoreDeltaPts`, { delta: scoreDelta })}
+                              </span>
+                            </div>
+                            <div
+                              className="mt-1 h-1.5 overflow-hidden rounded-full"
+                              style={{ background: "var(--enroll-card-border)" }}
+                            >
+                              <motion.div
+                                className="h-full rounded-full"
+                                style={{
+                                  background: `linear-gradient(to right, var(--color-success), color-mix(in srgb, var(--color-success) 70%, var(--enroll-brand)))`,
+                                }}
+                                initial={{ width: 0 }}
+                                animate={{
+                                  width: `${Math.min(100, scoreProgress)}%`,
+                                }}
+                                transition={{
+                                  duration: 0.8,
+                                  ease,
+                                  delay: 0.4 + i * 0.1,
+                                }}
+                              />
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="mt-3 space-y-1.5">
+                          <p
+                            className="text-[0.68rem] font-semibold uppercase tracking-wider"
+                            style={{ color: "var(--enroll-text-muted)" }}
+                          >
+                            {t(`${PW}whyHeading`)}
+                          </p>
+                          {rec.whyBullets.map((bullet) => (
+                            <div key={bullet} className="flex items-start gap-2">
+                              <CheckCircle2
+                                className="mt-0.5 size-3 shrink-0"
+                                style={{ color: "var(--color-success)" }}
+                                aria-hidden
+                              />
+                              <span
+                                className="text-xs"
+                                style={{ color: "var(--enroll-text-secondary)" }}
+                              >
+                                {bullet}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="mt-4">
+                          {isApplied ? (
+                            <div
+                              className="flex items-center justify-center gap-2 rounded-xl py-2.5"
+                              style={{ background: successTint }}
+                            >
+                              <CheckCircle2
+                                className="size-4"
+                                style={{ color: "var(--color-success)" }}
+                                aria-hidden
+                              />
+                              <span
+                                className="text-sm font-semibold"
+                                style={{ color: "var(--color-success)" }}
+                              >
+                                {t(`${PW}appliedLabel`)}
+                              </span>
+                            </div>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => handleApply(rec)}
+                              className={cn(
+                                "flex w-full items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold transition hover:opacity-90",
+                              )}
+                              style={
+                                isPrimary
+                                  ? {
+                                      background: "var(--enroll-brand)",
+                                      color: "var(--color-text-on-primary)",
+                                      boxShadow: "var(--enroll-elevation-2)",
+                                    }
+                                  : {
+                                      border: `2px solid color-mix(in srgb, var(--enroll-brand) 35%, var(--enroll-card-border))`,
+                                      background: "var(--enroll-card-bg)",
+                                      color: "var(--enroll-brand)",
+                                    }
+                              }
+                            >
+                              <TrendingUp className="size-4" aria-hidden />
+                              {isPrimary
+                                ? t(`${PW}ctaBoost`)
+                                : t(`${PW}ctaApply`)}
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+
+                {recommendations.length > 1 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.35,
+                      ease,
+                      delay: 0.3 + recommendations.length * 0.08,
+                    }}
+                    className="overflow-hidden rounded-2xl p-5 text-white shadow-lg"
+                    style={{
+                      background: `linear-gradient(135deg, color-mix(in srgb, var(--color-success) 88%, black) 0%, color-mix(in srgb, var(--enroll-brand) 55%, var(--color-success)) 100%)`,
+                    }}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Sparkles
+                        className="size-4"
+                        style={{ color: "color-mix(in srgb, white 85%, transparent)" }}
+                        aria-hidden
+                      />
+                      <h3 className="text-sm font-semibold tracking-wide opacity-90">
+                        {t(`${PW}combinedTitle`)}
+                      </h3>
+                    </div>
+                    <div className="mt-4 grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-[0.65rem] font-medium uppercase tracking-wider opacity-80">
+                          {t(`${PW}combinedGain`)}
+                        </p>
+                        <p className="mt-1 text-2xl font-bold tabular-nums">
+                          +{fmtMoney(Math.round(combinedGain))}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-[0.65rem] font-medium uppercase tracking-wider opacity-80">
+                          {t(`${PW}combinedScore`)}
+                        </p>
+                        <div className="mt-1 flex items-center gap-2">
+                          <span className="text-2xl font-bold tabular-nums">
+                            {score}
+                          </span>
+                          <ArrowRight
+                            className="size-5 opacity-80"
+                            aria-hidden
+                          />
+                          <span className="text-2xl font-bold tabular-nums">
+                            {combinedNewScore}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                    <div>
-                      <p
-                        className="text-[10px] font-semibold uppercase tracking-[0.06em]"
-                        style={{ color: "var(--enroll-text-muted)" }}
-                      >
-                        Savings
-                      </p>
-                      <p
-                        className="mt-1 text-[13px] font-bold tabular-nums"
-                        style={{ color: "var(--enroll-brand)" }}
-                      >
-                        +${rec.additionalSavings.toLocaleString()}/yr
-                      </p>
+                    <div className="mt-4 h-2 overflow-hidden rounded-full bg-black/20">
+                      <motion.div
+                        className="h-full rounded-full bg-white/80"
+                        initial={{ width: 0 }}
+                        animate={{
+                          width: `${Math.min(100, Math.round((combinedNewScore / 100) * 100))}%`,
+                        }}
+                        transition={{ duration: 1, ease, delay: 0.6 }}
+                      />
                     </div>
-                    <div>
-                      <p
-                        className="text-[10px] font-semibold uppercase tracking-[0.06em]"
-                        style={{ color: "var(--enroll-text-muted)" }}
-                      >
-                        Balance
-                      </p>
-                      <p
-                        className="mt-1 text-[13px] font-bold tabular-nums"
-                        style={{ color: "var(--enroll-text-primary)" }}
-                      >
-                        {formatCurrency(rec.projectedAfter)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+                    <button
+                      type="button"
+                      onClick={handleApplyAll}
+                      className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-white/15 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/25"
+                    >
+                      <Sparkles className="size-4" aria-hidden />
+                      {t(`${PW}applyAllCta`)}
+                    </button>
+                  </motion.div>
+                )}
 
-            {recommendations.length === 0 && (
-              <div
-                className="rounded-xl border p-4"
-                style={{
-                  borderColor: "var(--enroll-card-border)",
-                  background: "var(--enroll-card-bg)",
-                }}
-              >
                 <p
-                  className="text-[13px]"
+                  className="text-center text-sm font-medium"
                   style={{ color: "var(--enroll-text-secondary)" }}
                 >
-                  Your plan looks great! No additional recommendations at this
-                  time.
+                  {t(`${PW}continueHint`)}
+                </p>
+              </>
+            ) : (
+              <div
+                className="flex flex-1 flex-col items-center justify-center rounded-2xl border p-10 text-center shadow-sm"
+                style={{
+                  borderColor: successBorder,
+                  background: successTint,
+                  boxShadow: "var(--enroll-elevation-1)",
+                }}
+              >
+                <div
+                  className="mb-3 flex size-14 items-center justify-center rounded-full"
+                  style={{ background: successTint }}
+                >
+                  <CheckCircle2
+                    className="size-7"
+                    style={{ color: "var(--color-success)" }}
+                    aria-hidden
+                  />
+                </div>
+                <h3
+                  className="text-lg font-semibold"
+                  style={{ color: "var(--enroll-text-primary)" }}
+                >
+                  {t(`${PW}optimizedTitle`)}
+                </h3>
+                <p
+                  className="mt-1 max-w-xs text-sm"
+                  style={{ color: "var(--enroll-text-secondary)" }}
+                >
+                  {t(`${PW}optimizedBody`)}
                 </p>
               </div>
             )}
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
