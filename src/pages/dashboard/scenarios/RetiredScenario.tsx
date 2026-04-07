@@ -8,12 +8,12 @@ export function RetiredScenario({ user }: { user: PersonaProfile }) {
   const annualIncome = Math.round(user.balance * 0.04);
 
   return (
-    <ScenarioShell user={user} accentColor="#8b5cf6">
+    <ScenarioShell user={user} accentColor="var(--chart-5)">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Total Savings" value={fmt.format(user.balance)} color="#8b5cf6" />
-        <StatCard label="Monthly Income" value={fmt.format(monthlyIncome)} color="#10b981" />
-        <StatCard label="Annual Income" value={fmt.format(annualIncome)} color="#0b5fff" />
-        <StatCard label="Retirement Score" value="100/100" color="#10b981" />
+        <StatCard label="Total Savings" value={fmt.format(user.balance)} color="var(--chart-5)" />
+        <StatCard label="Monthly Income" value={fmt.format(monthlyIncome)} color="var(--color-success)" />
+        <StatCard label="Annual Income" value={fmt.format(annualIncome)} color="var(--color-primary)" />
+        <StatCard label="Retirement Score" value="100/100" color="var(--color-success)" />
       </div>
 
       {/* Income distribution */}
@@ -22,9 +22,9 @@ export function RetiredScenario({ user }: { user: PersonaProfile }) {
         <p className="mt-1 text-sm text-[var(--color-textSecondary)]">Based on the 4% safe withdrawal rule</p>
 
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
-          <IncomeRow label="Monthly Distribution" amount={fmt.format(monthlyIncome)} pct="100%" color="#10b981" />
-          <IncomeRow label="Social Security (est.)" amount="$1,800" pct="Supplemental" color="#0b5fff" />
-          <IncomeRow label="Total Monthly" amount={fmt.format(monthlyIncome + 1800)} pct="Combined" color="#8b5cf6" />
+          <IncomeRow label="Monthly Distribution" amount={fmt.format(monthlyIncome)} pct="100%" color="var(--color-success)" />
+          <IncomeRow label="Social Security (est.)" amount="$1,800" pct="Supplemental" color="var(--color-primary)" />
+          <IncomeRow label="Total Monthly" amount={fmt.format(monthlyIncome + 1800)} pct="Combined" color="var(--chart-5)" />
         </div>
       </div>
 

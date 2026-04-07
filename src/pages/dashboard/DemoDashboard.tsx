@@ -44,7 +44,7 @@ export function DemoDashboard() {
         return <RetiredScenario user={user} />;
       default:
         return (
-          <ScenarioShell user={user} accentColor="#6b7280">
+          <ScenarioShell user={user} accentColor="var(--color-text-secondary)">
             <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 text-center">
               <p className="text-lg font-semibold text-[var(--color-text)]">
                 {t("demo.scenarioComingSoon", { scenario: user.scenario })}

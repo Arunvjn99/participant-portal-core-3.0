@@ -133,6 +133,34 @@ function hexToRGB(hex: string): string {
  * Maps a ThemeColors object to CSS custom properties and applies them
  * to document.documentElement. All UI must use these variables; no hardcoded colors.
  */
+// Fonts that are system fonts and don't need a Google Fonts request.
+const SYSTEM_FONTS = new Set(["system-ui", "georgia", "times new roman", "arial", "helvetica"]);
+
+const GOOGLE_FONTS_LINK_ID = "gf-dynamic-font";
+
+/**
+ * Injects (or replaces) a Google Fonts <link> in document.head for the given
+ * font family.  No-ops for system fonts and for fonts already loaded.
+ */
+function loadGoogleFont(font: string): void {
+  if (!font || SYSTEM_FONTS.has(font.toLowerCase())) return;
+
+  const existing = document.getElementById(GOOGLE_FONTS_LINK_ID) as HTMLLinkElement | null;
+  const encoded = encodeURIComponent(font);
+  const href = `https://fonts.googleapis.com/css2?family=${encoded}:wght@400;500;600;700&display=swap`;
+
+  if (existing) {
+    if (existing.href === href) return; // already loaded
+    existing.href = href;
+  } else {
+    const link = document.createElement("link");
+    link.id = GOOGLE_FONTS_LINK_ID;
+    link.rel = "stylesheet";
+    link.href = href;
+    document.head.appendChild(link);
+  }
+}
+
 export function applyThemeToDOM(colors: ThemeColors): void {
   const root = document.documentElement;
   const brandHover = adjustColor(colors.primary, -8);
@@ -200,6 +228,7 @@ export function applyThemeToDOM(colors: ThemeColors): void {
   if (colors.font && colors.font !== "system-ui") {
     vars["--font-family"] = `"${colors.font}", system-ui, sans-serif`;
     root.style.fontFamily = vars["--font-family"];
+    loadGoogleFont(colors.font);
   } else {
     vars["--font-family"] = `system-ui, Avenir, Helvetica, Arial, sans-serif`;
     root.style.fontFamily = vars["--font-family"];

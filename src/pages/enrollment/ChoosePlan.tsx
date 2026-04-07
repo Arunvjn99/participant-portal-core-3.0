@@ -8,7 +8,7 @@ import { useCoreAIModalOptional } from "../../context/CoreAIModalContext";
 import { useUser } from "../../context/UserContext";
 import { PersonalizePlanModal } from "../../components/enrollment/PersonalizePlanModal";
 import { EnrollmentFooter } from "../../components/enrollment/EnrollmentFooter";
-import { User, Clock, CheckCircle2, Check, MessageCircle, TrendingUp, Shield, Info } from "lucide-react";
+import { User, Clock, CheckCircle2, ChevronLeft, MessageCircle, TrendingUp, Shield, Info } from "lucide-react";
 
 const FALLBACK_AGE = 30;
 const FALLBACK_RETIREMENT_AGE = 65;
@@ -47,21 +47,16 @@ export const ChoosePlan = () => {
     };
   }, [toastMessage]);
 
-  const handleTogglePlan = useCallback(() => {
-    if (isSelected) {
-      setSelectedPlan(null);
-      setPlanSelected(false);
-    } else {
-      setSelectedPlan("roth_401k");
-      setPlanSelected(true);
-    }
-  }, [isSelected, setSelectedPlan]);
+  /** Visual-only: highlights card without navigating */
+  const handleCardSelect = useCallback(() => {
+    setSelectedPlan("roth_401k");
+    setPlanSelected(true);
+  }, [setSelectedPlan]);
 
-  const handleContinue = useCallback(() => {
-    if (state.selectedPlan == null) {
-      setToastMessage(t("enrollment.selectPlanRequired"));
-      return;
-    }
+  /** Selects plan, saves draft, and navigates immediately to next step */
+  const confirmPlan = useCallback(() => {
+    setSelectedPlan("roth_401k");
+    setPlanSelected(true);
     const draft = loadEnrollmentDraft();
     const currentAge = state.currentAge ?? draft?.currentAge ?? FALLBACK_AGE;
     const retirementAge = state.retirementAge ?? draft?.retirementAge ?? FALLBACK_RETIREMENT_AGE;
@@ -76,10 +71,11 @@ export const ChoosePlan = () => {
     };
     saveEnrollmentDraft({
       ...base,
-      selectedPlanId: state.selectedPlan,
+      selectedPlanId: "roth_401k",
       selectedPlanDbId: state.selectedPlanDbId ?? undefined,
     });
-  }, [state.selectedPlan, state.selectedPlanDbId, state.currentAge, state.retirementAge, state.salary, t]);
+    window.location.href = "/enrollment/contribution";
+  }, [setSelectedPlan, state.currentAge, state.retirementAge, state.salary, state.selectedPlanDbId]);
 
   const handleClosePersonalize = useCallback(() => {
     setIsPersonalizeOpen(false);
@@ -149,6 +145,16 @@ export const ChoosePlan = () => {
         </div>
       )}
       <div className="max-w-7xl mx-auto px-6 lg:px-12 pt-4 pb-12">
+        <button
+          type="button"
+          onClick={() => navigate("/dashboard")}
+          className="mb-4 inline-flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-70"
+          style={{ color: "var(--enroll-text-secondary)" }}
+        >
+          <ChevronLeft className="h-4 w-4" strokeWidth={2} aria-hidden />
+          {t("enrollment.footerBack")}
+        </button>
+
         <header className="mb-4">
           <h1 className="text-xl md:text-2xl font-bold leading-tight" style={{ color: "var(--enroll-text-primary)" }}>
             {t("enrollment.yourPlan")}
@@ -159,7 +165,8 @@ export const ChoosePlan = () => {
         </header>
 
         <div
-          className={`rounded-2xl grid grid-cols-1 lg:grid-cols-12 overflow-hidden transition-all duration-200 ${
+          onClick={handleCardSelect}
+          className={`rounded-2xl grid grid-cols-1 lg:grid-cols-12 overflow-hidden transition-all duration-200 cursor-pointer ${
             isSelected
               ? "border-2 border-[var(--enroll-brand)] bg-white shadow-xl"
               : "border border-slate-200 dark:border-[var(--enroll-card-border)] bg-white dark:bg-[var(--enroll-card-bg)] shadow-md"
@@ -241,25 +248,24 @@ export const ChoosePlan = () => {
                 {isSelected ? (
                   <button
                     type="button"
-                    onClick={handleTogglePlan}
-                    className="order-1 sm:order-2 inline-flex items-center gap-2 rounded-xl bg-white/20 px-4 py-2.5 text-sm font-medium sm:ml-auto hover:bg-white/25 transition-colors cursor-pointer"
-                    aria-label={t("enrollment.selected")}
+                    onClick={confirmPlan}
+                    className="order-1 sm:order-2 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-semibold sm:ml-auto hover:bg-white/90 transition-colors cursor-pointer"
+                    style={{ color: "var(--color-primary)" }}
                   >
-                    <Check className="h-4 w-4" strokeWidth={2.5} />
-                    {t("enrollment.selected")}
+                    Continue with {plan.name} →
                   </button>
                 ) : (
                   <button
                     type="button"
-                    onClick={handleTogglePlan}
-                    className="order-1 sm:order-2 w-full sm:w-auto min-h-[44px] inline-flex items-center justify-center gap-2 rounded-xl border-2 px-4 py-2.5 text-sm font-semibold transition-colors hover:opacity-90"
+                    onClick={confirmPlan}
+                    className="order-1 sm:order-2 w-full sm:w-auto min-h-[44px] inline-flex items-center justify-center gap-2 rounded-xl border-2 px-5 py-2.5 text-sm font-semibold transition-colors hover:opacity-90"
                     style={{
                       borderColor: "var(--enroll-brand)",
                       color: "var(--enroll-brand)",
                       background: "rgb(var(--enroll-brand-rgb) / 0.08)",
                     }}
                   >
-                    {t("enrollment.selectPlan")}
+                    Choose {plan.name}
                   </button>
                 )}
               </div>
@@ -367,8 +373,7 @@ export const ChoosePlan = () => {
 
         <EnrollmentFooter
           primaryLabel={t("enrollment.continueToContributions") + " →"}
-          primaryDisabled={state.selectedPlan == null}
-          onPrimary={handleContinue}
+          hidePrimary
         />
       </div>
     </div>

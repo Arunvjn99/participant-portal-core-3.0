@@ -10,19 +10,19 @@ export function PreEnrollmentScenario({ user }: { user: PersonaProfile }) {
   const firstName = user.name.split(/\s+/)[0] || user.name;
 
   return (
-    <ScenarioShell user={user} accentColor="#6366f1">
+    <ScenarioShell user={user} accentColor="var(--color-primary)">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Card
           title={t("dashboard.employerMatch")}
           value={t("demo.matchAvailable", { percent: user.employerMatchRate })}
           description={t("demo.employerMatchCardDesc")}
-          color="#10b981"
+          color="var(--color-success)"
         />
         <Card
           title={t("demo.enrollmentStatus")}
           value={t("demo.notYetEnrolled")}
           description={t("demo.enrollmentStatusDesc")}
-          color="#f59e0b"
+          color="var(--color-warning)"
         />
         <Card
           title={t("demo.autoEnrollment")}
@@ -32,7 +32,7 @@ export function PreEnrollmentScenario({ user }: { user: PersonaProfile }) {
               ? t("demo.autoEnrollmentDescActive")
               : t("demo.autoEnrollmentDescInactive")
           }
-          color="#6366f1"
+          color="var(--color-primary)"
         />
       </div>
 

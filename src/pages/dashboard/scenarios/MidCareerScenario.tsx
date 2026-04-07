@@ -9,12 +9,12 @@ export function MidCareerScenario({ user }: { user: PersonaProfile }) {
   const monthlyIncome = Math.round(projectedBalance * 0.04 / 12);
 
   return (
-    <ScenarioShell user={user} accentColor="#0b5fff">
+    <ScenarioShell user={user} accentColor="var(--color-primary)">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Total Balance" value={fmt.format(user.balance)} color="#0b5fff" />
-        <StatCard label="Retirement Score" value={`${user.retirementScore}/100`} color="#10b981" />
-        <StatCard label="Years to Retire" value={`${yearsToRetire} years`} color="#f59e0b" />
-        <StatCard label="Est. Monthly Income" value={fmt.format(monthlyIncome)} color="#8b5cf6" />
+        <StatCard label="Total Balance" value={fmt.format(user.balance)} color="var(--color-primary)" />
+        <StatCard label="Retirement Score" value={`${user.retirementScore}/100`} color="var(--color-success)" />
+        <StatCard label="Years to Retire" value={`${yearsToRetire} years`} color="var(--color-warning)" />
+        <StatCard label="Est. Monthly Income" value={fmt.format(monthlyIncome)} color="var(--chart-5)" />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3">
@@ -22,19 +22,19 @@ export function MidCareerScenario({ user }: { user: PersonaProfile }) {
           title="Optimize Portfolio"
           description="Review your asset allocation to ensure it matches your risk tolerance and timeline."
           buttonText="View Portfolio"
-          color="#0b5fff"
+          color="var(--color-primary)"
         />
         <ActionCard
           title="Increase Savings"
           description={`Currently saving ${user.contributionRate}%. Consider maximizing your employer match of ${user.employerMatchRate}%.`}
           buttonText="Adjust Contribution"
-          color="#10b981"
+          color="var(--color-success)"
         />
         <ActionCard
           title="Tax Strategy"
           description="Explore Roth vs Traditional options to optimize your tax situation."
           buttonText="Compare Options"
-          color="#8b5cf6"
+          color="var(--chart-5)"
         />
       </div>
 

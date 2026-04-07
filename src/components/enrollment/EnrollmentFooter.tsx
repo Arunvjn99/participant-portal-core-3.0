@@ -19,6 +19,8 @@ interface EnrollmentFooterProps {
   getDraftSnapshot?: () => Record<string, unknown>;
   /** When true, use in-content styling (border-top, spacing) for use inside step content */
   inContent?: boolean;
+  /** When true, hides the primary/Next button. Use when the step provides its own in-card CTA. */
+  hidePrimary?: boolean;
 }
 
 /**
@@ -33,6 +35,7 @@ export const EnrollmentFooter = ({
   summaryError = false,
   getDraftSnapshot,
   inContent = false,
+  hidePrimary = false,
 }: EnrollmentFooterProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -105,7 +108,7 @@ export const EnrollmentFooter = ({
           >
             {t("enrollment.footerSaveAndExit")}
           </Button>
-          {nextPath ? (
+          {!hidePrimary && nextPath ? (
             <a
               href={nextPath}
               onClick={(e) => {
@@ -120,7 +123,7 @@ export const EnrollmentFooter = ({
             >
               {primaryLabel}
             </a>
-          ) : (
+          ) : !hidePrimary ? (
             <Button
               type="button"
               onClick={() => handlePrimary()}
@@ -129,7 +132,7 @@ export const EnrollmentFooter = ({
             >
               {primaryLabel}
             </Button>
-          )}
+          ) : null}
         </div>
       </div>
     </footer>

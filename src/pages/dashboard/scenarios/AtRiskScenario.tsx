@@ -9,7 +9,7 @@ export function AtRiskScenario({ user }: { user: PersonaProfile }) {
   const missedMatch = Math.round(user.balance * 0.5 * (gap / 100) * yearsToRetire);
 
   return (
-    <ScenarioShell user={user} accentColor="#ef4444">
+    <ScenarioShell user={user} accentColor="var(--color-danger)">
       {/* Warning banner */}
       <div className="flex items-start gap-3 rounded-xl border border-[var(--color-danger)]/30 bg-[var(--color-danger)]/10 p-5">
         <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-danger)]/10 text-[var(--color-danger)]">
@@ -25,10 +25,10 @@ export function AtRiskScenario({ user }: { user: PersonaProfile }) {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Current Balance" value={fmt.format(user.balance)} color="#ef4444" alert />
-        <StatCard label="Contribution Rate" value={`${user.contributionRate}%`} color="#ef4444" alert />
-        <StatCard label="Retirement Score" value={`${user.retirementScore}/100`} color="#f59e0b" />
-        <StatCard label="Employer Match" value={`${user.employerMatchRate}%`} color="#10b981" />
+        <StatCard label="Current Balance" value={fmt.format(user.balance)} color="var(--color-danger)" alert />
+        <StatCard label="Contribution Rate" value={`${user.contributionRate}%`} color="var(--color-danger)" alert />
+        <StatCard label="Retirement Score" value={`${user.retirementScore}/100`} color="var(--color-warning)" />
+        <StatCard label="Employer Match" value={`${user.employerMatchRate}%`} color="var(--color-success)" />
       </div>
 
       {/* Recovery plan */}

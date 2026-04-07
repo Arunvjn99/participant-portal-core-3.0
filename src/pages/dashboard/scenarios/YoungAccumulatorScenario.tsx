@@ -8,12 +8,12 @@ export function YoungAccumulatorScenario({ user }: { user: PersonaProfile }) {
   const projectedBalance = Math.round(user.balance * Math.pow(1.07, yearsToRetire));
 
   return (
-    <ScenarioShell user={user} accentColor="#10b981">
+    <ScenarioShell user={user} accentColor="var(--color-success)">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Current Balance" value={fmt.format(user.balance)} color="#10b981" />
-        <StatCard label="Contribution Rate" value={`${user.contributionRate}%`} color="#0b5fff" />
-        <StatCard label="Employer Match" value={`${user.employerMatchRate}%`} color="#8b5cf6" />
-        <StatCard label="Projected at 65" value={fmt.format(projectedBalance)} color="#f59e0b" />
+        <StatCard label="Current Balance" value={fmt.format(user.balance)} color="var(--color-success)" />
+        <StatCard label="Contribution Rate" value={`${user.contributionRate}%`} color="var(--color-primary)" />
+        <StatCard label="Employer Match" value={`${user.employerMatchRate}%`} color="var(--chart-5)" />
+        <StatCard label="Projected at 65" value={fmt.format(projectedBalance)} color="var(--color-warning)" />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">

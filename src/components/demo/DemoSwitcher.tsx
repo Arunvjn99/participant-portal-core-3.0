@@ -8,14 +8,14 @@ const fmt = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD",
 
 /** Color map for scenario badges */
 const SCENARIO_COLORS: Record<string, string> = {
-  pre_enrollment: "#6366f1",
-  new_enrollee: "#6366f1",
-  young_accumulator: "#10b981",
-  mid_career: "#0b5fff",
-  pre_retiree: "#f59e0b",
-  at_risk: "#ef4444",
-  loan_active: "#f97316",
-  retired: "#8b5cf6",
+  pre_enrollment: "var(--color-primary)",
+  new_enrollee: "var(--color-primary)",
+  young_accumulator: "var(--color-success)",
+  mid_career: "var(--color-primary)",
+  pre_retiree: "var(--color-warning)",
+  at_risk: "var(--color-danger)",
+  loan_active: "var(--color-warning)",
+  retired: "var(--chart-5)",
 };
 
 /**
