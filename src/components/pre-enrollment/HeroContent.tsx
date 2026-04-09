@@ -52,9 +52,6 @@ export function HeroContent() {
               {safeT(t, "dashboard.startEnrollment", "Start My Enrolment")}
               <ArrowRight className="size-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden />
             </span>
-            <span className="mt-1 text-center text-xs leading-snug text-[var(--color-text-on-primary)]/80">
-              {safeT(t, "dashboard.takesMinutes", "It only takes 5 minutes")}
-            </span>
           </button>
 
           <button
